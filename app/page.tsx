@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
+import DisclaimerBanner from './components/DisclaimerBanner'
 
 // ─── All 197 passport countries (matches DB exactly) ──────────────────────────
 const PASSPORT_COUNTRIES = [
@@ -201,6 +202,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white text-[#1A1A1A] antialiased selection:bg-[#10B981]/20 selection:text-[#1A1A1A]">
+
+      <DisclaimerBanner />
 
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-gray-100 bg-white shadow-sm">

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
+import DisclaimerBanner from '../../../components/DisclaimerBanner'
 
 // ─── Country map ───────────────────────────────────────────────────────────────
 const COUNTRY_MAP: Record<string, { name: string; flag: string }> = {
@@ -188,6 +189,8 @@ export default async function VisaResultPage({
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] text-[#1A1A1A] antialiased selection:bg-[#10B981]/20 selection:text-[#1A1A1A]">
+
+      <DisclaimerBanner />
 
       {/* ── Navbar ── */}
       <header className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
