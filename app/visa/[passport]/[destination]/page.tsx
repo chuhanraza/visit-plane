@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import DisclaimerBanner from '../../../components/DisclaimerBanner'
 import VisaPageClient, { type VisaRecord } from './VisaPageClient'
 
-// ─── Country lookup ────────────────────────────────────────────────────────────
+// ─── Country lookup (by 2-letter code) ────────────────────────────────────────
 const COUNTRY_MAP: Record<string, { name: string; flag: string }> = {
   us: { name: 'United States',  flag: '🇺🇸' },
   gb: { name: 'United Kingdom', flag: '🇬🇧' },
@@ -38,6 +38,36 @@ const COUNTRY_MAP: Record<string, { name: string; flag: string }> = {
   nz: { name: 'New Zealand',    flag: '🇳🇿' },
   pt: { name: 'Portugal',       flag: '🇵🇹' },
   gr: { name: 'Greece',         flag: '🇬🇷' },
+}
+
+// ─── Fallback: lookup flag by full country name (for slug = full name URLs) ────
+const NAME_FLAG_MAP: Record<string, string> = {
+  'united states': '🇺🇸', 'united kingdom': '🇬🇧', 'pakistan': '🇵🇰',
+  'india': '🇮🇳', 'germany': '🇩🇪', 'australia': '🇦🇺', 'canada': '🇨🇦',
+  'france': '🇫🇷', 'uae': '🇦🇪', 'united arab emirates': '🇦🇪',
+  'saudi arabia': '🇸🇦', 'turkey': '🇹🇷', 'japan': '🇯🇵', 'singapore': '🇸🇬',
+  'malaysia': '🇲🇾', 'china': '🇨🇳', 'brazil': '🇧🇷', 'mexico': '🇲🇽',
+  'italy': '🇮🇹', 'spain': '🇪🇸', 'netherlands': '🇳🇱', 'switzerland': '🇨🇭',
+  'sweden': '🇸🇪', 'norway': '🇳🇴', 'south korea': '🇰🇷', 'thailand': '🇹🇭',
+  'indonesia': '🇮🇩', 'egypt': '🇪🇬', 'south africa': '🇿🇦', 'nigeria': '🇳🇬',
+  'new zealand': '🇳🇿', 'portugal': '🇵🇹', 'greece': '🇬🇷',
+  'bangladesh': '🇧🇩', 'sri lanka': '🇱🇰', 'nepal': '🇳🇵', 'iran': '🇮🇷',
+  'iraq': '🇮🇶', 'jordan': '🇯🇴', 'lebanon': '🇱🇧', 'qatar': '🇶🇦',
+  'kuwait': '🇰🇼', 'oman': '🇴🇲', 'bahrain': '🇧🇭', 'philippines': '🇵🇭',
+  'vietnam': '🇻🇳', 'cambodia': '🇰🇭', 'myanmar': '🇲🇲', 'russia': '🇷🇺',
+  'ukraine': '🇺🇦', 'poland': '🇵🇱', 'romania': '🇷🇴', 'belgium': '🇧🇪',
+  'austria': '🇦🇹', 'denmark': '🇩🇰', 'finland': '🇫🇮', 'czechia': '🇨🇿',
+  'hungary': '🇭🇺', 'argentina': '🇦🇷', 'colombia': '🇨🇴', 'chile': '🇨🇱',
+  'peru': '🇵🇪', 'kenya': '🇰🇪', 'ghana': '🇬🇭', 'ethiopia': '🇪🇹',
+  'tanzania': '🇹🇿', 'morocco': '🇲🇦', 'algeria': '🇩🇿', 'tunisia': '🇹🇳',
+}
+
+function resolveFlag(slug: string, name: string): string {
+  return (
+    COUNTRY_MAP[slug]?.flag ??
+    NAME_FLAG_MAP[name.toLowerCase()] ??
+    '🌍'
+  )
 }
 
 // ─── Supabase ──────────────────────────────────────────────────────────────────
@@ -90,8 +120,8 @@ export default async function VisaResultPage({
 
   const allVisaData = await fetchAllVisaTypes(passportName, destinationName)
 
-  const passportFlag    = COUNTRY_MAP[passportSlug]?.flag    ?? '🌍'
-  const destinationFlag = COUNTRY_MAP[destinationSlug]?.flag ?? '🌍'
+  const passportFlag    = resolveFlag(passportSlug,    passportName)
+  const destinationFlag = resolveFlag(destinationSlug, destinationName)
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1F2937] antialiased">

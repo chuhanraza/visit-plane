@@ -72,6 +72,17 @@ function parseDocuments(r: VisaRecord): string[] {
 }
 
 function getVisaRequired(r: VisaRecord): boolean | null {
+  // Detect "Visa Free" / "Not Required" from the visa type name first
+  const nameLower = getVisaName(r).toLowerCase()
+  if (
+    nameLower.includes('visa free') ||
+    nameLower.includes('visa-free') ||
+    nameLower.includes('not required') ||
+    nameLower.includes('no visa') ||
+    nameLower === 'free'
+  ) return false
+
+  // Then check the explicit field
   if (r.visa_required === null || r.visa_required === undefined) return null
   if (typeof r.visa_required === 'boolean') return r.visa_required
   const s = String(r.visa_required).toLowerCase()

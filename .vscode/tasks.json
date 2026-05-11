@@ -2,9 +2,23 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Git: push all changes",
+      "label": "GSC: commit verification + push",
       "type": "shell",
-      "command": "cd ~/Desktop/visitplane && rm -f .git/index.lock && git add app/page.tsx 'app/visa/[passport]/[destination]/page.tsx' && git commit -m 'feat: dynamic 197-country dropdowns fetched from Supabase' && git push origin main --force && echo '✅ Pushed!'",
+      "command": "cd ~/Desktop/visitplane && rm -f .git/index.lock && git add app/layout.tsx && git commit -m 'SEO: Add Google Search Console verification' && git push origin main --force && echo '✅ Deployed! Vercel building now.'",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "new", "clear": true }
+    },
+    {
+      "label": "SEO: deploy sitemap + robots + layout",
+      "type": "shell",
+      "command": "cd ~/Desktop/visitplane && rm -f .git/index.lock && git add app/sitemap.ts app/robots.ts app/layout.tsx && git commit -m 'SEO: add dynamic sitemap, robots.txt, GSC verification support' && git push origin main --force && echo '✅ Deployed! Vercel building now.'",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "new", "clear": true }
+    },
+    {
+      "label": "Fix: top 20 visa routes + commit + push",
+      "type": "shell",
+      "command": "cd ~/Desktop/visitplane && node scripts/fix-top-routes.mjs && rm -f .git/index.lock && git add scripts/fix-top-routes.mjs && git commit -m 'Fix: Update top 20 visa routes with accurate data' && git push origin main --force && echo '✅ Deployed! Vercel is building now.'",
       "group": "build",
       "presentation": { "reveal": "always", "panel": "new", "clear": true }
     },
