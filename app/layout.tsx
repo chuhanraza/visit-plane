@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID ?? "";
+const GSC_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? "";
 
 // ─── 1. Metadata (title, description, keywords) ──────────────────────────────
 export const metadata: Metadata = {
@@ -32,6 +33,11 @@ export const metadata: Metadata = {
     "travel documents",
     "visa on arrival",
   ],
+
+  // ─── Google Search Console verification ─────────────────────────────────────
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? "",
+  },
 
   // ─── 5. Canonical URL support ───────────────────────────────────────────────
   metadataBase: new URL("https://visitplane.com"),
