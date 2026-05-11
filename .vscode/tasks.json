@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Git: commit and push green design",
+      "type": "shell",
+      "command": "rm -f .git/index.lock && git add . && git commit -m 'Update design to green theme with new branding' && git push origin main && echo '✅ Pushed successfully!'",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    }
+  ]
+}

@@ -197,7 +197,7 @@ export default async function VisaResultPage({
   const destinationFlag  = destinationInfo?.flag  ?? '🌐'
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] text-[#1A1A1A] antialiased selection:bg-[#4f8fff]/20 selection:text-[#1A1A1A]">
+    <div className="min-h-screen bg-[#F5F5F5] text-[#1A1A1A] antialiased selection:bg-[#10B981]/20 selection:text-[#1A1A1A]">
 
       {/* ── Navbar ── */}
       <header className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
@@ -206,7 +206,7 @@ export default async function VisaResultPage({
             <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="rounded-xl" />
             <span className="text-lg font-semibold tracking-tight">
               <span className="text-[#1A1A1A]">Visit</span>
-              <span className="text-[#4f8fff]">Plane</span>
+              <span className="text-[#10B981]">Plane</span>
             </span>
           </Link>
 
@@ -218,7 +218,7 @@ export default async function VisaResultPage({
 
           <Link
             href="/get-started"
-            className="group inline-flex items-center gap-2 rounded-full bg-[#4f8fff] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#3d7eff]"
+            className="group inline-flex items-center gap-2 rounded-full bg-[#10B981] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#059669]"
           >
             Get Started
             <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
@@ -246,7 +246,7 @@ export default async function VisaResultPage({
                 <span className="text-2xl leading-none">{passportFlag}</span>
                 <span>{passportLabel}</span>
               </span>
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4f8fff]/10 text-[#4f8fff]">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#10B981]/10 text-[#10B981]">
                 <ArrowRight className="h-3.5 w-3.5" />
               </span>
               <span className="flex items-center gap-2 text-base font-medium text-[#1A1A1A]">
@@ -257,7 +257,7 @@ export default async function VisaResultPage({
 
             <h1 className="mt-6 text-4xl font-semibold tracking-tight text-[#1A1A1A] sm:text-5xl">
               Visa{' '}
-              <span className="bg-gradient-to-r from-[#4f8fff] via-[#79a8ff] to-[#4f8fff] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#14B8A6] bg-clip-text text-transparent">
                 Requirements
               </span>
             </h1>
@@ -279,14 +279,14 @@ export default async function VisaResultPage({
             <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-md">
 
               {/* Top accent stripe */}
-              <div className="h-1 w-full bg-gradient-to-r from-[#4f8fff]/0 via-[#4f8fff] to-[#4f8fff]/0" />
+              <div className="h-1 w-full bg-gradient-to-r from-[#10B981]/0 via-[#10B981] to-[#10B981]/0" />
 
               <div className="p-6 sm:p-8">
 
                 {/* Visa type header */}
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wider text-[#4f8fff]">
+                    <p className="text-xs font-medium uppercase tracking-wider text-[#10B981]">
                       Visa Type
                     </p>
                     <h2 className="mt-1.5 text-2xl font-semibold text-[#1A1A1A] sm:text-3xl">
@@ -302,7 +302,7 @@ export default async function VisaResultPage({
                 <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {/* Processing time */}
                   <div className="flex flex-col gap-1.5 rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                    <span className="text-[#4f8fff]">
+                    <span className="text-[#10B981]">
                       <ClockIcon className="h-5 w-5" />
                     </span>
                     <p className="text-[11px] uppercase tracking-wider text-gray-400">Processing</p>
@@ -313,7 +313,7 @@ export default async function VisaResultPage({
 
                   {/* Pricing */}
                   <div className="flex flex-col gap-1.5 rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                    <span className="text-[#4f8fff]">
+                    <span className="text-[#10B981]">
                       <TagIcon className="h-5 w-5" />
                     </span>
                     <p className="text-[11px] uppercase tracking-wider text-gray-400">Visa Fee</p>
@@ -324,7 +324,7 @@ export default async function VisaResultPage({
 
                   {/* Validity */}
                   <div className="col-span-2 flex flex-col gap-1.5 rounded-2xl border border-gray-100 bg-gray-50 p-4 sm:col-span-1">
-                    <span className="text-[#4f8fff]">
+                    <span className="text-[#10B981]">
                       <PassportIcon className="h-5 w-5" />
                     </span>
                     <p className="text-[11px] uppercase tracking-wider text-gray-400">Validity</p>
@@ -347,9 +347,9 @@ export default async function VisaResultPage({
                     {documents.map((doc, i) => (
                       <li
                         key={i}
-                        className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 transition hover:border-[#4f8fff]/20 hover:bg-[#4f8fff]/5"
+                        className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 transition hover:border-[#10B981]/20 hover:bg-[#10B981]/5"
                       >
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#4f8fff]/10 text-[#4f8fff]">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#10B981]/10 text-[#10B981]">
                           <CheckIcon className="h-3 w-3" />
                         </span>
                         <span className="text-sm text-gray-600">{doc}</span>
@@ -385,7 +385,7 @@ export default async function VisaResultPage({
                     href={visaData.apply_url ?? visaData.application_url ?? '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4f8fff] px-7 py-3.5 text-sm font-semibold text-white shadow-[0_6px_24px_-6px_rgba(79,143,255,0.5)] transition hover:bg-[#3d7eff] hover:shadow-[0_8px_28px_-6px_rgba(79,143,255,0.6)]"
+                    className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-[#10B981] px-7 py-3.5 text-sm font-semibold text-white shadow-[0_6px_24px_-6px_rgba(16,185,129,0.5)] transition hover:bg-[#059669] hover:shadow-[0_8px_28px_-6px_rgba(16,185,129,0.6)]"
                   >
                     Apply Now
                     <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -427,7 +427,7 @@ export default async function VisaResultPage({
               >
                 <input type="hidden" name="passport" value={passportLabel} />
                 <input type="hidden" name="destination" value={destinationLabel} />
-                <div className="flex flex-1 items-center gap-2 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 focus-within:border-[#4f8fff]/60">
+                <div className="flex flex-1 items-center gap-2 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 focus-within:border-[#10B981]/60">
                   <MailIcon className="h-4 w-4 shrink-0 text-gray-400" />
                   <input
                     type="email"
@@ -439,7 +439,7 @@ export default async function VisaResultPage({
                 </div>
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4f8fff] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3d7eff]"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#10B981] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#059669]"
                 >
                   Notify Me
                 </button>
@@ -472,7 +472,7 @@ export default async function VisaResultPage({
                   <Link
                     key={code}
                     href={`/visa/${passportCode}/${code}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:border-[#4f8fff]/30 hover:bg-[#4f8fff]/5 hover:text-[#4f8fff]"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:border-[#10B981]/30 hover:bg-[#10B981]/5 hover:text-[#10B981]"
                   >
                     <span>{c.flag}</span>
                     <span>{c.name}</span>
@@ -490,7 +490,7 @@ export default async function VisaResultPage({
             <Image src="/logo-v2.png" alt="VisitPlane" width={20} height={20} className="rounded" />
             <span>
               <span className="text-gray-600">Visit</span>
-              <span className="text-[#4f8fff]">Plane</span>
+              <span className="text-[#10B981]">Plane</span>
               <span className="ml-2">© {new Date().getFullYear()}</span>
             </span>
           </div>

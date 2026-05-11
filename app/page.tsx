@@ -110,6 +110,14 @@ function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
   )
 }
 
+function PlaneIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5Z" />
+    </svg>
+  )
+}
+
 // ----- Page -----
 export default function HomePage() {
   const router = useRouter()
@@ -124,7 +132,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-[#1A1A1A] antialiased selection:bg-[#4f8fff]/20 selection:text-[#1A1A1A]">
+    <div className="min-h-screen bg-white text-[#1A1A1A] antialiased selection:bg-[#10B981]/20 selection:text-[#1A1A1A]">
 
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-gray-100 bg-white shadow-sm">
@@ -133,7 +141,7 @@ export default function HomePage() {
             <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="rounded-xl" />
             <span className="text-lg font-semibold tracking-tight">
               <span className="text-[#1A1A1A]">Visit</span>
-              <span className="text-[#4f8fff]">Plane</span>
+              <span className="text-[#10B981]">Plane</span>
             </span>
           </Link>
 
@@ -151,7 +159,7 @@ export default function HomePage() {
 
           <Link
             href="/get-started"
-            className="group inline-flex items-center gap-2 rounded-full bg-[#4f8fff] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#3d7eff]"
+            className="group inline-flex items-center gap-2 rounded-full bg-[#10B981] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#059669]"
           >
             Get Started
             <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
@@ -160,39 +168,41 @@ export default function HomePage() {
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#EFF6FF] to-white">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#F0FDF4] to-white">
         {/* Subtle radial glow */}
         <div className="pointer-events-none absolute inset-0 -z-0">
-          <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(79,143,255,0.10),transparent_70%)] blur-3xl" />
+          <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(16,185,129,0.10),transparent_70%)] blur-3xl" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-16 sm:px-6 sm:pb-20 sm:pt-24 lg:px-8 lg:pt-28">
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#4f8fff]/20 bg-white px-3.5 py-1.5 text-xs font-medium text-[#4f8fff] shadow-sm">
-              <span className="text-base leading-none">🌍</span>
-              <span>150+ Countries Covered</span>
-              <span className="ml-1 inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-[#4f8fff]" />
+
+            {/* Trust badge */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#10B981]/20 bg-white px-3.5 py-1.5 text-xs font-medium text-[#10B981] shadow-sm">
+              <span className="text-base leading-none">✦</span>
+              <span>Trusted by 10,000+ Global Nomads</span>
+              <span className="ml-1 inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-[#10B981]" />
             </div>
 
             <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.05] tracking-tight text-[#1A1A1A] sm:text-6xl lg:text-7xl">
-              <span className="block">Your visa.</span>
-              <span className="block bg-gradient-to-r from-[#4f8fff] via-[#79a8ff] to-[#4f8fff] bg-clip-text text-transparent">
-                Decoded in seconds.
+              <span className="block">The World&apos;s Visa Rules.</span>
+              <span className="block bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#14B8A6] bg-clip-text text-transparent">
+                Decoded in Seconds.
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty text-base text-gray-500 sm:text-lg">
-              Stop guessing. Know exactly what documents you need, instantly.
+              Stop guessing. Know exactly what you need to board your plane.
             </p>
           </div>
 
           {/* Search card */}
           <div className="relative mx-auto mt-12 max-w-3xl">
-            <div className="relative rounded-3xl border border-[#4f8fff]/20 bg-[#EFF6FF] p-2 shadow-lg shadow-[#4f8fff]/10">
+            <div className="relative rounded-3xl border border-[#10B981]/20 bg-[#F0FDF4] p-2 shadow-lg shadow-[#10B981]/10">
               <div className="rounded-[1.25rem] bg-white p-4 sm:p-5">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <SelectField
                     id="passport"
-                    label="I hold a passport from"
+                    label="My Passport is from"
                     value={passport}
                     onChange={setPassport}
                     placeholder="Select your passport"
@@ -200,7 +210,7 @@ export default function HomePage() {
                   />
                   <SelectField
                     id="destination"
-                    label="I want to travel to"
+                    label="Take me to"
                     value={destination}
                     onChange={setDestination}
                     placeholder="Select destination"
@@ -212,10 +222,10 @@ export default function HomePage() {
                   type="button"
                   onClick={handleCheck}
                   disabled={!canSubmit}
-                  className="group mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#4f8fff] px-6 py-4 text-sm font-semibold text-white shadow-[0_6px_24px_-6px_rgba(79,143,255,0.5)] transition hover:bg-[#3d7eff] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none"
+                  className="group mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#10B981] px-6 py-4 text-sm font-semibold text-white shadow-[0_6px_24px_-6px_rgba(16,185,129,0.5)] transition hover:bg-[#059669] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none"
                 >
                   Check Visa Requirements
-                  <ArrowRight className="h-4 w-4 transition group-enabled:group-hover:translate-x-0.5" />
+                  <PlaneIcon className="h-4 w-4 transition group-enabled:group-hover:translate-x-0.5" />
                 </button>
 
                 {passport && destination && passport === destination && (
@@ -230,11 +240,11 @@ export default function HomePage() {
 
         {/* Stats bar */}
         <div className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl rounded-2xl border border-[#4f8fff]/15 bg-[#EFF6FF] shadow-sm">
-            <dl className="grid grid-cols-2 divide-y divide-[#4f8fff]/10 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
+          <div className="mx-auto max-w-4xl rounded-2xl border border-[#10B981]/15 bg-[#F0FDF4] shadow-sm">
+            <dl className="grid grid-cols-2 divide-y divide-[#10B981]/10 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
               {STATS.map((s) => (
                 <div key={s.label} className="flex flex-col items-center justify-center px-4 py-5">
-                  <dt className="text-2xl font-semibold tracking-tight text-[#4f8fff] sm:text-3xl">
+                  <dt className="text-2xl font-semibold tracking-tight text-[#10B981] sm:text-3xl">
                     {s.value}
                   </dt>
                   <dd className="mt-1 text-xs uppercase tracking-wider text-gray-500">
@@ -252,7 +262,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:px-8">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-[#4f8fff]">
+              <p className="text-xs font-medium uppercase tracking-wider text-[#10B981]">
                 Popular right now
               </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#1A1A1A] sm:text-4xl">
@@ -264,7 +274,7 @@ export default function HomePage() {
             </div>
             <Link
               href="/destinations"
-              className="group inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#4f8fff]"
+              className="group inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#10B981]"
             >
               Browse all destinations
               <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
@@ -276,9 +286,9 @@ export default function HomePage() {
               <Link
                 key={d.code}
                 href={`/visa/us/${d.code}`}
-                className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#4f8fff]/30 hover:shadow-md"
+                className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#10B981]/30 hover:shadow-md"
               >
-                <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#4f8fff]/5 blur-3xl transition group-hover:bg-[#4f8fff]/10" />
+                <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#10B981]/5 blur-3xl transition group-hover:bg-[#10B981]/10" />
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <span className="grid h-12 w-12 place-items-center rounded-xl bg-gray-100 text-2xl">
@@ -289,7 +299,7 @@ export default function HomePage() {
                       <p className="mt-0.5 text-xs text-gray-400">View visa details</p>
                     </div>
                   </div>
-                  <ArrowRight className="h-4 w-4 text-gray-300 transition group-hover:translate-x-0.5 group-hover:text-[#4f8fff]" />
+                  <ArrowRight className="h-4 w-4 text-gray-300 transition group-hover:translate-x-0.5 group-hover:text-[#10B981]" />
                 </div>
                 <div className="mt-5 flex items-center justify-between">
                   <span
@@ -311,7 +321,7 @@ export default function HomePage() {
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
             {TRUST_ITEMS.map((t) => (
               <div key={t.label} className="flex items-center gap-2 text-sm text-gray-500">
-                <span className="text-[#4f8fff]">
+                <span className="text-[#10B981]">
                   <TrustIcon name={t.icon} className="h-4 w-4" />
                 </span>
                 <span>{t.label}</span>
@@ -328,7 +338,7 @@ export default function HomePage() {
             <Image src="/logo-v2.png" alt="VisitPlane" width={20} height={20} className="rounded" />
             <span>
               <span className="text-gray-600">Visit</span>
-              <span className="text-[#4f8fff]">Plane</span>
+              <span className="text-[#10B981]">Plane</span>
               <span className="ml-2">© {new Date().getFullYear()}</span>
             </span>
           </div>
@@ -363,7 +373,7 @@ function SelectField({
 }) {
   const selected = options.find((o) => o.code === value)
   return (
-    <label htmlFor={id} className="group relative block rounded-2xl border border-gray-200 bg-white p-4 transition focus-within:border-[#4f8fff]/60 focus-within:shadow-sm hover:border-gray-300">
+    <label htmlFor={id} className="group relative block rounded-2xl border border-gray-200 bg-white p-4 transition focus-within:border-[#10B981]/60 focus-within:shadow-sm hover:border-gray-300">
       <span className="block text-xs font-medium uppercase tracking-wider text-gray-400">
         {label}
       </span>
@@ -384,7 +394,7 @@ function SelectField({
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 transition group-focus-within:text-[#4f8fff]" />
+        <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 transition group-focus-within:text-[#10B981]" />
       </div>
     </label>
   )
