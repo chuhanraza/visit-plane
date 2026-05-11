@@ -46,23 +46,14 @@ function getSupabase() {
   )
 }
 
-async function fetchVisaData(passportCode: string, destinationCode: string) {
+async function fetchVisaData(passportName: string, destinationName: string) {
   const supabase = getSupabase()
-
-  const passportInfo    = COUNTRY_MAP[passportCode]
-  const destinationInfo = COUNTRY_MAP[destinationCode]
-
-  if (!passportInfo || !destinationInfo) return null
 
   const { data, error } = await supabase
     .from('destinations')
     .select('*')
-    .or(
-      `country_name.ilike.${destinationInfo.name},country_name.ilike.${destinationCode}`,
-    )
-    .or(
-      `passport_country.ilike.${passportInfo.name},passport_country.ilike.${passportCode}`,
-    )
+    .ilike('passport_country', passportName)
+    .ilike('country_name', destinationName)
     .limit(1)
     .maybeSingle()
 
@@ -169,14 +160,13 @@ export default async function VisaResultPage({
 }: {
   params: Promise<{ passport: string; destination: string }>
 }) {
-  const { passport: passportCode, destination: destinationCode } = await params
+  const { passport: passportSlug, destination: destinationSlug } = await params
 
-  const passportInfo    = COUNTRY_MAP[passportCode]
-  const destinationInfo = COUNTRY_MAP[destinationCode]
+  // Decode URL-encoded country names (e.g. "United%20States" → "United States")
+  const passportName     = decodeURIComponent(passportSlug)
+  const destinationName  = decodeURIComponent(destinationSlug)
 
-  const visaData = passportInfo && destinationInfo
-    ? await fetchVisaData(passportCode, destinationCode)
-    : null
+  const visaData = await fetchVisaData(passportName, destinationName)
 
   // Parse documents if stored as JSON string or array
   let documents: string[] = DEFAULT_DOCUMENTS
@@ -191,10 +181,10 @@ export default async function VisaResultPage({
     }
   }
 
-  const passportLabel    = passportInfo?.name    ?? passportCode.toUpperCase()
-  const passportFlag     = passportInfo?.flag     ?? '🌐'
-  const destinationLabel = destinationInfo?.name  ?? destinationCode.toUpperCase()
-  const destinationFlag  = destinationInfo?.flag  ?? '🌐'
+  const passportLabel    = passportName
+  const passportFlag     = COUNTRY_MAP[passportSlug]?.flag ?? '🌍'
+  const destinationLabel = destinationName
+  const destinationFlag  = COUNTRY_MAP[destinationSlug]?.flag ?? '🌍'
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] text-[#1A1A1A] antialiased selection:bg-[#10B981]/20 selection:text-[#1A1A1A]">
@@ -462,23 +452,26 @@ export default async function VisaResultPage({
             Also check
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {['ae', 'tr', 'jp', 'sg', 'gb', 'my']
-              .filter((c) => c !== destinationCode)
+            {[
+              { name: 'UAE',            flag: '🇦🇪' },
+              { name: 'Turkey',         flag: '🇹🇷' },
+              { name: 'Japan',          flag: '🇯🇵' },
+              { name: 'Singapore',      flag: '🇸🇬' },
+              { name: 'United Kingdom', flag: '🇬🇧' },
+              { name: 'Malaysia',       flag: '🇲🇾' },
+            ]
+              .filter((c) => c.name !== destinationName)
               .slice(0, 5)
-              .map((code) => {
-                const c = COUNTRY_MAP[code]
-                if (!c) return null
-                return (
-                  <Link
-                    key={code}
-                    href={`/visa/${passportCode}/${code}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:border-[#10B981]/30 hover:bg-[#10B981]/5 hover:text-[#10B981]"
-                  >
-                    <span>{c.flag}</span>
-                    <span>{c.name}</span>
-                  </Link>
-                )
-              })}
+              .map((c) => (
+                <Link
+                  key={c.name}
+                  href={`/visa/${encodeURIComponent(passportName)}/${encodeURIComponent(c.name)}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:border-[#10B981]/30 hover:bg-[#10B981]/5 hover:text-[#10B981]"
+                >
+                  <span>{c.flag}</span>
+                  <span>{c.name}</span>
+                </Link>
+              ))}
           </div>
         </div>
       </main>

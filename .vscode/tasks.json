@@ -2,14 +2,18 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Git: commit and push green design",
+      "label": "Git: push all changes",
       "type": "shell",
-      "command": "rm -f .git/index.lock && git add . && git commit -m 'Update design to green theme with new branding' && git push origin main && echo '✅ Pushed successfully!'",
+      "command": "cd ~/Desktop/visitplane && rm -f .git/index.lock && git add app/page.tsx 'app/visa/[passport]/[destination]/page.tsx' && git commit -m 'feat: dynamic 197-country dropdowns fetched from Supabase' && git push origin main --force && echo '✅ Pushed!'",
       "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      }
+      "presentation": { "reveal": "always", "panel": "new", "clear": true }
+    },
+    {
+      "label": "Import: 40,000+ visa records to Supabase",
+      "type": "shell",
+      "command": "cd ~/Desktop/visitplane && node scripts/import-all-countries.mjs",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "new", "clear": true }
     }
   ]
 }

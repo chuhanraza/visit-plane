@@ -1,57 +1,99 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { createClient } from '@supabase/supabase-js'
 
-// ----- Data -----
-const COUNTRIES = [
-  { code: 'us', name: 'United States', flag: '🇺🇸' },
-  { code: 'gb', name: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'pk', name: 'Pakistan', flag: '🇵🇰' },
-  { code: 'in', name: 'India', flag: '🇮🇳' },
-  { code: 'de', name: 'Germany', flag: '🇩🇪' },
-  { code: 'au', name: 'Australia', flag: '🇦🇺' },
-  { code: 'ca', name: 'Canada', flag: '🇨🇦' },
-  { code: 'fr', name: 'France', flag: '🇫🇷' },
-  { code: 'ae', name: 'UAE', flag: '🇦🇪' },
-  { code: 'sa', name: 'Saudi Arabia', flag: '🇸🇦' },
-  { code: 'tr', name: 'Turkey', flag: '🇹🇷' },
-  { code: 'jp', name: 'Japan', flag: '🇯🇵' },
-]
+// ─── All 197 passport countries (matches DB exactly) ──────────────────────────
+const PASSPORT_COUNTRIES = [
+  'Afghanistan','Albania','Algeria','Andorra','Angola',
+  'Antigua and Barbuda','Argentina','Armenia','Australia','Austria',
+  'Azerbaijan','Bahamas','Bahrain','Bangladesh','Barbados',
+  'Belarus','Belgium','Belize','Benin','Bhutan',
+  'Bolivia','Bosnia and Herzegovina','Botswana','Brazil','Brunei',
+  'Bulgaria','Burkina Faso','Burundi','Cambodia','Cameroon',
+  'Canada','Cape Verde','Central African Republic','Chad','Chile',
+  'China','Colombia','Comoros','Costa Rica','Croatia',
+  'Cuba','Cyprus','Czech Republic','Democratic Republic of the Congo','Denmark',
+  'Djibouti','Dominica','Dominican Republic','Ecuador','Egypt',
+  'El Salvador','Equatorial Guinea','Eritrea','Estonia','Ethiopia',
+  'Fiji','Finland','France','Gabon','Gambia',
+  'Georgia','Germany','Ghana','Greece','Grenada',
+  'Guatemala','Guinea','Guinea-Bissau','Guyana','Haiti',
+  'Honduras','Hong Kong','Hungary','Iceland','India',
+  'Indonesia','Iran','Iraq','Ireland','Israel',
+  'Italy','Ivory Coast','Jamaica','Japan','Jordan',
+  'Kazakhstan','Kenya','Kiribati','Kosovo','Kuwait',
+  'Kyrgyzstan','Laos','Latvia','Lebanon','Lesotho',
+  'Liberia','Libya','Liechtenstein','Lithuania','Luxembourg',
+  'Madagascar','Malawi','Malaysia','Maldives','Mali',
+  'Malta','Marshall Islands','Mauritania','Mauritius','Mexico',
+  'Micronesia','Moldova','Monaco','Mongolia','Montenegro',
+  'Morocco','Mozambique','Myanmar','Namibia','Nauru',
+  'Nepal','Netherlands','New Zealand','Nicaragua','Niger',
+  'Nigeria','North Korea','North Macedonia','Norway','Oman',
+  'Pakistan','Palau','Palestine','Panama','Papua New Guinea',
+  'Paraguay','Peru','Philippines','Poland','Portugal',
+  'Qatar','Republic of the Congo','Romania','Russia','Rwanda',
+  'Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Samoa','San Marino',
+  'Sao Tome and Principe','Saudi Arabia','Senegal','Serbia','Seychelles',
+  'Sierra Leone','Singapore','Slovakia','Slovenia','Solomon Islands',
+  'Somalia','South Africa','South Korea','South Sudan','Spain',
+  'Sri Lanka','Sudan','Suriname','Swaziland','Sweden',
+  'Switzerland','Syria','Taiwan','Tajikistan','Tanzania',
+  'Thailand','Timor-Leste','Togo','Tonga','Trinidad and Tobago',
+  'Tunisia','Turkey','Turkmenistan','Tuvalu','UAE',
+  'Uganda','Ukraine','United Kingdom','United States','Uruguay',
+  'Uzbekistan','Vanuatu','Venezuela','Vietnam','Yemen',
+  'Zambia','Zimbabwe',
+].sort()
 
+function nameToSlug(name: string) {
+  return encodeURIComponent(name)
+}
+
+// ─── Supabase client ───────────────────────────────────────────────────────────
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  )
+}
+
+// ─── Static data ──────────────────────────────────────────────────────────────
 const POPULAR_DESTINATIONS = [
-  { code: 'ae', name: 'UAE', flag: '🇦🇪', visa: 'eVisa', tone: 'amber' },
-  { code: 'tr', name: 'Turkey', flag: '🇹🇷', visa: 'eVisa', tone: 'amber' },
-  { code: 'jp', name: 'Japan', flag: '🇯🇵', visa: 'Visa Required', tone: 'rose' },
-  { code: 'gb', name: 'United Kingdom', flag: '🇬🇧', visa: 'Visa Required', tone: 'rose' },
-  { code: 'sg', name: 'Singapore', flag: '🇸🇬', visa: 'Visa Free', tone: 'emerald' },
-  { code: 'my', name: 'Malaysia', flag: '🇲🇾', visa: 'Visa Free', tone: 'emerald' },
+  { slug: 'UAE',            name: 'UAE',            flag: '🇦🇪', visa: 'eVisa',          tone: 'amber'   },
+  { slug: 'Turkey',         name: 'Turkey',         flag: '🇹🇷', visa: 'eVisa',          tone: 'amber'   },
+  { slug: 'Japan',          name: 'Japan',          flag: '🇯🇵', visa: 'Visa Required',  tone: 'rose'    },
+  { slug: 'United Kingdom', name: 'United Kingdom', flag: '🇬🇧', visa: 'Visa Required',  tone: 'rose'    },
+  { slug: 'Singapore',      name: 'Singapore',      flag: '🇸🇬', visa: 'Visa Free',      tone: 'emerald' },
+  { slug: 'Malaysia',       name: 'Malaysia',       flag: '🇲🇾', visa: 'Visa Free',      tone: 'emerald' },
 ]
 
 const STATS = [
-  { value: '150+', label: 'Countries' },
-  { value: '10K+', label: 'Visa Pages' },
-  { value: 'Always', label: 'Free' },
-  { value: 'Daily', label: 'Updated' },
+  { value: '197',    label: 'Countries'  },
+  { value: '40K+',  label: 'Visa Pages' },
+  { value: 'Always', label: 'Free'      },
+  { value: 'Daily',  label: 'Updated'   },
 ]
 
 const TRUST_ITEMS = [
-  { icon: 'shield', label: 'Official data' },
-  { icon: 'refresh', label: 'Updated daily' },
-  { icon: 'globe', label: '195 countries' },
-  { icon: 'gift', label: '100% free' },
+  { icon: 'shield',  label: 'Official data'  },
+  { icon: 'refresh', label: 'Updated daily'  },
+  { icon: 'globe',   label: '197 countries'  },
+  { icon: 'gift',    label: '100% free'      },
 ]
 
-// ----- Tone helpers -----
+// ─── Tone helpers ─────────────────────────────────────────────────────────────
 const toneClasses: Record<string, string> = {
   emerald: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
   amber:   'bg-amber-50 text-amber-700 ring-amber-200',
   rose:    'bg-rose-50 text-rose-700 ring-rose-200',
 }
 
-// ----- Icons -----
+// ─── Icons ────────────────────────────────────────────────────────────────────
 function TrustIcon({ name, className = 'h-4 w-4' }: { name: string; className?: string }) {
   switch (name) {
     case 'shield':
@@ -118,17 +160,43 @@ function PlaneIcon({ className = 'h-4 w-4' }: { className?: string }) {
   )
 }
 
-// ----- Page -----
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function HomePage() {
   const router = useRouter()
-  const [passport, setPassport] = useState('')
-  const [destination, setDestination] = useState('')
+  const [passport, setPassport]         = useState('')
+  const [destination, setDestination]   = useState('')
+  const [destinations, setDestinations] = useState<string[]>([])
+  const [loadingDests, setLoadingDests] = useState(false)
+
+  // When passport changes, fetch available destinations for that passport
+  useEffect(() => {
+    if (!passport) {
+      setDestinations([])
+      setDestination('')
+      return
+    }
+    setLoadingDests(true)
+    setDestination('')
+    const supabase = getSupabase()
+    supabase
+      .from('destinations')
+      .select('country_name')
+      .eq('passport_country', passport)
+      .order('country_name')
+      .then(({ data }) => {
+        if (data) {
+          const unique = [...new Set(data.map((r) => r.country_name))].sort()
+          setDestinations(unique)
+        }
+        setLoadingDests(false)
+      })
+  }, [passport])
 
   const canSubmit = passport && destination && passport !== destination
 
   const handleCheck = () => {
     if (!canSubmit) return
-    router.push(`/visa/${passport}/${destination}`)
+    router.push(`/visa/${nameToSlug(passport)}/${nameToSlug(destination)}`)
   }
 
   return (
@@ -146,15 +214,9 @@ export default function HomePage() {
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
-            <Link href="/destinations" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">
-              Destinations
-            </Link>
-            <Link href="/how-it-works" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">
-              How it Works
-            </Link>
-            <Link href="/blog" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">
-              Blog
-            </Link>
+            <Link href="/destinations" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">Destinations</Link>
+            <Link href="/how-it-works" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">How it Works</Link>
+            <Link href="/blog" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">Blog</Link>
           </nav>
 
           <Link
@@ -169,7 +231,6 @@ export default function HomePage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#F0FDF4] to-white">
-        {/* Subtle radial glow */}
         <div className="pointer-events-none absolute inset-0 -z-0">
           <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(16,185,129,0.10),transparent_70%)] blur-3xl" />
         </div>
@@ -200,21 +261,32 @@ export default function HomePage() {
             <div className="relative rounded-3xl border border-[#10B981]/20 bg-[#F0FDF4] p-2 shadow-lg shadow-[#10B981]/10">
               <div className="rounded-[1.25rem] bg-white p-4 sm:p-5">
                 <div className="grid gap-3 sm:grid-cols-2">
+
+                  {/* Passport dropdown – all 197 countries */}
                   <SelectField
                     id="passport"
                     label="My Passport is from"
                     value={passport}
                     onChange={setPassport}
                     placeholder="Select your passport"
-                    options={COUNTRIES}
+                    options={PASSPORT_COUNTRIES}
+                    disabled={false}
                   />
+
+                  {/* Destination dropdown – fetched from Supabase for selected passport */}
                   <SelectField
                     id="destination"
                     label="Take me to"
                     value={destination}
                     onChange={setDestination}
-                    placeholder="Select destination"
-                    options={COUNTRIES}
+                    placeholder={
+                      !passport        ? 'Select passport first'       :
+                      loadingDests     ? 'Loading destinations…'       :
+                      destinations.length === 0 ? 'No destinations found' :
+                      'Select destination'
+                    }
+                    options={destinations}
+                    disabled={!passport || loadingDests}
                   />
                 </div>
 
@@ -244,12 +316,8 @@ export default function HomePage() {
             <dl className="grid grid-cols-2 divide-y divide-[#10B981]/10 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
               {STATS.map((s) => (
                 <div key={s.label} className="flex flex-col items-center justify-center px-4 py-5">
-                  <dt className="text-2xl font-semibold tracking-tight text-[#10B981] sm:text-3xl">
-                    {s.value}
-                  </dt>
-                  <dd className="mt-1 text-xs uppercase tracking-wider text-gray-500">
-                    {s.label}
-                  </dd>
+                  <dt className="text-2xl font-semibold tracking-tight text-[#10B981] sm:text-3xl">{s.value}</dt>
+                  <dd className="mt-1 text-xs uppercase tracking-wider text-gray-500">{s.label}</dd>
                 </div>
               ))}
             </dl>
@@ -262,20 +330,13 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:px-8">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-[#10B981]">
-                Popular right now
-              </p>
-              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#1A1A1A] sm:text-4xl">
-                Top destinations this week
-              </h2>
+              <p className="text-xs font-medium uppercase tracking-wider text-[#10B981]">Popular right now</p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#1A1A1A] sm:text-4xl">Top destinations this week</h2>
               <p className="mt-2 max-w-xl text-sm text-gray-500">
                 Hand-picked countries travellers are checking the most. Tap any card for a full visa breakdown.
               </p>
             </div>
-            <Link
-              href="/destinations"
-              className="group inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#10B981]"
-            >
+            <Link href="/destinations" className="group inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#10B981]">
               Browse all destinations
               <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
             </Link>
@@ -284,16 +345,14 @@ export default function HomePage() {
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {POPULAR_DESTINATIONS.map((d) => (
               <Link
-                key={d.code}
-                href={`/visa/us/${d.code}`}
+                key={d.slug}
+                href={`/visa/${nameToSlug('United States')}/${nameToSlug(d.slug)}`}
                 className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#10B981]/30 hover:shadow-md"
               >
                 <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#10B981]/5 blur-3xl transition group-hover:bg-[#10B981]/10" />
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="grid h-12 w-12 place-items-center rounded-xl bg-gray-100 text-2xl">
-                      {d.flag}
-                    </span>
+                    <span className="grid h-12 w-12 place-items-center rounded-xl bg-gray-100 text-2xl">{d.flag}</span>
                     <div>
                       <h3 className="text-base font-semibold text-[#1A1A1A]">{d.name}</h3>
                       <p className="mt-0.5 text-xs text-gray-400">View visa details</p>
@@ -302,9 +361,7 @@ export default function HomePage() {
                   <ArrowRight className="h-4 w-4 text-gray-300 transition group-hover:translate-x-0.5 group-hover:text-[#10B981]" />
                 </div>
                 <div className="mt-5 flex items-center justify-between">
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${toneClasses[d.tone]}`}
-                  >
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${toneClasses[d.tone]}`}>
                     {d.visa}
                   </span>
                   <span className="text-xs text-gray-400">Updated today</span>
@@ -321,9 +378,7 @@ export default function HomePage() {
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
             {TRUST_ITEMS.map((t) => (
               <div key={t.label} className="flex items-center gap-2 text-sm text-gray-500">
-                <span className="text-[#10B981]">
-                  <TrustIcon name={t.icon} className="h-4 w-4" />
-                </span>
+                <span className="text-[#10B981]"><TrustIcon name={t.icon} className="h-4 w-4" /></span>
                 <span>{t.label}</span>
               </div>
             ))}
@@ -353,45 +408,40 @@ export default function HomePage() {
   )
 }
 
-// ----- Components -----
-type Option = { code: string; name: string; flag: string }
-
+// ─── SelectField ──────────────────────────────────────────────────────────────
 function SelectField({
-  id,
-  label,
-  value,
-  onChange,
-  placeholder,
-  options,
+  id, label, value, onChange, placeholder, options, disabled,
 }: {
   id: string
   label: string
   value: string
   onChange: (v: string) => void
   placeholder: string
-  options: Option[]
+  options: string[]
+  disabled: boolean
 }) {
-  const selected = options.find((o) => o.code === value)
   return (
-    <label htmlFor={id} className="group relative block rounded-2xl border border-gray-200 bg-white p-4 transition focus-within:border-[#10B981]/60 focus-within:shadow-sm hover:border-gray-300">
-      <span className="block text-xs font-medium uppercase tracking-wider text-gray-400">
-        {label}
-      </span>
+    <label
+      htmlFor={id}
+      className={`group relative block rounded-2xl border bg-white p-4 transition ${
+        disabled
+          ? 'border-gray-100 opacity-60'
+          : 'border-gray-200 focus-within:border-[#10B981]/60 focus-within:shadow-sm hover:border-gray-300'
+      }`}
+    >
+      <span className="block text-xs font-medium uppercase tracking-wider text-gray-400">{label}</span>
       <div className="mt-2 flex items-center gap-2">
-        <span className="text-xl leading-none">{selected?.flag ?? '🌐'}</span>
+        <span className="text-xl leading-none">🌍</span>
         <select
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full appearance-none bg-transparent pr-7 text-base font-medium text-[#1A1A1A] outline-none"
+          disabled={disabled}
+          className="w-full appearance-none bg-transparent pr-7 text-base font-medium text-[#1A1A1A] outline-none disabled:cursor-not-allowed"
         >
-          <option value="" className="text-gray-400">
-            {placeholder}
-          </option>
-          {options.map((o) => (
-            <option key={o.code} value={o.code} className="text-[#1A1A1A]">
-              {o.name}
-            </option>
+          <option value="" className="text-gray-400">{placeholder}</option>
+          {options.map((name) => (
+            <option key={name} value={name} className="text-[#1A1A1A]">{name}</option>
           ))}
         </select>
         <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 transition group-focus-within:text-[#10B981]" />
