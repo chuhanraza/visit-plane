@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 
   // ─── Google Search Console verification ─────────────────────────────────────
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? "",
+    google: "_1giyu5DMW8eS91AviSVAkCw5XGFIZHLU7gsHINSAm8",
   },
 
   // ─── 5. Canonical URL support ───────────────────────────────────────────────
