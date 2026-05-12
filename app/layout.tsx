@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@next/third-parties/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -13,7 +14,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID ?? "";
 const GSC_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? "";
 
 // ─── 1. Metadata (title, description, keywords) ──────────────────────────────
@@ -124,24 +124,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-white text-[#1A1A1A]">
         {children}
-
-        {/* 4. Google Analytics – conditional on NEXT_PUBLIC_GA_ID in .env.local */}
-        {GA_TRACKING_ID && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${GA_TRACKING_ID}');
-              `}
-            </Script>
-          </>
-        )}
+        <Analytics measurementId="G-PE2H5RR8HK" />
       </body>
     </html>
   );
