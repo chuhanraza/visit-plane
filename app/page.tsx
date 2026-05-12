@@ -74,10 +74,10 @@ const POPULAR_DESTINATIONS = [
 ]
 
 const STATS = [
-  { value: '197',    label: 'Countries'  },
-  { value: '40K+',  label: 'Visa Pages' },
-  { value: 'Always', label: 'Free'      },
-  { value: 'Daily',  label: 'Updated'   },
+  { value: '200+',      label: 'Countries'  },
+  { value: '73,000+',   label: 'Visa Pages' },
+  { value: 'Always',    label: 'Free'       },
+  { value: 'Daily',     label: 'Updated'    },
 ]
 
 const TRUST_ITEMS = [
