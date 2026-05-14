@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Analytics } from "@next/third-parties/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -122,9 +122,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-white text-[#1A1A1A]">
+      <body className="min-h-full flex flex-col bg-[#060C18] text-white">
         {children}
-        <Analytics measurementId="G-PE2H5RR8HK" />
+        <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
       </body>
     </html>
   );
