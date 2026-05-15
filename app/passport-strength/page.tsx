@@ -162,6 +162,8 @@ type ResultData = {
   topDestinations: { name: string; flag: string; visaType: string }[]
 }
 
+type FetchState = 'idle' | 'loading' | 'success' | 'empty' | 'error'
+
 // ─── Animated counter ─────────────────────────────────────────────────────────
 function useCountUp(target: number, duration = 1400, active = false) {
   const [val, setVal] = useState(0)
@@ -327,11 +329,13 @@ function StatCard({
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function PassportStrengthPage() {
   const [passport, setPassport] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [fetchState, setFetchState] = useState<FetchState>('idle')
   const [result, setResult] = useState<ResultData | null>(null)
   const [copied, setCopied] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+
+  const loading = fetchState === 'loading'
 
   // Set page title
   useEffect(() => {
@@ -345,52 +349,76 @@ export default function PassportStrengthPage() {
   }, [])
 
   const fetchPassportData = useCallback(async (country: string) => {
-    setLoading(true)
+    setFetchState('loading')
     setResult(null)
 
-    const { data, error } = await getSupabase()
-      .from('destinations')
-      .select('country_name, visa_type')
-      .eq('passport_country', country)
+    try {
+      // Use ilike (case-insensitive) so we match regardless of how the DB stores casing
+      const { data, error } = await getSupabase()
+        .from('destinations')
+        .select('country_name, visa_type')
+        .ilike('passport_country', country)
 
-    if (error || !data || data.length === 0) {
-      setLoading(false)
-      return
-    }
-
-    let free = 0, arrival = 0, required = 0
-    const freeRows: { name: string; flag: string; visaType: string }[] = []
-
-    data.forEach(row => {
-      const bucket = bucketVisa(row.visa_type)
-      if (bucket === 'free') {
-        free++
-        freeRows.push({
-          name: row.country_name,
-          flag: FLAGS[row.country_name] ?? '🏳️',
-          visaType: row.visa_type,
-        })
-      } else if (bucket === 'arrival') {
-        arrival++
-      } else {
-        required++
+      if (error) {
+        console.error('Supabase error:', error)
+        setFetchState('error')
+        return
       }
-    })
 
-    const total = data.length
-    const score = Math.round((free / total) * 100)
+      if (!data || data.length === 0) {
+        setFetchState('empty')
+        return
+      }
 
-    setResult({
-      passport: country,
-      free,
-      arrival,
-      required,
-      total,
-      score,
-      rank: RANKINGS[country] ?? null,
-      topDestinations: freeRows.slice(0, 6),
-    })
-    setLoading(false)
+      let free = 0, arrival = 0, required = 0
+      const freeRows: { name: string; flag: string; visaType: string }[] = []
+      const arrivalRows: { name: string; flag: string; visaType: string }[] = []
+
+      data.forEach(row => {
+        const bucket = bucketVisa(row.visa_type ?? '')
+        if (bucket === 'free') {
+          free++
+          freeRows.push({
+            name: row.country_name,
+            flag: FLAGS[row.country_name] ?? '🏳️',
+            visaType: row.visa_type ?? '',
+          })
+        } else if (bucket === 'arrival') {
+          arrival++
+          arrivalRows.push({
+            name: row.country_name,
+            flag: FLAGS[row.country_name] ?? '🏳️',
+            visaType: row.visa_type ?? '',
+          })
+        } else {
+          required++
+        }
+      })
+
+      const total = data.length
+      const score = Math.round((free / total) * 100)
+
+      // Top 6: prefer visa-free, fall back to on-arrival if fewer than 6
+      const topDestinations = [
+        ...freeRows.slice(0, 6),
+        ...arrivalRows.slice(0, Math.max(0, 6 - freeRows.length)),
+      ].slice(0, 6)
+
+      setResult({
+        passport: country,
+        free,
+        arrival,
+        required,
+        total,
+        score,
+        rank: RANKINGS[country] ?? null,
+        topDestinations,
+      })
+      setFetchState('success')
+    } catch (err) {
+      console.error('Unexpected error:', err)
+      setFetchState('error')
+    }
   }, [])
 
   useEffect(() => {
@@ -570,7 +598,7 @@ export default function PassportStrengthPage() {
       <AnimatePresence mode="wait">
 
         {/* Loading */}
-        {loading && (
+        {fetchState === 'loading' && (
           <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="py-20 text-center">
             <div className="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-8 py-5">
@@ -583,8 +611,42 @@ export default function PassportStrengthPage() {
           </motion.div>
         )}
 
+        {/* Empty state */}
+        {fetchState === 'empty' && (
+          <motion.div key="empty" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className="py-20 text-center">
+            <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-white/[0.03] px-8 py-10">
+              <div className="text-4xl mb-4">🔍</div>
+              <h3 className="text-lg font-bold text-white mb-2">No data found for {passport}</h3>
+              <p className="text-sm text-white/40">
+                We don&apos;t have passport data for this country yet. Try another passport or{' '}
+                <Link href="/destinations" className="text-emerald-400 hover:underline">check visa requirements directly</Link>.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Error state */}
+        {fetchState === 'error' && (
+          <motion.div key="error" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className="py-20 text-center">
+            <div className="mx-auto max-w-md rounded-2xl border border-rose-500/20 bg-rose-500/[0.05] px-8 py-10">
+              <div className="text-4xl mb-4">⚠️</div>
+              <h3 className="text-lg font-bold text-white mb-2">Something went wrong</h3>
+              <p className="text-sm text-white/40 mb-5">
+                Could not fetch passport data. Please try again in a moment.
+              </p>
+              <button
+                onClick={() => passport && fetchPassportData(passport)}
+                className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-5 py-2 text-sm font-semibold text-emerald-400 hover:bg-emerald-500/25 transition">
+                Retry
+              </button>
+            </div>
+          </motion.div>
+        )}
+
         {/* Results */}
-        {result && !loading && (
+        {fetchState === 'success' && result && (
           <motion.div key={result.passport} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
 
             {/* ── Section 2: Score + Stats ── */}
