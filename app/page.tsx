@@ -427,11 +427,10 @@ export default function HomePage() {
 
           <nav className="hidden items-center gap-1 md:flex">
             {[
-              { label: 'Explore',           href: '/destinations' },
-              { label: 'Events',            href: '#' },
-              { label: 'Visa Requirements', href: '/destinations' },
-              { label: 'Tools',             href: '#' },
-              { label: 'Guides',            href: '/blog' },
+              { label: 'Explore',            href: '/destinations' },
+              { label: 'Visa Requirements',  href: '/destinations' },
+              { label: 'Passport Strength',  href: '/passport-strength' },
+              { label: 'Guides',             href: '/blog' },
             ].map((item) => (
               <Link
                 key={item.label}
@@ -472,9 +471,8 @@ export default function HomePage() {
               <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
                 {[
                   { label: 'Explore',           href: '/destinations' },
-                  { label: 'Events',            href: '#' },
                   { label: 'Visa Requirements', href: '/destinations' },
-                  { label: 'Tools',             href: '#' },
+                  { label: 'Passport Strength', href: '/passport-strength' },
                   { label: 'Guides',            href: '/blog' },
                 ].map((item) => (
                   <Link
