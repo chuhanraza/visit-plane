@@ -350,9 +350,9 @@ function SelectField({
           className="w-full appearance-none bg-transparent pr-6 text-sm font-medium text-white outline-none disabled:cursor-not-allowed"
           style={{ colorScheme: 'dark' }}
         >
-          <option value="" className="bg-[#0C1526] text-gray-400">{placeholder}</option>
+          <option value="" className="bg-[#16122f] text-gray-400">{placeholder}</option>
           {options.map((name) => (
-            <option key={name} value={name} className="bg-[#0C1526] text-white">{name}</option>
+            <option key={name} value={name} className="bg-[#16122f] text-white">{name}</option>
           ))}
         </select>
         <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30 transition group-focus-within:text-emerald-400" />
@@ -404,13 +404,13 @@ export default function HomePage() {
   const continents = Object.keys(CONTINENT_DESTINATIONS)
 
   return (
-    <div className="min-h-screen bg-[#060C18] text-white antialiased overflow-x-hidden">
+    <div className="min-h-screen bg-[#0f0c29] text-white antialiased overflow-x-hidden">
       <DisclaimerBanner />
 
       {/* ────────────────────── NAVBAR ────────────────────────────── */}
       <header className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#060C18]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30'
+          ? 'bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30'
           : 'bg-transparent'
       }`}>
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -560,7 +560,7 @@ export default function HomePage() {
           >
             <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-2 backdrop-blur-sm shadow-2xl shadow-black/50">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/8 via-transparent to-cyan-500/8 pointer-events-none" />
-              <div className="relative rounded-xl bg-[#0C1526] p-4">
+              <div className="relative rounded-xl bg-[#16122f] p-4">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <SelectField
                     id="passport"
@@ -620,11 +620,11 @@ export default function HomePage() {
         </div>
 
         {/* Bottom fade */}
-        <div className="mt-20 h-24 bg-gradient-to-b from-transparent to-[#060C18]" />
+        <div className="mt-20 h-24 bg-gradient-to-b from-transparent to-[#0f0c29]" />
       </section>
 
       {/* ────────────────────── STATS BAR ────────────────────────── */}
-      <section className="border-y border-white/5 bg-[#0A1120]">
+      <section className="border-y border-white/5 bg-[#13103a]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 divide-x divide-white/5 sm:grid-cols-4">
             {STATS.map((s, i) => (
@@ -646,7 +646,7 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── MEDIA TICKER ─────────────────────── */}
-      <section className="border-b border-white/5 bg-[#060C18] py-7 overflow-hidden">
+      <section className="border-b border-white/5 bg-[#0f0c29] py-7 overflow-hidden">
         <div className="mb-3 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
           As featured in
         </div>
@@ -664,8 +664,8 @@ export default function HomePage() {
               </span>
             ))}
           </div>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#060C18] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#060C18] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0f0c29] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0f0c29] to-transparent" />
         </div>
       </section>
 
@@ -693,7 +693,7 @@ export default function HomePage() {
                   <motion.div key={d.slug} variants={fadeUp} transition={{ delay: i * 0.06 }}>
                     <Link
                       href={`/visa/${nameToSlug('United States')}/${nameToSlug(d.slug)}`}
-                      className="group relative block overflow-hidden rounded-2xl border border-white/8 bg-[#0C1526] transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/5"
+                      className="group relative block overflow-hidden rounded-2xl border border-white/8 bg-[#16122f] transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/5"
                     >
                       <div className="relative h-44 overflow-hidden">
                         <img
@@ -728,7 +728,7 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── NO VISA REQUIRED ─────────────────── */}
-      <section className="bg-[#0A1120] py-20 sm:py-24">
+      <section className="bg-[#13103a] py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="mb-12 text-center">
@@ -746,7 +746,7 @@ export default function HomePage() {
                 <motion.div key={d.name} variants={fadeUp} transition={{ delay: i * 0.07 }}>
                   <Link
                     href={`/visa/${nameToSlug('Pakistan')}/${nameToSlug(d.name)}`}
-                    className="group relative block overflow-hidden rounded-2xl border border-white/8 bg-[#0C1526] transition-all hover:-translate-y-1 hover:border-emerald-500/30"
+                    className="group relative block overflow-hidden rounded-2xl border border-white/8 bg-[#16122f] transition-all hover:-translate-y-1 hover:border-emerald-500/30"
                   >
                     <div className="relative h-32 overflow-hidden">
                       <img
@@ -814,7 +814,7 @@ export default function HomePage() {
                     <Link
                       key={d.name}
                       href={`/visa/${nameToSlug('United States')}/${nameToSlug(d.name)}`}
-                      className="group flex items-center gap-3 rounded-xl border border-white/8 bg-[#0C1526] p-3.5 transition-all hover:border-emerald-500/28 hover:bg-[#0F1E35] hover:-translate-y-0.5"
+                      className="group flex items-center gap-3 rounded-xl border border-white/8 bg-[#16122f] p-3.5 transition-all hover:border-emerald-500/28 hover:bg-[#0F1E35] hover:-translate-y-0.5"
                     >
                       <span className="shrink-0 text-2xl">{d.flag}</span>
                       <div className="min-w-0 flex-1">
@@ -844,7 +844,7 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── FEATURES ──────────────────────────── */}
-      <section className="bg-[#0A1120] py-20 sm:py-24">
+      <section className="bg-[#13103a] py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="mb-14 text-center">
@@ -867,7 +867,7 @@ export default function HomePage() {
                   style={{ background: `linear-gradient(135deg, var(--tw-gradient-stops))` }}
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${f.gradient}`} />
-                  <div className="absolute inset-0 bg-[#0C1526]/85" />
+                  <div className="absolute inset-0 bg-[#16122f]/85" />
                   <div className="relative">
                     <div className="mb-4 text-3xl">{f.icon}</div>
                     <h3 className="mb-2 text-base font-bold text-white">{f.title}</h3>
@@ -896,7 +896,7 @@ export default function HomePage() {
                   key={t.name}
                   variants={fadeUp}
                   transition={{ delay: i * 0.1 }}
-                  className="flex flex-col gap-4 rounded-2xl border border-white/8 bg-[#0C1526] p-6"
+                  className="flex flex-col gap-4 rounded-2xl border border-white/8 bg-[#16122f] p-6"
                 >
                   <div className="flex gap-0.5">
                     {Array.from({ length: t.rating }).map((_, j) => (
@@ -964,7 +964,7 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── FOOTER ────────────────────────────── */}
-      <footer className="border-t border-white/5 bg-[#040810] pb-8 pt-16">
+      <footer className="border-t border-white/5 bg-[#0a0820] pb-8 pt-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-5">
             {/* Brand col */}
