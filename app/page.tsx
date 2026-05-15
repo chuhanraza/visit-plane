@@ -430,6 +430,7 @@ export default function HomePage() {
               { label: 'Explore',            href: '/destinations' },
               { label: 'Visa Requirements',  href: '/destinations' },
               { label: 'Passport Strength',  href: '/passport-strength' },
+              { label: '⚖️ Compare Visas',   href: '/compare' },
               { label: 'Guides',             href: '/blog' },
             ].map((item) => (
               <Link
@@ -473,6 +474,7 @@ export default function HomePage() {
                   { label: 'Explore',           href: '/destinations' },
                   { label: 'Visa Requirements', href: '/destinations' },
                   { label: 'Passport Strength', href: '/passport-strength' },
+                  { label: '⚖️ Compare Visas',  href: '/compare' },
                   { label: 'Guides',            href: '/blog' },
                 ].map((item) => (
                   <Link

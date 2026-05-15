@@ -442,6 +442,7 @@ export default function PassportStrengthPage() {
     { label: 'Explore', href: '/destinations' },
     { label: 'Visa Requirements', href: '/destinations' },
     { label: 'Passport Strength', href: '/passport-strength' },
+    { label: '⚖️ Compare Visas', href: '/compare' },
     { label: 'Guides', href: '/blog' },
   ]
 
