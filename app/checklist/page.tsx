@@ -301,12 +301,20 @@ function SpinnerIcon({ className = 'h-5 w-5' }: { className?: string }) {
 }
 
 // ─── Select Field Component ─────────────────────────────────────────────────────
+type SelectOption = { value: string; label: string }
+
 function SelectField({
   id, label, value, onChange, placeholder, options, disabled, icon = '🌍',
 }: {
   id: string; label: string; value: string; onChange: (v: string) => void
-  placeholder: string; options: string[]; disabled?: boolean; icon?: string
+  placeholder: string; options: SelectOption[]; disabled?: boolean; icon?: string
 }) {
+  // Show selected flag next to the label icon
+  const selectedOpt = options.find(o => o.value === value)
+  const displayIcon = selectedOpt
+    ? selectedOpt.label.split(' ')[0]   // just the flag emoji
+    : icon
+
   return (
     <label
       htmlFor={id}
@@ -318,7 +326,7 @@ function SelectField({
     >
       <span className="block text-[10px] font-semibold uppercase tracking-widest text-teal-400">{label}</span>
       <div className="mt-1.5 flex items-center gap-2">
-        <span className="text-lg leading-none">{icon}</span>
+        <span className="text-lg leading-none">{displayIcon}</span>
         <select
           id={id}
           value={value}
@@ -329,7 +337,9 @@ function SelectField({
         >
           <option value="" className="bg-[#16122f] text-gray-400">{placeholder}</option>
           {options.map((opt) => (
-            <option key={opt} value={opt} className="bg-[#16122f] text-white">{opt}</option>
+            <option key={opt.value} value={opt.value} className="bg-[#16122f] text-white">
+              {opt.label}
+            </option>
           ))}
         </select>
         <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30 transition group-focus-within:text-teal-400" />
@@ -376,7 +386,7 @@ export default function ChecklistPage() {
     getSupabase()
       .from('destinations')
       .select('country_name')
-      .eq('passport_country', passport)
+      .ilike('passport_country', passport)
       .order('country_name')
       .then(({ data }) => {
         if (data) {
@@ -679,7 +689,7 @@ export default function ChecklistPage() {
                     value={passport}
                     onChange={setPassport}
                     placeholder="Select your country"
-                    options={PASSPORT_COUNTRIES}
+                    options={PASSPORT_COUNTRIES.map(c => ({ value: c, label: `${getFlag(c)} ${c}` }))}
                     icon="🛂"
                   />
                   <SelectField
@@ -688,13 +698,13 @@ export default function ChecklistPage() {
                     value={destination}
                     onChange={setDestination}
                     placeholder={
-                      !passport            ? 'Select passport first' :
-                      loadingDests         ? 'Loading…'             :
-                      destinations.length === 0 ? 'No data — type country' :
-                                             'Select destination'
+                      !passport                 ? 'Select passport first' :
+                      loadingDests              ? 'Loading…'              :
+                      destinations.length === 0 ? 'No destinations found' :
+                                                  'Select destination'
                     }
-                    options={destinations.length > 0 ? destinations : PASSPORT_COUNTRIES}
-                    disabled={!passport || loadingDests}
+                    options={destinations.map(c => ({ value: c, label: `${getFlag(c)} ${c}` }))}
+                    disabled={!passport || loadingDests || destinations.length === 0}
                     icon="🌍"
                   />
                 </div>
