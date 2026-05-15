@@ -114,15 +114,18 @@ const FLAGS: Record<string, string> = {
 // ─── Types ────────────────────────────────────────────────────────────────────
 type VisaRow = {
   country_name: string
-  visa_type: string | null
-  processing_time: string | null
-  price: string | null
-  fee: string | null
-  cost: string | null
-  validity: string | null
-  stay_duration: string | null
-  required_documents: string | string[] | null
-  notes: string | null
+  visa_type?: string | null
+  type?: string | null
+  processing_time?: string | null
+  duration?: string | null
+  price?: string | null
+  fee?: string | null
+  cost?: string | null
+  validity?: string | null
+  stay_duration?: string | null
+  required_documents?: string | string[] | null
+  notes?: string | null
+  [key: string]: unknown
 }
 
 type CompareResult = {
@@ -188,10 +191,10 @@ function buildResult(country: string, row: VisaRow | null): CompareResult {
       difficulty: 'Hard', difficultyScore: 5, processingDays: 999,
     }
   }
-  const visaType = row.visa_type || 'Visa Required'
-  const processingTime = row.processing_time || 'Contact embassy'
-  const fee = row.price ?? row.fee ?? row.cost ?? 'Contact embassy'
-  const validity = row.validity ?? row.stay_duration ?? 'Varies'
+  const visaType = (row.visa_type ?? row.type) || 'Visa Required'
+  const processingTime = (row.processing_time ?? row.duration) || 'Contact embassy'
+  const fee = (row.price ?? row.fee ?? row.cost) || 'Contact embassy'
+  const validity = (row.validity ?? row.stay_duration) || 'Varies'
   const { label: difficulty, score: difficultyScore } = getDifficulty(visaType)
 
   let documents: string[] = []
@@ -395,7 +398,7 @@ export default function ComparePage() {
     try {
       const { data, error } = await getSupabase()
         .from('destinations')
-        .select('country_name, visa_type, processing_time, price, fee, cost, validity, stay_duration, required_documents, notes')
+        .select('*')
         .eq('passport_country', passport)
         .in('country_name', selectedDests)
 
