@@ -20,7 +20,24 @@ export default function CurrencyConverterPage() {
   const [amount, setAmount] = useState('1')
   const [fromCur, setFrom] = useState('USD')
   const [toCur, setTo] = useState('PKR')
-  const swap = () => { const t = fromCur; setFrom(toCur); setTo(t) }
+  const [result, setResult] = useState<number | null>(null)
+  const [rate, setRate] = useState<number | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [updated, setUpdated] = useState('')
+  const swap = () => { const t = fromCur; setFrom(toCur); setTo(t); setResult(null); setRate(null); setUpdated('') }
+
+  const convert = async () => {
+    setLoading(true); setError(''); setResult(null); setRate(null); setUpdated('')
+    try {
+      const res = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${fromCur.toLowerCase()}.json`)
+      const data = await res.json()
+      const r = data[fromCur.toLowerCase()][toCur.toLowerCase()]
+      if (!r) throw new Error('Rate not found')
+      setRate(r); setResult(parseFloat(amount) * r); setUpdated(data.date)
+    } catch { setError('Could not fetch rates. Please try again.') }
+    finally { setLoading(false) }
+  }
 
   return (
     <div className="min-h-screen bg-[#0f0c29] text-white antialiased overflow-x-hidden">
@@ -90,9 +107,20 @@ export default function CurrencyConverterPage() {
                   </select>
                 </label>
               </div>
-              <button className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-teal-500/30 hover:from-teal-600 hover:to-cyan-600 hover:shadow-teal-500/50 transition-all">
-                Convert
+              <button onClick={convert} disabled={loading || !amount}
+                className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-teal-500/30 hover:from-teal-600 hover:to-cyan-600 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                {loading ? 'Converting…' : 'Convert'}
               </button>
+              {error && <p className="text-center text-xs text-red-400">{error}</p>}
+              {result !== null && rate !== null && (
+                <div className="rounded-xl border border-teal-500/20 bg-teal-500/5 p-4 text-center">
+                  <p className="text-2xl font-extrabold text-white">
+                    {result.toLocaleString(undefined, { maximumFractionDigits: 2 })} <span className="text-teal-400">{toCur}</span>
+                  </p>
+                  <p className="mt-1 text-xs text-white/40">1 {fromCur} = {rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {toCur}</p>
+                  {updated && <p className="mt-2 text-[10px] text-white/20">Last updated: {updated}</p>}
+                </div>
+              )}
             </div>
           </div>
         </div>
