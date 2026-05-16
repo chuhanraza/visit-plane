@@ -446,13 +446,14 @@ export default function HomePage() {
               {toolsOpen && (
                 <div className="absolute left-0 top-full z-50 mt-1 w-52 rounded-xl border border-white/10 bg-[#0f0c29]/98 backdrop-blur-xl shadow-2xl shadow-black/40 py-1.5 overflow-hidden">
                   {[
-                    { label: '⚖️ Compare Visas',    href: '/compare' },
-                    { label: '📋 Checklist',         href: '/checklist' },
-                    { label: '⏱️ Processing Times',  href: '/processing-times' },
-                    { label: '🛡️ Travel Insurance',  href: '/travel-insurance' },
-                    { label: '🏛️ Embassy Finder',    href: '/embassy-finder' },
-                    { label: '💰 Cost Calculator',   href: '/cost-calculator' },
-                    { label: '💪 Passport Strength', href: '/passport-strength' },
+                    { label: '⚖️ Compare Visas',       href: '/compare' },
+                    { label: '📋 Checklist',            href: '/checklist' },
+                    { label: '⏱️ Processing Times',     href: '/processing-times' },
+                    { label: '🛡️ Travel Insurance',     href: '/travel-insurance' },
+                    { label: '💱 Currency Converter',   href: '/currency-converter' },
+                    { label: '🏛️ Embassy Finder',       href: '/embassy-finder' },
+                    { label: '💰 Cost Calculator',      href: '/cost-calculator' },
+                    { label: '💪 Passport Strength',    href: '/passport-strength' },
                   ].map((item) => (
                     <Link
                       key={item.label}
@@ -515,13 +516,14 @@ export default function HomePage() {
                 ))}
                 <div className="pt-1 pb-0.5 px-3 text-xs font-semibold uppercase tracking-widest text-white/30">Tools</div>
                 {[
-                  { label: '⚖️ Compare Visas',    href: '/compare' },
-                  { label: '📋 Checklist',         href: '/checklist' },
-                  { label: '⏱️ Processing Times',  href: '/processing-times' },
-                  { label: '🛡️ Travel Insurance',  href: '/travel-insurance' },
-                  { label: '🏛️ Embassy Finder',    href: '/embassy-finder' },
-                  { label: '💰 Cost Calculator',   href: '/cost-calculator' },
-                  { label: '💪 Passport Strength', href: '/passport-strength' },
+                  { label: '⚖️ Compare Visas',       href: '/compare' },
+                  { label: '📋 Checklist',            href: '/checklist' },
+                  { label: '⏱️ Processing Times',     href: '/processing-times' },
+                  { label: '🛡️ Travel Insurance',     href: '/travel-insurance' },
+                  { label: '💱 Currency Converter',   href: '/currency-converter' },
+                  { label: '🏛️ Embassy Finder',       href: '/embassy-finder' },
+                  { label: '💰 Cost Calculator',      href: '/cost-calculator' },
+                  { label: '💪 Passport Strength',    href: '/passport-strength' },
                 ].map((item) => (
                   <Link
                     key={item.label}
