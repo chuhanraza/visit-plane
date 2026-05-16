@@ -6,7 +6,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { motion, useInView, AnimatePresence, type Variants } from 'framer-motion'
-import DisclaimerBanner from './components/DisclaimerBanner'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -406,8 +405,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#0f0c29] text-white antialiased overflow-x-hidden">
-      <DisclaimerBanner />
-
       {/* ────────────────────── NAVBAR ────────────────────────────── */}
       <header className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
@@ -671,13 +668,13 @@ export default function HomePage() {
         </div>
 
         {/* Bottom fade */}
-        <div className="mt-20 h-24 bg-gradient-to-b from-transparent to-[#0f0c29]" />
+        <div className="mt-20 h-24 bg-gradient-to-b from-transparent to-[#FAFAFA]" />
       </section>
 
       {/* ────────────────────── STATS BAR ────────────────────────── */}
-      <section className="border-y border-white/5 bg-[#13103a]">
+      <section className="border-y border-gray-200 bg-[#FAFAFA]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 divide-x divide-white/5 sm:grid-cols-4">
+          <div className="grid grid-cols-2 divide-x divide-gray-200 sm:grid-cols-4">
             {STATS.map((s, i) => (
               <motion.div
                 key={s.label}
@@ -688,8 +685,8 @@ export default function HomePage() {
                 className="flex flex-col items-center justify-center px-4 py-5 text-center"
               >
                 <div className="mb-1 text-2xl">{s.icon}</div>
-                <div className="text-2xl font-extrabold text-white sm:text-3xl">{s.value}</div>
-                <div className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-white/35">{s.label}</div>
+                <div className="text-2xl font-extrabold text-gray-900 sm:text-3xl">{s.value}</div>
+                <div className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-gray-500">{s.label}</div>
               </motion.div>
             ))}
           </div>
@@ -697,8 +694,8 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── MEDIA TICKER ─────────────────────── */}
-      <section className="border-b border-white/5 bg-[#0f0c29] py-7 overflow-hidden">
-        <div className="mb-3 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
+      <section className="border-b border-gray-200 bg-[#FAFAFA] py-7 overflow-hidden">
+        <div className="mb-3 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
           As featured in
         </div>
         <div className="relative">
@@ -709,30 +706,30 @@ export default function HomePage() {
             {[...MEDIA_LOGOS, ...MEDIA_LOGOS, ...MEDIA_LOGOS].map((logo, i) => (
               <span
                 key={i}
-                className="shrink-0 text-sm font-bold uppercase tracking-widest text-white/18 hover:text-white/45 transition cursor-default"
+                className="shrink-0 text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-gray-500 transition cursor-default"
               >
                 {logo}
               </span>
             ))}
           </div>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0f0c29] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0f0c29] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#FAFAFA] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#FAFAFA] to-transparent" />
         </div>
       </section>
 
       {/* ────────────────────── POPULAR DESTINATIONS ─────────────── */}
-      <section className="py-20 sm:py-24">
+      <section className="bg-[#FAFAFA] py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-400">🔥 Trending Now</p>
-                <h2 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">Popular Destinations</h2>
-                <p className="mt-2 max-w-md text-sm text-white/38">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-500">🔥 Trending Now</p>
+                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Popular Destinations</h2>
+                <p className="mt-2 max-w-md text-sm text-gray-500">
                   Countries travelers check the most this week. Tap any card for a full visa breakdown.
                 </p>
               </div>
-              <Link href="/destinations" className="group inline-flex items-center gap-1.5 text-sm text-white/38 transition hover:text-emerald-400">
+              <Link href="/destinations" className="group inline-flex items-center gap-1.5 text-sm text-gray-400 transition hover:text-emerald-500">
                 View all <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition" />
               </Link>
             </motion.div>
@@ -744,7 +741,7 @@ export default function HomePage() {
                   <motion.div key={d.slug} variants={fadeUp} transition={{ delay: i * 0.06 }}>
                     <Link
                       href={`/visa/${nameToSlug('United States')}/${nameToSlug(d.slug)}`}
-                      className="group relative block overflow-hidden rounded-2xl border border-white/8 bg-[#16122f] transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/5"
+                      className="group relative block overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/10"
                     >
                       <div className="relative h-44 overflow-hidden">
                         <img
@@ -753,7 +750,7 @@ export default function HomePage() {
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                           loading="lazy"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0C1526] via-[#0C1526]/30 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                         <span className={`absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide backdrop-blur-sm ${vs.bg} ${vs.text}`}>
                           <span className={`h-1.5 w-1.5 rounded-full ${vs.dot}`} />
                           {d.visa}
@@ -763,10 +760,10 @@ export default function HomePage() {
                         <div className="flex items-center gap-2.5">
                           <span className="text-2xl">{d.flag}</span>
                           <div className="flex-1">
-                            <h3 className="font-bold text-white">{d.name}</h3>
-                            <p className="text-xs text-white/35">{d.tagline}</p>
+                            <h3 className="font-bold text-gray-900">{d.name}</h3>
+                            <p className="text-xs text-gray-400">{d.tagline}</p>
                           </div>
-                          <ArrowRight className="h-4 w-4 text-white/18 transition group-hover:text-emerald-400 group-hover:translate-x-0.5" />
+                          <ArrowRight className="h-4 w-4 text-gray-300 transition group-hover:text-emerald-500 group-hover:translate-x-0.5" />
                         </div>
                       </div>
                     </Link>
@@ -779,15 +776,15 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── NO VISA REQUIRED ─────────────────── */}
-      <section className="bg-[#13103a] py-20 sm:py-24">
+      <section className="bg-gray-50 py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="mb-12 text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-400">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-600">
                 <span>✈️</span> Visa-Free Travel
               </div>
-              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">No Visa Required</h2>
-              <p className="mx-auto mt-3 max-w-md text-sm text-white/38">
+              <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">No Visa Required</h2>
+              <p className="mx-auto mt-3 max-w-md text-sm text-gray-500">
                 These stunning destinations welcome you with zero visa hassle. Just book your flight and go.
               </p>
             </motion.div>
@@ -797,7 +794,7 @@ export default function HomePage() {
                 <motion.div key={d.name} variants={fadeUp} transition={{ delay: i * 0.07 }}>
                   <Link
                     href={`/visa/${nameToSlug('Pakistan')}/${nameToSlug(d.name)}`}
-                    className="group relative block overflow-hidden rounded-2xl border border-white/8 bg-[#16122f] transition-all hover:-translate-y-1 hover:border-emerald-500/30"
+                    className="group relative block overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-lg"
                   >
                     <div className="relative h-32 overflow-hidden">
                       <img
@@ -806,12 +803,12 @@ export default function HomePage() {
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0C1526] to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     </div>
                     <div className="p-3 text-center">
                       <div className="text-xl">{d.flag}</div>
-                      <div className="mt-1 text-xs font-bold text-white">{d.name}</div>
-                      <div className="mt-0.5 text-[10px] font-semibold text-emerald-400">{d.days} free</div>
+                      <div className="mt-1 text-xs font-bold text-gray-900">{d.name}</div>
+                      <div className="mt-0.5 text-[10px] font-semibold text-emerald-600">{d.days} free</div>
                     </div>
                   </Link>
                 </motion.div>
@@ -822,13 +819,13 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── ALL DESTINATIONS ─────────────────── */}
-      <section className="py-20 sm:py-24">
+      <section className="bg-[#FAFAFA] py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="mb-10 text-center">
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-400">🌏 Explore</p>
-              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">All Destinations</h2>
-              <p className="mx-auto mt-3 max-w-md text-sm text-white/38">
+              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-500">🌏 Explore</p>
+              <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">All Destinations</h2>
+              <p className="mx-auto mt-3 max-w-md text-sm text-gray-500">
                 Browse by continent. Click any country for full visa details.
               </p>
             </motion.div>
@@ -842,7 +839,7 @@ export default function HomePage() {
                   className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${
                     activeContinent === c
                       ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
-                      : 'border border-white/10 bg-white/5 text-white/45 hover:border-emerald-500/30 hover:text-white'
+                      : 'border border-gray-200 bg-white text-gray-500 hover:border-emerald-500/40 hover:text-gray-900'
                   }`}
                 >
                   {c}
@@ -865,17 +862,17 @@ export default function HomePage() {
                     <Link
                       key={d.name}
                       href={`/visa/${nameToSlug('United States')}/${nameToSlug(d.name)}`}
-                      className="group flex items-center gap-3 rounded-xl border border-white/8 bg-[#16122f] p-3.5 transition-all hover:border-emerald-500/28 hover:bg-[#0F1E35] hover:-translate-y-0.5"
+                      className="group flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-3.5 transition-all hover:border-emerald-500/40 hover:bg-gray-50 hover:-translate-y-0.5 hover:shadow-md"
                     >
                       <span className="shrink-0 text-2xl">{d.flag}</span>
                       <div className="min-w-0 flex-1">
-                        <div className="truncate text-sm font-semibold text-white">{d.name}</div>
+                        <div className="truncate text-sm font-semibold text-gray-900">{d.name}</div>
                         <div className={`mt-0.5 inline-flex items-center gap-1 text-[10px] font-bold ${vs.text}`}>
                           <span className={`h-1.5 w-1.5 rounded-full ${vs.dot}`} />
                           {d.visa}
                         </div>
                       </div>
-                      <ArrowRight className="h-3.5 w-3.5 shrink-0 text-white/15 transition group-hover:text-emerald-400" />
+                      <ArrowRight className="h-3.5 w-3.5 shrink-0 text-gray-300 transition group-hover:text-emerald-500" />
                     </Link>
                   )
                 })}
@@ -885,7 +882,7 @@ export default function HomePage() {
             <motion.div variants={fadeUp} className="mt-8 text-center">
               <Link
                 href="/destinations"
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-2.5 text-sm font-semibold text-white/50 transition hover:border-emerald-500/40 hover:text-white hover:bg-emerald-500/10"
+                className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-6 py-2.5 text-sm font-semibold text-gray-500 transition hover:border-emerald-500/40 hover:text-gray-900 hover:bg-emerald-500/5"
               >
                 Browse all 200+ destinations <ArrowRight className="h-3.5 w-3.5" />
               </Link>
@@ -895,15 +892,15 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── FEATURES ──────────────────────────── */}
-      <section className="bg-[#13103a] py-20 sm:py-24">
+      <section className="bg-gray-50 py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="mb-14 text-center">
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-400">⚡ Why VisitPlane</p>
-              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-500">⚡ Why VisitPlane</p>
+              <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
                 Everything You Need to Travel Smarter
               </h2>
-              <p className="mx-auto mt-3 max-w-lg text-sm text-white/38">
+              <p className="mx-auto mt-3 max-w-lg text-sm text-gray-500">
                 Built by travelers, for travelers. VisitPlane gives you the tools to navigate global visa requirements with confidence.
               </p>
             </motion.div>
@@ -914,15 +911,13 @@ export default function HomePage() {
                   key={f.title}
                   variants={fadeUp}
                   transition={{ delay: i * 0.08 }}
-                  className={`group relative overflow-hidden rounded-2xl border ${f.border} p-6 transition-all hover:-translate-y-1 hover:shadow-xl`}
-                  style={{ background: `linear-gradient(135deg, var(--tw-gradient-stops))` }}
+                  className={`group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/30`}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${f.gradient}`} />
-                  <div className="absolute inset-0 bg-[#16122f]/85" />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${f.gradient} opacity-30`} />
                   <div className="relative">
                     <div className="mb-4 text-3xl">{f.icon}</div>
-                    <h3 className="mb-2 text-base font-bold text-white">{f.title}</h3>
-                    <p className="text-sm leading-relaxed text-white/48">{f.desc}</p>
+                    <h3 className="mb-2 text-base font-bold text-gray-900">{f.title}</h3>
+                    <p className="text-sm leading-relaxed text-gray-500">{f.desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -932,13 +927,13 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── TESTIMONIALS ──────────────────────── */}
-      <section className="py-20 sm:py-24">
+      <section className="bg-[#FAFAFA] py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="mb-12 text-center">
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-400">💬 Stories</p>
-              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">What Travelers Say</h2>
-              <p className="mt-3 text-sm text-white/38">Real experiences from real travelers around the world.</p>
+              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-500">💬 Stories</p>
+              <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">What Travelers Say</h2>
+              <p className="mt-3 text-sm text-gray-500">Real experiences from real travelers around the world.</p>
             </motion.div>
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -947,21 +942,21 @@ export default function HomePage() {
                   key={t.name}
                   variants={fadeUp}
                   transition={{ delay: i * 0.1 }}
-                  className="flex flex-col gap-4 rounded-2xl border border-white/8 bg-[#16122f] p-6"
+                  className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
                 >
                   <div className="flex gap-0.5">
                     {Array.from({ length: t.rating }).map((_, j) => (
                       <StarIcon key={j} className="h-4 w-4 text-amber-400" />
                     ))}
                   </div>
-                  <p className="flex-1 text-sm leading-relaxed text-white/55">&ldquo;{t.text}&rdquo;</p>
-                  <div className="flex items-center gap-3 border-t border-white/5 pt-4">
+                  <p className="flex-1 text-sm leading-relaxed text-gray-600">&ldquo;{t.text}&rdquo;</p>
+                  <div className="flex items-center gap-3 border-t border-gray-100 pt-4">
                     <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 text-xs font-bold text-white">
                       {t.avatar}
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-white">{t.name}</div>
-                      <div className="text-xs text-white/32">{t.role}</div>
+                      <div className="text-sm font-bold text-gray-900">{t.name}</div>
+                      <div className="text-xs text-gray-400">{t.role}</div>
                     </div>
                   </div>
                 </motion.div>
@@ -972,7 +967,7 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── CTA ───────────────────────────────── */}
-      <section className="py-20 sm:py-24">
+      <section className="bg-[#FAFAFA] py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div
