@@ -39,11 +39,21 @@ const DESTS = ['Australia','Canada','France','Germany','Japan','New Zealand','Si
 const VISA_TYPES = ['Tourist','Business','Student','Work']
 type TimeData = { standard: number; express: number; tips: string[] }
 const TIMES: Record<string, TimeData> = {
-  'Pakistan|United Kingdom|Tourist': { standard:15, express:5,  tips:['Apply 4+ weeks early','Provide 6 months of bank statements','Book refundable flights before applying'] },
-  'India|United States|Tourist':     { standard:60, express:30, tips:['Schedule your interview as early as possible','Show strong home-country ties (property, employment)','Apply during off-peak months for faster slots'] },
-  'Nigeria|United Kingdom|Tourist':  { standard:21, express:7,  tips:['Use the Priority visa service for faster results','Complete biometrics appointment immediately after applying','Ensure all documents are officially certified'] },
-  'Philippines|United States|Tourist':{ standard:45, express:20,tips:['Provide solid proof of employment and income','Demonstrate strong ties to the Philippines','Prepare a detailed, realistic travel itinerary'] },
-  'India|Canada|Tourist':            { standard:30, express:10, tips:['Submit biometrics promptly after applying','Include a clear travel itinerary and accommodation proof','Show proof of sufficient funds for your entire stay'] },
+  'Pakistan|United Kingdom|Tourist':       { standard:15, express:5,  tips:['Apply at least 4 weeks early','Provide 6 months of bank statements','Book refundable flights before submitting'] },
+  'Pakistan|United States|Tourist':        { standard:60, express:30, tips:['No interview required — submit online','Include strong financial documents','Apply well before your intended travel date'] },
+  'Pakistan|UAE|Tourist':                  { standard:3,  express:1,  tips:['Apply via the UAE ICA portal online','Usually approved in 1–3 business days','Ensure passport is valid for 6+ months'] },
+  'Pakistan|Germany|Tourist':              { standard:15, express:7,  tips:['Book a consulate appointment early','Include all financial and travel documents','Apply at least 6 weeks before travel'] },
+  'India|United States|Tourist':           { standard:60, express:30, tips:['Schedule your interview as early as possible','Show strong home-country ties (property, employment)','Apply during off-peak months for faster slots'] },
+  'India|United Kingdom|Tourist':          { standard:15, express:5,  tips:['Apply at least 4 weeks early','Priority service reduces to 5 days','Provide 6 months of bank statements'] },
+  'India|Canada|Tourist':                  { standard:30, express:10, tips:['Submit biometrics promptly after applying','Include travel itinerary and accommodation proof','Show proof of sufficient funds for your stay'] },
+  'India|Australia|Tourist':               { standard:20, express:7,  tips:['Apply online via ImmiAccount','Ensure health insurance is arranged','Processing is usually 15–25 days online'] },
+  'Nigeria|United Kingdom|Tourist':        { standard:21, express:7,  tips:['Use the Priority visa service for speed','Complete biometrics appointment immediately','Ensure all documents are officially certified'] },
+  'Philippines|United States|Tourist':     { standard:45, express:20, tips:['Provide proof of employment and income','Show strong ties to the Philippines','Prepare a detailed, realistic travel itinerary'] },
+  'China|United States|Tourist':           { standard:45, express:20, tips:['Schedule DS-160 and interview well in advance','Processing can be delayed during peak periods','Bring all supporting documents to your interview'] },
+  'Bangladesh|United Kingdom|Tourist':     { standard:21, express:7,  tips:['Use Priority service for faster results','Submit strong financial evidence','Apply at least 5 weeks before travel'] },
+  'Mexico|United States|Tourist':          { standard:45, express:20, tips:['Schedule your B1/B2 interview early','Show economic ties to Mexico','Provide employment letters and bank statements'] },
+  'United States|United Kingdom|Tourist':  { standard:3,  express:1,  tips:['Apply for a UK ETA online','Usually approved the same day','No in-person appointment needed'] },
+  'United Kingdom|United States|Tourist':  { standard:3,  express:1,  tips:['Apply for ESTA online before departure','Usually processed within 72 hours','Ensure your passport is ESTA-eligible'] },
 }
 const NAV = [{ label:'Explore', href:'/destinations' },{ label:'Passport Strength', href:'/passport-strength' },{ label:'⚖️ Compare', href:'/compare' },{ label:'📋 Checklist', href:'/checklist' },{ label:'⏱️ Processing Times', href:'/processing-times' },{ label:'Blog', href:'/blog' }]
 const FOOTER_COLS = [{ title:'Explore', links:[['Destinations','/destinations'],['Travel Guides','/blog'],['Visa Types','#']] as const },{ title:'Resources', links:[['Blog','/blog'],['Embassy Finder','/embassy-finder'],['FAQ','/faq']] as const },{ title:'Company', links:[['About','/about'],['Privacy Policy','/privacy'],['Contact','/contact']] as const }]
@@ -149,7 +159,7 @@ export default function ProcessingTimesPage() {
         {/* RESULTS */}
         {result === 'none' && (
           <div className="mt-6 rounded-2xl border border-white/8 bg-white/[0.03] p-6 text-center text-sm text-white/40">
-            No data found. Try: Pakistan → UK, India → USA, Nigeria → UK, Philippines → USA, or India → Canada (Tourist).
+            Processing times typically range from 5–30 days depending on your embassy. Please check the official embassy website for exact timelines.
           </div>
         )}
         {found && (
