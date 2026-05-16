@@ -432,6 +432,7 @@ export default function HomePage() {
               { label: 'Passport Strength',  href: '/passport-strength' },
               { label: '⚖️ Compare Visas',   href: '/compare' },
               { label: '📋 Checklist',       href: '/checklist' },
+              { label: '⏱️ Processing Times', href: '/processing-times' },
               { label: 'Guides',             href: '/blog' },
             ].map((item) => (
               <Link
@@ -477,6 +478,7 @@ export default function HomePage() {
                   { label: 'Passport Strength', href: '/passport-strength' },
                   { label: '⚖️ Compare Visas',  href: '/compare' },
                   { label: '📋 Checklist',      href: '/checklist' },
+                  { label: '⏱️ Processing Times', href: '/processing-times' },
                   { label: 'Guides',            href: '/blog' },
                 ].map((item) => (
                   <Link
