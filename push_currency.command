@@ -2,8 +2,8 @@
 cd "$(dirname "$0")"
 rm -f .git/HEAD.lock .git/index.lock
 git add .
-git commit -m "feat: Real-time Currency Converter"
+git commit -m "fix: Currency converter API, navbar + footer all tool pages"
 git push origin main
 echo ""
-echo "✅ Deployed! Quick amounts, popular pairs, tips + Tools menu live."
+echo "✅ Done! Navbar + footer updated on all tool pages."
 read -p "Press Enter to close..."

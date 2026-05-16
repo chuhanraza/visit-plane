@@ -12,7 +12,7 @@ const EMBASSIES = [
   { from:'Philippines', to:'United States', name:'Philippine Embassy, Washington D.C.', address:'1600 Massachusetts Ave NW, Washington DC 20036', phone:'+1 202 467 9300', hours:'Mon–Fri 8:30am–5:30pm', flag:'🇵🇭' },
 ]
 const NAV = [{ label:'Explore', href:'/destinations' },{ label:'Passport Strength', href:'/passport-strength' },{ label:'⚖️ Compare', href:'/compare' },{ label:'📋 Checklist', href:'/checklist' },{ label:'🏛️ Embassy Finder', href:'/embassy-finder' },{ label:'Blog', href:'/blog' }]
-const FOOTER_COLS = [{ title:'Explore', links:[['Destinations','/destinations'],['Travel Guides','/blog'],['Visa Types','#']] },{ title:'Resources', links:[['Blog','/blog'],['Embassy Finder','/embassy-finder'],['FAQ','/faq']] },{ title:'Company', links:[['About','/about'],['Privacy Policy','/privacy'],['Contact','/contact']] }] as const
+const FOOTER_COLS = [{ title:'Tools', links:[['Passport Strength','/passport-strength'],['Visa Comparison','/compare'],['Document Checklist','/checklist'],['Currency Converter','/currency-converter'],['Embassy Finder','/embassy-finder']] },{ title:'Company', links:[['About','/about'],['FAQ','/faq'],['Contact','/contact'],['Privacy','/privacy'],['Terms','/terms']] }] as const
 
 function Navbar() {
   return (
@@ -24,6 +24,19 @@ function Navbar() {
         </Link>
         <nav className="hidden md:flex items-center gap-1">
           {NAV.map(n => <Link key={n.label} href={n.href} className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition">{n.label}</Link>)}
+          <div className="relative group">
+            <button className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition flex items-center gap-1">Tools <span className="text-[10px]">▾</span></button>
+            <div className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-white/10 bg-[#16122f] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-1">
+              <Link href="/passport-strength" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💪 Passport Strength</Link>
+              <Link href="/compare" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⚖️ Compare Visas</Link>
+              <Link href="/checklist" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">📋 Checklist</Link>
+              <Link href="/processing-times" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⏱️ Processing Times</Link>
+              <Link href="/travel-insurance" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🛡️ Travel Insurance</Link>
+              <Link href="/embassy-finder" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🏛️ Embassy Finder</Link>
+              <Link href="/cost-calculator" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💰 Cost Calculator</Link>
+              <Link href="/currency-converter" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💱 Currency Converter</Link>
+            </div>
+          </div>
         </nav>
         <Link href="/destinations" className="hidden sm:inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 hover:bg-emerald-600 transition">Check Visa →</Link>
       </div>

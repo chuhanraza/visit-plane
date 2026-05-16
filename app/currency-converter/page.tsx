@@ -29,13 +29,19 @@ export default function CurrencyConverterPage() {
   const [pairRates, setPairRates] = useState<Record<string,number>>({})
   const swap = () => { const t = fromCur; setFrom(toCur); setTo(t); setResult(null); setRate(null); setUpdated('') }
   useEffect(() => {
-    ;[...new Set(PAIRS.map(([f]) => f))].forEach(async base => {
-      try {
-        const res = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${base.toLowerCase()}.json`)
-        const data = await res.json(); const d = data[base.toLowerCase()]
-        PAIRS.filter(([f]) => f === base).forEach(([f,t]) => setPairRates(p => ({...p,[`${f}-${t}`]:d[t.toLowerCase()]})))
-      } catch {}
-    })
+    const fetchPopularRates = async () => {
+      for (const base of [...new Set(PAIRS.map(([f]) => f))]) {
+        try {
+          const res = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${base.toLowerCase()}.json`)
+          const data = await res.json()
+          const d = data[base.toLowerCase()]
+          PAIRS.filter(([f]) => f === base).forEach(([f, t]) =>
+            setPairRates(p => ({ ...p, [`${f}-${t}`]: d[t.toLowerCase()] }))
+          )
+        } catch (e) { console.error('Popular rates fetch error:', e) }
+      }
+    }
+    fetchPopularRates()
   }, [])
 
   const convert = async () => {
@@ -69,9 +75,15 @@ export default function CurrencyConverterPage() {
             ))}
             <div className="relative group">
               <button className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition flex items-center gap-1">Tools <span className="text-[10px]">▾</span></button>
-              <div className="absolute top-full left-0 mt-1 w-52 rounded-xl border border-white/10 bg-[#16122f] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-1">
-                <Link href="/currency-converter" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 rounded-t-xl transition">💱 Currency Converter</Link>
-                <Link href="/travel-insurance" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 rounded-b-xl transition">🛡️ Travel Insurance</Link>
+              <div className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-white/10 bg-[#16122f] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-1">
+                <Link href="/passport-strength" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💪 Passport Strength</Link>
+                <Link href="/compare" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⚖️ Compare Visas</Link>
+                <Link href="/checklist" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">📋 Checklist</Link>
+                <Link href="/processing-times" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⏱️ Processing Times</Link>
+                <Link href="/travel-insurance" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🛡️ Travel Insurance</Link>
+                <Link href="/embassy-finder" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🏛️ Embassy Finder</Link>
+                <Link href="/cost-calculator" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💰 Cost Calculator</Link>
+                <Link href="/currency-converter" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💱 Currency Converter</Link>
               </div>
             </div>
           </nav>
@@ -134,6 +146,7 @@ export default function CurrencyConverterPage() {
                 className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-teal-500/30 hover:from-teal-600 hover:to-cyan-600 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
                 {loading ? 'Converting…' : 'Convert'}
               </button>
+              <p className="text-center text-[10px] text-white/25">Rates updated daily via European Central Bank</p>
               {error && <p className="text-center text-xs text-red-400">{error}</p>}
               {result !== null && rate !== null && (
                 <div className="rounded-xl border border-teal-500/20 bg-teal-500/5 p-4 text-center">
@@ -180,19 +193,36 @@ export default function CurrencyConverterPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-white/5 bg-[#0a0820] pb-8 pt-12">
+      <footer className="border-t border-white/5 bg-[#0a0820] pb-8 pt-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            <Link href="/" className="flex items-center gap-2.5">
-              <Image src="/logo-v2.png" alt="VisitPlane" width={28} height={28} className="rounded-xl" />
-              <span className="text-base font-bold"><span className="text-white">Visit</span><span className="text-emerald-400">Plane</span></span>
-            </Link>
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2">
-              {[['Destinations','/destinations'],['Blog','/blog'],['Checklist','/checklist'],['Privacy','/privacy'],['Terms','/terms'],['Contact','/contact']].map(([l,h]) => (
-                <Link key={l} href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link>
-              ))}
+          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+            <div className="col-span-2">
+              <Link href="/" className="mb-4 inline-flex items-center gap-2.5">
+                <Image src="/logo-v2.png" alt="VisitPlane" width={32} height={32} className="rounded-xl" />
+                <span className="text-lg font-bold"><span className="text-white">Visit</span><span className="text-emerald-400">Plane</span></span>
+              </Link>
+              <p className="max-w-xs text-sm leading-relaxed text-white/30">The world&apos;s visa requirements, decoded in seconds. Free, fast, and always updated.</p>
             </div>
+            <div>
+              <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Tools</h4>
+              <ul className="space-y-2.5">
+                {[['Passport Strength','/passport-strength'],['Visa Comparison','/compare'],['Document Checklist','/checklist'],['Currency Converter','/currency-converter'],['Embassy Finder','/embassy-finder']].map(([l,h]) => (
+                  <li key={l}><Link href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Company</h4>
+              <ul className="space-y-2.5">
+                {[['About','/about'],['FAQ','/faq'],['Contact','/contact'],['Privacy','/privacy'],['Terms','/terms']].map(([l,h]) => (
+                  <li key={l}><Link href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="mt-12 border-t border-white/5 pt-8 flex flex-col items-center justify-between gap-3 sm:flex-row">
             <p className="text-xs text-white/20">© {new Date().getFullYear()} VisitPlane. All rights reserved.</p>
+            <p className="text-xs text-white/15">Always verify requirements with official embassy sources.</p>
           </div>
         </div>
       </footer>

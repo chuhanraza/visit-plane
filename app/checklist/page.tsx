@@ -556,6 +556,19 @@ export default function ChecklistPage() {
                   {item.label}
                 </Link>
               ))}
+              <div className="relative group">
+                <button className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition flex items-center gap-1">Tools <span className="text-[10px]">▾</span></button>
+                <div className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-white/10 bg-[#16122f] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-1">
+                  <Link href="/passport-strength" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💪 Passport Strength</Link>
+                  <Link href="/compare" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⚖️ Compare Visas</Link>
+                  <Link href="/checklist" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">📋 Checklist</Link>
+                  <Link href="/processing-times" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⏱️ Processing Times</Link>
+                  <Link href="/travel-insurance" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🛡️ Travel Insurance</Link>
+                  <Link href="/embassy-finder" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🏛️ Embassy Finder</Link>
+                  <Link href="/cost-calculator" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💰 Cost Calculator</Link>
+                  <Link href="/currency-converter" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💱 Currency Converter</Link>
+                </div>
+              </div>
             </nav>
 
             <div className="flex items-center gap-3">
@@ -1028,28 +1041,21 @@ export default function ChecklistPage() {
                 {
                   title: 'Tools',
                   links: [
-                    { label: 'Visa Checker',     href: '/destinations' },
-                    { label: 'Passport Strength', href: '/passport-strength' },
-                    { label: 'Compare Visas',     href: '/compare' },
-                    { label: 'Checklist',         href: '/checklist' },
-                  ],
-                },
-                {
-                  title: 'Resources',
-                  links: [
-                    { label: 'Blog',             href: '/blog' },
-                    { label: 'Travel Guides',    href: '/blog' },
-                    { label: 'FAQ',              href: '#' },
-                    { label: 'Embassy Finder',   href: '#' },
+                    { label: 'Passport Strength',  href: '/passport-strength' },
+                    { label: 'Visa Comparison',    href: '/compare' },
+                    { label: 'Document Checklist', href: '/checklist' },
+                    { label: 'Currency Converter', href: '/currency-converter' },
+                    { label: 'Embassy Finder',     href: '/embassy-finder' },
                   ],
                 },
                 {
                   title: 'Company',
                   links: [
-                    { label: 'About',            href: '#' },
-                    { label: 'Privacy Policy',   href: '/privacy' },
-                    { label: 'Terms of Service', href: '/terms' },
-                    { label: 'Contact',          href: '/contact' },
+                    { label: 'About',   href: '/about' },
+                    { label: 'FAQ',     href: '/faq' },
+                    { label: 'Contact', href: '/contact' },
+                    { label: 'Privacy', href: '/privacy' },
+                    { label: 'Terms',   href: '/terms' },
                   ],
                 },
               ].map((col) => (
