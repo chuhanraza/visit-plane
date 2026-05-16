@@ -369,6 +369,7 @@ export default function HomePage() {
   const [destinations, setDestinations] = useState<string[]>([])
   const [loadingDests, setLoadingDests] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [toolsOpen, setToolsOpen] = useState(false)
   const [activeContinent, setActiveContinent] = useState('Asia')
   const [scrolled, setScrolled] = useState(false)
 
@@ -426,23 +427,52 @@ export default function HomePage() {
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
-            {[
-              { label: 'Explore',            href: '/destinations' },
-              { label: 'Visa Requirements',  href: '/destinations' },
-              { label: 'Passport Strength',  href: '/passport-strength' },
-              { label: '⚖️ Compare Visas',   href: '/compare' },
-              { label: '📋 Checklist',       href: '/checklist' },
-              { label: '⏱️ Processing Times', href: '/processing-times' },
-              { label: 'Guides',             href: '/blog' },
-            ].map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white"
+            <Link href="/destinations" className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
+              Explore
+            </Link>
+            <Link href="/destinations" className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
+              Visa Requirements
+            </Link>
+
+            {/* Tools dropdown */}
+            <div className="relative" onMouseEnter={() => setToolsOpen(true)} onMouseLeave={() => setToolsOpen(false)}>
+              <button
+                onClick={() => setToolsOpen(!toolsOpen)}
+                className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white"
               >
-                {item.label}
-              </Link>
-            ))}
+                Tools
+                <svg className={`h-3.5 w-3.5 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {toolsOpen && (
+                <div className="absolute left-0 top-full z-50 mt-1 w-52 rounded-xl border border-white/10 bg-[#0f0c29]/98 backdrop-blur-xl shadow-2xl shadow-black/40 py-1.5 overflow-hidden">
+                  {[
+                    { label: '⚖️ Compare Visas',    href: '/compare' },
+                    { label: '📋 Checklist',         href: '/checklist' },
+                    { label: '⏱️ Processing Times',  href: '/processing-times' },
+                    { label: '🛡️ Travel Insurance',  href: '/travel-insurance' },
+                    { label: '🏛️ Embassy Finder',    href: '/embassy-finder' },
+                    { label: '💰 Cost Calculator',   href: '/cost-calculator' },
+                    { label: '💪 Passport Strength', href: '/passport-strength' },
+                  ].map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      onClick={() => setToolsOpen(false)}
+                      className="block px-4 py-2 text-sm text-white/60 hover:bg-white/5 hover:text-white transition"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link href="/blog" className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
+              Blog
+            </Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -473,13 +503,28 @@ export default function HomePage() {
             >
               <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
                 {[
-                  { label: 'Explore',           href: '/destinations' },
-                  { label: 'Visa Requirements', href: '/destinations' },
-                  { label: 'Passport Strength', href: '/passport-strength' },
-                  { label: '⚖️ Compare Visas',  href: '/compare' },
-                  { label: '📋 Checklist',      href: '/checklist' },
-                  { label: '⏱️ Processing Times', href: '/processing-times' },
-                  { label: 'Guides',            href: '/blog' },
+                  { label: 'Explore',              href: '/destinations' },
+                  { label: 'Visa Requirements',    href: '/destinations' },
+                  { label: 'Blog',                 href: '/blog' },
+                ].map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block rounded-lg px-3 py-2.5 text-sm text-white/60 hover:bg-white/5 hover:text-white transition"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <div className="pt-1 pb-0.5 px-3 text-xs font-semibold uppercase tracking-widest text-white/30">Tools</div>
+                {[
+                  { label: '⚖️ Compare Visas',    href: '/compare' },
+                  { label: '📋 Checklist',         href: '/checklist' },
+                  { label: '⏱️ Processing Times',  href: '/processing-times' },
+                  { label: '🛡️ Travel Insurance',  href: '/travel-insurance' },
+                  { label: '🏛️ Embassy Finder',    href: '/embassy-finder' },
+                  { label: '💰 Cost Calculator',   href: '/cost-calculator' },
+                  { label: '💪 Passport Strength', href: '/passport-strength' },
                 ].map((item) => (
                   <Link
                     key={item.label}

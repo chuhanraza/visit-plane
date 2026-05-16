@@ -28,11 +28,18 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 const sel = "w-full appearance-none bg-transparent text-sm font-medium text-white outline-none"
 const opt = "bg-[#16122f]"
 
+const PLANS = [
+  { name: 'Basic',    price: '$15', medical: '$50K',  popular: false, bullets: ['Medical coverage up to $50K', 'Emergency evacuation', 'Trip cancellation'] },
+  { name: 'Standard', price: '$25', medical: '$100K', popular: true,  bullets: ['Medical coverage up to $100K', 'Emergency evacuation', 'Trip cancellation + delay'] },
+  { name: 'Premium',  price: '$45', medical: '$500K', popular: false, bullets: ['Medical coverage up to $500K', 'Emergency evacuation', 'Cancel for any reason'] },
+]
+
 export default function TravelInsurancePage() {
   const [dest, setDest] = useState('')
   const [dur, setDur] = useState('')
   const [count, setCount] = useState('1')
   const [cov, setCov] = useState('')
+  const [shown, setShown] = useState(false)
 
   return (
     <div className="min-h-screen bg-[#0f0c29] text-white antialiased overflow-x-hidden">
@@ -110,13 +117,51 @@ export default function TravelInsurancePage() {
                   </select>
                 </Field>
               </div>
-              <button className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-teal-500/30 hover:from-teal-600 hover:to-cyan-600 hover:shadow-teal-500/50 transition-all">
+              <button onClick={() => setShown(true)} className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-teal-500/30 hover:from-teal-600 hover:to-cyan-600 hover:shadow-teal-500/50 transition-all">
                 Find Plans
               </button>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ── RESULTS ── */}
+      {shown && (
+        <section className="pb-16">
+          <div className="mx-auto max-w-3xl px-4">
+            <div className="grid gap-4 sm:grid-cols-3">
+              {PLANS.map(p => (
+                <div key={p.name} className={`relative rounded-2xl border p-5 flex flex-col gap-4 transition-all ${p.popular ? 'border-teal-500/50 bg-teal-500/8' : 'border-white/10 bg-white/[0.04]'}`}>
+                  {p.popular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-teal-500 px-3 py-1 text-[10px] font-bold text-white whitespace-nowrap shadow-lg shadow-teal-500/30">
+                      Most Popular
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-indigo-400">{p.name}</p>
+                    <p className="mt-1 text-2xl font-extrabold text-white">
+                      {p.price}<span className="text-sm font-normal text-white/40">/week</span>
+                    </p>
+                    <p className="text-xs text-white/35 mt-0.5">Medical up to {p.medical}</p>
+                  </div>
+                  <ul className="space-y-2 flex-1">
+                    {p.bullets.map(b => (
+                      <li key={b} className="flex items-start gap-2 text-xs text-white/60">
+                        <span className="text-teal-400 mt-px shrink-0">✓</span>{b}
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="https://worldnomads.com" target="_blank" rel="noopener noreferrer"
+                    className={`block text-center rounded-xl py-2.5 text-sm font-bold transition-all ${p.popular ? 'bg-teal-500 text-white hover:bg-teal-600 shadow-lg shadow-teal-500/25' : 'border border-white/15 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}>
+                    Get Quote
+                  </a>
+                </div>
+              ))}
+            </div>
+            <p className="mt-5 text-center text-[11px] text-white/25">VisitPlane may earn commission from purchases made through these links.</p>
+          </div>
+        </section>
+      )}
 
       {/* ── FOOTER ── */}
       <footer className="border-t border-white/5 bg-[#0a0820] pb-8 pt-12">
