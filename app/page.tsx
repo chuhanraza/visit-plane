@@ -446,6 +446,7 @@ export default function HomePage() {
               {toolsOpen && (
                 <div className="absolute left-0 top-full z-50 mt-1 w-52 rounded-xl border border-white/10 bg-[#0f0c29]/98 backdrop-blur-xl shadow-2xl shadow-black/40 py-1.5 overflow-hidden">
                   {[
+                    { label: '🎯 Visa Checker',         href: '/visa-checker' },
                     { label: '⚖️ Compare Visas',       href: '/compare' },
                     { label: '📋 Checklist',            href: '/checklist' },
                     { label: '⏱️ Processing Times',     href: '/processing-times' },
@@ -518,6 +519,7 @@ export default function HomePage() {
                 ))}
                 <div className="pt-1 pb-0.5 px-3 text-xs font-semibold uppercase tracking-widest text-white/30">Tools</div>
                 {[
+                  { label: '🎯 Visa Checker',         href: '/visa-checker' },
                   { label: '⚖️ Compare Visas',       href: '/compare' },
                   { label: '📋 Checklist',            href: '/checklist' },
                   { label: '⏱️ Processing Times',     href: '/processing-times' },
