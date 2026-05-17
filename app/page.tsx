@@ -454,6 +454,7 @@ export default function HomePage() {
                     { label: '🏛️ Embassy Finder',       href: '/embassy-finder' },
                     { label: '💰 Cost Calculator',      href: '/cost-calculator' },
                     { label: '💪 Passport Strength',    href: '/passport-strength' },
+                    { label: '📊 Visa Tracker',         href: '/visa-tracker' },
                   ].map((item) => (
                     <Link
                       key={item.label}
@@ -524,6 +525,7 @@ export default function HomePage() {
                   { label: '🏛️ Embassy Finder',       href: '/embassy-finder' },
                   { label: '💰 Cost Calculator',      href: '/cost-calculator' },
                   { label: '💪 Passport Strength',    href: '/passport-strength' },
+                  { label: '📊 Visa Tracker',         href: '/visa-tracker' },
                 ].map((item) => (
                   <Link
                     key={item.label}
