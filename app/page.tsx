@@ -455,6 +455,7 @@ export default function HomePage() {
                     { label: '💰 Cost Calculator',      href: '/cost-calculator' },
                     { label: '💪 Passport Strength',    href: '/passport-strength' },
                     { label: '📊 Visa Tracker',         href: '/visa-tracker' },
+                    { label: '🎤 Interview Prep',        href: '/interview-prep' },
                   ].map((item) => (
                     <Link
                       key={item.label}
@@ -526,6 +527,7 @@ export default function HomePage() {
                   { label: '💰 Cost Calculator',      href: '/cost-calculator' },
                   { label: '💪 Passport Strength',    href: '/passport-strength' },
                   { label: '📊 Visa Tracker',         href: '/visa-tracker' },
+                  { label: '🎤 Interview Prep',        href: '/interview-prep' },
                 ].map((item) => (
                   <Link
                     key={item.label}
