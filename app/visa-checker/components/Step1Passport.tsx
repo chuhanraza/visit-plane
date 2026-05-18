@@ -1,5 +1,7 @@
 'use client'
+import { useState } from 'react'
 import SearchableCountrySelect from './SearchableCountrySelect'
+import { useUserCountry } from '@/hooks/useUserCountry'
 
 type Props = {
   value: string
@@ -8,6 +10,11 @@ type Props = {
 }
 
 export default function Step1Passport({ value, onChange, onNext }: Props) {
+  const { loading: geoLoading } = useUserCountry()
+  const [badgeDismissed, setBadgeDismissed] = useState(false)
+
+  const isAutoDetected = value && !geoLoading && !badgeDismissed
+
   return (
     <div className="rounded-3xl bg-white shadow-xl shadow-gray-200/70 border border-gray-100 p-8 sm:p-10">
       {/* Question header */}
@@ -22,12 +29,22 @@ export default function Step1Passport({ value, onChange, onNext }: Props) {
       {/* Country selector */}
       <SearchableCountrySelect
         value={value}
-        onChange={onChange}
-        placeholder="Search or select your passport country…"
+        onChange={(v) => { onChange(v); setBadgeDismissed(true) }}
+        placeholder={geoLoading ? '🌍 Detecting your location…' : 'Search or select your passport country…'}
       />
 
-      {/* Tip */}
-      {value && (
+      {/* Auto-detected badge */}
+      {isAutoDetected && (
+        <div className="mt-3 flex items-center justify-between rounded-xl bg-teal-50 border border-teal-100 px-4 py-2.5">
+          <span className="text-xs text-teal-600 font-medium">📍 Auto-detected from your IP</span>
+          <button onClick={() => setBadgeDismissed(true)} className="text-xs text-gray-400 hover:text-gray-600">
+            Not you? Change →
+          </button>
+        </div>
+      )}
+
+      {/* Confirmed tip (after manual selection) */}
+      {value && !isAutoDetected && (
         <div className="mt-4 flex items-center gap-2 rounded-xl bg-teal-50 border border-teal-100 px-4 py-3">
           <span className="text-lg">✅</span>
           <span className="text-sm text-teal-700 font-medium">{value} passport selected</span>

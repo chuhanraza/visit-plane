@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { QuizAnswers, DenialValue, FinancialValue } from './data'
 import { EMPTY_ANSWERS } from './data'
 import VisaNavbar        from './components/VisaNavbar'
@@ -11,6 +11,7 @@ import Step3Denial       from './components/Step3Denial'
 import Step4Ties         from './components/Step4Ties'
 import Step5Financial    from './components/Step5Financial'
 import ResultsSection    from './components/ResultsSection'
+import { useUserCountry } from '@/hooks/useUserCountry'
 
 export default function VisaCheckerPage() {
   const [step, setStep]       = useState(0) // 0=landing, 1-5=quiz, 6=results
@@ -22,6 +23,16 @@ export default function VisaCheckerPage() {
 
   const set = <K extends keyof QuizAnswers>(key: K, value: QuizAnswers[K]) =>
     setAnswers(a => ({ ...a, [key]: value }))
+
+  const { countryName, loading: geoLoading } = useUserCountry()
+
+  // Pre-fill passport from IP geo when user reaches Step 1
+  useEffect(() => {
+    if (countryName && !geoLoading && !answers.passport) {
+      set('passport', countryName)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countryName, geoLoading])
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { motion, useInView, AnimatePresence, type Variants } from 'framer-motion'
+import { useUserCountry } from '@/hooks/useUserCountry'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -251,6 +252,56 @@ const VISA_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
   'Visa on Arrival': { bg: 'bg-blue-500/15',    text: 'text-blue-400',    dot: 'bg-blue-400'    },
 }
 
+// ─── Smart popular pills by passport country ──────────────────────────────────
+const POPULAR_PILLS: Record<string, { label: string; dest: string }[]> = {
+  'Pakistan': [
+    { label: '🇸🇦 Saudi Arabia', dest: 'Saudi Arabia' },
+    { label: '🇦🇪 UAE',          dest: 'UAE' },
+    { label: '🇹🇷 Turkey',       dest: 'Turkey' },
+    { label: '🇬🇧 UK',           dest: 'United Kingdom' },
+    { label: '🇺🇸 USA',          dest: 'United States' },
+  ],
+  'India': [
+    { label: '🇦🇪 UAE',          dest: 'UAE' },
+    { label: '🇺🇸 USA',          dest: 'United States' },
+    { label: '🇨🇦 Canada',       dest: 'Canada' },
+    { label: '🇬🇧 UK',           dest: 'United Kingdom' },
+    { label: '🇦🇺 Australia',    dest: 'Australia' },
+  ],
+  'Nigeria': [
+    { label: '🇬🇧 UK',           dest: 'United Kingdom' },
+    { label: '🇺🇸 USA',          dest: 'United States' },
+    { label: '🇨🇦 Canada',       dest: 'Canada' },
+    { label: '🇿🇦 South Africa', dest: 'South Africa' },
+    { label: '🇦🇪 UAE',          dest: 'UAE' },
+  ],
+  'United States': [
+    { label: '🇬🇧 UK',           dest: 'United Kingdom' },
+    { label: '🇨🇦 Canada',       dest: 'Canada' },
+    { label: '🇲🇽 Mexico',       dest: 'Mexico' },
+    { label: '🇫🇷 France',       dest: 'France' },
+    { label: '🇯🇵 Japan',        dest: 'Japan' },
+  ],
+}
+const DEFAULT_PILLS = [
+  { label: '🇺🇸 USA',    dest: 'United States' },
+  { label: '🇬🇧 UK',     dest: 'United Kingdom' },
+  { label: '🇦🇪 UAE',    dest: 'UAE' },
+  { label: '🇨🇦 Canada', dest: 'Canada' },
+  { label: '🇯🇵 Japan',  dest: 'Japan' },
+]
+
+// Smart default destination by passport country
+const SMART_DESTINATION: Record<string, string> = {
+  'Pakistan':    'Saudi Arabia',
+  'India':       'UAE',
+  'Nigeria':     'United Kingdom',
+  'Bangladesh':  'Malaysia',
+  'Philippines': 'South Korea',
+  'China':       'Japan',
+  'Mexico':      'United States',
+}
+
 // ─── Animation variants ───────────────────────────────────────────────────────
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -371,6 +422,21 @@ export default function HomePage() {
   const [toolsOpen, setToolsOpen] = useState(false)
   const [activeContinent, setActiveContinent] = useState('Asia')
   const [scrolled, setScrolled] = useState(false)
+  const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
+  const [geoApplied, setGeoApplied] = useState(false)
+
+  const { countryName, countryCode, loading: geoLoading } = useUserCountry()
+
+  // Auto-set passport country from IP geo
+  useEffect(() => {
+    if (countryName && !geoLoading && !geoApplied) {
+      setPassport(countryName)
+      // Also pre-select smart destination
+      const smartDest = SMART_DESTINATION[countryName]
+      if (smartDest) setDestination(smartDest)
+      setGeoApplied(true)
+    }
+  }, [countryName, geoLoading, geoApplied])
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -618,15 +684,30 @@ export default function HomePage() {
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/8 via-transparent to-cyan-500/8 pointer-events-none" />
               <div className="relative rounded-xl bg-[#16122f] p-4">
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <SelectField
-                    id="passport"
-                    label="My Passport"
-                    value={passport}
-                    onChange={setPassport}
-                    placeholder="Select your country"
-                    options={PASSPORT_COUNTRIES}
-                    disabled={false}
-                  />
+                  <div>
+                    <SelectField
+                      id="passport"
+                      label="My Passport Is From"
+                      value={passport}
+                      onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
+                      placeholder={geoLoading ? '🌍 Detecting your location…' : 'Select your country'}
+                      options={PASSPORT_COUNTRIES}
+                      disabled={false}
+                    />
+                    {passport && !geoBadgeDismissed && !geoLoading && (
+                      <div className="mt-1.5 flex items-center justify-between px-1">
+                        <span className="text-[10px] text-teal-400">
+                          📍 Detected from your IP
+                        </span>
+                        <button
+                          onClick={() => setGeoBadgeDismissed(true)}
+                          className="text-[10px] text-white/30 hover:text-white/60 transition"
+                        >
+                          Not you? Change →
+                        </button>
+                      </div>
+                    )}
+                  </div>
                   <SelectField
                     id="destination"
                     label="Traveling To"
@@ -659,16 +740,16 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Quick picks */}
+            {/* Smart popular pills — dynamic by detected passport country */}
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               <span className="text-xs text-white/25">Popular:</span>
-              {['UAE', 'Japan', 'UK', 'Canada', 'Schengen'].map((c) => (
+              {(POPULAR_PILLS[countryName] ?? DEFAULT_PILLS).map((pill) => (
                 <button
-                  key={c}
-                  onClick={() => setDestination(c === 'UK' ? 'United Kingdom' : c === 'Schengen' ? 'France' : c)}
+                  key={pill.dest}
+                  onClick={() => setDestination(pill.dest)}
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/45 transition hover:border-emerald-500/40 hover:text-white hover:bg-emerald-500/10"
                 >
-                  {c}
+                  {pill.label}
                 </button>
               ))}
             </div>

@@ -1,0 +1,81 @@
+import { NextRequest, NextResponse } from 'next/server'
+
+// Country code to full country name mapping
+const COUNTRY_NAMES: Record<string, string> = {
+  'PK': 'Pakistan',
+  'IN': 'India',
+  'US': 'United States',
+  'GB': 'United Kingdom',
+  'AE': 'UAE',
+  'SA': 'Saudi Arabia',
+  'CA': 'Canada',
+  'AU': 'Australia',
+  'DE': 'Germany',
+  'FR': 'France',
+  'TR': 'Turkey',
+  'JP': 'Japan',
+  'CN': 'China',
+  'NG': 'Nigeria',
+  'BD': 'Bangladesh',
+  'PH': 'Philippines',
+  'MX': 'Mexico',
+  'EG': 'Egypt',
+  'ID': 'Indonesia',
+  'MY': 'Malaysia',
+  'SG': 'Singapore',
+  'TH': 'Thailand',
+  'IT': 'Italy',
+  'ES': 'Spain',
+  'NL': 'Netherlands',
+  'SE': 'Sweden',
+  'NO': 'Norway',
+  'DK': 'Denmark',
+  'CH': 'Switzerland',
+  'NZ': 'New Zealand',
+  'ZA': 'South Africa',
+  'BR': 'Brazil',
+  'AR': 'Argentina',
+  'RU': 'Russia',
+  'KR': 'South Korea',
+  'PT': 'Portugal',
+  'PL': 'Poland',
+  'GR': 'Greece',
+  'IE': 'Ireland',
+  'BE': 'Belgium',
+  'AT': 'Austria',
+  'KW': 'Kuwait',
+  'QA': 'Qatar',
+  'BH': 'Bahrain',
+  'OM': 'Oman',
+  'JO': 'Jordan',
+  'LB': 'Lebanon',
+  'IQ': 'Iraq',
+  'IR': 'Iran',
+  'AF': 'Afghanistan',
+  'NP': 'Nepal',
+  'LK': 'Sri Lanka',
+  'MM': 'Myanmar',
+  'VN': 'Vietnam',
+  'KH': 'Cambodia',
+  'ET': 'Ethiopia',
+  'KE': 'Kenya',
+  'GH': 'Ghana',
+  'TZ': 'Tanzania',
+  'UG': 'Uganda',
+  'MA': 'Morocco',
+  'TN': 'Tunisia',
+  'DZ': 'Algeria',
+}
+
+export async function GET(request: NextRequest) {
+  // Vercel provides country code automatically
+  // via x-vercel-ip-country header - 100% FREE!
+  const countryCode = request.headers.get('x-vercel-ip-country') || 'US'
+  const countryName = COUNTRY_NAMES[countryCode] || 'United States'
+
+  return NextResponse.json({
+    countryCode,
+    countryName,
+    source: 'vercel-geo',
+  })
+}

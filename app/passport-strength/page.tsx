@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useUserCountry } from '@/hooks/useUserCountry'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -334,6 +335,16 @@ export default function PassportStrengthPage() {
   const [copied, setCopied] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
+
+  const { countryName, loading: geoLoading } = useUserCountry()
+
+  // Auto-set passport from IP geo (only if user hasn't already chosen)
+  useEffect(() => {
+    if (countryName && !geoLoading && !passport) {
+      setPassport(countryName)
+    }
+  }, [countryName, geoLoading, passport])
 
   const loading = fetchState === 'loading'
 
@@ -566,18 +577,28 @@ export default function PassportStrengthPage() {
             <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-2 shadow-2xl shadow-black/50 backdrop-blur-sm">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/8 via-transparent to-cyan-500/8 pointer-events-none" />
               <div className="relative rounded-xl bg-[#0C1526] px-5 py-5">
-                <label className="block text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-3">
-                  Select Your Passport Country
-                </label>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+                    Select Your Passport Country
+                  </label>
+                  {passport && !geoBadgeDismissed && !geoLoading && (
+                    <span className="text-[10px] text-teal-400 flex items-center gap-1">
+                      📍 Auto-detected
+                      <button onClick={() => setGeoBadgeDismissed(true)} className="text-white/30 hover:text-white/60 ml-1">✕</button>
+                    </span>
+                  )}
+                </div>
                 <div className="relative flex items-center gap-3">
                   <span className="text-2xl select-none shrink-0">{flag}</span>
                   <select
                     value={passport}
-                    onChange={e => setPassport(e.target.value)}
+                    onChange={e => { setPassport(e.target.value); setGeoBadgeDismissed(true) }}
                     className="w-full appearance-none bg-transparent text-base font-medium text-white outline-none pr-8 cursor-pointer"
                     style={{ colorScheme: 'dark' }}
                   >
-                    <option value="" className="bg-[#0C1526] text-gray-400">Choose your country…</option>
+                    <option value="" className="bg-[#0C1526] text-gray-400">
+                      {geoLoading ? '🌍 Detecting your location…' : 'Choose your country…'}
+                    </option>
                     {PASSPORT_COUNTRIES.map(c => (
                       <option key={c} value={c} className="bg-[#0C1526] text-white">{FLAGS[c] ?? '🏳️'} {c}</option>
                     ))}

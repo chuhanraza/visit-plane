@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useUserCountry } from '@/hooks/useUserCountry'
 
 // ─── Supabase ──────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -353,6 +354,9 @@ export default function ChecklistPage() {
   // ── Navbar state
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
+
+  const { countryName, loading: geoLoading } = useUserCountry()
 
   // ── Form state
   const [passport, setPassport]           = useState('')
@@ -370,6 +374,13 @@ export default function ChecklistPage() {
   const [visaFee, setVisaFee]             = useState('')
   const [dbVisaName, setDbVisaName]       = useState('')
   const [copied, setCopied]               = useState(false)
+
+  // ── Auto-detect country from IP
+  useEffect(() => {
+    if (countryName && !geoLoading && !passport) {
+      setPassport(countryName)
+    }
+  }, [countryName, geoLoading, passport])
 
   // ── Scroll handler
   useEffect(() => {
@@ -696,15 +707,23 @@ export default function ChecklistPage() {
               <div className="relative rounded-xl bg-[#16122f] p-5 space-y-4">
                 {/* Dropdowns */}
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <SelectField
-                    id="passport"
-                    label="My Passport"
-                    value={passport}
-                    onChange={setPassport}
-                    placeholder="Select your country"
-                    options={PASSPORT_COUNTRIES.map(c => ({ value: c, label: `${getFlag(c)} ${c}` }))}
-                    icon="🛂"
-                  />
+                  <div>
+                    <SelectField
+                      id="passport"
+                      label="My Passport"
+                      value={passport}
+                      onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
+                      placeholder={geoLoading ? '🌍 Detecting your location…' : 'Select your country'}
+                      options={PASSPORT_COUNTRIES.map(c => ({ value: c, label: `${getFlag(c)} ${c}` }))}
+                      icon="🛂"
+                    />
+                    {passport && !geoBadgeDismissed && !geoLoading && (
+                      <p className="mt-1 text-[10px] text-teal-400 flex items-center gap-1 px-1">
+                        📍 Auto-detected from your location
+                        <button onClick={() => setGeoBadgeDismissed(true)} className="ml-1 text-white/30 hover:text-white/60">✕</button>
+                      </p>
+                    )}
+                  </div>
                   <SelectField
                     id="destination"
                     label="Traveling To"

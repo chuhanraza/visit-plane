@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useUserCountry } from '@/hooks/useUserCountry'
 
 // ─── SEO Metadata (set via useEffect) ─────────────────────────────────────────
 // Title: "Visa Comparison Tool 2026 | VisitPlane"
@@ -350,7 +351,17 @@ export default function ComparePage() {
   const [results, setResults] = useState<CompareResult[]>([])
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
   const resultsRef = useRef<HTMLDivElement>(null)
+
+  const { countryName, loading: geoLoading } = useUserCountry()
+
+  // Auto-set passport from IP geo
+  useEffect(() => {
+    if (countryName && !geoLoading && !passport) {
+      setPassport(countryName)
+    }
+  }, [countryName, geoLoading, passport])
 
   // Page title
   useEffect(() => {
@@ -680,12 +691,18 @@ export default function ComparePage() {
                   id="passport"
                   label="My Passport Country"
                   value={passport}
-                  onChange={setPassport}
-                  placeholder="Choose your country…"
+                  onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
+                  placeholder={geoLoading ? '🌍 Detecting your location…' : 'Choose your country…'}
                   options={PASSPORT_COUNTRIES}
                   disabled={false}
                   emoji="🛂"
                 />
+                {passport && !geoBadgeDismissed && !geoLoading && (
+                  <p className="mt-1.5 text-[10px] text-teal-400 flex items-center gap-1">
+                    📍 Auto-detected from your location
+                    <button onClick={() => setGeoBadgeDismissed(true)} className="ml-1 text-white/30 hover:text-white/60">✕</button>
+                  </p>
+                )}
 
                 {/* Divider */}
                 <div className="my-6 flex items-center gap-3">

@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useUserCountry } from '@/hooks/useUserCountry'
 
 const PASSPORTS = [
   'Afghanistan','Albania','Algeria','Andorra','Angola','Antigua and Barbuda',
@@ -121,8 +122,17 @@ export default function ProcessingTimesPage() {
   const [dest, setDest] = useState('')
   const [vtype, setVtype] = useState('Tourist')
   const [result, setResult] = useState<TimeData | null | 'none'>(null)
+  const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
   const sel = 'w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-teal-500/50 transition'
   const found = result && result !== 'none' ? result : null
+
+  const { countryName, loading: geoLoading } = useUserCountry()
+
+  useEffect(() => {
+    if (countryName && !geoLoading && !passport) {
+      setPassport(countryName)
+    }
+  }, [countryName, geoLoading, passport])
 
   return (
     <div className="min-h-screen bg-[#0f0c29] text-white antialiased">
@@ -144,9 +154,17 @@ export default function ProcessingTimesPage() {
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm">
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-teal-400">Passport Country</label>
-              <select value={passport} onChange={e => setPassport(e.target.value)} className={sel} style={{ colorScheme:'dark' }}>
-                <option value="">Select country</option>
+              <div className="mb-1.5 flex items-center justify-between">
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-teal-400">Passport Country</label>
+                {passport && !geoBadgeDismissed && !geoLoading && (
+                  <span className="text-[10px] text-teal-400 flex items-center gap-1">
+                    📍 Auto-detected
+                    <button onClick={() => setGeoBadgeDismissed(true)} className="text-white/30 hover:text-white/60">✕</button>
+                  </span>
+                )}
+              </div>
+              <select value={passport} onChange={e => { setPassport(e.target.value); setGeoBadgeDismissed(true) }} className={sel} style={{ colorScheme:'dark' }}>
+                <option value="">{geoLoading ? '🌍 Detecting your location…' : 'Select country'}</option>
                 {PASSPORTS.map(c => <option key={c} value={c} className="bg-[#16122f]">{c}</option>)}
               </select>
             </div>

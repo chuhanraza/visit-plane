@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useUserCountry } from '@/hooks/useUserCountry'
 
 const COUNTRIES = ['India','Nigeria','Pakistan','Philippines','United Kingdom','United States']
 const EMBASSIES = [
@@ -78,6 +79,16 @@ export default function EmbassyFinderPage() {
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
   const [results, setResults] = useState<typeof EMBASSIES | null>(null)
+  const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
+
+  const { countryName, loading: geoLoading } = useUserCountry()
+
+  useEffect(() => {
+    if (countryName && !geoLoading && !from) {
+      // only pre-select if the country is in the COUNTRIES list
+      if (COUNTRIES.includes(countryName)) setFrom(countryName)
+    }
+  }, [countryName, geoLoading, from])
 
   return (
     <div className="min-h-screen bg-[#0f0c29] text-white antialiased">
@@ -100,16 +111,24 @@ export default function EmbassyFinderPage() {
           <div className="mx-auto mt-10 max-w-xl rounded-2xl border border-white/10 bg-white/[0.04] p-2 shadow-2xl shadow-black/50 backdrop-blur-sm">
             <div className="rounded-xl bg-[#16122f] p-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
-                <label className="block rounded-xl border border-white/10 bg-white/5 p-3.5 hover:border-indigo-500/40 focus-within:border-indigo-500/60 transition cursor-pointer">
-                  <span className="block text-[10px] font-semibold uppercase tracking-widest text-indigo-400">I am from</span>
-                  <div className="mt-1.5 flex items-center gap-2">
-                    <span className="text-lg">🌍</span>
-                    <select value={from} onChange={e => setFrom(e.target.value)} className="w-full appearance-none bg-transparent text-sm font-medium text-white outline-none" style={{ colorScheme:'dark' }}>
-                      <option value="" className="bg-[#16122f] text-gray-400">Passport country</option>
-                      {COUNTRIES.map(c => <option key={c} value={c} className="bg-[#16122f] text-white">{c}</option>)}
-                    </select>
-                  </div>
-                </label>
+                <div>
+                  <label className="block rounded-xl border border-white/10 bg-white/5 p-3.5 hover:border-indigo-500/40 focus-within:border-indigo-500/60 transition cursor-pointer">
+                    <span className="block text-[10px] font-semibold uppercase tracking-widest text-indigo-400">I am from</span>
+                    <div className="mt-1.5 flex items-center gap-2">
+                      <span className="text-lg">🌍</span>
+                      <select value={from} onChange={e => { setFrom(e.target.value); setGeoBadgeDismissed(true) }} className="w-full appearance-none bg-transparent text-sm font-medium text-white outline-none" style={{ colorScheme:'dark' }}>
+                        <option value="" className="bg-[#16122f] text-gray-400">{geoLoading ? '🌍 Detecting…' : 'Passport country'}</option>
+                        {COUNTRIES.map(c => <option key={c} value={c} className="bg-[#16122f] text-white">{c}</option>)}
+                      </select>
+                    </div>
+                  </label>
+                  {from && !geoBadgeDismissed && !geoLoading && (
+                    <p className="mt-1 text-[10px] text-teal-400 flex items-center gap-1 px-1">
+                      📍 Auto-detected
+                      <button onClick={() => setGeoBadgeDismissed(true)} className="ml-1 text-white/30 hover:text-white/60">✕</button>
+                    </p>
+                  )}
+                </div>
                 <label className="block rounded-xl border border-white/10 bg-white/5 p-3.5 hover:border-indigo-500/40 focus-within:border-indigo-500/60 transition cursor-pointer">
                   <span className="block text-[10px] font-semibold uppercase tracking-widest text-indigo-400">Looking for embassy in</span>
                   <div className="mt-1.5 flex items-center gap-2">
