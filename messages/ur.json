@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "explore": "دریافت کریں",
+    "visaRequirements": "ویزا کی شرائط",
+    "tools": "ٹولز",
+    "blog": "بلاگ",
+    "checkVisa": "ویزا چیک کریں",
+    "signIn": "سائن ان",
+    "getStarted": "شروع کریں"
+  },
+  "hero": {
+    "badge": "وقت پر ویزا کی گارنٹی",
+    "trusted": "دنیا بھر میں 100,000+ مسافروں کا اعتماد",
+    "headline1": "200+ منزلوں کے لیے",
+    "headline2": "وقت پر ویزا حاصل کریں،",
+    "headline3": "گارنٹی کے ساتھ۔",
+    "subtext": "ویزا حاصل کرنے کا دنیا کا سب سے آسان طریقہ",
+    "passportLabel": "میرا پاسپورٹ",
+    "destinationLabel": "میں جانا چاہتا ہوں",
+    "selectPassport": "اپنا ملک منتخب کریں",
+    "selectDestination": "پہلے پاسپورٹ منتخب کریں",
+    "checkButton": "ویزا کی ضروریات چیک کریں",
+    "popularLabel": "مشہور:",
+    "autoDetected": "آپ کے مقام سے خودکار طور پر معلوم کیا گیا",
+    "notYou": "آپ نہیں؟ تبدیل کریں"
+  },
+  "stats": {
+    "destinations": "منزلیں",
+    "accuracyRate": "درستگی کی شرح",
+    "travelersHelped": "مسافروں کی مدد",
+    "support": "سپورٹ"
+  },
+  "tools": {
+    "passportStrength": "پاسپورٹ کی طاقت",
+    "compareVisas": "ویزا کا موازنہ",
+    "checklist": "دستاویز چیک لسٹ",
+    "processingTimes": "پروسیسنگ کا وقت",
+    "travelInsurance": "سفری انشورنس",
+    "embassyFinder": "سفارتخانہ تلاش",
+    "costCalculator": "لاگت کیلکولیٹر",
+    "currencyConverter": "کرنسی کنورٹر",
+    "visaTracker": "ویزا ٹریکر",
+    "interviewPrep": "انٹرویو کی تیاری",
+    "visaChecker": "ویزا چیکر"
+  },
+  "common": {
+    "free": "مفت",
+    "instantResults": "فوری نتائج",
+    "countries": "ممالک",
+    "days": "دن",
+    "loading": "آپ کا مقام معلوم ہو رہا ہے...",
+    "visaFree": "ویزا فری",
+    "visaRequired": "ویزا ضروری",
+    "onArrival": "آمد پر ویزا",
+    "processingTime": "پروسیسنگ کا وقت",
+    "visaFee": "ویزا فیس",
+    "validity": "میعاد",
+    "documents": "ضروری دستاویزات",
+    "dataVerified": "ڈیٹا تصدیق شدہ",
+    "getStarted": "شروع کریں",
+    "learnMore": "مزید جانیں",
+    "viewAll": "سب دیکھیں",
+    "back": "واپس",
+    "next": "اگلا",
+    "submit": "جمع کریں",
+    "required": "ضروری",
+    "optional": "اختیاری"
+  },
+  "language": {
+    "selectLanguage": "زبان منتخب کریں",
+    "autoDetected": "خودکار طور پر معلوم کیا گیا",
+    "changeLanguage": "زبان تبدیل کریں"
+  }
+}

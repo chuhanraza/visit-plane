@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "explore": "Erkunden",
+    "visaRequirements": "Visa-Anforderungen",
+    "tools": "Werkzeuge",
+    "blog": "Blog",
+    "checkVisa": "Visum prüfen",
+    "signIn": "Anmelden",
+    "getStarted": "Loslegen"
+  },
+  "hero": {
+    "badge": "Visa pünktlich garantiert",
+    "trusted": "Von über 100.000 Reisenden vertraut",
+    "headline1": "Visa pünktlich erhalten für",
+    "headline2": "200+ Reiseziele,",
+    "headline3": "Garantiert.",
+    "subtext": "Der angenehmste Weg der Welt, Ihr Visum zu bekommen",
+    "passportLabel": "MEIN PASS IST AUS",
+    "destinationLabel": "ICH REISE NACH",
+    "selectPassport": "Wählen Sie Ihr Land",
+    "selectDestination": "Bitte zuerst Pass auswählen",
+    "checkButton": "Visa-Anforderungen prüfen",
+    "popularLabel": "Beliebt:",
+    "autoDetected": "Automatisch von Ihrem Standort erkannt",
+    "notYou": "Nicht Sie? Ändern"
+  },
+  "stats": {
+    "destinations": "REISEZIELE",
+    "accuracyRate": "GENAUIGKEITSRATE",
+    "travelersHelped": "GEHOLFTE REISENDE",
+    "support": "SUPPORT"
+  },
+  "tools": {
+    "passportStrength": "Reisepassstärke",
+    "compareVisas": "Visa vergleichen",
+    "checklist": "Dokument-Checkliste",
+    "processingTimes": "Bearbeitungszeiten",
+    "travelInsurance": "Reiseversicherung",
+    "embassyFinder": "Botschaftsfinder",
+    "costCalculator": "Kostenrechner",
+    "currencyConverter": "Währungsrechner",
+    "visaTracker": "Visa-Tracker",
+    "interviewPrep": "Interview-Vorbereitung",
+    "visaChecker": "Visa-Prüfer"
+  },
+  "common": {
+    "free": "Kostenlos",
+    "instantResults": "Sofortige Ergebnisse",
+    "countries": "Länder",
+    "days": "Tage",
+    "loading": "Standort wird erkannt...",
+    "visaFree": "Visafrei",
+    "visaRequired": "Visum erforderlich",
+    "onArrival": "Visum bei Ankunft",
+    "processingTime": "Bearbeitungszeit",
+    "visaFee": "Visagebühr",
+    "validity": "Gültigkeit",
+    "documents": "Erforderliche Dokumente",
+    "dataVerified": "Daten verifiziert",
+    "getStarted": "Loslegen",
+    "learnMore": "Mehr erfahren",
+    "viewAll": "Alle anzeigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "submit": "Absenden",
+    "required": "Erforderlich",
+    "optional": "Optional"
+  },
+  "language": {
+    "selectLanguage": "Sprache auswählen",
+    "autoDetected": "Automatisch erkannt",
+    "changeLanguage": "Sprache ändern"
+  }
+}

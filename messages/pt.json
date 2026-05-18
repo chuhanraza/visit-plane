@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "explore": "Explorar",
+    "visaRequirements": "Requisitos de Visto",
+    "tools": "Ferramentas",
+    "blog": "Blog",
+    "checkVisa": "Verificar Visto",
+    "signIn": "Entrar",
+    "getStarted": "Começar"
+  },
+  "hero": {
+    "badge": "Vistos no Prazo Garantidos",
+    "trusted": "Com a confiança de mais de 100.000 viajantes",
+    "headline1": "Obtenha seu Visto no Prazo para",
+    "headline2": "+200 Destinos,",
+    "headline3": "Garantido.",
+    "subtext": "A forma mais encantadora do mundo de obter seus vistos",
+    "passportLabel": "MEU PASSAPORTE É DE",
+    "destinationLabel": "VIAJO PARA",
+    "selectPassport": "Selecione seu país",
+    "selectDestination": "Selecione o passaporte primeiro",
+    "checkButton": "Verificar Requisitos de Visto",
+    "popularLabel": "Popular:",
+    "autoDetected": "Detectado automaticamente da sua localização",
+    "notYou": "Não é você? Mudar"
+  },
+  "stats": {
+    "destinations": "DESTINOS",
+    "accuracyRate": "TAXA DE PRECISÃO",
+    "travelersHelped": "VIAJANTES AJUDADOS",
+    "support": "SUPORTE"
+  },
+  "tools": {
+    "passportStrength": "Força do Passaporte",
+    "compareVisas": "Comparar Vistos",
+    "checklist": "Lista de Documentos",
+    "processingTimes": "Tempos de Processamento",
+    "travelInsurance": "Seguro Viagem",
+    "embassyFinder": "Localizador de Embaixadas",
+    "costCalculator": "Calculadora de Custos",
+    "currencyConverter": "Conversor de Moeda",
+    "visaTracker": "Rastreador de Visto",
+    "interviewPrep": "Preparação para Entrevista",
+    "visaChecker": "Verificador de Visto"
+  },
+  "common": {
+    "free": "Grátis",
+    "instantResults": "Resultados Instantâneos",
+    "countries": "Países",
+    "days": "Dias",
+    "loading": "Detectando sua localização...",
+    "visaFree": "Sem Visto",
+    "visaRequired": "Visto Obrigatório",
+    "onArrival": "Visto na Chegada",
+    "processingTime": "Tempo de Processamento",
+    "visaFee": "Taxa de Visto",
+    "validity": "Validade",
+    "documents": "Documentos Necessários",
+    "dataVerified": "Dados verificados",
+    "getStarted": "Começar",
+    "learnMore": "Saiba Mais",
+    "viewAll": "Ver Tudo",
+    "back": "Voltar",
+    "next": "Próximo",
+    "submit": "Enviar",
+    "required": "Obrigatório",
+    "optional": "Opcional"
+  },
+  "language": {
+    "selectLanguage": "Selecionar Idioma",
+    "autoDetected": "Detectado automaticamente",
+    "changeLanguage": "Mudar Idioma"
+  }
+}

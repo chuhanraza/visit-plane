@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "explore": "استكشف",
+    "visaRequirements": "متطلبات التأشيرة",
+    "tools": "الأدوات",
+    "blog": "المدونة",
+    "checkVisa": "تحقق من التأشيرة",
+    "signIn": "تسجيل الدخول",
+    "getStarted": "ابدأ الآن"
+  },
+  "hero": {
+    "badge": "تأشيرات في الوقت المحدد مضمونة",
+    "trusted": "موثوق به من قبل أكثر من 100,000 مسافر",
+    "headline1": "احصل على تأشيرتك في الوقت المحدد إلى",
+    "headline2": "+200 وجهة",
+    "headline3": "مضمون.",
+    "subtext": "أكثر طريقة ممتعة في العالم للحصول على تأشيراتك",
+    "passportLabel": "جواز سفري من",
+    "destinationLabel": "أسافر إلى",
+    "selectPassport": "اختر دولتك",
+    "selectDestination": "اختر جواز السفر أولاً",
+    "checkButton": "تحقق من متطلبات التأشيرة",
+    "popularLabel": "الأكثر شيوعاً:",
+    "autoDetected": "تم الكشف تلقائياً من موقعك",
+    "notYou": "ليس أنت؟ تغيير"
+  },
+  "stats": {
+    "destinations": "وجهة",
+    "accuracyRate": "معدل الدقة",
+    "travelersHelped": "مسافر مساعد",
+    "support": "دعم"
+  },
+  "tools": {
+    "passportStrength": "قوة جواز السفر",
+    "compareVisas": "مقارنة التأشيرات",
+    "checklist": "قائمة المستندات",
+    "processingTimes": "أوقات المعالجة",
+    "travelInsurance": "تأمين السفر",
+    "embassyFinder": "البحث عن السفارة",
+    "costCalculator": "حاسبة التكلفة",
+    "currencyConverter": "محول العملات",
+    "visaTracker": "متتبع التأشيرة",
+    "interviewPrep": "التحضير للمقابلة",
+    "visaChecker": "فاحص التأشيرة"
+  },
+  "common": {
+    "free": "مجاني",
+    "instantResults": "نتائج فورية",
+    "countries": "دولة",
+    "days": "أيام",
+    "loading": "جاري تحديد موقعك...",
+    "visaFree": "بدون تأشيرة",
+    "visaRequired": "تأشيرة مطلوبة",
+    "onArrival": "تأشيرة عند الوصول",
+    "processingTime": "وقت المعالجة",
+    "visaFee": "رسوم التأشيرة",
+    "validity": "مدة الصلاحية",
+    "documents": "المستندات المطلوبة",
+    "dataVerified": "تم التحقق من البيانات",
+    "getStarted": "ابدأ الآن",
+    "learnMore": "اعرف المزيد",
+    "viewAll": "عرض الكل",
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "إرسال",
+    "required": "مطلوب",
+    "optional": "اختياري"
+  },
+  "language": {
+    "selectLanguage": "اختر اللغة",
+    "autoDetected": "تم الكشف تلقائياً",
+    "changeLanguage": "تغيير اللغة"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "explore": "Explore",
+    "visaRequirements": "Visa Requirements",
+    "tools": "Tools",
+    "blog": "Blog",
+    "checkVisa": "Check Visa",
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
+  },
+  "hero": {
+    "badge": "Visas On Time Guaranteed",
+    "trusted": "Trusted by 100,000+ travelers worldwide",
+    "headline1": "Get Visas On Time to",
+    "headline2": "200+ Destinations,",
+    "headline3": "Guaranteed.",
+    "subtext": "The world's most delightful way to get your visas — powered by AI, backed by humans.",
+    "passportLabel": "MY PASSPORT IS FROM",
+    "destinationLabel": "TRAVELING TO",
+    "selectPassport": "Select your country",
+    "selectDestination": "Select passport first",
+    "checkButton": "Check Visa Requirements",
+    "popularLabel": "Popular:",
+    "autoDetected": "Auto-detected from your location",
+    "notYou": "Not you? Change"
+  },
+  "stats": {
+    "destinations": "DESTINATIONS",
+    "accuracyRate": "ACCURACY RATE",
+    "travelersHelped": "TRAVELERS HELPED",
+    "support": "SUPPORT"
+  },
+  "tools": {
+    "passportStrength": "Passport Strength",
+    "compareVisas": "Compare Visas",
+    "checklist": "Document Checklist",
+    "processingTimes": "Processing Times",
+    "travelInsurance": "Travel Insurance",
+    "embassyFinder": "Embassy Finder",
+    "costCalculator": "Cost Calculator",
+    "currencyConverter": "Currency Converter",
+    "visaTracker": "Visa Tracker",
+    "interviewPrep": "Interview Prep",
+    "visaChecker": "Visa Checker"
+  },
+  "common": {
+    "free": "Free",
+    "instantResults": "Instant Results",
+    "countries": "Countries",
+    "days": "Days",
+    "loading": "Detecting your location...",
+    "visaFree": "Visa Free",
+    "visaRequired": "Visa Required",
+    "onArrival": "Visa on Arrival",
+    "processingTime": "Processing Time",
+    "visaFee": "Visa Fee",
+    "validity": "Validity",
+    "documents": "Documents Needed",
+    "dataVerified": "Data verified",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "viewAll": "View All",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "required": "Required",
+    "optional": "Optional"
+  },
+  "language": {
+    "selectLanguage": "Select Language",
+    "autoDetected": "Auto-detected",
+    "changeLanguage": "Change Language"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "explore": "Explorer",
+    "visaRequirements": "Conditions de Visa",
+    "tools": "Outils",
+    "blog": "Blog",
+    "checkVisa": "Vérifier le Visa",
+    "signIn": "Se connecter",
+    "getStarted": "Commencer"
+  },
+  "hero": {
+    "badge": "Visas à Temps Garantis",
+    "trusted": "Approuvé par plus de 100 000 voyageurs",
+    "headline1": "Obtenez votre Visa à Temps pour",
+    "headline2": "+200 Destinations,",
+    "headline3": "Garanti.",
+    "subtext": "La façon la plus agréable d'obtenir vos visas",
+    "passportLabel": "MON PASSEPORT EST DE",
+    "destinationLabel": "JE VOYAGE VERS",
+    "selectPassport": "Sélectionnez votre pays",
+    "selectDestination": "Sélectionnez d'abord le passeport",
+    "checkButton": "Vérifier les Conditions de Visa",
+    "popularLabel": "Populaire:",
+    "autoDetected": "Détecté automatiquement depuis votre position",
+    "notYou": "Pas vous? Changer"
+  },
+  "stats": {
+    "destinations": "DESTINATIONS",
+    "accuracyRate": "TAUX DE PRÉCISION",
+    "travelersHelped": "VOYAGEURS AIDÉS",
+    "support": "SUPPORT"
+  },
+  "tools": {
+    "passportStrength": "Force du Passeport",
+    "compareVisas": "Comparer les Visas",
+    "checklist": "Liste de Documents",
+    "processingTimes": "Délais de Traitement",
+    "travelInsurance": "Assurance Voyage",
+    "embassyFinder": "Trouver une Ambassade",
+    "costCalculator": "Calculateur de Coûts",
+    "currencyConverter": "Convertisseur de Devises",
+    "visaTracker": "Suivi de Visa",
+    "interviewPrep": "Préparation à l'Entretien",
+    "visaChecker": "Vérificateur de Visa"
+  },
+  "common": {
+    "free": "Gratuit",
+    "instantResults": "Résultats Instantanés",
+    "countries": "Pays",
+    "days": "Jours",
+    "loading": "Détection de votre position...",
+    "visaFree": "Sans Visa",
+    "visaRequired": "Visa Requis",
+    "onArrival": "Visa à l'Arrivée",
+    "processingTime": "Délai de Traitement",
+    "visaFee": "Frais de Visa",
+    "validity": "Validité",
+    "documents": "Documents Nécessaires",
+    "dataVerified": "Données vérifiées",
+    "getStarted": "Commencer",
+    "learnMore": "En savoir plus",
+    "viewAll": "Voir Tout",
+    "back": "Retour",
+    "next": "Suivant",
+    "submit": "Soumettre",
+    "required": "Requis",
+    "optional": "Optionnel"
+  },
+  "language": {
+    "selectLanguage": "Sélectionner la Langue",
+    "autoDetected": "Détecté automatiquement",
+    "changeLanguage": "Changer de Langue"
+  }
+}

@@ -7,6 +7,8 @@ import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { motion, useInView, AnimatePresence, type Variants } from 'framer-motion'
 import { useUserCountry } from '@/hooks/useUserCountry'
+import { useTranslations } from 'next-intl'
+import LanguageSwitcher from '@/app/components/LanguageSwitcher'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -414,6 +416,15 @@ function SelectField({
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function HomePage() {
   const router = useRouter()
+  const t = useTranslations()
+
+  // Read locale from cookie for LanguageSwitcher
+  const [currentLocale, setCurrentLocale] = useState('en')
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)NEXT_LOCALE=([^;]*)/)
+    if (match) setCurrentLocale(match[1])
+  }, [])
+
   const [passport, setPassport]         = useState('')
   const [destination, setDestination]   = useState('')
   const [destinations, setDestinations] = useState<string[]>([])
@@ -491,10 +502,10 @@ export default function HomePage() {
 
           <nav className="hidden items-center gap-1 md:flex">
             <Link href="/destinations" className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
-              Explore
+              {t('nav.explore')}
             </Link>
             <Link href="/destinations" className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
-              Visa Requirements
+              {t('nav.visaRequirements')}
             </Link>
 
             {/* Tools dropdown */}
@@ -503,7 +514,7 @@ export default function HomePage() {
                 onClick={() => setToolsOpen(!toolsOpen)}
                 className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white"
               >
-                Tools
+                {t('nav.tools')}
                 <svg className={`h-3.5 w-3.5 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -538,16 +549,17 @@ export default function HomePage() {
             </div>
 
             <Link href="/blog" className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
-              Blog
+              {t('nav.blog')}
             </Link>
           </nav>
 
           <div className="flex items-center gap-3">
+            <LanguageSwitcher currentLocale={currentLocale} />
             <Link
               href="/destinations"
               className="hidden sm:inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-600 hover:shadow-emerald-500/40 hover:-translate-y-px"
             >
-              Check Visa <ArrowRight className="h-3.5 w-3.5" />
+              {t('nav.checkVisa')} <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -570,9 +582,9 @@ export default function HomePage() {
             >
               <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
                 {[
-                  { label: 'Explore',              href: '/destinations' },
-                  { label: 'Visa Requirements',    href: '/destinations' },
-                  { label: 'Blog',                 href: '/blog' },
+                  { label: t('nav.explore'),           href: '/destinations' },
+                  { label: t('nav.visaRequirements'),  href: '/destinations' },
+                  { label: t('nav.blog'),              href: '/blog' },
                 ].map((item) => (
                   <Link
                     key={item.label}
@@ -611,7 +623,7 @@ export default function HomePage() {
                   className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-emerald-500 px-4 py-2.5 text-sm font-bold text-white"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Check Visa Requirements
+                  {t('hero.checkButton')}
                 </Link>
               </div>
             </motion.div>
@@ -645,7 +657,7 @@ export default function HomePage() {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-400 backdrop-blur-sm">
               <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-              Trusted by 100,000+ travelers worldwide
+              {t('hero.trusted')}
               <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
             </div>
           </motion.div>
@@ -669,8 +681,7 @@ export default function HomePage() {
             transition={{ duration: 0.65, delay: 0.16 }}
             className="mx-auto mt-6 max-w-lg text-base text-white/45 sm:text-lg"
           >
-            Instant visa requirements for 200+ countries. Know exactly what you need
-            before you pack — free, fast, always updated.
+            {t('hero.subtext')}
           </motion.p>
 
           {/* Search card */}
@@ -687,36 +698,36 @@ export default function HomePage() {
                   <div>
                     <SelectField
                       id="passport"
-                      label="My Passport Is From"
+                      label={t('hero.passportLabel')}
                       value={passport}
                       onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
-                      placeholder={geoLoading ? '🌍 Detecting your location…' : 'Select your country'}
+                      placeholder={geoLoading ? `🌍 ${t('common.loading')}` : t('hero.selectPassport')}
                       options={PASSPORT_COUNTRIES}
                       disabled={false}
                     />
                     {passport && !geoBadgeDismissed && !geoLoading && (
                       <div className="mt-1.5 flex items-center justify-between px-1">
                         <span className="text-[10px] text-teal-400">
-                          📍 Detected from your IP
+                          📍 {t('hero.autoDetected')}
                         </span>
                         <button
                           onClick={() => setGeoBadgeDismissed(true)}
                           className="text-[10px] text-white/30 hover:text-white/60 transition"
                         >
-                          Not you? Change →
+                          {t('hero.notYou')} →
                         </button>
                       </div>
                     )}
                   </div>
                   <SelectField
                     id="destination"
-                    label="Traveling To"
+                    label={t('hero.destinationLabel')}
                     value={destination}
                     onChange={setDestination}
                     placeholder={
-                      !passport        ? 'Select passport first'  :
-                      loadingDests     ? 'Loading…'              :
-                      destinations.length === 0 ? 'No destinations' :
+                      !passport        ? t('hero.selectDestination') :
+                      loadingDests     ? 'Loading…'                  :
+                      destinations.length === 0 ? 'No destinations'  :
                                          'Select destination'
                     }
                     options={destinations}
@@ -730,7 +741,7 @@ export default function HomePage() {
                   className="group mt-3 flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:shadow-emerald-500/50 hover:from-emerald-600 hover:to-teal-600 disabled:from-white/8 disabled:to-white/5 disabled:text-white/25 disabled:shadow-none disabled:cursor-not-allowed"
                 >
                   <PlaneIcon className="h-4 w-4 group-enabled:group-hover:translate-x-0.5 transition" />
-                  Check Visa Requirements
+                  {t('hero.checkButton')}
                 </button>
                 {passport && destination && passport === destination && (
                   <p className="mt-2 text-center text-xs text-amber-400">
@@ -742,7 +753,7 @@ export default function HomePage() {
 
             {/* Smart popular pills — dynamic by detected passport country */}
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              <span className="text-xs text-white/25">Popular:</span>
+              <span className="text-xs text-white/25">{t('hero.popularLabel')}</span>
               {(POPULAR_PILLS[countryName] ?? DEFAULT_PILLS).map((pill) => (
                 <button
                   key={pill.dest}

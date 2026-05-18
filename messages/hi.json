@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "explore": "एक्सप्लोर करें",
+    "visaRequirements": "वीजा आवश्यकताएं",
+    "tools": "टूल्स",
+    "blog": "ब्लॉग",
+    "checkVisa": "वीजा जांचें",
+    "signIn": "साइन इन",
+    "getStarted": "शुरू करें"
+  },
+  "hero": {
+    "badge": "समय पर वीजा की गारंटी",
+    "trusted": "दुनिया भर में 100,000+ यात्रियों का विश्वास",
+    "headline1": "200+ गंतव्यों के लिए",
+    "headline2": "समय पर वीजा पाएं,",
+    "headline3": "गारंटी के साथ।",
+    "subtext": "वीजा पाने का दुनिया का सबसे आसान तरीका",
+    "passportLabel": "मेरा पासपोर्ट",
+    "destinationLabel": "मैं जाना चाहता हूं",
+    "selectPassport": "अपना देश चुनें",
+    "selectDestination": "पहले पासपोर्ट चुनें",
+    "checkButton": "वीजा आवश्यकताएं जांचें",
+    "popularLabel": "लोकप्रिय:",
+    "autoDetected": "आपके स्थान से स्वचालित रूप से पता चला",
+    "notYou": "आप नहीं? बदलें"
+  },
+  "stats": {
+    "destinations": "गंतव्य",
+    "accuracyRate": "सटीकता दर",
+    "travelersHelped": "यात्रियों की सहायता",
+    "support": "सहायता"
+  },
+  "tools": {
+    "passportStrength": "पासपोर्ट शक्ति",
+    "compareVisas": "वीजा तुलना",
+    "checklist": "दस्तावेज़ चेकलिस्ट",
+    "processingTimes": "प्रसंस्करण समय",
+    "travelInsurance": "यात्रा बीमा",
+    "embassyFinder": "दूतावास खोजक",
+    "costCalculator": "लागत कैलकुलेटर",
+    "currencyConverter": "मुद्रा परिवर्तक",
+    "visaTracker": "वीजा ट्रैकर",
+    "interviewPrep": "इंटरव्यू तैयारी",
+    "visaChecker": "वीजा चेकर"
+  },
+  "common": {
+    "free": "मुफ्त",
+    "instantResults": "तत्काल परिणाम",
+    "countries": "देश",
+    "days": "दिन",
+    "loading": "आपका स्थान पता किया जा रहा है...",
+    "visaFree": "वीजा मुक्त",
+    "visaRequired": "वीजा आवश्यक",
+    "onArrival": "आगमन पर वीजा",
+    "processingTime": "प्रसंस्करण समय",
+    "visaFee": "वीजा शुल्क",
+    "validity": "वैधता",
+    "documents": "आवश्यक दस्तावेज़",
+    "dataVerified": "डेटा सत्यापित",
+    "getStarted": "शुरू करें",
+    "learnMore": "अधिक जानें",
+    "viewAll": "सभी देखें",
+    "back": "वापस",
+    "next": "अगला",
+    "submit": "जमा करें",
+    "required": "आवश्यक",
+    "optional": "वैकल्पिक"
+  },
+  "language": {
+    "selectLanguage": "भाषा चुनें",
+    "autoDetected": "स्वचालित रूप से पता चला",
+    "changeLanguage": "भाषा बदलें"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "explore": "探索",
+    "visaRequirements": "签证要求",
+    "tools": "工具",
+    "blog": "博客",
+    "checkVisa": "查询签证",
+    "signIn": "登录",
+    "getStarted": "开始使用"
+  },
+  "hero": {
+    "badge": "准时签证保证",
+    "trusted": "全球超过100,000名旅行者信赖",
+    "headline1": "准时获得前往",
+    "headline2": "200+目的地的签证，",
+    "headline3": "有保证。",
+    "subtext": "世界上最便捷的获取签证方式",
+    "passportLabel": "我的护照来自",
+    "destinationLabel": "我要前往",
+    "selectPassport": "选择您的国家",
+    "selectDestination": "请先选择护照",
+    "checkButton": "查询签证要求",
+    "popularLabel": "热门:",
+    "autoDetected": "根据您的位置自动检测",
+    "notYou": "不是您？更改"
+  },
+  "stats": {
+    "destinations": "目的地",
+    "accuracyRate": "准确率",
+    "travelersHelped": "帮助旅行者",
+    "support": "全天候支持"
+  },
+  "tools": {
+    "passportStrength": "护照实力",
+    "compareVisas": "签证比较",
+    "checklist": "文件清单",
+    "processingTimes": "处理时间",
+    "travelInsurance": "旅游保险",
+    "embassyFinder": "使馆查询",
+    "costCalculator": "费用计算器",
+    "currencyConverter": "货币转换",
+    "visaTracker": "签证追踪",
+    "interviewPrep": "面试准备",
+    "visaChecker": "签证检查"
+  },
+  "common": {
+    "free": "免费",
+    "instantResults": "即时结果",
+    "countries": "国家",
+    "days": "天",
+    "loading": "正在检测您的位置...",
+    "visaFree": "免签",
+    "visaRequired": "需要签证",
+    "onArrival": "落地签",
+    "processingTime": "处理时间",
+    "visaFee": "签证费",
+    "validity": "有效期",
+    "documents": "所需文件",
+    "dataVerified": "数据已验证",
+    "getStarted": "开始使用",
+    "learnMore": "了解更多",
+    "viewAll": "查看全部",
+    "back": "返回",
+    "next": "下一步",
+    "submit": "提交",
+    "required": "必需",
+    "optional": "可选"
+  },
+  "language": {
+    "selectLanguage": "选择语言",
+    "autoDetected": "自动检测",
+    "changeLanguage": "更改语言"
+  }
+}

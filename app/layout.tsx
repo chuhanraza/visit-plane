@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
-import Script from "next/script";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,9 +15,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const GSC_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? "";
+const RTL_LOCALES = ["ar", "ur"];
 
-// ─── 1. Metadata (title, description, keywords) ──────────────────────────────
+// ─── 1. Metadata ──────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
   title: "VisitPlane - Visa Requirements & Documents",
   description:
@@ -33,19 +34,11 @@ export const metadata: Metadata = {
     "travel documents",
     "visa on arrival",
   ],
-
-  // ─── Google Search Console verification ─────────────────────────────────────
   verification: {
     google: "_1giyu5DMW8eS91AviSVAkCw5XGFIZHLU7gsHINSAm8",
   },
-
-  // ─── 5. Canonical URL support ───────────────────────────────────────────────
   metadataBase: new URL("https://visitplane.com"),
-  alternates: {
-    canonical: "/",
-  },
-
-  // ─── Robots ─────────────────────────────────────────────────────────────────
+  alternates: { canonical: "/" },
   robots: {
     index: true,
     follow: true,
@@ -57,8 +50,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-
-  // ─── 2. OpenGraph metadata ───────────────────────────────────────────────────
   openGraph: {
     title: "VisitPlane - Visa Requirements & Documents",
     description:
@@ -76,8 +67,6 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
   },
-
-  // ─── Twitter / X card ───────────────────────────────────────────────────────
   twitter: {
     card: "summary_large_image",
     title: "VisitPlane - Visa Requirements & Documents",
@@ -88,7 +77,7 @@ export const metadata: Metadata = {
   },
 };
 
-// ─── 3. JSON-LD schema ────────────────────────────────────────────────────────
+// ─── 2. JSON-LD ───────────────────────────────────────────────────────────────
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -98,32 +87,32 @@ const jsonLd = {
     "Visa requirements platform — get instant visa requirements for 150+ countries and know exactly what documents you need.",
   applicationCategory: "TravelApplication",
   operatingSystem: "All",
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-  },
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+  const dir = RTL_LOCALES.includes(locale) ? "rtl" : "ltr";
+
   return (
     <html
-      lang="en"
+      lang={locale}
+      dir={dir}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        {/* JSON-LD structured data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="min-h-full flex flex-col bg-[#060C18] text-white">
-        {children}
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
         <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
       </body>
     </html>

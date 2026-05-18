@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "explore": "Explorar",
+    "visaRequirements": "Requisitos de Visa",
+    "tools": "Herramientas",
+    "blog": "Blog",
+    "checkVisa": "Verificar Visa",
+    "signIn": "Iniciar sesión",
+    "getStarted": "Comenzar"
+  },
+  "hero": {
+    "badge": "Visas a Tiempo Garantizadas",
+    "trusted": "Con la confianza de más de 100,000 viajeros",
+    "headline1": "Obtén tu Visa a Tiempo para",
+    "headline2": "+200 Destinos,",
+    "headline3": "Garantizado.",
+    "subtext": "La forma más deliciosa del mundo de obtener tus visas",
+    "passportLabel": "MI PASAPORTE ES DE",
+    "destinationLabel": "VIAJO A",
+    "selectPassport": "Selecciona tu país",
+    "selectDestination": "Selecciona pasaporte primero",
+    "checkButton": "Verificar Requisitos de Visa",
+    "popularLabel": "Popular:",
+    "autoDetected": "Detectado automáticamente desde tu ubicación",
+    "notYou": "¿No eres tú? Cambiar"
+  },
+  "stats": {
+    "destinations": "DESTINOS",
+    "accuracyRate": "TASA DE PRECISIÓN",
+    "travelersHelped": "VIAJEROS AYUDADOS",
+    "support": "SOPORTE"
+  },
+  "tools": {
+    "passportStrength": "Fuerza del Pasaporte",
+    "compareVisas": "Comparar Visas",
+    "checklist": "Lista de Documentos",
+    "processingTimes": "Tiempos de Procesamiento",
+    "travelInsurance": "Seguro de Viaje",
+    "embassyFinder": "Buscador de Embajadas",
+    "costCalculator": "Calculadora de Costos",
+    "currencyConverter": "Convertidor de Moneda",
+    "visaTracker": "Rastreador de Visa",
+    "interviewPrep": "Preparación para Entrevista",
+    "visaChecker": "Verificador de Visa"
+  },
+  "common": {
+    "free": "Gratis",
+    "instantResults": "Resultados Instantáneos",
+    "countries": "Países",
+    "days": "Días",
+    "loading": "Detectando tu ubicación...",
+    "visaFree": "Sin Visa",
+    "visaRequired": "Visa Requerida",
+    "onArrival": "Visa a la Llegada",
+    "processingTime": "Tiempo de Procesamiento",
+    "visaFee": "Tarifa de Visa",
+    "validity": "Validez",
+    "documents": "Documentos Necesarios",
+    "dataVerified": "Datos verificados",
+    "getStarted": "Comenzar",
+    "learnMore": "Saber Más",
+    "viewAll": "Ver Todo",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "required": "Requerido",
+    "optional": "Opcional"
+  },
+  "language": {
+    "selectLanguage": "Seleccionar Idioma",
+    "autoDetected": "Detectado automáticamente",
+    "changeLanguage": "Cambiar Idioma"
+  }
+}
