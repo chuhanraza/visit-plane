@@ -2,11 +2,19 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { blogPosts } from '@/src/lib/posts'
 import type { Metadata } from 'next'
+import BlogClientPage from './BlogClientPage'
 
 export const metadata: Metadata = {
-  title: 'Visa Blog — VisitPlane',
+  title: 'Visa Blog — Expert Guides for Every Route | VisitPlane',
   description:
-    'Expert visa guides for Pakistani and Indian travelers. Schengen, Dubai, UK, Canada, Australia, Germany, Japan, USA, and more.',
+    'Expert visa guides for Pakistani and Indian travelers. Schengen, Dubai, UK, Canada, Australia, Germany, Japan, USA, and more. Updated 2026.',
+  openGraph: {
+    title: 'Visa Guides & Travel Tips — VisitPlane',
+    description:
+      'Expert visa guides for every passport and destination. Schengen, Dubai, UK, Canada, Australia, Germany, Japan, USA, and more.',
+    type: 'website',
+    url: 'https://visitplane.com/blog',
+  },
 }
 
 function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
@@ -64,7 +72,7 @@ export default function BlogPage() {
       <section className="border-b border-gray-100 bg-gradient-to-b from-[#F0FDF4] to-white">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xs font-medium uppercase tracking-wider text-[#10B981]">Visa Knowledge Base</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#10B981]">Visa Knowledge Base</p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-[#1A1A1A] sm:text-5xl">
               Visa Guides &amp; Travel Tips
             </h1>
@@ -76,51 +84,9 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Posts grid */}
+      {/* Interactive posts section: search + filter + grid */}
       <main className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {sorted.map((post) => (
-            <Link
-              key={post.slug}
-              href={`/blog/${post.slug}`}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-[#10B981]/30 hover:shadow-md"
-            >
-              {/* Cover */}
-              <div className="flex h-36 items-center justify-center bg-gradient-to-br from-[#F0FDF4] to-[#ECFDF5] text-6xl">
-                {post.coverEmoji}
-              </div>
-
-              {/* Content */}
-              <div className="flex flex-1 flex-col gap-3 p-5">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center rounded-full bg-[#F0FDF4] px-2.5 py-0.5 text-xs font-medium text-[#10B981] ring-1 ring-inset ring-[#10B981]/20">
-                    {post.category}
-                  </span>
-                  <span className="text-xs text-gray-400">{post.readTime}</span>
-                </div>
-
-                <h2 className="text-base font-semibold leading-snug text-[#1A1A1A] transition group-hover:text-[#10B981]">
-                  {post.title}
-                </h2>
-
-                <p className="flex-1 text-sm leading-relaxed text-gray-500 line-clamp-3">
-                  {post.excerpt}
-                </p>
-
-                <div className="flex items-center justify-between pt-1">
-                  <time className="text-xs text-gray-400" dateTime={post.date}>
-                    {new Date(post.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </time>
-                  <ArrowRight className="h-4 w-4 text-gray-300 transition group-hover:translate-x-0.5 group-hover:text-[#10B981]" />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <BlogClientPage posts={sorted} />
       </main>
 
       {/* CTA */}
