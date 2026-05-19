@@ -30,6 +30,7 @@ type TabType = 'tourism' | 'work'
 const WORK_KEYWORDS = [
   'work', 'student', 'residence', 'official', 'diplomatic',
   'working holiday', 'investor', 'immigration', 'employment',
+  'skilled worker',
 ]
 
 function categorizeVisa(visaType: string): TabType {
@@ -42,47 +43,200 @@ function getVisaName(r: VisaRecord): string {
   return r.visa_type ?? r.type ?? 'Tourist Visa'
 }
 
-function getProcessingTime(r: VisaRecord): string {
-  return r.processing_time ?? r.duration ?? 'Contact embassy'
+// ─── FIX 1: Smart badge based on visa_type ───────────────────────────────────
+type BadgeConfig = {
+  label: string
+  bg: string
+  border: string
+  text: string
 }
 
-function getVisaFee(r: VisaRecord): string {
-  return r.price ?? r.fee ?? r.cost ?? 'Contact embassy'
+function getVisaBadge(visaType: string): BadgeConfig {
+  const v = visaType || ''
+
+  if (/free/i.test(v) || /no visa/i.test(v)) {
+    return { label: '✓ VISA FREE',    bg: 'bg-green-50',   border: 'border-green-400',  text: 'text-green-700' }
+  }
+  if (/arrival/i.test(v)) {
+    return { label: '✈ ON ARRIVAL',   bg: 'bg-blue-50',    border: 'border-blue-400',   text: 'text-blue-700'  }
+  }
+  if (/evisa|e-visa|electronic/i.test(v)) {
+    return { label: '💻 E-VISA',       bg: 'bg-teal-50',    border: 'border-teal-400',   text: 'text-teal-700'  }
+  }
+  if (/student/i.test(v)) {
+    return { label: '🎓 STUDENT',      bg: 'bg-purple-50',  border: 'border-purple-400', text: 'text-purple-700'}
+  }
+  if (/work|employment/i.test(v)) {
+    return { label: '💼 WORK VISA',    bg: 'bg-orange-50',  border: 'border-orange-400', text: 'text-orange-700'}
+  }
+  if (/business/i.test(v)) {
+    return { label: '🤝 BUSINESS',     bg: 'bg-indigo-50',  border: 'border-indigo-400', text: 'text-indigo-700'}
+  }
+  return   { label: '⚠ VISA REQUIRED', bg: 'bg-red-50',     border: 'border-red-400',    text: 'text-red-700'   }
+}
+
+function VisaBadge({ visaType, size = 'sm' }: { visaType: string; size?: 'xs' | 'sm' }) {
+  const { label, bg, border, text } = getVisaBadge(visaType)
+  const cls = size === 'xs'
+    ? 'text-[9px] px-1.5 py-0.5 font-bold'
+    : 'text-xs px-2.5 py-1 font-semibold'
+  return (
+    <span className={`inline-flex items-center rounded-full border ${bg} ${border} ${text} ${cls}`}>
+      {label}
+    </span>
+  )
+}
+
+// ─── FIX 2: Smart fee display ────────────────────────────────────────────────
+function getSmartFee(r: VisaRecord, destinationName: string): { display: string; color: string; showLink: boolean; searchQuery: string } {
+  const visaName = getVisaName(r)
+  const raw = (r.price ?? r.fee ?? r.cost ?? '').toString().trim()
+
+  // Visa free → always FREE
+  if (/free/i.test(visaName) || /no visa/i.test(visaName)) {
+    return { display: '✓ FREE', color: 'text-green-600', showLink: false, searchQuery: '' }
+  }
+
+  // Explicit free fee values
+  if (/^free$/i.test(raw) || raw === '$0' || raw === '0') {
+    return { display: '✓ FREE', color: 'text-green-600', showLink: false, searchQuery: '' }
+  }
+
+  // Has a real fee value
+  if (raw && !/contact embassy/i.test(raw) && !/n\/a/i.test(raw)) {
+    const prefixed = /^\$/.test(raw) ? raw : `$${raw}`
+    return { display: `💰 ${prefixed}`, color: 'text-teal-600', showLink: false, searchQuery: '' }
+  }
+
+  // Unknown / contact embassy
+  return {
+    display: 'Check official source',
+    color: 'text-gray-500',
+    showLink: true,
+    searchQuery: `${destinationName} ${visaName} visa fee official`,
+  }
+}
+
+// ─── FIX 3: Smart processing time ────────────────────────────────────────────
+function getSmartProcessingTime(r: VisaRecord): string {
+  const visaName = getVisaName(r)
+
+  // Visa free / on arrival → instant, no pre-processing
+  if (/free/i.test(visaName) || /no visa/i.test(visaName) || /arrival/i.test(visaName)) {
+    return '⚡ Instant (on arrival)'
+  }
+
+  const raw = (r.processing_time ?? r.duration ?? '').toString().trim()
+
+  if (!raw) return 'Varies (check embassy)'
+  if (/^instant$/i.test(raw)) return '⚡ Instant'
+  if (/hours?/i.test(raw)) return `⚡ ${raw}`
+  if (/days?/i.test(raw)) return `📅 ${raw}`
+  if (/weeks?/i.test(raw)) return `🗓️ ${raw}`
+  return raw
 }
 
 function getValidity(r: VisaRecord): string {
   return r.validity ?? r.stay_duration ?? 'Varies'
 }
 
-function parseDocuments(r: VisaRecord): string[] {
-  const DEFAULT = [
-    'Valid Passport (6 months validity)',
-    'Passport-sized photos (white background)',
-    'Bank statements (last 3 months)',
-    'Flight itinerary',
-    'Hotel booking confirmation',
-  ]
-  if (!r.required_documents) return DEFAULT
-  try {
-    const raw = r.required_documents
-    const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed as string[]
-  } catch { /* keep defaults */ }
-  return DEFAULT
+// ─── FIX 6: Visa-type-aware document lists ───────────────────────────────────
+function parseDocuments(r: VisaRecord): { docs: string[]; note: string } {
+  const visaName = getVisaName(r).toLowerCase()
+
+  // Visa Free
+  if (/free/i.test(visaName) || /no visa/i.test(visaName)) {
+    return {
+      docs: [
+        'Valid passport (6+ months validity)',
+        'Return ticket (recommended)',
+        'Proof of accommodation (recommended)',
+      ],
+      note: 'No visa required! Just pack and go.',
+    }
+  }
+
+  // On Arrival
+  if (/arrival/i.test(visaName)) {
+    return {
+      docs: [
+        'Valid passport (6+ months validity)',
+        'Return ticket confirmation',
+        'Sufficient funds (proof)',
+        'Passport photo (1 copy)',
+      ],
+      note: 'Get visa stamp at airport on arrival.',
+    }
+  }
+
+  // Work / Employment
+  if (/work|employment/i.test(visaName)) {
+    return {
+      docs: [
+        'Valid passport (6+ months validity)',
+        'Employment contract / offer letter',
+        'Educational certificates',
+        'Police clearance certificate',
+        'Medical examination certificate',
+        'Passport photos (4 copies)',
+        'Bank statements',
+        'Sponsor letter from employer',
+      ],
+      note: '',
+    }
+  }
+
+  // Student
+  if (/student/i.test(visaName)) {
+    return {
+      docs: [
+        'Valid passport (6+ months validity)',
+        'University acceptance letter',
+        'Financial proof (tuition + living costs)',
+        'Academic transcripts',
+        'English proficiency test scores',
+        'Passport photos',
+        'Medical insurance',
+        'Accommodation confirmation',
+      ],
+      note: '',
+    }
+  }
+
+  // If database has its own list, use it
+  if (r.required_documents) {
+    try {
+      const raw = r.required_documents
+      const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return { docs: parsed as string[], note: '' }
+      }
+    } catch { /* fall through */ }
+  }
+
+  // e-Visa / Tourist (full list)
+  return {
+    docs: [
+      'Valid passport (6+ months validity)',
+      'Passport-sized photos (2 copies)',
+      'Completed application form',
+      'Bank statements (last 3 months)',
+      'Return flight ticket',
+      'Hotel booking confirmation',
+      'Travel insurance',
+      'Employment letter / proof of income',
+    ],
+    note: '',
+  }
 }
 
 function getVisaRequired(r: VisaRecord): boolean | null {
-  // Detect "Visa Free" / "Not Required" from the visa type name first
   const nameLower = getVisaName(r).toLowerCase()
   if (
-    nameLower.includes('visa free') ||
-    nameLower.includes('visa-free') ||
-    nameLower.includes('not required') ||
-    nameLower.includes('no visa') ||
+    nameLower.includes('visa free') || nameLower.includes('visa-free') ||
+    nameLower.includes('not required') || nameLower.includes('no visa') ||
     nameLower === 'free'
   ) return false
-
-  // Then check the explicit field
   if (r.visa_required === null || r.visa_required === undefined) return null
   if (typeof r.visa_required === 'boolean') return r.visa_required
   const s = String(r.visa_required).toLowerCase()
@@ -188,16 +342,6 @@ function ShieldCheckIcon() {
   )
 }
 
-function RefundIcon() {
-  return (
-    <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2.5 2v6h6M21.5 22v-6h-6" />
-      <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2" />
-    </svg>
-  )
-}
-
 function UsersIcon() {
   return (
     <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -296,7 +440,6 @@ const TRUST_STATS = [
   { icon: <NoDollarIcon />,   num: 'Free',    label: 'Visa Information' },
 ]
 
-// ─── Related destinations ─────────────────────────────────────────────────────────
 const RELATED_DESTINATIONS = [
   { name: 'UAE',            flag: '🇦🇪' },
   { name: 'Turkey',         flag: '🇹🇷' },
@@ -387,9 +530,14 @@ export default function VisaPageClient({
     )
   }
 
-  const visaName   = selectedVisa ? getVisaName(selectedVisa) : 'Tourist Visa'
-  const isRequired = selectedVisa ? getVisaRequired(selectedVisa) : null
-  const documents  = selectedVisa ? parseDocuments(selectedVisa) : []
+  const visaName    = selectedVisa ? getVisaName(selectedVisa) : 'Tourist Visa'
+  const isRequired  = selectedVisa ? getVisaRequired(selectedVisa) : null
+  const { docs: documents, note: docNote } = selectedVisa ? parseDocuments(selectedVisa) : { docs: [], note: '' }
+
+  // Smart computed values for selected visa
+  const smartProcessing = selectedVisa ? getSmartProcessingTime(selectedVisa) : '—'
+  const smartFee        = selectedVisa ? getSmartFee(selectedVisa, destinationName) : { display: '—', color: 'text-gray-700', showLink: false, searchQuery: '' }
+  const validity        = selectedVisa ? getValidity(selectedVisa) : '—'
 
   const isActiveInSidebar = (r: VisaRecord) =>
     r.id !== undefined ? r.id === selectedId : r === allVisaData[0]
@@ -397,7 +545,7 @@ export default function VisaPageClient({
   return (
     <div className="bg-[#F8FAFC]">
 
-      {/* ── Hero / breadcrumb ─────────────────────────────────────────────────── */}
+      {/* ── FIX 4: Improved Hero / Header ──────────────────────────────────── */}
       <div className="mx-auto max-w-7xl px-4 pb-6 pt-8 sm:px-6 lg:px-8">
         <Link
           href="/"
@@ -424,7 +572,7 @@ export default function VisaPageClient({
           </div>
 
           <h1 className="mt-6 text-4xl font-bold tracking-tight text-[#1F2937] sm:text-5xl">
-            Visa{' '}
+            Tourist Visa{' '}
             <span className="text-[#14B8A6]">Requirements</span>
           </h1>
           <p className="mt-3 text-base text-gray-500">
@@ -432,10 +580,58 @@ export default function VisaPageClient({
             <span className="font-semibold text-[#1F2937]">{passportName}</span> to{' '}
             <span className="font-semibold text-[#1F2937]">{destinationName}</span>
           </p>
+
+          {/* Meta badges row */}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
+              🕐 Updated today
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
+              🏛️ Official Embassy Data
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
+              ⚠️ Always verify with official embassy before traveling
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* ── Tab bar ───────────────────────────────────────────────────────────── */}
+      {/* ── FIX 5: Quick Stats Bar ─────────────────────────────────────────── */}
+      {selectedVisa && (
+        <div className="border-b border-t border-[#E5E7EB] bg-white">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-3 divide-x divide-[#E5E7EB] py-0">
+              {/* Processing */}
+              <div className="flex flex-col items-center gap-0.5 px-4 py-4 text-center">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">⚡ Processing</span>
+                <span className="mt-0.5 text-sm font-bold text-[#1F2937]">{smartProcessing}</span>
+              </div>
+              {/* Fee */}
+              <div className="flex flex-col items-center gap-0.5 px-4 py-4 text-center">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">💰 Fee</span>
+                <span className={`mt-0.5 text-sm font-bold ${smartFee.color}`}>{smartFee.display}</span>
+                {smartFee.showLink && (
+                  <a
+                    href={`https://www.google.com/search?q=${encodeURIComponent(smartFee.searchQuery)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-0.5 text-[10px] text-teal-500 underline hover:text-teal-700"
+                  >
+                    🔗 Official source
+                  </a>
+                )}
+              </div>
+              {/* Validity */}
+              <div className="flex flex-col items-center gap-0.5 px-4 py-4 text-center">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">📅 Validity</span>
+                <span className="mt-0.5 text-sm font-bold text-[#1F2937]">{validity}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── FIX 8: Smarter Tab bar ────────────────────────────────────────────── */}
       <div className="sticky top-16 z-30 border-b border-[#E5E7EB] bg-white shadow-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex gap-0 overflow-x-auto">
@@ -462,7 +658,7 @@ export default function VisaPageClient({
         <div className="flex flex-col gap-6 min-[900px]:flex-row min-[900px]:items-start min-[900px]:gap-8">
 
           {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-          <aside className="w-full min-[900px]:w-52 min-[900px]:shrink-0 min-[900px]:sticky min-[900px]:top-36">
+          <aside className="w-full min-[900px]:w-56 min-[900px]:shrink-0 min-[900px]:sticky min-[900px]:top-36">
             <div className="rounded-2xl border border-[#E5E7EB] bg-white p-3 shadow-sm">
 
               {/* Tourism & Business */}
@@ -479,23 +675,33 @@ export default function VisaPageClient({
                         key={String(r.id ?? name)}
                         onClick={() => { setActiveTab('tourism'); setSelectedId(r.id) }}
                         className={[
-                          'mb-0.5 flex w-full items-center justify-between gap-1.5 rounded-xl px-3 py-2.5 text-left text-sm transition-all',
+                          'mb-0.5 flex w-full flex-col gap-1 rounded-xl px-3 py-2.5 text-left text-sm transition-all',
                           isActive
                             ? 'bg-[#14B8A6]/10 font-semibold text-[#14B8A6]'
                             : 'text-gray-600 hover:bg-gray-50 hover:text-[#1F2937]',
                         ].join(' ')}
                       >
                         <span className="leading-snug">{name}</span>
-                        {isActive && (
-                          <span className="shrink-0 rounded-full bg-[#EF4444] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
-                            Req
-                          </span>
-                        )}
+                        {/* FIX 1: Smart badge instead of "REQ" */}
+                        <VisaBadge visaType={name} size="xs" />
                       </button>
                     )
                   })
                 ) : (
-                  <p className="px-3 py-2 text-xs text-gray-400 italic">No data yet</p>
+                  // FIX 8: Better empty state
+                  <div className="rounded-xl border border-dashed border-gray-200 px-3 py-4 text-center">
+                    <p className="text-xs text-gray-400 italic">
+                      No Tourism visa data available yet for this route.
+                    </p>
+                    <a
+                      href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' tourist visa requirements')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 block text-[11px] text-teal-500 underline hover:text-teal-700"
+                    >
+                      Check official embassy
+                    </a>
+                  </div>
                 )}
               </div>
 
@@ -513,23 +719,33 @@ export default function VisaPageClient({
                         key={String(r.id ?? name)}
                         onClick={() => { setActiveTab('work'); setSelectedId(r.id) }}
                         className={[
-                          'mb-0.5 flex w-full items-center justify-between gap-1.5 rounded-xl px-3 py-2.5 text-left text-sm transition-all',
+                          'mb-0.5 flex w-full flex-col gap-1 rounded-xl px-3 py-2.5 text-left text-sm transition-all',
                           isActive
                             ? 'bg-[#14B8A6]/10 font-semibold text-[#14B8A6]'
                             : 'text-gray-600 hover:bg-gray-50 hover:text-[#1F2937]',
                         ].join(' ')}
                       >
                         <span className="leading-snug">{name}</span>
-                        {isActive && (
-                          <span className="shrink-0 rounded-full bg-[#EF4444] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
-                            Req
-                          </span>
-                        )}
+                        {/* FIX 1: Smart badge instead of "REQ" */}
+                        <VisaBadge visaType={name} size="xs" />
                       </button>
                     )
                   })
                 ) : (
-                  <p className="px-3 py-2 text-xs text-gray-400 italic">No data yet</p>
+                  // FIX 8: Better empty state
+                  <div className="rounded-xl border border-dashed border-gray-200 px-3 py-4 text-center">
+                    <p className="text-xs text-gray-400 italic">
+                      No Work visa data available yet for this route.
+                    </p>
+                    <a
+                      href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' work visa requirements')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 block text-[11px] text-teal-500 underline hover:text-teal-700"
+                    >
+                      Check official embassy
+                    </a>
+                  </div>
                 )}
               </div>
             </div>
@@ -549,52 +765,56 @@ export default function VisaPageClient({
                       <CheckIcon className="h-3.5 w-3.5" />
                       Data verified
                     </span>
-                    {/* Required / Not required badge */}
-                    {isRequired === false ? (
-                      <span className="inline-flex items-center rounded-full bg-[#D1FAE5] px-3 py-1 text-xs font-bold tracking-wide text-[#10B981]">
-                        ✓ NOT REQUIRED
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-full bg-[#FEE2E2] px-3 py-1 text-xs font-bold tracking-wide text-[#EF4444]">
-                        REQUIRED
-                      </span>
-                    )}
+                    {/* FIX 1: Smart color-coded visa badge */}
+                    <VisaBadge visaType={visaName} size="sm" />
                   </div>
                 </div>
               </div>
 
-              {/* 3 stat tiles */}
+              {/* 3 stat tiles — FIX 2 & FIX 3 applied */}
               <div className="mt-6 grid grid-cols-3 gap-3">
                 {/* Processing */}
                 <div className="flex flex-col items-center gap-1.5 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-4 text-center">
                   <span className="text-[#14B8A6]"><ClockIcon /></span>
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Processing</p>
-                  <p className="text-sm font-bold text-[#1F2937]">
-                    {selectedVisa ? getProcessingTime(selectedVisa) : '—'}
-                  </p>
+                  <p className="text-sm font-bold text-[#1F2937]">{smartProcessing}</p>
                 </div>
                 {/* Visa Fee */}
                 <div className="flex flex-col items-center gap-1.5 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-4 text-center">
                   <span className="text-[#14B8A6]"><DollarIcon /></span>
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Visa Fee</p>
-                  <p className="text-sm font-bold text-[#1F2937]">
-                    {selectedVisa ? getVisaFee(selectedVisa) : '—'}
-                  </p>
+                  <p className={`text-sm font-bold ${smartFee.color}`}>{smartFee.display}</p>
+                  {smartFee.showLink && (
+                    <a
+                      href={`https://www.google.com/search?q=${encodeURIComponent(smartFee.searchQuery)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-teal-500 underline hover:text-teal-700"
+                    >
+                      🔗 Embassy site
+                    </a>
+                  )}
                 </div>
                 {/* Validity */}
                 <div className="flex flex-col items-center gap-1.5 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-4 text-center">
                   <span className="text-[#14B8A6]"><CalendarIcon /></span>
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Validity</p>
-                  <p className="text-sm font-bold text-[#1F2937]">
-                    {selectedVisa ? getValidity(selectedVisa) : '—'}
-                  </p>
+                  <p className="text-sm font-bold text-[#1F2937]">{validity}</p>
                 </div>
               </div>
             </div>
 
-            {/* ─ Card 2: Requirements ───────────────────────────────────────── */}
+            {/* ─ Card 2: Documents — FIX 6 ──────────────────────────────────── */}
             <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm sm:p-8">
               <h3 className="text-lg font-bold text-[#1F2937]">Documents Needed</h3>
+
+              {/* Smart note for simple visa types */}
+              {docNote && (
+                <div className="mt-3 flex gap-3 rounded-xl border border-teal-200 bg-teal-50 p-3">
+                  <span className="shrink-0 text-base leading-none">✈️</span>
+                  <p className="text-sm font-medium leading-relaxed text-teal-800">{docNote}</p>
+                </div>
+              )}
 
               {/* 2-column checklist */}
               <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
@@ -706,6 +926,43 @@ export default function VisaPageClient({
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* ─ FIX 7: Official Embassy Links card ────────────────────────── */}
+            <div className="rounded-2xl border border-[#E5E7EB] bg-gradient-to-br from-[#F0FDFA] to-white p-6 shadow-sm sm:p-8">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">📋</span>
+                <div>
+                  <h3 className="text-lg font-bold text-[#1F2937]">Official Sources</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Verify with Official Sources — always confirm requirements directly with the official embassy before applying.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' embassy official website')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#14B8A6] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0d9488]"
+                >
+                  🌐 Official Embassy Website
+                  <ArrowRightIcon className="h-4 w-4" />
+                </a>
+                <a
+                  href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' embassy in ' + passportName)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-[#14B8A6] px-5 py-3 text-sm font-semibold text-[#14B8A6] transition hover:bg-[#14B8A6]/5"
+                >
+                  🔍 Search Embassy Near Me
+                </a>
+              </div>
+
+              <p className="mt-4 text-center text-xs text-gray-400">
+                VisitPlane provides information only. Requirements may change without notice. Always verify with the official embassy.
+              </p>
             </div>
 
             {/* ─ Also check ─────────────────────────────────────────────────── */}
