@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useUserCountry } from '@/hooks/useUserCountry'
+import CountrySelect from '@/components/CountrySelect'
 
 // ─── Supabase ──────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -243,13 +244,6 @@ function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
     </svg>
   )
 }
-function ChevronDown({ className = 'h-4 w-4' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  )
-}
 function MenuIcon({ className = 'h-5 w-5' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -298,54 +292,6 @@ function SpinnerIcon({ className = 'h-5 w-5' }: { className?: string }) {
       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25"/>
       <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
     </svg>
-  )
-}
-
-// ─── Select Field Component ─────────────────────────────────────────────────────
-type SelectOption = { value: string; label: string }
-
-function SelectField({
-  id, label, value, onChange, placeholder, options, disabled, icon = '🌍',
-}: {
-  id: string; label: string; value: string; onChange: (v: string) => void
-  placeholder: string; options: SelectOption[]; disabled?: boolean; icon?: string
-}) {
-  // Show selected flag next to the label icon
-  const selectedOpt = options.find(o => o.value === value)
-  const displayIcon = selectedOpt
-    ? selectedOpt.label.split(' ')[0]   // just the flag emoji
-    : icon
-
-  return (
-    <label
-      htmlFor={id}
-      className={`group relative block rounded-xl border p-3.5 transition-all cursor-pointer ${
-        disabled
-          ? 'border-white/5 opacity-50 cursor-not-allowed'
-          : 'border-white/10 hover:border-teal-500/40 focus-within:border-teal-500/60 bg-white/5'
-      }`}
-    >
-      <span className="block text-[10px] font-semibold uppercase tracking-widest text-teal-400">{label}</span>
-      <div className="mt-1.5 flex items-center gap-2">
-        <span className="text-lg leading-none">{displayIcon}</span>
-        <select
-          id={id}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          disabled={disabled}
-          className="w-full appearance-none bg-transparent pr-6 text-sm font-medium text-white outline-none disabled:cursor-not-allowed"
-          style={{ colorScheme: 'dark' }}
-        >
-          <option value="" className="bg-[#16122f] text-gray-400">{placeholder}</option>
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-[#16122f] text-white">
-              {opt.label}
-            </option>
-          ))}
-        </select>
-        <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30 transition group-focus-within:text-teal-400" />
-      </div>
-    </label>
   )
 }
 
@@ -708,14 +654,11 @@ export default function ChecklistPage() {
                 {/* Dropdowns */}
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <SelectField
-                      id="passport"
-                      label="My Passport"
+                    <CountrySelect
                       value={passport}
                       onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
                       placeholder={geoLoading ? '🌍 Detecting your location…' : 'Select your country'}
-                      options={PASSPORT_COUNTRIES.map(c => ({ value: c, label: `${getFlag(c)} ${c}` }))}
-                      icon="🛂"
+                      label="My Passport"
                     />
                     {passport && !geoBadgeDismissed && !geoLoading && (
                       <p className="mt-1 text-[10px] text-teal-400 flex items-center gap-1 px-1">
@@ -724,9 +667,7 @@ export default function ChecklistPage() {
                       </p>
                     )}
                   </div>
-                  <SelectField
-                    id="destination"
-                    label="Traveling To"
+                  <CountrySelect
                     value={destination}
                     onChange={setDestination}
                     placeholder={
@@ -735,9 +676,9 @@ export default function ChecklistPage() {
                       destinations.length === 0 ? 'No destinations found' :
                                                   'Select destination'
                     }
-                    options={destinations.map(c => ({ value: c, label: `${getFlag(c)} ${c}` }))}
-                    disabled={!passport || loadingDests || destinations.length === 0}
-                    icon="🌍"
+                    label="Traveling To"
+                    options={destinations.length > 0 ? destinations : undefined}
+                    disabled={!passport || loadingDests}
                   />
                 </div>
 

@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useUserCountry } from '@/hooks/useUserCountry'
+import CountrySelect from '@/components/CountrySelect'
 
 // ─── SEO Metadata (set via useEffect) ─────────────────────────────────────────
 // Title: "Visa Comparison Tool 2026 | VisitPlane"
@@ -220,13 +221,6 @@ function buildResult(country: string, row: VisaRow | null): CompareResult {
 }
 
 // ─── SVG Icons ────────────────────────────────────────────────────────────────
-function ChevronDown({ className = 'h-4 w-4' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  )
-}
 function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -271,41 +265,6 @@ function CheckCircle() {
     <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" />
     </svg>
-  )
-}
-
-// ─── Select Field ─────────────────────────────────────────────────────────────
-function SelectField({
-  id, label, value, onChange, placeholder, options, disabled, emoji = '🌍',
-}: {
-  id: string; label: string; value: string; onChange: (v: string) => void
-  placeholder: string; options: string[]; disabled: boolean; emoji?: string
-}) {
-  return (
-    <label htmlFor={id} className={`group relative block rounded-xl border p-3.5 transition-all cursor-pointer ${
-      disabled
-        ? 'border-white/5 opacity-40 cursor-not-allowed'
-        : 'border-white/10 hover:border-teal-500/40 focus-within:border-teal-500/60 bg-white/5'
-    }`}>
-      <span className="block text-[10px] font-bold uppercase tracking-widest text-teal-400 mb-1.5">{label}</span>
-      <div className="flex items-center gap-2">
-        <span className="text-lg leading-none shrink-0">{value ? (FLAGS[value] ?? emoji) : emoji}</span>
-        <select
-          id={id}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          disabled={disabled}
-          className="w-full appearance-none bg-transparent pr-6 text-sm font-medium text-white outline-none disabled:cursor-not-allowed"
-          style={{ colorScheme: 'dark' }}
-        >
-          <option value="" className="bg-[#0c0a1e] text-gray-400">{placeholder}</option>
-          {options.map((name) => (
-            <option key={name} value={name} className="bg-[#0c0a1e] text-white">{name}</option>
-          ))}
-        </select>
-        <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30 group-focus-within:text-teal-400 transition" />
-      </div>
-    </label>
   )
 }
 
@@ -687,15 +646,11 @@ export default function ComparePage() {
                 </div>
 
                 {/* Passport selector */}
-                <SelectField
-                  id="passport"
-                  label="My Passport Country"
+                <CountrySelect
                   value={passport}
                   onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
                   placeholder={geoLoading ? '🌍 Detecting your location…' : 'Choose your country…'}
-                  options={PASSPORT_COUNTRIES}
-                  disabled={false}
-                  emoji="🛂"
+                  label="My Passport Country"
                 />
                 {passport && !geoBadgeDismissed && !geoLoading && (
                   <p className="mt-1.5 text-[10px] text-teal-400 flex items-center gap-1">
@@ -713,30 +668,27 @@ export default function ComparePage() {
 
                 {/* 3 destination selectors */}
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <SelectField
-                    id="dest1"
-                    label="🏳️ Destination 1"
+                  <CountrySelect
                     value={dest1}
                     onChange={setDest1}
                     placeholder={destPlaceholder}
+                    label="🏳️ Destination 1"
                     options={availableDests.filter((d) => d !== dest2 && d !== dest3)}
                     disabled={!passport || loadingDests}
                   />
-                  <SelectField
-                    id="dest2"
-                    label="🏳️ Destination 2"
+                  <CountrySelect
                     value={dest2}
                     onChange={setDest2}
                     placeholder={destPlaceholder}
+                    label="🏳️ Destination 2"
                     options={availableDests.filter((d) => d !== dest1 && d !== dest3)}
                     disabled={!passport || loadingDests}
                   />
-                  <SelectField
-                    id="dest3"
-                    label="🏳️ Destination 3 (optional)"
+                  <CountrySelect
                     value={dest3}
                     onChange={setDest3}
                     placeholder={destPlaceholder}
+                    label="🏳️ Destination 3 (optional)"
                     options={availableDests.filter((d) => d !== dest1 && d !== dest2)}
                     disabled={!passport || loadingDests}
                   />

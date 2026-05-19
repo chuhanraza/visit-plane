@@ -1,5 +1,5 @@
 'use client'
-import SearchableCountrySelect from './SearchableCountrySelect'
+import CountrySelect from '@/components/CountrySelect'
 import { isLikelyVisaFree } from '../data'
 
 type Props = {
@@ -23,11 +23,10 @@ export default function Step2Destination({ passport, value, onChange, onNext, on
         We&apos;ll calculate your specific approval odds for this destination.
       </p>
 
-      <SearchableCountrySelect
+      <CountrySelect
         value={value}
         onChange={onChange}
         placeholder="Search or select destination country…"
-        excludeCountry={passport}
       />
 
       {/* Instant visa badge */}

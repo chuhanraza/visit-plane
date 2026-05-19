@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useUserCountry } from '@/hooks/useUserCountry'
+import CountrySelect from '@/components/CountrySelect'
 
 const PASSPORTS = [
   'Afghanistan','Albania','Algeria','Andorra','Angola','Antigua and Barbuda',
@@ -154,26 +155,22 @@ export default function ProcessingTimesPage() {
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm">
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <div className="mb-1.5 flex items-center justify-between">
-                <label className="block text-[10px] font-bold uppercase tracking-widest text-teal-400">Passport Country</label>
-                {passport && !geoBadgeDismissed && !geoLoading && (
-                  <span className="text-[10px] text-teal-400 flex items-center gap-1">
-                    📍 Auto-detected
-                    <button onClick={() => setGeoBadgeDismissed(true)} className="text-white/30 hover:text-white/60">✕</button>
-                  </span>
-                )}
-              </div>
-              <select value={passport} onChange={e => { setPassport(e.target.value); setGeoBadgeDismissed(true) }} className={sel} style={{ colorScheme:'dark' }}>
-                <option value="">{geoLoading ? '🌍 Detecting your location…' : 'Select country'}</option>
-                {PASSPORTS.map(c => <option key={c} value={c} className="bg-[#16122f]">{c}</option>)}
-              </select>
+              <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-teal-400">Passport Country</label>
+              <CountrySelect
+                value={passport}
+                onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
+                placeholder={geoLoading ? '🌍 Detecting your location…' : 'Select country'}
+              />
             </div>
             <div>
               <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-teal-400">Destination</label>
-              <select value={dest} onChange={e => setDest(e.target.value)} className={sel} style={{ colorScheme:'dark' }}>
-                <option value="">Select destination</option>
-                {DESTS.map(c => <option key={c} value={c} className="bg-[#16122f]">{c}</option>)}
-              </select>
+              <CountrySelect
+                value={dest}
+                onChange={setDest}
+                placeholder="Select destination"
+                options={DESTS.length > 0 ? DESTS : undefined}
+                disabled={!passport}
+              />
             </div>
             <div>
               <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-teal-400">Visa Type</label>

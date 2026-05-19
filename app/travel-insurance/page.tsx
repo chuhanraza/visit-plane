@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import CountrySelect from '@/components/CountrySelect'
 
 const DESTINATIONS = ['Australia','Canada','France','Germany','Italy','Japan','Spain','UAE','United Kingdom','United States']
 const DURATIONS = ['1 Week','2 Weeks','1 Month','3 Months']
@@ -105,12 +106,12 @@ export default function TravelInsurancePage() {
           <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-2 shadow-2xl shadow-black/50 backdrop-blur-sm">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500/8 via-transparent to-cyan-500/8 pointer-events-none" />
             <div className="relative rounded-xl bg-[#16122f] p-5 space-y-4">
-              <Field label="Destination">
-                <select value={dest} onChange={e => setDest(e.target.value)} className={sel} style={{ colorScheme: 'dark' }}>
-                  <option value="" className={opt}>Select destination country</option>
-                  {DESTINATIONS.map(d => <option key={d} value={d} className={opt}>{d}</option>)}
-                </select>
-              </Field>
+              <CountrySelect
+                value={dest}
+                onChange={setDest}
+                placeholder="Select destination country"
+                label="Destination Country"
+              />
               <Field label="Trip Duration">
                 <select value={dur} onChange={e => setDur(e.target.value)} className={sel} style={{ colorScheme: 'dark' }}>
                   <option value="" className={opt}>Select duration</option>

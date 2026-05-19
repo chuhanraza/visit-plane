@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useUserCountry } from '@/hooks/useUserCountry'
+import CountrySelect from '@/components/CountrySelect'
 
 const COUNTRIES = ['India','Nigeria','Pakistan','Philippines','United Kingdom','United States']
 const EMBASSIES = [
@@ -112,16 +113,12 @@ export default function EmbassyFinderPage() {
             <div className="rounded-xl bg-[#16122f] p-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block rounded-xl border border-white/10 bg-white/5 p-3.5 hover:border-indigo-500/40 focus-within:border-indigo-500/60 transition cursor-pointer">
-                    <span className="block text-[10px] font-semibold uppercase tracking-widest text-indigo-400">I am from</span>
-                    <div className="mt-1.5 flex items-center gap-2">
-                      <span className="text-lg">🌍</span>
-                      <select value={from} onChange={e => { setFrom(e.target.value); setGeoBadgeDismissed(true) }} className="w-full appearance-none bg-transparent text-sm font-medium text-white outline-none" style={{ colorScheme:'dark' }}>
-                        <option value="" className="bg-[#16122f] text-gray-400">{geoLoading ? '🌍 Detecting…' : 'Passport country'}</option>
-                        {COUNTRIES.map(c => <option key={c} value={c} className="bg-[#16122f] text-white">{c}</option>)}
-                      </select>
-                    </div>
-                  </label>
+                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-indigo-400">I am from</p>
+                  <CountrySelect
+                    value={from}
+                    onChange={(v) => { setFrom(v); setGeoBadgeDismissed(true) }}
+                    placeholder={geoLoading ? '🌍 Detecting…' : 'Passport country'}
+                  />
                   {from && !geoBadgeDismissed && !geoLoading && (
                     <p className="mt-1 text-[10px] text-teal-400 flex items-center gap-1 px-1">
                       📍 Auto-detected
@@ -129,16 +126,14 @@ export default function EmbassyFinderPage() {
                     </p>
                   )}
                 </div>
-                <label className="block rounded-xl border border-white/10 bg-white/5 p-3.5 hover:border-indigo-500/40 focus-within:border-indigo-500/60 transition cursor-pointer">
-                  <span className="block text-[10px] font-semibold uppercase tracking-widest text-indigo-400">Looking for embassy in</span>
-                  <div className="mt-1.5 flex items-center gap-2">
-                    <span className="text-lg">🏛️</span>
-                    <select value={to} onChange={e => setTo(e.target.value)} className="w-full appearance-none bg-transparent text-sm font-medium text-white outline-none" style={{ colorScheme:'dark' }}>
-                      <option value="" className="bg-[#16122f] text-gray-400">Destination country</option>
-                      {COUNTRIES.map(c => <option key={c} value={c} className="bg-[#16122f] text-white">{c}</option>)}
-                    </select>
-                  </div>
-                </label>
+                <div>
+                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-indigo-400">Looking for embassy in</p>
+                  <CountrySelect
+                    value={to}
+                    onChange={setTo}
+                    placeholder="Destination country"
+                  />
+                </div>
               </div>
               <button onClick={() => setResults(EMBASSIES.filter(e => e.from === from && e.to === to))} disabled={!from || !to}
                 className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-teal-500/25 transition hover:from-teal-600 hover:to-cyan-600 hover:shadow-teal-500/40 disabled:from-white/8 disabled:to-white/5 disabled:text-white/25 disabled:shadow-none disabled:cursor-not-allowed">

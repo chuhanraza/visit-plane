@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useUserCountry } from '@/hooks/useUserCountry'
+import CountrySelect from '@/components/CountrySelect'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -588,23 +589,11 @@ export default function PassportStrengthPage() {
                     </span>
                   )}
                 </div>
-                <div className="relative flex items-center gap-3">
-                  <span className="text-2xl select-none shrink-0">{flag}</span>
-                  <select
-                    value={passport}
-                    onChange={e => { setPassport(e.target.value); setGeoBadgeDismissed(true) }}
-                    className="w-full appearance-none bg-transparent text-base font-medium text-white outline-none pr-8 cursor-pointer"
-                    style={{ colorScheme: 'dark' }}
-                  >
-                    <option value="" className="bg-[#0C1526] text-gray-400">
-                      {geoLoading ? '🌍 Detecting your location…' : 'Choose your country…'}
-                    </option>
-                    {PASSPORT_COUNTRIES.map(c => (
-                      <option key={c} value={c} className="bg-[#0C1526] text-white">{FLAGS[c] ?? '🏳️'} {c}</option>
-                    ))}
-                  </select>
-                  <ChevronDown />
-                </div>
+                <CountrySelect
+                  value={passport}
+                  onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
+                  placeholder={geoLoading ? '🌍 Detecting your location…' : 'Choose your country…'}
+                />
               </div>
             </div>
 

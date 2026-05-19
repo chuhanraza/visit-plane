@@ -9,6 +9,7 @@ import { motion, useInView, AnimatePresence, type Variants } from 'framer-motion
 import { useUserCountry } from '@/hooks/useUserCountry'
 import { useTranslations } from 'next-intl'
 import LanguageSwitcher from '@/app/components/LanguageSwitcher'
+import CountrySelect from '@/components/CountrySelect'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -696,14 +697,11 @@ export default function HomePage() {
               <div className="relative rounded-xl bg-[#16122f] p-4">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <SelectField
-                      id="passport"
-                      label={t('hero.passportLabel')}
+                    <CountrySelect
                       value={passport}
                       onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
                       placeholder={geoLoading ? `🌍 ${t('common.loading')}` : t('hero.selectPassport')}
-                      options={PASSPORT_COUNTRIES}
-                      disabled={false}
+                      label={t('hero.passportLabel')}
                     />
                     {passport && !geoBadgeDismissed && !geoLoading && (
                       <div className="mt-1.5 flex items-center justify-between px-1">
@@ -719,18 +717,17 @@ export default function HomePage() {
                       </div>
                     )}
                   </div>
-                  <SelectField
-                    id="destination"
-                    label={t('hero.destinationLabel')}
+                  <CountrySelect
                     value={destination}
                     onChange={setDestination}
                     placeholder={
-                      !passport        ? t('hero.selectDestination') :
-                      loadingDests     ? 'Loading…'                  :
-                      destinations.length === 0 ? 'No destinations'  :
-                                         'Select destination'
+                      !passport               ? t('hero.selectDestination') :
+                      loadingDests            ? 'Loading…'                  :
+                      destinations.length === 0 ? 'No destinations'         :
+                                                'Select destination'
                     }
-                    options={destinations}
+                    label={t('hero.destinationLabel')}
+                    options={destinations.length > 0 ? destinations : undefined}
                     disabled={!passport || loadingDests}
                   />
                 </div>

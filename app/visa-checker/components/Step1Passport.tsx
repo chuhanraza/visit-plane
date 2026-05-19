@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import SearchableCountrySelect from './SearchableCountrySelect'
+import CountrySelect from '@/components/CountrySelect'
 import { useUserCountry } from '@/hooks/useUserCountry'
 
 type Props = {
@@ -27,7 +27,7 @@ export default function Step1Passport({ value, onChange, onNext }: Props) {
       </p>
 
       {/* Country selector */}
-      <SearchableCountrySelect
+      <CountrySelect
         value={value}
         onChange={(v) => { onChange(v); setBadgeDismissed(true) }}
         placeholder={geoLoading ? '🌍 Detecting your location…' : 'Search or select your passport country…'}
