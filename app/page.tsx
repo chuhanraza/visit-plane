@@ -534,6 +534,7 @@ export default function HomePage() {
               {toolsOpen && (
                 <div className="absolute left-0 top-full z-50 mt-1 w-52 rounded-xl border border-white/10 bg-[#0f0c29]/98 backdrop-blur-xl shadow-2xl shadow-black/40 py-1.5 overflow-hidden">
                   {[
+                    { label: '🤖 Visa Wizard',           href: '/wizard' },
                     { label: '🎯 Visa Checker',         href: '/visa-checker' },
                     { label: '⚖️ Compare Visas',       href: '/compare' },
                     { label: '📋 Checklist',            href: '/checklist' },
@@ -550,7 +551,7 @@ export default function HomePage() {
                       key={item.label}
                       href={item.href}
                       onClick={() => setToolsOpen(false)}
-                      className="block px-4 py-2 text-sm text-white/60 hover:bg-white/5 hover:text-white transition"
+                      className={`block px-4 py-2 text-sm hover:bg-white/5 hover:text-white transition ${item.href === '/wizard' ? 'text-teal-400 font-semibold' : 'text-white/60'}`}
                     >
                       {item.label}
                     </Link>
@@ -608,6 +609,7 @@ export default function HomePage() {
                 ))}
                 <div className="pt-1 pb-0.5 px-3 text-xs font-semibold uppercase tracking-widest text-white/30">Tools</div>
                 {[
+                  { label: '🤖 Visa Wizard',           href: '/wizard' },
                   { label: '🎯 Visa Checker',         href: '/visa-checker' },
                   { label: '⚖️ Compare Visas',       href: '/compare' },
                   { label: '📋 Checklist',            href: '/checklist' },
@@ -624,7 +626,7 @@ export default function HomePage() {
                     key={item.label}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm text-white/60 hover:bg-white/5 hover:text-white transition"
+                    className={`block rounded-lg px-3 py-2.5 text-sm hover:bg-white/5 hover:text-white transition ${item.href === '/wizard' ? 'text-teal-400 font-semibold' : 'text-white/60'}`}
                   >
                     {item.label}
                   </Link>

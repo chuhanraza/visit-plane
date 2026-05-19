@@ -127,6 +127,7 @@ export const CHECKLIST = [
 ]
 
 export const TOOLS = [
+  { label: "🤖 Visa Wizard",        href: "/wizard"            },
   { label: "💪 Passport Strength",  href: "/passport-strength" },
   { label: "⚖️ Compare Visas",      href: "/compare"           },
   { label: "📋 Checklist",           href: "/checklist"         },
