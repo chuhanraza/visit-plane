@@ -45,8 +45,8 @@ export default function BlogPage() {
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
-            <Link href="/destinations" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">Destinations</Link>
-            <Link href="/how-it-works" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">How it Works</Link>
+            <Link href="/destinations" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">Explore</Link>
+            <Link href="/visa-requirements" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">Visa Requirements</Link>
             <Link href="/blog" className="text-sm font-medium text-[#10B981]">Blog</Link>
           </nav>
 

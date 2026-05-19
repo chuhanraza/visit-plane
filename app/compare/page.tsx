@@ -621,7 +621,7 @@ export default function ComparePage() {
             transition={{ duration: 0.6, delay: 0.22 }}
             className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-white/30"
           >
-            {['⚡ Instant results', '🌍 200+ countries', '💡 Smart recommendations', '🆓 Always free'].map((s) => (
+            {['⚡ Instant results', '🌍 197 countries', '💡 Smart recommendations', '🆓 Always free'].map((s) => (
               <span key={s} className="flex items-center gap-1">{s}</span>
             ))}
           </motion.div>

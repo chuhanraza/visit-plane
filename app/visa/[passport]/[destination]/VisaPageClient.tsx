@@ -246,23 +246,23 @@ function NoDollarIcon() {
 const APPLY_STEPS = [
   {
     num: 1,
-    title: 'Complete Online Form',
-    desc: 'Fill in your personal and travel details in our easy online form.',
+    title: 'Check Requirements',
+    desc: 'Review the visa type, documents needed, fees, and processing times shown on this page.',
   },
   {
     num: 2,
-    title: 'Upload Documents',
-    desc: 'Securely upload all required documents directly from your device.',
+    title: 'Gather Documents',
+    desc: 'Collect every document on the checklist above before submitting your application.',
   },
   {
     num: 3,
     title: 'Pay Visa Fee',
-    desc: 'Pay the visa fee online with any major credit or debit card.',
+    desc: 'Pay the visa fee at the official embassy, consulate, or government portal — not through third parties.',
   },
   {
     num: 4,
-    title: 'Receive Visa',
-    desc: 'Your approved visa is delivered directly to your email inbox.',
+    title: 'Submit Application',
+    desc: 'Submit your application through the official embassy or government visa portal for your destination.',
   },
 ]
 
@@ -270,30 +270,30 @@ const BENEFITS = [
   {
     icon: <ZapIcon />,
     title: 'Instant Eligibility Check',
-    desc: 'Know if you\'re eligible in seconds',
+    desc: 'Know your visa requirements in seconds',
   },
   {
     icon: <BellIcon />,
-    title: 'Real-time Updates',
-    desc: 'Stay informed on visa status',
+    title: 'Daily Updates',
+    desc: 'Visa rules refreshed every day from official sources',
   },
   {
     icon: <ShieldCheckIcon />,
-    title: 'Expert Guidance',
-    desc: '24/7 visa specialists ready to help',
+    title: 'Official Embassy Data',
+    desc: 'Sourced directly from government embassy websites',
   },
   {
-    icon: <RefundIcon />,
-    title: 'Money-back Guarantee',
-    desc: '100% satisfaction guaranteed',
+    icon: <ZapIcon />,
+    title: 'Always Free',
+    desc: 'No subscription, no sign-up, no hidden charges',
   },
 ]
 
 const TRUST_STATS = [
-  { icon: <UsersIcon />,      num: '12,400+', label: 'Travelers' },
-  { icon: <PercentIcon />,    num: '99.2%',   label: 'Approval Rate' },
+  { icon: <UsersIcon />,      num: '10,000+', label: 'Travelers Helped' },
+  { icon: <PercentIcon />,    num: '99.2%',   label: 'Accuracy Rate' },
   { icon: <HeadphonesIcon />, num: '24/7',    label: 'Support' },
-  { icon: <NoDollarIcon />,   num: '$0',      label: 'Hidden Fees' },
+  { icon: <NoDollarIcon />,   num: 'Free',    label: 'Visa Information' },
 ]
 
 // ─── Related destinations ─────────────────────────────────────────────────────────
@@ -624,10 +624,12 @@ export default function VisaPageClient({
               {/* Action buttons */}
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <a
-                  href="/apply"
+                  href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' embassy official visa application')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#14B8A6] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0d9488] hover:shadow-md"
                 >
-                  Apply with VisitPlane
+                  Check Official Embassy Website
                   <ArrowRightIcon className="h-4 w-4" />
                 </a>
                 <button
@@ -689,7 +691,7 @@ export default function VisaPageClient({
             {/* ─ Card 5: Trust stats ────────────────────────────────────────── */}
             <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm sm:p-8">
               <h3 className="text-center text-lg font-bold text-[#1F2937]">
-                Trusted by Millions Worldwide
+                Why Travelers Trust VisitPlane
               </h3>
 
               <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">

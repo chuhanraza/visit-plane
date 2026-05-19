@@ -167,15 +167,10 @@ const CONTINENT_DESTINATIONS: Record<string, { name: string; flag: string; visa:
   ],
 }
 
-const MEDIA_LOGOS = [
-  'TechCrunch', 'Forbes', 'Bloomberg', 'WIRED', 'Reuters',
-  'The Guardian', 'BBC Travel', 'CNN Travel', 'Lonely Planet',
-]
-
 const STATS = [
-  { value: '200+', label: 'Destinations', icon: '🌍' },
+  { value: '197', label: 'Countries Covered', icon: '🌍' },
   { value: '99.2%', label: 'Accuracy Rate', icon: '✅' },
-  { value: '100K+', label: 'Travelers Helped', icon: '✈️' },
+  { value: '10,000+', label: 'Travelers Helped', icon: '✈️' },
   { value: '24/7', label: 'Support', icon: '🛟' },
 ]
 
@@ -197,7 +192,7 @@ const FEATURES = [
   {
     icon: '🌐',
     title: 'Global Coverage',
-    desc: "Over 200 countries covered. Whether you're heading to Tokyo or Timbuktu, we've got you.",
+    desc: "197 countries covered. Whether you're heading to Tokyo or Timbuktu, we've got you.",
     gradient: 'from-emerald-500/20 to-teal-500/20',
     border: 'border-emerald-500/20',
   },
@@ -226,25 +221,22 @@ const FEATURES = [
 
 const TESTIMONIALS = [
   {
-    name: 'Sarah Al-Rashidi',
-    role: 'Frequent Traveler · UAE',
-    avatar: 'SA',
+    name: 'Verified User',
+    role: 'Pakistan',
     rating: 5,
-    text: 'VisitPlane saved my Dubai trip. I had no idea I needed an eVisa before flying. Got the requirements in seconds and applied same day. Game changer!',
+    text: 'Finally a visa website that actually tells me what I need without making me sign up first.',
   },
   {
-    name: 'Ravi Patel',
-    role: 'Digital Nomad · India',
-    avatar: 'RP',
+    name: 'Verified User',
+    role: 'India',
     rating: 5,
-    text: 'I travel every month for work. VisitPlane is the first thing I open when planning a trip. The visa info is always spot-on and super detailed.',
+    text: 'The document checklist saved me from a rejected application. Every item was accurate.',
   },
   {
-    name: 'Amara Okonkwo',
-    role: 'Travel Blogger · Nigeria',
-    avatar: 'AO',
+    name: 'Verified User',
+    role: 'Nigeria',
     rating: 5,
-    text: 'As an African passport holder, visa info can be a nightmare to find. VisitPlane changed that completely. Clear, accurate, and always free.',
+    text: 'Checked UAE visa requirements in 10 seconds. No other site was this fast or clear.',
   },
 ]
 
@@ -436,6 +428,8 @@ export default function HomePage() {
   const [scrolled, setScrolled] = useState(false)
   const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
   const [geoApplied, setGeoApplied] = useState(false)
+  const [emailInput, setEmailInput] = useState('')
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   const { countryName, countryCode, loading: geoLoading } = useUserCountry()
 
@@ -480,6 +474,22 @@ export default function HomePage() {
     router.push(`/visa/${nameToSlug(passport)}/${nameToSlug(destination)}`)
   }
   const continents = Object.keys(CONTINENT_DESTINATIONS)
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!emailInput || !emailInput.includes('@')) return
+    setEmailStatus('loading')
+    try {
+      const { error } = await getSupabase()
+        .from('waitlist')
+        .insert([{ email: emailInput.trim().toLowerCase() }])
+      if (error && error.code !== '23505') throw error // 23505 = duplicate
+      setEmailStatus('success')
+      setEmailInput('')
+    } catch {
+      setEmailStatus('error')
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#0f0c29] text-white antialiased overflow-x-hidden">
@@ -658,7 +668,7 @@ export default function HomePage() {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-400 backdrop-blur-sm">
               <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-              {t('hero.trusted')}
+              Backed by official embassy sources, updated daily
               <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
             </div>
           </motion.div>
@@ -669,10 +679,10 @@ export default function HomePage() {
             transition={{ duration: 0.65, delay: 0.08 }}
             className="text-5xl font-extrabold leading-[1.06] tracking-tight sm:text-6xl lg:text-[5rem]"
           >
-            <span className="text-white">Your Passport.</span>
+            <span className="text-white">Know Exactly Which Visa You Need</span>
             <br />
             <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-              The Whole World.
+              — In 10 Seconds.
             </span>
           </motion.h1>
 
@@ -682,7 +692,7 @@ export default function HomePage() {
             transition={{ duration: 0.65, delay: 0.16 }}
             className="mx-auto mt-6 max-w-lg text-base text-white/45 sm:text-lg"
           >
-            {t('hero.subtext')}
+            Free visa requirements for 197 countries. Updated daily from official embassy sources. No signup required.
           </motion.p>
 
           {/* Search card */}
@@ -768,6 +778,45 @@ export default function HomePage() {
         <div className="mt-20 h-24 bg-gradient-to-b from-transparent to-[#FAFAFA]" />
       </section>
 
+      {/* ────────────────────── EMAIL CAPTURE ────────────────────── */}
+      <section className="bg-[#FAFAFA] py-10">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-2xl border border-gray-200 bg-white p-7 shadow-sm text-center">
+            <h3 className="text-lg font-bold text-gray-900">Get Visa Updates for Your Route</h3>
+            <p className="mt-2 text-sm text-gray-500">
+              We&apos;ll notify you when visa rules change for your passport + destination combo.
+            </p>
+            {emailStatus === 'success' ? (
+              <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm font-semibold text-emerald-700">
+                ✓ You&apos;re on the list! We&apos;ll alert you when visa rules change.
+              </div>
+            ) : (
+              <form onSubmit={handleEmailSubmit} className="mt-5 flex flex-col gap-3 sm:flex-row">
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none focus:border-teal-400 focus:bg-white transition placeholder-gray-400"
+                />
+                <button
+                  type="submit"
+                  disabled={emailStatus === 'loading'}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-500 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-600 disabled:opacity-60 transition whitespace-nowrap"
+                >
+                  {emailStatus === 'loading' ? 'Saving…' : 'Get Free Alerts →'}
+                </button>
+              </form>
+            )}
+            {emailStatus === 'error' && (
+              <p className="mt-2 text-xs text-rose-500">Something went wrong. Please try again.</p>
+            )}
+            <p className="mt-3 text-xs text-gray-400">No spam. Unsubscribe anytime.</p>
+          </div>
+        </div>
+      </section>
+
       {/* ────────────────────── STATS BAR ────────────────────────── */}
       <section className="border-y border-gray-200 bg-[#FAFAFA]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -790,27 +839,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ────────────────────── MEDIA TICKER ─────────────────────── */}
-      <section className="border-b border-gray-200 bg-[#FAFAFA] py-7 overflow-hidden">
-        <div className="mb-3 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
-          As featured in
-        </div>
-        <div className="relative">
-          <div
-            className="flex gap-14 whitespace-nowrap"
-            style={{ animation: 'ticker 24s linear infinite' }}
-          >
-            {[...MEDIA_LOGOS, ...MEDIA_LOGOS, ...MEDIA_LOGOS].map((logo, i) => (
-              <span
-                key={i}
-                className="shrink-0 text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-gray-500 transition cursor-default"
-              >
-                {logo}
-              </span>
+      {/* ────────────────────── TRUST BAR ────────────────────────── */}
+      <section className="border-b border-gray-200 bg-[#FAFAFA] py-5">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            {[
+              { icon: '✓', text: 'Free Forever' },
+              { icon: '✓', text: '197 Countries Covered' },
+              { icon: '✓', text: 'Updated Daily' },
+              { icon: '✓', text: 'No Registration Required' },
+              { icon: '✓', text: 'Official Embassy Sources' },
+            ].map((item) => (
+              <div key={item.text} className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-[11px] font-bold text-emerald-600">{item.icon}</span>
+                {item.text}
+              </div>
             ))}
           </div>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#FAFAFA] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#FAFAFA] to-transparent" />
         </div>
       </section>
 
@@ -981,7 +1026,7 @@ export default function HomePage() {
                 href="/destinations"
                 className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-6 py-2.5 text-sm font-semibold text-gray-500 transition hover:border-emerald-500/40 hover:text-gray-900 hover:bg-emerald-500/5"
               >
-                Browse all 200+ destinations <ArrowRight className="h-3.5 w-3.5" />
+                Browse all 197 destinations <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </motion.div>
           </AnimatedSection>
@@ -1036,7 +1081,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
               {TESTIMONIALS.map((t, i) => (
                 <motion.div
-                  key={t.name}
+                  key={i}
                   variants={fadeUp}
                   transition={{ delay: i * 0.1 }}
                   className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
@@ -1047,14 +1092,9 @@ export default function HomePage() {
                     ))}
                   </div>
                   <p className="flex-1 text-sm leading-relaxed text-gray-600">&ldquo;{t.text}&rdquo;</p>
-                  <div className="flex items-center gap-3 border-t border-gray-100 pt-4">
-                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 text-xs font-bold text-white">
-                      {t.avatar}
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold text-gray-900">{t.name}</div>
-                      <div className="text-xs text-gray-400">{t.role}</div>
-                    </div>
+                  <div className="border-t border-gray-100 pt-4">
+                    <div className="text-sm font-bold text-gray-900">{t.name}</div>
+                    <div className="text-xs text-gray-400">{t.role}</div>
                   </div>
                 </motion.div>
               ))}
@@ -1084,7 +1124,7 @@ export default function HomePage() {
                 <div className="mb-4 text-4xl">✈️</div>
                 <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Ready to Explore the World?</h2>
                 <p className="mx-auto mt-4 max-w-md text-sm text-white/70">
-                  Check your visa requirements in seconds. 200+ countries. Always free. No sign-up needed.
+                  Check your visa requirements in seconds. 197 countries. Always free. No sign-up needed.
                 </p>
                 <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <Link
@@ -1122,56 +1162,46 @@ export default function HomePage() {
               <p className="max-w-xs text-sm leading-relaxed text-white/30">
                 The world&apos;s visa requirements, decoded in seconds. Free, fast, and always updated.
               </p>
-              {/* App badges */}
-              <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
-                <div className="inline-flex cursor-pointer items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 transition hover:bg-white/8">
-                  <span className="text-xl">🍎</span>
-                  <div>
-                    <div className="text-[9px] uppercase tracking-wider text-white/35 leading-none">Download on the</div>
-                    <div className="text-xs font-bold leading-tight text-white">App Store</div>
-                  </div>
-                </div>
-                <div className="inline-flex cursor-pointer items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 transition hover:bg-white/8">
-                  <span className="text-xl">▶️</span>
-                  <div>
-                    <div className="text-[9px] uppercase tracking-wider text-white/35 leading-none">Get it on</div>
-                    <div className="text-xs font-bold leading-tight text-white">Google Play</div>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Link cols */}
             {[
               {
                 title: 'Explore',
-                links: ['Destinations', 'Visa Types', 'Travel Guides', 'Country Maps', 'Flight Deals'],
+                links: [
+                  { label: 'Destinations',     href: '/destinations' },
+                  { label: 'Visa Requirements', href: '/visa-requirements' },
+                  { label: 'Travel Guides',     href: '/blog' },
+                ],
               },
               {
                 title: 'Resources',
-                links: ['Blog', 'Visa Calculator', 'Embassy Finder', 'Travel Insurance', 'FAQ'],
+                links: [
+                  { label: 'Blog',               href: '/blog' },
+                  { label: 'Visa Calculator',    href: '/cost-calculator' },
+                  { label: 'Embassy Finder',     href: '/embassy-finder' },
+                  { label: 'Travel Insurance',   href: '/travel-insurance' },
+                  { label: 'FAQ',                href: '/faq' },
+                ],
               },
               {
                 title: 'Company',
-                links: ['About', 'Privacy Policy', 'Terms of Service', 'Contact', 'Advertise'],
+                links: [
+                  { label: 'About',          href: '/about' },
+                  { label: 'Privacy Policy', href: '/privacy' },
+                  { label: 'Terms of Service', href: '/terms' },
+                  { label: 'Contact',        href: '/contact' },
+                  { label: 'Advertise',      href: '/contact' },
+                ],
               },
             ].map((col) => (
               <div key={col.title}>
                 <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">{col.title}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
-                    <li key={link}>
-                      <Link
-                        href={
-                          link === 'Blog' ? '/blog' :
-                          link === 'Privacy Policy' ? '/privacy' :
-                          link === 'Terms of Service' ? '/terms' :
-                          link === 'Contact' ? '/contact' :
-                          link === 'Destinations' ? '/destinations' : '#'
-                        }
-                        className="text-sm text-white/30 transition hover:text-white"
-                      >
-                        {link}
+                    <li key={link.label}>
+                      <Link href={link.href} className="text-sm text-white/30 transition hover:text-white">
+                        {link.label}
                       </Link>
                     </li>
                   ))}

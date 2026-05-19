@@ -150,10 +150,10 @@ export default async function VisaResultPage({
           {/* Nav links */}
           <nav className="hidden items-center gap-8 md:flex">
             <Link href="/destinations" className="text-sm text-gray-500 transition hover:text-[#1F2937]">
-              Destinations
+              Explore
             </Link>
-            <Link href="/how-it-works" className="text-sm text-gray-500 transition hover:text-[#1F2937]">
-              How it Works
+            <Link href="/visa-requirements" className="text-sm text-gray-500 transition hover:text-[#1F2937]">
+              Visa Requirements
             </Link>
             <Link href="/blog" className="text-sm text-gray-500 transition hover:text-[#1F2937]">
               Blog
@@ -162,10 +162,10 @@ export default async function VisaResultPage({
 
           {/* CTA */}
           <Link
-            href="/get-started"
+            href="/"
             className="group inline-flex items-center gap-2 rounded-full bg-[#14B8A6] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#0d9488]"
           >
-            Get Started
+            Check Visa
             <NavArrow />
           </Link>
         </div>
