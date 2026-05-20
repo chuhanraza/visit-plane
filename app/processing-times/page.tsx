@@ -57,66 +57,8 @@ const TIMES: Record<string, TimeData> = {
   'United States|United Kingdom|Tourist':  { standard:3,  express:1,  tips:['Apply for a UK ETA online','Usually approved the same day','No in-person appointment needed'] },
   'United Kingdom|United States|Tourist':  { standard:3,  express:1,  tips:['Apply for ESTA online before departure','Usually processed within 72 hours','Ensure your passport is ESTA-eligible'] },
 }
-const NAV = [{ label:'Explore', href:'/destinations' },{ label:'Passport Strength', href:'/passport-strength' },{ label:'⚖️ Compare', href:'/compare' },{ label:'📋 Checklist', href:'/checklist' },{ label:'⏱️ Processing Times', href:'/processing-times' },{ label:'Blog', href:'/blog' }]
-const FOOTER_COLS = [{ title:'Tools', links:[['Passport Strength','/passport-strength'],['Visa Comparison','/compare'],['Document Checklist','/checklist'],['Currency Converter','/currency-converter'],['Embassy Finder','/embassy-finder']] as const },{ title:'Company', links:[['About','/about'],['FAQ','/faq'],['Contact','/contact'],['Privacy','/privacy'],['Terms','/terms']] as const }]
 
-function Navbar() {
-  return (
-    <header className="sticky top-0 z-50 bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/20">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="rounded-xl" />
-          <span className="text-lg font-bold tracking-tight"><span className="text-white">Visit</span><span className="text-emerald-400">Plane</span></span>
-        </Link>
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV.map(n => <Link key={n.label} href={n.href} className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition">{n.label}</Link>)}
-          <div className="relative group">
-            <button className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition flex items-center gap-1">Tools <span className="text-[10px]">▾</span></button>
-            <div className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-white/10 bg-[#16122f] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-1">
-              <Link href="/passport-strength" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💪 Passport Strength</Link>
-              <Link href="/compare" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⚖️ Compare Visas</Link>
-              <Link href="/checklist" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">📋 Checklist</Link>
-              <Link href="/processing-times" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⏱️ Processing Times</Link>
-              <Link href="/travel-insurance" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🛡️ Travel Insurance</Link>
-              <Link href="/embassy-finder" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🏛️ Embassy Finder</Link>
-              <Link href="/cost-calculator" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💰 Cost Calculator</Link>
-              <Link href="/currency-converter" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💱 Currency Converter</Link>
-            </div>
-          </div>
-        </nav>
-        <Link href="/destinations" className="hidden sm:inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 hover:bg-emerald-600 transition">Check Visa →</Link>
-      </div>
-    </header>
-  )
-}
 
-function Footer() {
-  return (
-    <footer className="border-t border-white/5 bg-[#0a0820] pb-8 pt-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-8 lg:grid-cols-5">
-          <div className="col-span-2">
-            <Link href="/" className="mb-4 inline-flex items-center gap-2.5">
-              <Image src="/logo-v2.png" alt="VisitPlane" width={32} height={32} className="rounded-xl" />
-              <span className="text-lg font-bold"><span className="text-white">Visit</span><span className="text-emerald-400">Plane</span></span>
-            </Link>
-            <p className="max-w-xs text-sm leading-relaxed text-white/30">The world&apos;s visa requirements, decoded in seconds. Free, fast, and always updated.</p>
-          </div>
-          {FOOTER_COLS.map(col => (
-            <div key={col.title}>
-              <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">{col.title}</h4>
-              <ul className="space-y-2.5">{col.links.map(([label, href]) => <li key={label}><Link href={href} className="text-sm text-white/30 hover:text-white transition">{label}</Link></li>)}</ul>
-            </div>
-          ))}
-        </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/5 pt-8 sm:flex-row">
-          <p className="text-xs text-white/20">© {new Date().getFullYear()} VisitPlane. All rights reserved.</p>
-          <p className="text-xs text-white/15">Processing times are estimates. Always verify with official embassy sources.</p>
-        </div>
-      </div>
-    </footer>
-  )
-}
 
 export default function ProcessingTimesPage() {
   const [passport, setPassport] = useState('')
@@ -124,7 +66,7 @@ export default function ProcessingTimesPage() {
   const [vtype, setVtype] = useState('Tourist')
   const [result, setResult] = useState<TimeData | null | 'none'>(null)
   const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
-  const sel = 'w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-teal-500/50 transition'
+  const sel = 'w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-[#0f0c29] outline-none focus:border-teal-500/50 transition'
   const found = result && result !== 'none' ? result : null
 
   const { countryName, loading: geoLoading } = useUserCountry()
@@ -136,23 +78,21 @@ export default function ProcessingTimesPage() {
   }, [countryName, geoLoading, passport])
 
   return (
-    <div className="min-h-screen bg-[#0f0c29] text-white antialiased">
-      <Navbar />
-      {/* HERO */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">      {/* HERO */}
       <section className="relative overflow-hidden pt-20 pb-12 text-center px-4">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(20,184,166,0.12),transparent_65%)]" />
         <div className="relative mx-auto max-w-3xl">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-teal-500/25 bg-teal-500/10 px-4 py-1.5 text-xs font-bold text-teal-400">⏱️ Processing Time Tracker</div>
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-[3.5rem]">
-            <span className="text-white">How Long Will Your</span><br />
+            <span className="text-[#0f0c29]">How Long Will Your</span><br />
             <span className="bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent">Visa Take?</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-md text-base text-white/45">Real processing time estimates for every visa type</p>
+          <p className="mx-auto mt-4 max-w-md text-base text-gray-500">Real processing time estimates for every visa type</p>
         </div>
       </section>
       {/* INPUTS */}
       <section className="mx-auto max-w-2xl px-4 pb-20">
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 backdrop-blur-sm">
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
               <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-teal-400">Passport Country</label>
@@ -175,7 +115,7 @@ export default function ProcessingTimesPage() {
             <div>
               <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-teal-400">Visa Type</label>
               <select value={vtype} onChange={e => setVtype(e.target.value)} className={sel} style={{ colorScheme:'dark' }}>
-                {VISA_TYPES.map(t => <option key={t} value={t} className="bg-[#16122f]">{t}</option>)}
+                {VISA_TYPES.map(t => <option key={t} value={t} className="bg-white">{t}</option>)}
               </select>
             </div>
           </div>
@@ -186,7 +126,7 @@ export default function ProcessingTimesPage() {
         </div>
         {/* RESULTS */}
         {result === 'none' && (
-          <div className="mt-6 rounded-2xl border border-white/8 bg-white/[0.03] p-6 text-center text-sm text-white/40">
+          <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-400">
             Processing times typically range from 5–30 days depending on your embassy. Please check the official embassy website for exact timelines.
           </div>
         )}
@@ -195,20 +135,20 @@ export default function ProcessingTimesPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-blue-500/20 bg-blue-500/[0.08] p-6">
                 <div className="text-xs font-bold uppercase tracking-widest text-blue-400">📅 Standard Processing</div>
-                <div className="mt-3 text-4xl font-extrabold text-white">{found.standard}<span className="ml-1.5 text-lg font-semibold text-white/40">days</span></div>
-                <div className="mt-1 text-xs text-white/35">≈ {Math.ceil(found.standard / 7)} weeks</div>
+                <div className="mt-3 text-4xl font-extrabold text-[#0f0c29]">{found.standard}<span className="ml-1.5 text-lg font-semibold text-gray-400">days</span></div>
+                <div className="mt-1 text-xs text-gray-400">≈ {Math.ceil(found.standard / 7)} weeks</div>
               </div>
               <div className="rounded-2xl border border-teal-500/20 bg-teal-500/[0.08] p-6">
                 <div className="text-xs font-bold uppercase tracking-widest text-teal-400">⚡ Express Processing</div>
-                <div className="mt-3 text-4xl font-extrabold text-white">{found.express}<span className="ml-1.5 text-lg font-semibold text-white/40">days</span></div>
-                <div className="mt-1 text-xs text-white/35">Priority service available</div>
+                <div className="mt-3 text-4xl font-extrabold text-[#0f0c29]">{found.express}<span className="ml-1.5 text-lg font-semibold text-gray-400">days</span></div>
+                <div className="mt-1 text-xs text-gray-400">Priority service available</div>
               </div>
             </div>
             <div className="rounded-2xl border border-amber-500/15 bg-amber-500/[0.05] p-6">
               <div className="mb-3 text-xs font-bold uppercase tracking-widest text-amber-400">💡 Tips to Speed Up Processing</div>
               <ul className="space-y-2.5">
                 {found.tips.map((tip, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-white/60">
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-500">
                     <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-teal-500/20 text-[10px] font-bold text-teal-400">{i + 1}</span>
                     {tip}
                   </li>
@@ -217,8 +157,6 @@ export default function ProcessingTimesPage() {
             </div>
           </div>
         )}
-      </section>
-      <Footer />
-    </div>
+      </section>    </div>
   )
 }

@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import type { QuizAnswers, DenialValue, FinancialValue } from './data'
 import { EMPTY_ANSWERS } from './data'
-import VisaNavbar        from './components/VisaNavbar'
 import LandingSection    from './components/LandingSection'
 import ProgressBar       from './components/ProgressBar'
 import Step1Passport     from './components/Step1Passport'
@@ -36,8 +35,6 @@ export default function VisaCheckerPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <VisaNavbar />
-
       {/* ── Landing ─────────────────────────────────────────────── */}
       {step === 0 && <LandingSection onStart={() => setStep(1)} />}
 

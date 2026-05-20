@@ -8,7 +8,6 @@ import { createClient } from '@supabase/supabase-js'
 import { motion, useInView, AnimatePresence, type Variants } from 'framer-motion'
 import { useUserCountry } from '@/hooks/useUserCountry'
 import { useTranslations } from 'next-intl'
-import LanguageSwitcher from '@/app/components/LanguageSwitcher'
 import CountrySelect from '@/components/CountrySelect'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
@@ -471,21 +470,11 @@ export default function HomePage() {
   const router = useRouter()
   const t = useTranslations()
 
-  // Read locale from cookie for LanguageSwitcher
-  const [currentLocale, setCurrentLocale] = useState('en')
-  useEffect(() => {
-    const match = document.cookie.match(/(?:^|;\s*)NEXT_LOCALE=([^;]*)/)
-    if (match) setCurrentLocale(match[1])
-  }, [])
-
   const [passport, setPassport]         = useState('')
   const [destination, setDestination]   = useState('')
   const [destinations, setDestinations] = useState<string[]>([])
   const [loadingDests, setLoadingDests] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [toolsOpen, setToolsOpen] = useState(false)
   const [activeContinent, setActiveContinent] = useState('Asia')
-  const [scrolled, setScrolled] = useState(false)
   const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
   const [geoApplied, setGeoApplied] = useState(false)
   const [emailInput, setEmailInput] = useState('')
@@ -503,12 +492,6 @@ export default function HomePage() {
       setGeoApplied(true)
     }
   }, [countryName, geoLoading, geoApplied])
-
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handler, { passive: true })
-    return () => window.removeEventListener('scroll', handler)
-  }, [])
 
   useEffect(() => {
     if (!passport) { setDestinations([]); setDestination(''); return }
@@ -553,158 +536,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#0f0c29] text-white antialiased overflow-x-hidden">
-      {/* ────────────────────── NAVBAR ────────────────────────────── */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30'
-          : 'bg-transparent'
-      }`}>
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="group flex items-center gap-2.5 shrink-0">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-emerald-500/20 blur-md group-hover:bg-emerald-500/30 transition" />
-              <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="relative rounded-xl" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="text-white">Visit</span>
-              <span className="text-emerald-400">Plane</span>
-            </span>
-          </Link>
-
-          <nav className="hidden items-center gap-1 md:flex">
-            <Link href="/destinations" className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
-              {t('nav.explore')}
-            </Link>
-            <Link href="/destinations" className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
-              {t('nav.visaRequirements')}
-            </Link>
-
-            {/* Tools dropdown */}
-            <div className="relative" onMouseEnter={() => setToolsOpen(true)} onMouseLeave={() => setToolsOpen(false)}>
-              <button
-                onClick={() => setToolsOpen(!toolsOpen)}
-                className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white"
-              >
-                {t('nav.tools')}
-                <svg className={`h-3.5 w-3.5 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {toolsOpen && (
-                <div className="absolute left-0 top-full z-50 mt-1 w-52 rounded-xl border border-white/10 bg-[#0f0c29]/98 backdrop-blur-xl shadow-2xl shadow-black/40 py-1.5 overflow-hidden">
-                  {[
-                    { label: '🤖 Visa Wizard',           href: '/wizard' },
-                    { label: '🎯 Visa Checker',         href: '/visa-checker' },
-                    { label: '🗺️ Visa-Free Map',        href: '/visa-free-map' },
-                    { label: '⚖️ Compare Visas',       href: '/compare' },
-                    { label: '📋 Checklist',            href: '/checklist' },
-                    { label: '⏱️ Processing Times',     href: '/processing-times' },
-                    { label: '🛡️ Travel Insurance',     href: '/travel-insurance' },
-                    { label: '💱 Currency Converter',   href: '/currency-converter' },
-                    { label: '🏛️ Embassy Finder',       href: '/embassy-finder' },
-                    { label: '💰 Cost Calculator',      href: '/cost-calculator' },
-                    { label: '💪 Passport Strength',    href: '/passport-strength' },
-                    { label: '📊 Visa Tracker',         href: '/visa-tracker' },
-                    { label: '🎤 Interview Prep',        href: '/interview-prep' },
-                  ].map((item) => (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      onClick={() => setToolsOpen(false)}
-                      className={`block px-4 py-2 text-sm hover:bg-white/5 hover:text-white transition ${item.href === '/wizard' ? 'text-teal-400 font-semibold' : 'text-white/60'}`}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <Link href="/blog" className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
-              {t('nav.blog')}
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <LanguageSwitcher currentLocale={currentLocale} />
-            <Link
-              href="/destinations"
-              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-600 hover:shadow-emerald-500/40 hover:-translate-y-px"
-            >
-              {t('nav.checkVisa')} <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="rounded-lg p-2 text-white/55 hover:bg-white/5 hover:text-white md:hidden transition"
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <XIcon /> : <MenuIcon />}
-            </button>
-          </div>
-        </div>
-
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="border-t border-white/5 bg-[#060C18]/98 backdrop-blur-xl md:hidden overflow-hidden"
-            >
-              <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
-                {[
-                  { label: t('nav.explore'),           href: '/destinations' },
-                  { label: t('nav.visaRequirements'),  href: '/destinations' },
-                  { label: t('nav.blog'),              href: '/blog' },
-                ].map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm text-white/60 hover:bg-white/5 hover:text-white transition"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                <div className="pt-1 pb-0.5 px-3 text-xs font-semibold uppercase tracking-widest text-white/30">Tools</div>
-                {[
-                  { label: '🤖 Visa Wizard',           href: '/wizard' },
-                  { label: '🎯 Visa Checker',         href: '/visa-checker' },
-                  { label: '🗺️ Visa-Free Map',        href: '/visa-free-map' },
-                  { label: '⚖️ Compare Visas',       href: '/compare' },
-                  { label: '📋 Checklist',            href: '/checklist' },
-                  { label: '⏱️ Processing Times',     href: '/processing-times' },
-                  { label: '🛡️ Travel Insurance',     href: '/travel-insurance' },
-                  { label: '💱 Currency Converter',   href: '/currency-converter' },
-                  { label: '🏛️ Embassy Finder',       href: '/embassy-finder' },
-                  { label: '💰 Cost Calculator',      href: '/cost-calculator' },
-                  { label: '💪 Passport Strength',    href: '/passport-strength' },
-                  { label: '📊 Visa Tracker',         href: '/visa-tracker' },
-                  { label: '🎤 Interview Prep',        href: '/interview-prep' },
-                ].map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`block rounded-lg px-3 py-2.5 text-sm hover:bg-white/5 hover:text-white transition ${item.href === '/wizard' ? 'text-teal-400 font-semibold' : 'text-white/60'}`}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                <Link
-                  href="/destinations"
-                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-emerald-500 px-4 py-2.5 text-sm font-bold text-white"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t('hero.checkButton')}
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
 
       {/* ────────────────────── HERO ──────────────────────────────── */}
       <section className="relative overflow-hidden pt-16 sm:pt-20 lg:pt-28 pb-0">
@@ -1261,76 +1092,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ────────────────────── FOOTER ────────────────────────────── */}
-      <footer className="border-t border-white/5 bg-[#0a0820] pb-8 pt-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-5">
-            {/* Brand col */}
-            <div className="col-span-2 lg:col-span-2">
-              <Link href="/" className="mb-4 inline-flex items-center gap-2.5">
-                <Image src="/logo-v2.png" alt="VisitPlane" width={32} height={32} className="rounded-xl" />
-                <span className="text-lg font-bold">
-                  <span className="text-white">Visit</span>
-                  <span className="text-emerald-400">Plane</span>
-                </span>
-              </Link>
-              <p className="max-w-xs text-sm leading-relaxed text-white/30">
-                The world&apos;s visa requirements, decoded in seconds. Free, fast, and always updated.
-              </p>
-            </div>
-
-            {/* Link cols */}
-            {[
-              {
-                title: 'Explore',
-                links: [
-                  { label: 'Destinations',     href: '/destinations' },
-                  { label: 'Visa Requirements', href: '/visa-requirements' },
-                  { label: 'Travel Guides',     href: '/blog' },
-                ],
-              },
-              {
-                title: 'Resources',
-                links: [
-                  { label: 'Blog',               href: '/blog' },
-                  { label: 'Visa Calculator',    href: '/cost-calculator' },
-                  { label: 'Embassy Finder',     href: '/embassy-finder' },
-                  { label: 'Travel Insurance',   href: '/travel-insurance' },
-                  { label: 'FAQ',                href: '/faq' },
-                ],
-              },
-              {
-                title: 'Company',
-                links: [
-                  { label: 'About',          href: '/about' },
-                  { label: 'Privacy Policy', href: '/privacy' },
-                  { label: 'Terms of Service', href: '/terms' },
-                  { label: 'Contact',        href: '/contact' },
-                  { label: 'Advertise',      href: '/contact' },
-                ],
-              },
-            ].map((col) => (
-              <div key={col.title}>
-                <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">{col.title}</h4>
-                <ul className="space-y-2.5">
-                  {col.links.map((link) => (
-                    <li key={link.label}>
-                      <Link href={link.href} className="text-sm text-white/30 transition hover:text-white">
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/5 pt-8 sm:flex-row">
-            <p className="text-xs text-white/20">© {new Date().getFullYear()} VisitPlane. All rights reserved.</p>
-            <p className="text-xs text-white/15">Visa data is estimated. Always verify with official embassy sources.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

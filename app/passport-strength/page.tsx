@@ -288,7 +288,7 @@ function ScoreRing({ score, active }: { score: number; active: boolean }) {
         <div className="text-6xl font-black tabular-nums leading-none" style={{ color }}>
           {displayed}
         </div>
-        <div className="text-sm font-bold text-white/30 mt-1">/ 100</div>
+        <div className="text-sm font-bold text-gray-400 mt-1">/ 100</div>
         <div className="mt-2 rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest"
           style={{ background: `${color}20`, color }}>
           {label}
@@ -321,8 +321,8 @@ function StatCard({
         <div className="text-4xl font-black tabular-nums" style={{ color }}>
           {displayed}
         </div>
-        <div className="mt-1 text-sm font-bold text-white">{label}</div>
-        <div className="mt-0.5 text-xs text-white/35">{sublabel}</div>
+        <div className="mt-1 text-sm font-bold text-[#0f0c29]">{label}</div>
+        <div className="mt-0.5 text-xs text-gray-400">{sublabel}</div>
       </div>
     </motion.div>
   )
@@ -335,7 +335,6 @@ export default function PassportStrengthPage() {
   const [result, setResult] = useState<ResultData | null>(null)
   const [copied, setCopied] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
 
   const { countryName, loading: geoLoading } = useUserCountry()
@@ -352,12 +351,6 @@ export default function PassportStrengthPage() {
   // Set page title
   useEffect(() => {
     document.title = 'Passport Strength Checker 2026 | VisitPlane'
-  }, [])
-
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', h, { passive: true })
-    return () => window.removeEventListener('scroll', h)
   }, [])
 
   const fetchPassportData = useCallback(async (country: string) => {
@@ -459,81 +452,7 @@ export default function PassportStrengthPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#060C18] text-white antialiased overflow-x-hidden">
-
-      {/* ── NAVBAR ── */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-[#060C18]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30' : 'bg-transparent'
-      }`}>
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="group flex items-center gap-2.5 shrink-0">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-emerald-500/20 blur-md group-hover:bg-emerald-500/30 transition" />
-              <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="relative rounded-xl" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="text-white">Visit</span><span className="text-emerald-400">Plane</span>
-            </span>
-          </Link>
-
-          <nav className="hidden items-center gap-1 md:flex">
-            {navLinks.map(item => (
-              <Link key={item.label} href={item.href}
-                className={`rounded-lg px-3 py-2 text-sm transition hover:bg-white/5 hover:text-white ${
-                  item.href === '/passport-strength' ? 'text-emerald-400 font-semibold' : 'text-white/55'
-                }`}>
-                {item.label}
-              </Link>
-            ))}
-            <div className="relative group">
-              <button className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition flex items-center gap-1">Tools <span className="text-[10px]">▾</span></button>
-              <div className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-white/10 bg-[#0C1526] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-1">
-                <Link href="/passport-strength" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💪 Passport Strength</Link>
-                <Link href="/visa-free-map" className="flex items-center gap-2 px-4 py-2.5 text-sm text-teal-400 font-semibold hover:text-teal-300 hover:bg-white/5 transition">🗺️ Visa-Free Map</Link>
-                <Link href="/compare" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⚖️ Compare Visas</Link>
-                <Link href="/checklist" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">📋 Checklist</Link>
-                <Link href="/processing-times" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⏱️ Processing Times</Link>
-                <Link href="/travel-insurance" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🛡️ Travel Insurance</Link>
-                <Link href="/embassy-finder" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🏛️ Embassy Finder</Link>
-                <Link href="/cost-calculator" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💰 Cost Calculator</Link>
-                <Link href="/currency-converter" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💱 Currency Converter</Link>
-              </div>
-            </div>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link href="/destinations"
-              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-600 hover:-translate-y-px">
-              Check Visa <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-            <button onClick={() => setMobileOpen(!mobileOpen)}
-              className="rounded-lg p-2 text-white/55 hover:bg-white/5 hover:text-white md:hidden transition">
-              {mobileOpen ? <XIcon /> : <MenuIcon />}
-            </button>
-          </div>
-        </div>
-
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="border-t border-white/5 bg-[#060C18]/98 backdrop-blur-xl md:hidden overflow-hidden"
-            >
-              <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
-                {navLinks.map(item => (
-                  <Link key={item.label} href={item.href} onClick={() => setMobileOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm text-white/60 hover:bg-white/5 hover:text-white transition">
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
-
-      {/* ── HERO ── */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* ── HERO ── */}
       <section className="relative overflow-hidden pt-16 pb-24 sm:pt-24 sm:pb-32">
         {/* Background glows */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -560,7 +479,7 @@ export default function PassportStrengthPage() {
           {/* Headline */}
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.08 }}
             className="text-5xl font-extrabold leading-[1.06] tracking-tight sm:text-6xl lg:text-[4.5rem]">
-            <span className="text-white">How Powerful Is</span>
+            <span className="text-[#0f0c29]">How Powerful Is</span>
             <br />
             <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
               Your Passport?
@@ -568,7 +487,7 @@ export default function PassportStrengthPage() {
           </motion.h1>
 
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15 }}
-            className="mx-auto mt-5 max-w-lg text-base text-white/45 sm:text-lg">
+            className="mx-auto mt-5 max-w-lg text-base text-gray-500 sm:text-lg">
             Discover your passport&apos;s global access score instantly. See how many countries
             you can visit visa-free — powered by real data.
           </motion.p>
@@ -576,9 +495,9 @@ export default function PassportStrengthPage() {
           {/* Selector card */}
           <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.22 }}
             className="mx-auto mt-10 max-w-lg">
-            <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-2 shadow-2xl shadow-black/50 backdrop-blur-sm">
+            <div className="relative rounded-2xl border border-gray-200 bg-white p-2 shadow-2xl shadow-gray-300 backdrop-blur-sm">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/8 via-transparent to-cyan-500/8 pointer-events-none" />
-              <div className="relative rounded-xl bg-[#0C1526] px-5 py-5">
+              <div className="relative rounded-xl bg-white px-5 py-5">
                 <div className="flex items-center justify-between mb-3">
                   <label className="block text-[10px] font-bold uppercase tracking-widest text-emerald-400">
                     Select Your Passport Country
@@ -586,7 +505,7 @@ export default function PassportStrengthPage() {
                   {passport && !geoBadgeDismissed && !geoLoading && (
                     <span className="text-[10px] text-teal-400 flex items-center gap-1">
                       📍 Auto-detected
-                      <button onClick={() => setGeoBadgeDismissed(true)} className="text-white/30 hover:text-white/60 ml-1">✕</button>
+                      <button onClick={() => setGeoBadgeDismissed(true)} className="text-gray-400 hover:text-gray-500 ml-1">✕</button>
                     </span>
                   )}
                 </div>
@@ -609,7 +528,7 @@ export default function PassportStrengthPage() {
                   className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
                     passport === c
                       ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-400'
-                      : 'border-white/10 bg-white/5 text-white/50 hover:border-emerald-500/40 hover:text-white hover:bg-white/8'
+                      : 'border-gray-200 bg-white/5 text-gray-500 hover:border-emerald-500/40 hover:text-[#0f0c29] hover:bg-white/8'
                   }`}>
                   {f} {c}
                 </button>
@@ -626,7 +545,7 @@ export default function PassportStrengthPage() {
         {fetchState === 'loading' && (
           <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="py-20 text-center">
-            <div className="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-8 py-5">
+            <div className="inline-flex items-center gap-3 rounded-2xl border border-gray-200 bg-white/5 px-8 py-5">
               <svg className="h-5 w-5 animate-spin text-emerald-400" viewBox="0 0 24 24" fill="none">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -640,10 +559,10 @@ export default function PassportStrengthPage() {
         {fetchState === 'empty' && (
           <motion.div key="empty" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             className="py-20 text-center">
-            <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-white/[0.03] px-8 py-10">
+            <div className="mx-auto max-w-md rounded-2xl border border-gray-200 bg-white px-8 py-10">
               <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-lg font-bold text-white mb-2">No data found for {passport}</h3>
-              <p className="text-sm text-white/40">
+              <h3 className="text-lg font-bold text-[#0f0c29] mb-2">No data found for {passport}</h3>
+              <p className="text-sm text-gray-400">
                 We don&apos;t have passport data for this country yet. Try another passport or{' '}
                 <Link href="/destinations" className="text-emerald-400 hover:underline">check visa requirements directly</Link>.
               </p>
@@ -657,8 +576,8 @@ export default function PassportStrengthPage() {
             className="py-20 text-center">
             <div className="mx-auto max-w-md rounded-2xl border border-rose-500/20 bg-rose-500/[0.05] px-8 py-10">
               <div className="text-4xl mb-4">⚠️</div>
-              <h3 className="text-lg font-bold text-white mb-2">Something went wrong</h3>
-              <p className="text-sm text-white/40 mb-5">
+              <h3 className="text-lg font-bold text-[#0f0c29] mb-2">Something went wrong</h3>
+              <p className="text-sm text-gray-400 mb-5">
                 Could not fetch passport data. Please try again in a moment.
               </p>
               <button
@@ -675,7 +594,7 @@ export default function PassportStrengthPage() {
           <motion.div key={result.passport} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
 
             {/* ── Section 2: Score + Stats ── */}
-            <section className="bg-[#0A1120] py-16 sm:py-20">
+            <section className="bg-white py-16 sm:py-20">
               <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
                 {/* Top label */}
@@ -684,7 +603,7 @@ export default function PassportStrengthPage() {
                   <span className="text-4xl">{FLAGS[result.passport] ?? '🌍'}</span>
                   <div className="text-center">
                     <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-400">Passport Power</p>
-                    <h2 className="text-3xl font-extrabold text-white">{result.passport}</h2>
+                    <h2 className="text-3xl font-extrabold text-[#0f0c29]">{result.passport}</h2>
                   </div>
                 </motion.div>
 
@@ -694,13 +613,13 @@ export default function PassportStrengthPage() {
                     className="flex flex-col items-center gap-5">
                     <ScoreRing score={result.score} active />
                     {result.rank && (
-                      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+                      <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white/5 px-5 py-2.5">
                         <span className="text-lg">🏅</span>
-                        <span className="text-sm text-white/50">Global Passport Rank</span>
-                        <span className="text-sm font-extrabold text-white">#{result.rank}</span>
+                        <span className="text-sm text-gray-500">Global Passport Rank</span>
+                        <span className="text-sm font-extrabold text-[#0f0c29]">#{result.rank}</span>
                       </div>
                     )}
-                    <p className="text-xs text-white/30 text-center max-w-[200px]">
+                    <p className="text-xs text-gray-400 text-center max-w-[200px]">
                       Based on {result.total} destinations in our database
                     </p>
                   </motion.div>
@@ -733,8 +652,8 @@ export default function PassportStrengthPage() {
 
                     {/* Progress bar breakdown */}
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.4 }}
-                      className="mt-5 rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-3">Access Breakdown</p>
+                      className="mt-5 rounded-2xl border border-gray-100 bg-white p-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Access Breakdown</p>
                       <div className="flex h-3 w-full overflow-hidden rounded-full gap-0.5">
                         {result.free > 0 && (
                           <div className="rounded-l-full bg-emerald-500 transition-all duration-1000"
@@ -750,13 +669,13 @@ export default function PassportStrengthPage() {
                         )}
                       </div>
                       <div className="mt-3 flex flex-wrap gap-3 text-[11px]">
-                        <span className="flex items-center gap-1.5 text-white/50">
+                        <span className="flex items-center gap-1.5 text-gray-500">
                           <span className="h-2 w-2 rounded-full bg-emerald-500" />{((result.free / result.total) * 100).toFixed(0)}% free
                         </span>
-                        <span className="flex items-center gap-1.5 text-white/50">
+                        <span className="flex items-center gap-1.5 text-gray-500">
                           <span className="h-2 w-2 rounded-full bg-amber-500" />{((result.arrival / result.total) * 100).toFixed(0)}% on arrival
                         </span>
-                        <span className="flex items-center gap-1.5 text-white/50">
+                        <span className="flex items-center gap-1.5 text-gray-500">
                           <span className="h-2 w-2 rounded-full bg-rose-500" />{((result.required / result.total) * 100).toFixed(0)}% visa required
                         </span>
                       </div>
@@ -773,8 +692,8 @@ export default function PassportStrengthPage() {
                   <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.4 }}
                     className="mb-8">
                     <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-400 mb-1">✈️ Best Access</p>
-                    <h2 className="text-2xl font-extrabold text-white">Easiest Countries to Visit</h2>
-                    <p className="mt-1 text-sm text-white/40">
+                    <h2 className="text-2xl font-extrabold text-[#0f0c29]">Easiest Countries to Visit</h2>
+                    <p className="mt-1 text-sm text-gray-400">
                       Countries {result.passport} passport holders can access without a visa or with an easy eVisa
                     </p>
                   </motion.div>
@@ -786,11 +705,11 @@ export default function PassportStrengthPage() {
                         transition={{ delay: 0.25 + i * 0.06, duration: 0.4 }}>
                         <Link
                           href={`/visa/${encodeURIComponent(result.passport)}/${encodeURIComponent(dest.name)}`}
-                          className="group flex flex-col items-center gap-3 rounded-2xl border border-white/8 bg-[#0C1526] p-5 text-center transition-all hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/5"
+                          className="group flex flex-col items-center gap-3 rounded-2xl border border-gray-100 bg-white p-5 text-center transition-all hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/5"
                         >
                           <span className="text-4xl">{dest.flag}</span>
                           <div>
-                            <div className="text-sm font-bold text-white leading-tight">{dest.name}</div>
+                            <div className="text-sm font-bold text-[#0f0c29] leading-tight">{dest.name}</div>
                             <div className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-emerald-500/12 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
                               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                               {bucketVisa(dest.visaType) === 'free' && !dest.visaType.toLowerCase().includes('arrival')
@@ -798,7 +717,7 @@ export default function PassportStrengthPage() {
                                 : 'On Arrival'}
                             </div>
                           </div>
-                          <span className="text-[10px] text-white/30 group-hover:text-emerald-400 transition flex items-center gap-0.5">
+                          <span className="text-[10px] text-gray-400 group-hover:text-emerald-400 transition flex items-center gap-0.5">
                             Details <ArrowRight className="h-3 w-3" />
                           </span>
                         </Link>
@@ -810,20 +729,20 @@ export default function PassportStrengthPage() {
             )}
 
             {/* ── Section 4: Share ── */}
-            <section className="bg-[#0A1120] py-16 sm:py-20">
+            <section className="bg-white py-16 sm:py-20">
               <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
                 <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }}
                   className="relative overflow-hidden rounded-3xl p-px"
                   style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.3), rgba(6,182,212,0.15) 50%, rgba(139,92,246,0.2))' }}>
-                  <div className="relative rounded-[23px] bg-[#0C1526] p-8 sm:p-10 text-center">
+                  <div className="relative rounded-[23px] bg-white p-8 sm:p-10 text-center">
                     <div className="absolute inset-0 rounded-[23px] bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.07),transparent_60%)] pointer-events-none" />
                     <div className="relative">
                       <div className="text-3xl mb-4">✈️</div>
-                      <h3 className="text-2xl font-extrabold text-white mb-2">Share Your Passport Score</h3>
-                      <p className="text-sm text-white/40 mb-6">Let the world know how powerful your passport is!</p>
+                      <h3 className="text-2xl font-extrabold text-[#0f0c29] mb-2">Share Your Passport Score</h3>
+                      <p className="text-sm text-gray-400 mb-6">Let the world know how powerful your passport is!</p>
 
                       {/* Preview */}
-                      <div className="mb-6 rounded-xl border border-white/8 bg-black/30 px-5 py-4 text-left">
+                      <div className="mb-6 rounded-xl border border-gray-100 bg-gray-100 px-5 py-4 text-left">
                         <p className="text-sm leading-relaxed text-white/65 font-mono whitespace-pre-line">
                           {`My ${result.passport} ${FLAGS[result.passport] ?? '🌍'} passport scores ${result.score}/100\nand can access ${result.free} countries visa-free! 🛂✈️\nCheck yours → visitplane.com/passport-strength`}
                         </p>
@@ -843,7 +762,7 @@ export default function PassportStrengthPage() {
 
                         <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`}
                           target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/12">
+                          className="flex items-center gap-2 rounded-full border border-gray-200 bg-white/8 px-5 py-2.5 text-sm font-bold text-[#0f0c29] transition hover:bg-white/12">
                           <TwitterIcon /> Share on X
                         </a>
 
@@ -873,8 +792,8 @@ export default function PassportStrengthPage() {
                 <span className="text-3xl">🗺️</span>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-teal-400 mb-0.5">Related Tool</p>
-                  <h3 className="text-sm font-bold text-white">See It on a World Map</h3>
-                  <p className="text-xs text-white/40">Visualise your {result.passport} passport access on an interactive world map</p>
+                  <h3 className="text-sm font-bold text-[#0f0c29]">See It on a World Map</h3>
+                  <p className="text-xs text-gray-400">Visualise your {result.passport} passport access on an interactive world map</p>
                 </div>
               </div>
               <span className="text-teal-400 text-sm font-bold group-hover:translate-x-1 transition-transform">→</span>
@@ -884,7 +803,7 @@ export default function PassportStrengthPage() {
       )}
 
       {/* ── Section 5: CTA ── */}
-      <section className={`py-16 sm:py-20 ${result ? '' : 'bg-[#0A1120]'}`}>
+      <section className={`py-16 sm:py-20 ${result ? '' : 'bg-white'}`}>
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-10 text-center sm:p-14">
             <div className="absolute -left-16 -top-16 h-56 w-56 rounded-full bg-white/6" />
@@ -893,7 +812,7 @@ export default function PassportStrengthPage() {
               style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '56px 56px' }} />
             <div className="relative">
               <div className="mb-4 text-4xl">🔍</div>
-              <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+              <h2 className="text-3xl font-extrabold text-[#0f0c29] sm:text-4xl">
                 Now Check Visa Requirements
               </h2>
               <p className="mx-auto mt-3 max-w-md text-sm text-white/75">
@@ -905,49 +824,13 @@ export default function PassportStrengthPage() {
                   Check Requirements <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link href="/visa-free-map"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/12 px-7 py-3 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/20">
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/12 px-7 py-3 text-sm font-bold text-[#0f0c29] backdrop-blur-sm transition hover:bg-white/20">
                   🗺️ See Your Countries on a World Map →
                 </Link>
               </div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer className="border-t border-white/5 bg-[#040810] pb-8 pt-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-            <div className="col-span-2">
-              <Link href="/" className="mb-4 inline-flex items-center gap-2.5">
-                <Image src="/logo-v2.png" alt="VisitPlane" width={32} height={32} className="rounded-xl" />
-                <span className="text-lg font-bold"><span className="text-white">Visit</span><span className="text-emerald-400">Plane</span></span>
-              </Link>
-              <p className="max-w-xs text-sm leading-relaxed text-white/30">The world&apos;s visa requirements, decoded in seconds. Free, fast, and always updated.</p>
-            </div>
-            <div>
-              <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Tools</h4>
-              <ul className="space-y-2.5">
-                {([['Passport Strength','/passport-strength'],['🗺️ Visa-Free Map','/visa-free-map'],['Visa Comparison','/compare'],['Document Checklist','/checklist'],['Currency Converter','/currency-converter'],['Embassy Finder','/embassy-finder']] as [string,string][]).map(([l,h]) => (
-                  <li key={l}><Link href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Company</h4>
-              <ul className="space-y-2.5">
-                {([['About','/about'],['FAQ','/faq'],['Contact','/contact'],['Privacy','/privacy'],['Terms','/terms']] as [string,string][]).map(([l,h]) => (
-                  <li key={l}><Link href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link></li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 border-t border-white/5 pt-8 flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p className="text-xs text-white/20">© {new Date().getFullYear()} VisitPlane. All rights reserved.</p>
-            <p className="text-xs text-white/15">Scores are estimates. Always verify with official embassy sources.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+      </section></div>
   )
 }

@@ -77,64 +77,10 @@ const VALUES = [
 ]
 
 export default function AboutPage() {
-  const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handler, { passive: true })
-    return () => window.removeEventListener('scroll', handler)
-  }, [])
-
   return (
-    <div className="min-h-screen bg-[#0f0c29] text-white antialiased overflow-x-hidden">
-      {/* NAVBAR */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30' : 'bg-transparent'
-      }`}>
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="group flex items-center gap-2.5 shrink-0">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-teal-500/20 blur-md group-hover:bg-teal-500/30 transition" />
-              <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="relative rounded-xl" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="text-white">Visit</span><span className="text-teal-400">Plane</span>
-            </span>
-          </Link>
-          <nav className="hidden items-center gap-1 md:flex">
-            {NAV_LINKS.map(item => (
-              <Link key={item.label} href={item.href} className="rounded-lg px-3 py-2 text-sm text-white/55 transition hover:bg-white/5 hover:text-white">
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-3">
-            <Link href="/destinations" className="hidden sm:inline-flex items-center gap-2 rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:-translate-y-px">
-              Check Visa <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="rounded-lg p-2 text-white/55 hover:bg-white/5 hover:text-white md:hidden transition">
-              {mobileMenuOpen ? <XIcon /> : <MenuIcon />}
-            </button>
-          </div>
-        </div>
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }}
-              className="border-t border-white/5 bg-[#060C18]/98 backdrop-blur-xl md:hidden overflow-hidden">
-              <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
-                {NAV_LINKS.map(item => (
-                  <Link key={item.label} href={item.href} onClick={() => setMobileMenuOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm text-white/60 hover:bg-white/5 hover:text-white transition">
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
-
-      {/* HERO */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* HERO */}
       <section className="relative pt-16 pb-16 overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,0.12),transparent_60%)]" />
@@ -146,11 +92,11 @@ export default function AboutPage() {
             </div>
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.08 }}
-            className="text-4xl font-extrabold tracking-tight sm:text-5xl text-white">
+            className="text-4xl font-extrabold tracking-tight sm:text-5xl text-[#0f0c29]">
             About VisitPlane
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.16 }}
-            className="mt-5 max-w-xl mx-auto text-base leading-relaxed text-white/55">
+            className="mt-5 max-w-xl mx-auto text-base leading-relaxed text-gray-500">
             We built VisitPlane because checking visa requirements was needlessly complicated. Confusing government websites, outdated forums, and expensive travel agents shouldn&apos;t stand between you and the world.
           </motion.p>
         </div>
@@ -162,9 +108,9 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {STATS.map((stat, i) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.5 }}
-                className="rounded-2xl border border-white/8 bg-[#13103a] p-5 text-center">
+                className="rounded-2xl border border-gray-100 bg-white p-5 text-center">
                 <div className="text-2xl font-extrabold text-teal-400">{stat.value}</div>
-                <div className="mt-1 text-xs text-white/45">{stat.label}</div>
+                <div className="mt-1 text-xs text-gray-500">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -177,8 +123,8 @@ export default function AboutPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
             className="rounded-2xl border border-teal-500/20 bg-teal-500/8 p-8 text-center">
             <div className="mb-4 text-4xl">🚀</div>
-            <h2 className="mb-3 text-xl font-bold text-white">Our Mission</h2>
-            <p className="text-sm leading-relaxed text-white/60">
+            <h2 className="mb-3 text-xl font-bold text-[#0f0c29]">Our Mission</h2>
+            <p className="text-sm leading-relaxed text-gray-500">
               To make global travel accessible by giving every traveler instant, clear, and accurate visa information — completely free. We believe the complexity of international travel should never be a barrier to exploring the world.
             </p>
           </motion.div>
@@ -189,16 +135,16 @@ export default function AboutPage() {
       <section className="pb-24">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <motion.h2 initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-            className="mb-8 text-center text-xl font-bold text-white">
+            className="mb-8 text-center text-xl font-bold text-[#0f0c29]">
             What We Stand For
           </motion.h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {VALUES.map((v, i) => (
               <motion.div key={v.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07, duration: 0.5 }}
-                className="rounded-2xl border border-white/8 bg-[#13103a] p-5">
+                className="rounded-2xl border border-gray-100 bg-white p-5">
                 <div className="mb-3 text-2xl">{v.icon}</div>
-                <h3 className="mb-2 text-sm font-bold text-white">{v.title}</h3>
-                <p className="text-xs leading-relaxed text-white/45">{v.desc}</p>
+                <h3 className="mb-2 text-sm font-bold text-[#0f0c29]">{v.title}</h3>
+                <p className="text-xs leading-relaxed text-gray-500">{v.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -209,34 +155,15 @@ export default function AboutPage() {
       <section className="pb-24">
         <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-            className="rounded-2xl border border-white/8 bg-[#13103a] p-8">
-            <h2 className="mb-3 text-xl font-bold text-white">Ready to check your visa?</h2>
-            <p className="mb-6 text-sm text-white/50">Select your passport country and destination to get instant requirements — no sign-up needed.</p>
+            className="rounded-2xl border border-gray-100 bg-white p-8">
+            <h2 className="mb-3 text-xl font-bold text-[#0f0c29]">Ready to check your visa?</h2>
+            <p className="mb-6 text-sm text-gray-500">Select your passport country and destination to get instant requirements — no sign-up needed.</p>
             <Link href="/destinations"
               className="inline-flex items-center gap-2 rounded-full bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:-translate-y-px">
               Check Visa Requirements <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </motion.div>
         </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-white/5 bg-[#0a0820] pb-8 pt-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <Link href="/" className="flex items-center gap-2.5">
-              <Image src="/logo-v2.png" alt="VisitPlane" width={28} height={28} className="rounded-xl" />
-              <span className="text-base font-bold"><span className="text-white">Visit</span><span className="text-teal-400">Plane</span></span>
-            </Link>
-            <div className="flex flex-wrap items-center justify-center gap-5">
-              {[['Privacy', '/privacy'], ['Terms', '/terms'], ['Contact', '/contact'], ['About', '/about'], ['FAQ', '/faq']].map(([l, h]) => (
-                <Link key={l} href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link>
-              ))}
-            </div>
-            <p className="text-xs text-white/20">© {new Date().getFullYear()} VisitPlane</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+      </section></div>
   )
 }

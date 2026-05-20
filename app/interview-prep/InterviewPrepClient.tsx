@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import { QUESTIONS } from './data'
-import Navbar           from './components/Navbar'
-import Footer           from './components/Footer'
 import InterviewHero    from './components/InterviewHero'
 import InterviewRoom    from './components/InterviewRoom'
 import InterviewResults from './components/InterviewResults'
@@ -45,8 +43,7 @@ export default function InterviewPrepClient() {
   // ── Interview Room view (full dark immersive page) ────────────────────────
   if (view === 'room') {
     return (
-      <div className="min-h-screen bg-[#0f0c29] text-white antialiased">
-        <Navbar />
+      <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">
         <InterviewRoom
           questions={questions}
           country={country}
@@ -56,7 +53,6 @@ export default function InterviewPrepClient() {
           onNext={handleNext}
           onComplete={handleComplete}
         />
-        <Footer />
       </div>
     )
   }
@@ -65,7 +61,6 @@ export default function InterviewPrepClient() {
   if (view === 'results') {
     return (
       <div className="min-h-screen bg-[#FAFAFA] antialiased">
-        <Navbar />
         <InterviewResults
           country={country}
           visaType={visaType}
@@ -74,7 +69,6 @@ export default function InterviewPrepClient() {
         />
         <InterviewChecklist country={country} visaType={visaType} />
         <InterviewSocialProof />
-        <Footer />
       </div>
     )
   }
@@ -82,7 +76,6 @@ export default function InterviewPrepClient() {
   // ── Home view (hero + tips + checklist + social proof) ────────────────────
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
-      <Navbar />
       <InterviewHero
         country={country}
         visaType={visaType}
@@ -93,7 +86,6 @@ export default function InterviewPrepClient() {
       <InterviewTips />
       <InterviewChecklist country={country} visaType={visaType} />
       <InterviewSocialProof />
-      <Footer />
     </div>
   )
 }

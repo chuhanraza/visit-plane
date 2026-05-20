@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import SharedNavbar from "@/components/SharedNavbar";
+import SharedFooter from "@/components/SharedFooter";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -109,9 +111,11 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#060C18] text-white">
+      <body className="min-h-full flex flex-col bg-[#FAFAFA]">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          <SharedNavbar />
+          <main className="flex-1">{children}</main>
+          <SharedFooter />
         </NextIntlClientProvider>
         <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
       </body>

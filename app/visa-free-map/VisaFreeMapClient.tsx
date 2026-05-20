@@ -171,58 +171,9 @@ export default function VisaFreeMapClient() {
   const rankInfo = passport ? getRankInfo(passport) : { rank: 99, score: 0 }
 
   return (
-    <div className="min-h-screen text-white antialiased overflow-x-hidden" style={{ background: '#060C18' }}>
+    <div className="min-h-screen text-[#0f0c29] antialiased overflow-x-hidden" style={{ background: '#060C18' }}>
 
-      {/* ── NAVBAR ── */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30' : 'bg-[#0f0c29]/80 backdrop-blur-sm'}`}>
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="group flex items-center gap-2.5 shrink-0">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-emerald-500/20 blur-md group-hover:bg-emerald-500/30 transition" />
-              <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="relative rounded-xl" />
-            </div>
-            <span className="text-lg font-bold tracking-tight"><span className="text-white">Visit</span><span className="text-emerald-400">Plane</span></span>
-          </Link>
-          <nav className="hidden items-center gap-1 md:flex">
-            {[['Destinations', '/destinations'], ['Passport Strength', '/passport-strength'], ['Blog', '/blog']].map(([l, h]) => (
-              <Link key={l} href={h} className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition">{l}</Link>
-            ))}
-            <div className="relative group" onMouseEnter={() => setToolsOpen(true)} onMouseLeave={() => setToolsOpen(false)}>
-              <button className="rounded-lg px-3 py-2 text-sm text-teal-400 font-semibold hover:bg-white/5 transition flex items-center gap-1">Tools ▾</button>
-              {toolsOpen && (
-                <div className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-white/10 bg-[#0C1526] shadow-xl z-50 py-1">
-                  {NAV_TOOLS.map(([l, h]) => (
-                    <Link key={l} href={h} className={`flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/5 transition ${h === '/visa-free-map' ? 'text-teal-400 font-semibold bg-teal-500/5' : 'text-white/60 hover:text-white'}`}>{l}</Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          </nav>
-          <div className="flex items-center gap-3">
-            <Link href="/visa-checker" className="hidden sm:inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 hover:bg-emerald-600 transition">
-              Check Visa →
-            </Link>
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="rounded-lg p-2 text-white/55 hover:bg-white/5 hover:text-white md:hidden transition">
-              {mobileOpen ? '✕' : '☰'}
-            </button>
-          </div>
-        </div>
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-              className="border-t border-white/5 bg-[#0f0c29]/98 md:hidden overflow-hidden">
-              <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
-                {NAV_TOOLS.map(([l, h]) => (
-                  <Link key={l} href={h} onClick={() => setMobileOpen(false)}
-                    className={`block rounded-lg px-3 py-2.5 text-sm transition ${h === '/visa-free-map' ? 'text-teal-400 font-semibold' : 'text-white/60 hover:bg-white/5 hover:text-white'}`}>{l}</Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
-
-      {/* ── HERO ── */}
+      {/* ── NAVBAR ── */}{/* ── HERO ── */}
       <section className="bg-[#FAFAFA] pt-14 pb-16 sm:pt-20 sm:pb-24">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           {/* Spinning globe */}
@@ -313,11 +264,11 @@ export default function VisaFreeMapClient() {
       {/* ── STATS BAR ── appears after selection */}
       <AnimatePresence>
         {data && (
-          <section className="bg-[#0A1120] py-12 sm:py-16">
+          <section className="bg-white py-12 sm:py-16">
             <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
               <div className="mb-8 text-center">
                 <p className="text-xs font-bold uppercase tracking-widest text-teal-400 mb-1">📊 Your Passport Power</p>
-                <h2 className="text-2xl font-extrabold text-white">{flag} {passport} — At a Glance</h2>
+                <h2 className="text-2xl font-extrabold text-[#0f0c29]">{flag} {passport} — At a Glance</h2>
               </div>
               <StatsCards
                 free={data.stats.free_count}
@@ -338,15 +289,15 @@ export default function VisaFreeMapClient() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="mb-6 text-center">
                 <p className="text-xs font-bold uppercase tracking-widest text-teal-400 mb-1">🌍 Interactive Map</p>
-                <h2 className="text-2xl font-extrabold text-white">{flag} {passport} Passport — World Access</h2>
-                <p className="text-sm text-white/40 mt-1">Click any country for full visa details</p>
+                <h2 className="text-2xl font-extrabold text-[#0f0c29]">{flag} {passport} Passport — World Access</h2>
+                <p className="text-sm text-gray-400 mt-1">Click any country for full visa details</p>
               </div>
               <WorldMap
                 visaFree={visaFreeSet} onArrival={onArrivalSet} required={requiredSet}
                 passport={passport} onCountryClick={handleCountryClick}
               />
               {/* Map Legend */}
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-white/60">
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-gray-500">
                 {[['#10B981', '🟢 Visa Free'], ['#F59E0B', '🟡 On Arrival'], ['#EF4444', '🔴 Visa Required'], ['#D1D5DB', '⚪ No Data']].map(([color, label]) => (
                   <div key={label} className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full" style={{ background: color }} />
@@ -362,7 +313,7 @@ export default function VisaFreeMapClient() {
             </div>
           ) : (
             <div className="flex items-center justify-center py-32">
-              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-8 py-5">
+              <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white/5 px-8 py-5">
                 <svg className="h-5 w-5 animate-spin text-teal-400" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -376,11 +327,11 @@ export default function VisaFreeMapClient() {
 
       {/* ── PASSPORT POWER RANKING CARD ── */}
       {data && passport && (
-        <section className="bg-[#0A1120] py-12 sm:py-16">
+        <section className="bg-white py-12 sm:py-16">
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 text-center">
               <p className="text-xs font-bold uppercase tracking-widest text-purple-400 mb-1">🏆 Henley Index 2026</p>
-              <h2 className="text-2xl font-extrabold text-white">Passport Power Ranking</h2>
+              <h2 className="text-2xl font-extrabold text-[#0f0c29]">Passport Power Ranking</h2>
             </div>
             <PassportRankCard
               passport={passport}
@@ -398,7 +349,7 @@ export default function VisaFreeMapClient() {
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 text-center">
               <p className="text-xs font-bold uppercase tracking-widest text-teal-400 mb-1">✈️ Destination Guide</p>
-              <h2 className="text-2xl font-extrabold text-white">{passport} Travel Destinations</h2>
+              <h2 className="text-2xl font-extrabold text-[#0f0c29]">{passport} Travel Destinations</h2>
             </div>
             <CountryLists
               passport={passport}
@@ -419,11 +370,11 @@ export default function VisaFreeMapClient() {
 
       {/* ── VIRAL SHARE CARD ── */}
       {data && (
-        <section className="bg-[#0A1120] py-12 sm:py-16">
+        <section className="bg-white py-12 sm:py-16">
           <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 text-center">
               <p className="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-1">📤 Share Your Power</p>
-              <h2 className="text-2xl font-extrabold text-white">Flex Your Passport</h2>
+              <h2 className="text-2xl font-extrabold text-[#0f0c29]">Flex Your Passport</h2>
             </div>
             <ShareCard
               passport={passport}
@@ -447,42 +398,7 @@ export default function VisaFreeMapClient() {
         </section>
       )}
 
-      {/* ── FOOTER ── */}
-      <footer className="border-t border-white/5 bg-[#040810] pb-8 pt-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-            <div className="col-span-2">
-              <Link href="/" className="mb-4 inline-flex items-center gap-2.5">
-                <Image src="/logo-v2.png" alt="VisitPlane" width={32} height={32} className="relative rounded-xl" />
-                <span className="text-lg font-bold"><span className="text-white">Visit</span><span className="text-emerald-400">Plane</span></span>
-              </Link>
-              <p className="max-w-xs text-sm leading-relaxed text-white/30">The world&apos;s visa requirements, decoded in seconds. Free, fast, and always updated.</p>
-            </div>
-            <div>
-              <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Tools</h4>
-              <ul className="space-y-2.5">
-                {[['💪 Passport Strength', '/passport-strength'], ['🗺️ Visa-Free Map', '/visa-free-map'], ['⚖️ Compare Visas', '/compare'], ['📋 Checklist', '/checklist'], ['💰 Cost Calculator', '/cost-calculator']].map(([l, h]) => (
-                  <li key={l}><Link href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Company</h4>
-              <ul className="space-y-2.5">
-                {[['About', '/about'], ['FAQ', '/faq'], ['Contact', '/contact'], ['Privacy', '/privacy'], ['Terms', '/terms']].map(([l, h]) => (
-                  <li key={l}><Link href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link></li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 border-t border-white/5 pt-8 flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p className="text-xs text-white/20">© {new Date().getFullYear()} VisitPlane. All rights reserved.</p>
-            <p className="text-xs text-white/15">Visa data is for guidance only. Always verify with official embassy sources.</p>
-          </div>
-        </div>
-      </footer>
-
-      {/* Spinning globe CSS keyframes */}
+      {/* ── FOOTER ── */}{/* Spinning globe CSS keyframes */}
       <style>{`
         @keyframes spin-globe {
           0%   { transform: rotate(0deg) scale(1); }

@@ -298,7 +298,6 @@ function SpinnerIcon({ className = 'h-5 w-5' }: { className?: string }) {
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 export default function ChecklistPage() {
   // ── Navbar state
-  const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
 
@@ -329,11 +328,6 @@ export default function ChecklistPage() {
   }, [countryName, geoLoading, passport])
 
   // ── Scroll handler
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handler, { passive: true })
-    return () => window.removeEventListener('scroll', handler)
-  }, [])
 
   // ── Load destinations when passport changes
   useEffect(() => {
@@ -474,118 +468,7 @@ export default function ChecklistPage() {
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-33.333%); } }
       `}</style>
 
-      <div className="min-h-screen bg-[#0f0c29] text-white antialiased overflow-x-hidden">
-
-        {/* ── NAVBAR ──────────────────────────────────────────────────────── */}
-        <header className={`no-print sticky top-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30'
-            : 'bg-transparent'
-        }`}>
-          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <Link href="/" className="group flex items-center gap-2.5 shrink-0">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-xl bg-teal-500/20 blur-md group-hover:bg-teal-500/30 transition" />
-                <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="relative rounded-xl" />
-              </div>
-              <span className="text-lg font-bold tracking-tight">
-                <span className="text-white">Visit</span>
-                <span className="text-teal-400">Plane</span>
-              </span>
-            </Link>
-
-            <nav className="hidden items-center gap-1 md:flex">
-              {[
-                { label: 'Explore',           href: '/destinations' },
-                { label: 'Visa Requirements', href: '/destinations' },
-                { label: 'Passport Strength', href: '/passport-strength' },
-                { label: '⚖️ Compare Visas',  href: '/compare' },
-                { label: '📋 Checklist',      href: '/checklist' },
-                { label: 'Guides',            href: '/blog' },
-              ].map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className={`rounded-lg px-3 py-2 text-sm transition hover:bg-white/5 hover:text-white ${
-                    item.href === '/checklist' ? 'text-teal-400 font-semibold' : 'text-white/55'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="relative group">
-                <button className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition flex items-center gap-1">Tools <span className="text-[10px]">▾</span></button>
-                <div className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-white/10 bg-[#16122f] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-1">
-                  <Link href="/passport-strength" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💪 Passport Strength</Link>
-                  <Link href="/compare" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⚖️ Compare Visas</Link>
-                  <Link href="/checklist" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">📋 Checklist</Link>
-                  <Link href="/processing-times" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⏱️ Processing Times</Link>
-                  <Link href="/travel-insurance" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🛡️ Travel Insurance</Link>
-                  <Link href="/embassy-finder" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🏛️ Embassy Finder</Link>
-                  <Link href="/cost-calculator" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💰 Cost Calculator</Link>
-                  <Link href="/currency-converter" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💱 Currency Converter</Link>
-                </div>
-              </div>
-            </nav>
-
-            <div className="flex items-center gap-3">
-              <Link
-                href="/destinations"
-                className="hidden sm:inline-flex items-center gap-2 rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:-translate-y-px"
-              >
-                Check Visa <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="rounded-lg p-2 text-white/55 hover:bg-white/5 hover:text-white md:hidden transition"
-                aria-label="Toggle menu"
-              >
-                {mobileMenuOpen ? <XIcon /> : <MenuIcon />}
-              </button>
-            </div>
-          </div>
-
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-                className="border-t border-white/5 bg-[#060C18]/98 backdrop-blur-xl md:hidden overflow-hidden"
-              >
-                <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
-                  {[
-                    { label: 'Explore',           href: '/destinations' },
-                    { label: 'Visa Requirements', href: '/destinations' },
-                    { label: 'Passport Strength', href: '/passport-strength' },
-                    { label: '⚖️ Compare Visas',  href: '/compare' },
-                    { label: '📋 Checklist',      href: '/checklist' },
-                    { label: 'Guides',            href: '/blog' },
-                  ].map((item) => (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block rounded-lg px-3 py-2.5 text-sm text-white/60 hover:bg-white/5 hover:text-white transition"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                  <Link
-                    href="/destinations"
-                    className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-teal-500 px-4 py-2.5 text-sm font-bold text-white"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Check Visa Requirements
-                  </Link>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </header>
-
-        {/* ── SECTION 1: HERO ──────────────────────────────────────────────── */}
+      <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* ── SECTION 1: HERO ──────────────────────────────────────────────── */}
         <section className="relative overflow-hidden pt-16 sm:pt-20 lg:pt-24 pb-12">
           {/* Glow blobs */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -621,7 +504,7 @@ export default function ChecklistPage() {
               transition={{ duration: 0.6, delay: 0.08 }}
               className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl"
             >
-              <span className="text-white">Never Miss a</span>
+              <span className="text-[#0f0c29]">Never Miss a</span>
               <br />
               <span className="bg-gradient-to-r from-teal-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
                 Document Again
@@ -632,7 +515,7 @@ export default function ChecklistPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.16 }}
-              className="mx-auto mt-5 max-w-lg text-base text-white/45 sm:text-lg"
+              className="mx-auto mt-5 max-w-lg text-base text-gray-500 sm:text-lg"
             >
               Get your personalized visa document checklist instantly.
               Print or save as PDF — always free.
@@ -647,10 +530,10 @@ export default function ChecklistPage() {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.2 }}
-              className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-2 backdrop-blur-sm shadow-2xl shadow-black/50"
+              className="relative rounded-2xl border border-gray-200 bg-white p-2 backdrop-blur-sm shadow-2xl shadow-gray-300"
             >
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-500/8 via-transparent to-cyan-500/8 pointer-events-none" />
-              <div className="relative rounded-xl bg-[#16122f] p-5 space-y-4">
+              <div className="relative rounded-xl bg-white p-5 space-y-4">
                 {/* Dropdowns */}
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
@@ -663,7 +546,7 @@ export default function ChecklistPage() {
                     {passport && !geoBadgeDismissed && !geoLoading && (
                       <p className="mt-1 text-[10px] text-teal-400 flex items-center gap-1 px-1">
                         📍 Auto-detected from your location
-                        <button onClick={() => setGeoBadgeDismissed(true)} className="ml-1 text-white/30 hover:text-white/60">✕</button>
+                        <button onClick={() => setGeoBadgeDismissed(true)} className="ml-1 text-gray-400 hover:text-gray-500">✕</button>
                       </p>
                     )}
                   </div>
@@ -695,7 +578,7 @@ export default function ChecklistPage() {
                         className={`flex flex-col items-center gap-1.5 rounded-xl border py-3 px-2 text-xs font-semibold transition-all ${
                           visaType === t
                             ? 'border-teal-500/60 bg-teal-500/15 text-teal-300 shadow-sm shadow-teal-500/20'
-                            : 'border-white/8 bg-white/5 text-white/40 hover:border-white/20 hover:text-white/70'
+                            : 'border-gray-100 bg-white/5 text-gray-400 hover:border-gray-200 hover:text-gray-600'
                         }`}
                       >
                         <span className="text-xl">{VISA_TYPE_ICONS[t]}</span>
@@ -713,7 +596,7 @@ export default function ChecklistPage() {
                 >
                   {loading ? (
                     <>
-                      <SpinnerIcon className="h-4 w-4 text-white/60" />
+                      <SpinnerIcon className="h-4 w-4 text-gray-500" />
                       Generating Checklist…
                     </>
                   ) : (
@@ -748,14 +631,14 @@ export default function ChecklistPage() {
               <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 space-y-6">
 
                 {/* A) HEADER CARD */}
-                <div className="print-card rounded-2xl border border-white/10 bg-[#13103a] p-6">
+                <div className="print-card rounded-2xl border border-gray-200 bg-white p-6">
                   <div className="print-header flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-2xl">{getFlag(passport)}</span>
-                        <span className="text-white/40 font-bold">→</span>
+                        <span className="text-gray-400 font-bold">→</span>
                         <span className="text-2xl">{getFlag(destination)}</span>
-                        <h2 className="ml-1 text-lg font-extrabold text-white">
+                        <h2 className="ml-1 text-lg font-extrabold text-[#0f0c29]">
                           {passport} → {destination} Visa Checklist
                         </h2>
                       </div>
@@ -764,14 +647,14 @@ export default function ChecklistPage() {
                           {VISA_TYPE_ICONS[visaType]} {visaType} Visa
                         </span>
                         {dbVisaName && dbVisaName.toLowerCase() !== visaType.toLowerCase() && (
-                          <span className="text-xs text-white/30">({dbVisaName})</span>
+                          <span className="text-xs text-gray-400">({dbVisaName})</span>
                         )}
                       </div>
                     </div>
                     <div className="no-print flex items-center gap-2 shrink-0">
                       <button
                         onClick={handlePrint}
-                        className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/60 transition hover:bg-white/10 hover:text-white"
+                        className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white/5 px-3 py-2 text-xs font-semibold text-gray-500 transition hover:bg-gray-100 hover:text-[#0f0c29]"
                       >
                         <PrinterIcon className="h-3.5 w-3.5" /> Print
                       </button>
@@ -786,10 +669,10 @@ export default function ChecklistPage() {
                 </div>
 
                 {/* B) REQUIRED DOCUMENTS LIST */}
-                <div className="print-card rounded-2xl border border-white/10 bg-[#13103a] overflow-hidden">
-                  <div className="border-b border-white/8 px-6 py-4">
-                    <h3 className="text-sm font-bold text-white">Required Documents</h3>
-                    <p className="mt-0.5 text-xs text-white/35">Tick each document as you prepare it</p>
+                <div className="print-card rounded-2xl border border-gray-200 bg-white overflow-hidden">
+                  <div className="border-b border-gray-100 px-6 py-4">
+                    <h3 className="text-sm font-bold text-[#0f0c29]">Required Documents</h3>
+                    <p className="mt-0.5 text-xs text-gray-400">Tick each document as you prepare it</p>
                   </div>
                   <ul className="divide-y divide-white/5">
                     {documents.map((doc, i) => (
@@ -804,10 +687,10 @@ export default function ChecklistPage() {
                         <div className={`no-print mt-0.5 flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all ${
                           checked[doc]
                             ? 'border-teal-500 bg-teal-500 shadow-sm shadow-teal-500/40'
-                            : 'border-white/20 group-hover:border-teal-500/50'
+                            : 'border-gray-200 group-hover:border-teal-500/50'
                         }`}>
                           {checked[doc] && (
-                            <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                            <svg className="h-3 w-3 text-[#0f0c29]" viewBox="0 0 12 12" fill="none">
                               <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                           )}
@@ -818,7 +701,7 @@ export default function ChecklistPage() {
                         </span>
                         <div className="flex-1 min-w-0">
                           <p className={`text-sm font-medium leading-snug transition-all ${
-                            checked[doc] ? 'text-white/40 line-through' : 'text-white'
+                            checked[doc] ? 'text-gray-400 line-through' : 'text-[#0f0c29]'
                           }`}>
                             {doc}
                           </p>
@@ -832,22 +715,22 @@ export default function ChecklistPage() {
                 </div>
 
                 {/* D) PROGRESS TRACKER */}
-                <div className="no-print print-card rounded-2xl border border-white/10 bg-[#13103a] p-6">
+                <div className="no-print print-card rounded-2xl border border-gray-200 bg-white p-6">
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="text-sm font-bold text-white">
+                      <p className="text-sm font-bold text-[#0f0c29]">
                         {allDone
                           ? "You're ready to apply! 🎉"
                           : `${checkedCount} of ${totalCount} documents ready`}
                       </p>
-                      <p className="mt-0.5 text-xs text-white/35">
+                      <p className="mt-0.5 text-xs text-gray-400">
                         {allDone
                           ? 'All documents prepared — double-check and apply!'
                           : `${totalCount - checkedCount} document${totalCount - checkedCount !== 1 ? 's' : ''} still needed`}
                       </p>
                     </div>
                     <span className={`text-2xl font-extrabold tabular-nums ${
-                      allDone ? 'text-teal-400' : 'text-white/60'
+                      allDone ? 'text-teal-400' : 'text-gray-500'
                     }`}>
                       {progressPct}%
                     </span>
@@ -870,7 +753,7 @@ export default function ChecklistPage() {
                       <span className="text-2xl">🎉</span>
                       <div>
                         <p className="text-sm font-bold text-teal-400">All set! Time to apply.</p>
-                        <p className="text-xs text-white/40">Verify all documents with the official embassy before submitting.</p>
+                        <p className="text-xs text-gray-400">Verify all documents with the official embassy before submitting.</p>
                       </div>
                     </motion.div>
                   )}
@@ -882,17 +765,17 @@ export default function ChecklistPage() {
                     <span>⚠️</span> Important Notes
                   </h3>
                   <dl className="grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-xl border border-white/8 bg-white/5 p-4">
-                      <dt className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-1">Processing Time</dt>
-                      <dd className="text-sm font-semibold text-white">{processingTime}</dd>
+                    <div className="rounded-xl border border-gray-100 bg-white/5 p-4">
+                      <dt className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Processing Time</dt>
+                      <dd className="text-sm font-semibold text-[#0f0c29]">{processingTime}</dd>
                     </div>
-                    <div className="rounded-xl border border-white/8 bg-white/5 p-4">
-                      <dt className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-1">Estimated Fee</dt>
-                      <dd className="text-sm font-semibold text-white">{visaFee}</dd>
+                    <div className="rounded-xl border border-gray-100 bg-white/5 p-4">
+                      <dt className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Estimated Fee</dt>
+                      <dd className="text-sm font-semibold text-[#0f0c29]">{visaFee}</dd>
                     </div>
-                    <div className="sm:col-span-2 rounded-xl border border-white/8 bg-white/5 p-4">
-                      <dt className="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-1">Embassy Contact</dt>
-                      <dd className="text-sm text-white/60">
+                    <div className="sm:col-span-2 rounded-xl border border-gray-100 bg-white/5 p-4">
+                      <dt className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Embassy Contact</dt>
+                      <dd className="text-sm text-gray-500">
                         Contact the {destination} embassy or consulate in {passport} for official appointment and document submission.
                       </dd>
                     </div>
@@ -906,15 +789,15 @@ export default function ChecklistPage() {
                 </div>
 
                 {/* SECTION 4: SHARE & SAVE */}
-                <div className="no-print print-card rounded-2xl border border-white/10 bg-[#13103a] p-6">
-                  <h3 className="mb-4 text-sm font-bold text-white">Share & Save</h3>
+                <div className="no-print print-card rounded-2xl border border-gray-200 bg-white p-6">
+                  <h3 className="mb-4 text-sm font-bold text-[#0f0c29]">Share & Save</h3>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     <button
                       onClick={handleCopy}
                       className={`flex flex-col items-center gap-2 rounded-xl border py-4 px-3 text-xs font-semibold transition-all ${
                         copied
                           ? 'border-teal-500/50 bg-teal-500/15 text-teal-400'
-                          : 'border-white/10 bg-white/5 text-white/55 hover:border-teal-500/30 hover:text-white hover:bg-teal-500/8'
+                          : 'border-gray-200 bg-white/5 text-gray-500 hover:border-teal-500/30 hover:text-[#0f0c29] hover:bg-teal-500/8'
                       }`}
                     >
                       <ClipboardIcon className="h-5 w-5" />
@@ -922,21 +805,21 @@ export default function ChecklistPage() {
                     </button>
                     <button
                       onClick={handleWhatsApp}
-                      className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/5 py-4 px-3 text-xs font-semibold text-white/55 transition-all hover:border-green-500/30 hover:text-green-400 hover:bg-green-500/8"
+                      className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white/5 py-4 px-3 text-xs font-semibold text-gray-500 transition-all hover:border-green-500/30 hover:text-green-400 hover:bg-green-500/8"
                     >
                       <span className="text-xl">💬</span>
                       WhatsApp
                     </button>
                     <button
                       onClick={handlePrint}
-                      className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/5 py-4 px-3 text-xs font-semibold text-white/55 transition-all hover:border-white/30 hover:text-white hover:bg-white/8"
+                      className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white/5 py-4 px-3 text-xs font-semibold text-gray-500 transition-all hover:border-white/30 hover:text-[#0f0c29] hover:bg-white/8"
                     >
                       <PrinterIcon className="h-5 w-5" />
                       Print
                     </button>
                     <button
                       onClick={handlePrint}
-                      className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/5 py-4 px-3 text-xs font-semibold text-white/55 transition-all hover:border-teal-500/30 hover:text-teal-400 hover:bg-teal-500/8"
+                      className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white/5 py-4 px-3 text-xs font-semibold text-gray-500 transition-all hover:border-teal-500/30 hover:text-teal-400 hover:bg-teal-500/8"
                     >
                       <DownloadIcon className="h-5 w-5" />
                       Save PDF
@@ -949,7 +832,7 @@ export default function ChecklistPage() {
         </AnimatePresence>
 
         {/* ── SECTION 5: CTA ───────────────────────────────────────────────── */}
-        <section className={`no-print py-20 sm:py-24 ${showChecklist ? 'border-t border-white/5' : ''}`}>
+        <section className={`no-print py-20 sm:py-24 ${showChecklist ? 'border-t border-gray-100' : ''}`}>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid gap-4 sm:grid-cols-2 max-w-2xl mx-auto">
               <Link
@@ -958,90 +841,25 @@ export default function ChecklistPage() {
               >
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-teal-400 mb-1">Full Requirements</p>
-                  <p className="text-sm font-semibold text-white">Check full visa requirements</p>
-                  <p className="mt-0.5 text-xs text-white/35">Processing times, fees, links & more</p>
+                  <p className="text-sm font-semibold text-[#0f0c29]">Check full visa requirements</p>
+                  <p className="mt-0.5 text-xs text-gray-400">Processing times, fees, links & more</p>
                 </div>
                 <ArrowRight className="h-5 w-5 text-teal-400 shrink-0 group-hover:translate-x-0.5 transition" />
               </Link>
               <Link
                 href="/compare"
-                className="group flex items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/5 p-5 transition-all hover:bg-white/8 hover:border-white/15 hover:-translate-y-0.5"
+                className="group flex items-center justify-between gap-3 rounded-2xl border border-gray-100 bg-white/5 p-5 transition-all hover:bg-white/8 hover:border-gray-200 hover:-translate-y-0.5"
               >
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-white/35 mb-1">Compare</p>
-                  <p className="text-sm font-semibold text-white">Compare with other destinations</p>
-                  <p className="mt-0.5 text-xs text-white/35">Side-by-side visa comparison tool</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Compare</p>
+                  <p className="text-sm font-semibold text-[#0f0c29]">Compare with other destinations</p>
+                  <p className="mt-0.5 text-xs text-gray-400">Side-by-side visa comparison tool</p>
                 </div>
-                <ArrowRight className="h-5 w-5 text-white/30 shrink-0 group-hover:text-white group-hover:translate-x-0.5 transition" />
+                <ArrowRight className="h-5 w-5 text-gray-400 shrink-0 group-hover:text-[#0f0c29] group-hover:translate-x-0.5 transition" />
               </Link>
             </div>
           </div>
-        </section>
-
-        {/* ── FOOTER ───────────────────────────────────────────────────────── */}
-        <footer className="no-print border-t border-white/5 bg-[#0a0820] pb-8 pt-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 gap-8 lg:grid-cols-5">
-              {/* Brand col */}
-              <div className="col-span-2 lg:col-span-2">
-                <Link href="/" className="mb-4 inline-flex items-center gap-2.5">
-                  <Image src="/logo-v2.png" alt="VisitPlane" width={32} height={32} className="rounded-xl" />
-                  <span className="text-lg font-bold">
-                    <span className="text-white">Visit</span>
-                    <span className="text-teal-400">Plane</span>
-                  </span>
-                </Link>
-                <p className="max-w-xs text-sm leading-relaxed text-white/30">
-                  The world&apos;s visa requirements, decoded in seconds. Free, fast, and always updated.
-                </p>
-              </div>
-
-              {/* Link cols */}
-              {[
-                {
-                  title: 'Tools',
-                  links: [
-                    { label: 'Passport Strength',  href: '/passport-strength' },
-                    { label: 'Visa Comparison',    href: '/compare' },
-                    { label: 'Document Checklist', href: '/checklist' },
-                    { label: 'Currency Converter', href: '/currency-converter' },
-                    { label: 'Embassy Finder',     href: '/embassy-finder' },
-                  ],
-                },
-                {
-                  title: 'Company',
-                  links: [
-                    { label: 'About',   href: '/about' },
-                    { label: 'FAQ',     href: '/faq' },
-                    { label: 'Contact', href: '/contact' },
-                    { label: 'Privacy', href: '/privacy' },
-                    { label: 'Terms',   href: '/terms' },
-                  ],
-                },
-              ].map((col) => (
-                <div key={col.title}>
-                  <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">{col.title}</h4>
-                  <ul className="space-y-2.5">
-                    {col.links.map((link) => (
-                      <li key={link.label}>
-                        <Link href={link.href} className="text-sm text-white/30 transition hover:text-white">
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/5 pt-8 sm:flex-row">
-              <p className="text-xs text-white/20">© {new Date().getFullYear()} VisitPlane. All rights reserved.</p>
-              <p className="text-xs text-white/15">Visa data is estimated. Always verify with official embassy sources.</p>
-            </div>
-          </div>
-        </footer>
-
-        {/* ── PRINT HEADER (only visible when printing) ─────────────────────── */}
+        </section>{/* ── PRINT HEADER (only visible when printing) ─────────────────────── */}
         <div className="hidden print:block fixed top-0 left-0 right-0 p-6 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold text-gray-900">Visit<span className="text-teal-600">Plane</span></span>

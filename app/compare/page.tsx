@@ -286,7 +286,7 @@ function DifficultyBadge({ level, highlight }: { level: 'Easy' | 'Medium' | 'Har
 // ─── Cell Highlight Wrapper ───────────────────────────────────────────────────
 function CellValue({ value, highlight }: { value: string; highlight?: 'green' | 'red' | 'neutral' }) {
   if (!highlight || highlight === 'neutral') {
-    return <span className="text-sm font-semibold text-white">{value}</span>
+    return <span className="text-sm font-semibold text-[#0f0c29]">{value}</span>
   }
   return (
     <span className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-bold ${
@@ -308,7 +308,6 @@ export default function ComparePage() {
   const [dest3, setDest3] = useState('')
   const [fetchState, setFetchState] = useState<FetchState>('idle')
   const [results, setResults] = useState<CompareResult[]>([])
-  const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [geoBadgeDismissed, setGeoBadgeDismissed] = useState(false)
   const resultsRef = useRef<HTMLDivElement>(null)
@@ -328,11 +327,6 @@ export default function ComparePage() {
   }, [])
 
   // Scroll for navbar
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', h, { passive: true })
-    return () => window.removeEventListener('scroll', h)
-  }, [])
 
   // Load destinations from DB when passport changes
   useEffect(() => {
@@ -469,98 +463,7 @@ export default function ComparePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#060C18] text-white antialiased overflow-x-hidden">
-
-      {/* ──────────────────────── NAVBAR ──────────────────────────────── */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-[#060C18]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30'
-          : 'bg-transparent'
-      }`}>
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="group flex items-center gap-2.5 shrink-0">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-emerald-500/20 blur-md group-hover:bg-emerald-500/30 transition" />
-              <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="relative rounded-xl" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="text-white">Visit</span>
-              <span className="text-emerald-400">Plane</span>
-            </span>
-          </Link>
-
-          <nav className="hidden items-center gap-1 md:flex">
-            {navLinks.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`rounded-lg px-3 py-2 text-sm transition hover:bg-white/5 hover:text-white ${
-                  item.href === '/compare'
-                    ? 'text-teal-400 font-semibold'
-                    : 'text-white/55'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <div className="relative group">
-              <button className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition flex items-center gap-1">Tools <span className="text-[10px]">▾</span></button>
-              <div className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-white/10 bg-[#0d0b24] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-1">
-                <Link href="/passport-strength" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💪 Passport Strength</Link>
-                <Link href="/compare" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⚖️ Compare Visas</Link>
-                <Link href="/checklist" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">📋 Checklist</Link>
-                <Link href="/processing-times" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⏱️ Processing Times</Link>
-                <Link href="/travel-insurance" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🛡️ Travel Insurance</Link>
-                <Link href="/embassy-finder" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">🏛️ Embassy Finder</Link>
-                <Link href="/cost-calculator" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💰 Cost Calculator</Link>
-                <Link href="/currency-converter" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💱 Currency Converter</Link>
-              </div>
-            </div>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/destinations"
-              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-600 hover:-translate-y-px"
-            >
-              Check Visa <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="rounded-lg p-2 text-white/55 hover:bg-white/5 hover:text-white md:hidden transition"
-            >
-              {mobileOpen ? <XIcon /> : <MenuIcon />}
-            </button>
-          </div>
-        </div>
-
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="border-t border-white/5 bg-[#060C18]/98 backdrop-blur-xl md:hidden overflow-hidden"
-            >
-              <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
-                {navLinks.map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm text-white/60 hover:bg-white/5 hover:text-white transition"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
-
-      {/* ──────────────────────── SECTION 1: HERO ─────────────────────── */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* ──────────────────────── SECTION 1: HERO ─────────────────────── */}
       <section className="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28">
         {/* Glow blobs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -598,7 +501,7 @@ export default function ComparePage() {
             transition={{ duration: 0.6, delay: 0.08 }}
             className="text-5xl font-extrabold leading-[1.06] tracking-tight sm:text-6xl lg:text-[4.5rem]"
           >
-            <span className="text-white">Compare Visas</span>
+            <span className="text-[#0f0c29]">Compare Visas</span>
             <br />
             <span className="bg-gradient-to-r from-teal-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
               Side by Side
@@ -609,7 +512,7 @@ export default function ComparePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="mx-auto mt-5 max-w-lg text-base text-white/45 sm:text-lg"
+            className="mx-auto mt-5 max-w-lg text-base text-gray-500 sm:text-lg"
           >
             Choose your passport and up to 3 destinations to instantly compare visa fees, processing times, and requirements side by side.
           </motion.p>
@@ -619,7 +522,7 @@ export default function ComparePage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.22 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-white/30"
+            className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-400"
           >
             {['⚡ Instant results', '🌍 197 countries', '💡 Smart recommendations', '🆓 Always free'].map((s) => (
               <span key={s} className="flex items-center gap-1">{s}</span>
@@ -629,7 +532,7 @@ export default function ComparePage() {
       </section>
 
       {/* ──────────────────────── SECTION 2: SETUP ────────────────────── */}
-      <section className="bg-[#0a0720] py-12 sm:py-16 border-t border-white/5">
+      <section className="bg-white py-12 sm:py-16 border-t border-gray-100">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -637,12 +540,12 @@ export default function ComparePage() {
             transition={{ duration: 0.6 }}
           >
             {/* Card */}
-            <div className="relative rounded-2xl border border-white/10 bg-white/[0.03] p-2 shadow-2xl shadow-black/60 backdrop-blur-sm">
+            <div className="relative rounded-2xl border border-gray-200 bg-white p-2 shadow-2xl shadow-black/60 backdrop-blur-sm">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-500/8 via-transparent to-cyan-500/8 pointer-events-none" />
-              <div className="relative rounded-xl bg-[#0d0b24] p-6">
+              <div className="relative rounded-xl bg-white p-6">
                 <div className="mb-5">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-teal-400 mb-1">Step 1</p>
-                  <h2 className="text-lg font-extrabold text-white">Select Your Passport</h2>
+                  <h2 className="text-lg font-extrabold text-[#0f0c29]">Select Your Passport</h2>
                 </div>
 
                 {/* Passport selector */}
@@ -655,15 +558,15 @@ export default function ComparePage() {
                 {passport && !geoBadgeDismissed && !geoLoading && (
                   <p className="mt-1.5 text-[10px] text-teal-400 flex items-center gap-1">
                     📍 Auto-detected from your location
-                    <button onClick={() => setGeoBadgeDismissed(true)} className="ml-1 text-white/30 hover:text-white/60">✕</button>
+                    <button onClick={() => setGeoBadgeDismissed(true)} className="ml-1 text-gray-400 hover:text-gray-500">✕</button>
                   </p>
                 )}
 
                 {/* Divider */}
                 <div className="my-6 flex items-center gap-3">
-                  <div className="flex-1 border-t border-white/5" />
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-white/30">Step 2 — Pick Destinations</p>
-                  <div className="flex-1 border-t border-white/5" />
+                  <div className="flex-1 border-t border-gray-100" />
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Step 2 — Pick Destinations</p>
+                  <div className="flex-1 border-t border-gray-100" />
                 </div>
 
                 {/* 3 destination selectors */}
@@ -709,7 +612,7 @@ export default function ComparePage() {
                             else if (!dest2) setDest2(c)
                             else if (!dest3) setDest3(c)
                           }}
-                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/45 transition hover:border-teal-500/40 hover:text-white hover:bg-teal-500/10"
+                          className="rounded-full border border-gray-200 bg-white/5 px-3 py-1 text-xs text-gray-500 transition hover:border-teal-500/40 hover:text-[#0f0c29] hover:bg-teal-500/10"
                         >
                           {FLAGS[c] ?? '🌍'} {c}
                         </button>
@@ -753,8 +656,8 @@ export default function ComparePage() {
           >
             <div className="mx-auto max-w-md rounded-2xl border border-rose-500/20 bg-rose-500/5 px-8 py-10">
               <div className="text-4xl mb-4">⚠️</div>
-              <h3 className="text-lg font-bold text-white mb-2">Something went wrong</h3>
-              <p className="text-sm text-white/40 mb-5">Could not fetch visa data. Please try again.</p>
+              <h3 className="text-lg font-bold text-[#0f0c29] mb-2">Something went wrong</h3>
+              <p className="text-sm text-gray-400 mb-5">Could not fetch visa data. Please try again.</p>
               <button
                 onClick={handleCompare}
                 className="rounded-full bg-teal-500/15 border border-teal-500/30 px-5 py-2 text-sm font-semibold text-teal-400 hover:bg-teal-500/25 transition"
@@ -774,7 +677,7 @@ export default function ComparePage() {
             transition={{ duration: 0.5 }}
           >
             {/* ──── SECTION 3: COMPARISON TABLE ───── */}
-            <section className="py-14 sm:py-20 border-t border-white/5">
+            <section className="py-14 sm:py-20 border-t border-gray-100">
               <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
@@ -783,26 +686,26 @@ export default function ComparePage() {
                   className="mb-10 text-center"
                 >
                   <p className="text-[11px] font-bold uppercase tracking-widest text-teal-400 mb-2">📊 Side-by-Side</p>
-                  <h2 className="text-3xl font-extrabold text-white">Visa Comparison Results</h2>
-                  <p className="mt-2 text-sm text-white/40">
+                  <h2 className="text-3xl font-extrabold text-[#0f0c29]">Visa Comparison Results</h2>
+                  <p className="mt-2 text-sm text-gray-400">
                     Comparing {results.length} destination{results.length > 1 ? 's' : ''} for {FLAGS[passport] ?? '🌍'} {passport} passport holders
                   </p>
                 </motion.div>
 
                 {/* Table */}
-                <div className="overflow-x-auto rounded-2xl border border-white/8">
+                <div className="overflow-x-auto rounded-2xl border border-gray-100">
                   <table className="w-full min-w-[500px]">
                     {/* Header row — destination columns */}
                     <thead>
-                      <tr className="border-b border-white/8 bg-[#0d0b24]">
+                      <tr className="border-b border-gray-100 bg-white">
                         <th className="px-5 py-4 text-left w-44 shrink-0">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">Criteria</span>
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Criteria</span>
                         </th>
                         {results.map((r) => (
                           <th key={r.country} className="px-4 py-4 text-center">
                             <div className="flex flex-col items-center gap-1.5">
                               <span className="text-3xl">{r.flag}</span>
-                              <span className="text-sm font-extrabold text-white leading-tight">{r.country}</span>
+                              <span className="text-sm font-extrabold text-[#0f0c29] leading-tight">{r.country}</span>
                               {!r.hasData && (
                                 <span className="text-[9px] text-rose-400 font-semibold uppercase">No data</span>
                               )}
@@ -811,11 +714,11 @@ export default function ComparePage() {
                         ))}
                       </tr>
                     </thead>
-                    <tbody className="bg-[#080618]">
+                    <tbody className="bg-white">
                       {TABLE_ROWS.map((row, rowIdx) => (
                         <tr
                           key={row.id}
-                          className={`border-b border-white/5 transition-colors hover:bg-white/[0.02] ${
+                          className={`border-b border-gray-100 transition-colors hover:bg-white/[0.02] ${
                             rowIdx % 2 === 0 ? '' : 'bg-white/[0.015]'
                           }`}
                         >
@@ -823,7 +726,7 @@ export default function ComparePage() {
                           <td className="px-5 py-4 align-middle">
                             <div className="flex items-center gap-2.5">
                               <span className="text-lg leading-none">{row.icon}</span>
-                              <span className="text-xs font-bold text-white/50 uppercase tracking-wide">{row.label}</span>
+                              <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">{row.label}</span>
                             </div>
                           </td>
 
@@ -832,7 +735,7 @@ export default function ComparePage() {
                             if (!r.hasData) {
                               return (
                                 <td key={r.country} className="px-4 py-4 text-center align-middle">
-                                  <span className="text-sm text-white/20">—</span>
+                                  <span className="text-sm text-gray-300">—</span>
                                 </td>
                               )
                             }
@@ -875,7 +778,7 @@ export default function ComparePage() {
                             if (row.id === 'validity') {
                               return (
                                 <td key={r.country} className="px-4 py-4 text-center align-middle">
-                                  <span className="text-sm font-semibold text-white/80">{r.validity}</span>
+                                  <span className="text-sm font-semibold text-gray-700">{r.validity}</span>
                                 </td>
                               )
                             }
@@ -887,11 +790,11 @@ export default function ComparePage() {
                                     {r.documents.slice(0, 3).map((doc, i) => (
                                       <div key={i} className="flex items-start gap-1.5">
                                         <CheckCircle />
-                                        <span className="text-[11px] text-white/55 leading-snug">{doc}</span>
+                                        <span className="text-[11px] text-gray-500 leading-snug">{doc}</span>
                                       </div>
                                     ))}
                                     {r.documents.length > 3 && (
-                                      <p className="text-[10px] text-white/30 pl-5">+{r.documents.length - 3} more</p>
+                                      <p className="text-[10px] text-gray-400 pl-5">+{r.documents.length - 3} more</p>
                                     )}
                                   </div>
                                 </td>
@@ -917,7 +820,7 @@ export default function ComparePage() {
 
                 {/* Color key */}
                 {validResults.length > 1 && (
-                  <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-white/30">
+                  <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-gray-400">
                     <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-400" /> Best option</span>
                     <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-rose-400" /> Worst option</span>
                     <span className="flex items-center gap-1.5">🏆 Highlighted cells = winner for that category</span>
@@ -928,7 +831,7 @@ export default function ComparePage() {
 
             {/* ──── SECTION 4: WINNER CARD ───── */}
             {winner && validResults.length > 1 && (
-              <section className="bg-[#0a0720] py-12 sm:py-16 border-t border-white/5">
+              <section className="bg-white py-12 sm:py-16 border-t border-gray-100">
                 <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -937,7 +840,7 @@ export default function ComparePage() {
                     className="relative overflow-hidden rounded-3xl p-px"
                     style={{ background: 'linear-gradient(135deg, rgba(20,184,166,0.4), rgba(6,182,212,0.2) 50%, rgba(16,185,129,0.3))' }}
                   >
-                    <div className="relative rounded-[23px] bg-[#0d0b24] p-8 sm:p-10">
+                    <div className="relative rounded-[23px] bg-white p-8 sm:p-10">
                       {/* Glow */}
                       <div className="absolute inset-0 rounded-[23px] bg-[radial-gradient(ellipse_at_top,rgba(20,184,166,0.1),transparent_60%)] pointer-events-none" />
 
@@ -952,9 +855,9 @@ export default function ComparePage() {
                           <p className="text-[11px] font-bold uppercase tracking-widest text-teal-400 mb-1">🏆 Best Option For You</p>
                           <div className="flex flex-wrap items-center gap-3 mb-2">
                             <span className="text-4xl">{winner.flag}</span>
-                            <h3 className="text-3xl font-extrabold text-white">{winner.country}</h3>
+                            <h3 className="text-3xl font-extrabold text-[#0f0c29]">{winner.country}</h3>
                           </div>
-                          <p className="text-sm text-white/55 mb-4">{winnerReason}</p>
+                          <p className="text-sm text-gray-500 mb-4">{winnerReason}</p>
 
                           {/* Quick stats */}
                           <div className="flex flex-wrap gap-3">
@@ -962,17 +865,17 @@ export default function ComparePage() {
                               <div className="text-lg font-extrabold text-teal-300">{winner.difficulty}</div>
                               <div className="text-[10px] uppercase tracking-wide text-teal-400/60 mt-0.5">Difficulty</div>
                             </div>
-                            <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center">
-                              <div className="text-lg font-extrabold text-white">{winner.fee}</div>
-                              <div className="text-[10px] uppercase tracking-wide text-white/30 mt-0.5">Visa Fee</div>
+                            <div className="rounded-xl border border-gray-200 bg-white/5 px-4 py-2.5 text-center">
+                              <div className="text-lg font-extrabold text-[#0f0c29]">{winner.fee}</div>
+                              <div className="text-[10px] uppercase tracking-wide text-gray-400 mt-0.5">Visa Fee</div>
                             </div>
-                            <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center">
-                              <div className="text-lg font-extrabold text-white">{winner.processingTime}</div>
-                              <div className="text-[10px] uppercase tracking-wide text-white/30 mt-0.5">Processing</div>
+                            <div className="rounded-xl border border-gray-200 bg-white/5 px-4 py-2.5 text-center">
+                              <div className="text-lg font-extrabold text-[#0f0c29]">{winner.processingTime}</div>
+                              <div className="text-[10px] uppercase tracking-wide text-gray-400 mt-0.5">Processing</div>
                             </div>
-                            <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center">
-                              <div className="text-lg font-extrabold text-white">{winner.validity}</div>
-                              <div className="text-[10px] uppercase tracking-wide text-white/30 mt-0.5">Validity</div>
+                            <div className="rounded-xl border border-gray-200 bg-white/5 px-4 py-2.5 text-center">
+                              <div className="text-lg font-extrabold text-[#0f0c29]">{winner.validity}</div>
+                              <div className="text-[10px] uppercase tracking-wide text-gray-400 mt-0.5">Validity</div>
                             </div>
                           </div>
                         </div>
@@ -994,14 +897,14 @@ export default function ComparePage() {
             )}
 
             {/* ──── SECTION 5: CTA PER DESTINATION ───── */}
-            <section className="py-12 sm:py-16 border-t border-white/5">
+            <section className="py-12 sm:py-16 border-t border-gray-100">
               <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.4 }}
                 >
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-white/30 text-center mb-6">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 text-center mb-6">
                     📋 Full Requirements
                   </p>
                   <div className={`grid gap-4 ${results.length === 1 ? 'sm:grid-cols-1 max-w-xs mx-auto' : results.length === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3'}`}>
@@ -1017,20 +920,20 @@ export default function ComparePage() {
                           className={`group flex flex-col items-center gap-3 rounded-2xl border p-6 text-center transition-all hover:-translate-y-1 hover:shadow-xl ${
                             winner && r.country === winner.country
                               ? 'border-teal-500/30 bg-teal-500/5 hover:border-teal-500/50 hover:shadow-teal-500/10'
-                              : 'border-white/8 bg-[#0d0b24] hover:border-white/15'
+                              : 'border-gray-100 bg-white hover:border-gray-200'
                           }`}
                         >
                           <span className="text-4xl">{r.flag}</span>
                           <div>
-                            <p className="font-extrabold text-white text-lg">{r.country}</p>
-                            <p className="text-xs text-white/40 mt-1">{r.visaType}</p>
+                            <p className="font-extrabold text-[#0f0c29] text-lg">{r.country}</p>
+                            <p className="text-xs text-gray-400 mt-1">{r.visaType}</p>
                           </div>
                           {winner && r.country === winner.country && (
                             <span className="inline-flex items-center gap-1 rounded-full bg-teal-500/15 border border-teal-500/30 px-3 py-1 text-[10px] font-bold text-teal-400 uppercase tracking-wide">
                               🏆 Recommended
                             </span>
                           )}
-                          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-white/40 group-hover:text-teal-400 transition mt-1">
+                          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-400 group-hover:text-teal-400 transition mt-1">
                             Check full requirements <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition" />
                           </span>
                         </Link>
@@ -1054,7 +957,7 @@ export default function ComparePage() {
               style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '56px 56px' }} />
             <div className="relative">
               <div className="mb-4 text-4xl">✈️</div>
-              <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Ready to Plan Your Trip?</h2>
+              <h2 className="text-3xl font-extrabold text-[#0f0c29] sm:text-4xl">Ready to Plan Your Trip?</h2>
               <p className="mx-auto mt-3 max-w-md text-sm text-white/75">
                 Get full visa requirements, document checklists, and processing details for any destination.
               </p>
@@ -1067,7 +970,7 @@ export default function ComparePage() {
                 </Link>
                 <Link
                   href="/passport-strength"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/12 px-7 py-3 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/20"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/12 px-7 py-3 text-sm font-bold text-[#0f0c29] backdrop-blur-sm transition hover:bg-white/20"
                 >
                   🛂 My Passport Strength
                 </Link>
@@ -1075,43 +978,6 @@ export default function ComparePage() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* ──────────────────────── FOOTER ──────────────────────────────── */}
-      <footer className="border-t border-white/5 bg-[#040810] pb-8 pt-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-            <div className="col-span-2">
-              <Link href="/" className="mb-4 inline-flex items-center gap-2.5">
-                <Image src="/logo-v2.png" alt="VisitPlane" width={32} height={32} className="rounded-xl" />
-                <span className="text-lg font-bold"><span className="text-white">Visit</span><span className="text-emerald-400">Plane</span></span>
-              </Link>
-              <p className="max-w-xs text-sm leading-relaxed text-white/30">The world&apos;s visa requirements, decoded in seconds. Free, fast, and always updated.</p>
-            </div>
-            <div>
-              <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Tools</h4>
-              <ul className="space-y-2.5">
-                {([['Passport Strength','/passport-strength'],['Visa Comparison','/compare'],['Document Checklist','/checklist'],['Currency Converter','/currency-converter'],['Embassy Finder','/embassy-finder']] as [string,string][]).map(([l,h]) => (
-                  <li key={l}><Link href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Company</h4>
-              <ul className="space-y-2.5">
-                {([['About','/about'],['FAQ','/faq'],['Contact','/contact'],['Privacy','/privacy'],['Terms','/terms']] as [string,string][]).map(([l,h]) => (
-                  <li key={l}><Link href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link></li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 border-t border-white/5 pt-8 flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p className="text-xs text-white/20">© {new Date().getFullYear()} VisitPlane. All rights reserved.</p>
-            <p className="text-xs text-white/15">Visa data is estimated. Always verify with official embassy sources.</p>
-          </div>
-        </div>
-      </footer>
-
-    </div>
+      </section></div>
   )
 }

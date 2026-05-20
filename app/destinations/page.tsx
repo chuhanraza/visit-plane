@@ -239,32 +239,7 @@ export default function DestinationsPage() {
   }, [search, activeContinent])
 
   return (
-    <div className="min-h-screen bg-[#0f0c29] text-white antialiased">
-      {/* ── Navbar ─────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="rounded-xl" />
-            <span className="text-lg font-bold">
-              <span className="text-white">Visit</span>
-              <span className="text-emerald-400">Plane</span>
-            </span>
-          </Link>
-          <nav className="hidden items-center gap-1 md:flex">
-            <Link href="/destinations" className="rounded-lg px-3 py-2 text-sm text-emerald-400 font-semibold">Explore</Link>
-            <Link href="/visa-requirements" className="rounded-lg px-3 py-2 text-sm text-white/55 hover:text-white transition">Visa Requirements</Link>
-            <Link href="/blog" className="rounded-lg px-3 py-2 text-sm text-white/55 hover:text-white transition">Blog</Link>
-          </nav>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 hover:bg-emerald-600 transition"
-          >
-            Check Visa →
-          </Link>
-        </div>
-      </header>
-
-      {/* ── Hero ───────────────────────────────────────────────────────────── */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">{/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden pt-20 pb-10">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.12),transparent_60%)]" />
@@ -274,12 +249,12 @@ export default function DestinationsPage() {
             🌍 {ALL_COUNTRIES.length} Countries Available
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-            <span className="text-white">Explore </span>
+            <span className="text-[#0f0c29]">Explore </span>
             <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
               197 Destinations
             </span>
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-base text-white/50">
+          <p className="mx-auto mt-5 max-w-xl text-base text-gray-500">
             Select any country to instantly check visa requirements, fees, processing times, and document checklists.
             {countryName && (
               <span className="block mt-2 text-sm text-teal-400">
@@ -291,18 +266,18 @@ export default function DestinationsPage() {
           {/* Search bar */}
           <div className="mx-auto mt-8 max-w-lg">
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-lg">🔍</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">🔍</span>
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search countries or continents…"
-                className="w-full rounded-2xl border border-white/10 bg-white/[0.06] pl-11 pr-4 py-3.5 text-sm text-white placeholder-white/30 outline-none focus:border-emerald-500/50 focus:bg-white/[0.08] transition"
+                className="w-full rounded-2xl border border-gray-200 bg-white/[0.06] pl-11 pr-4 py-3.5 text-sm text-[#0f0c29] placeholder-white/30 outline-none focus:border-emerald-500/50 focus:bg-white/[0.08] transition"
               />
               {search && (
                 <button
                   onClick={() => setSearch('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition text-lg"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 transition text-lg"
                 >
                   ×
                 </button>
@@ -313,7 +288,7 @@ export default function DestinationsPage() {
       </section>
 
       {/* ── Continent filter tabs ───────────────────────────────────────────── */}
-      <section className="sticky top-16 z-30 bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5">
+      <section className="sticky top-16 z-30 bg-[#FAFAFA]/95 backdrop-blur-xl border-b border-gray-100">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
           <div className="flex flex-wrap gap-2 justify-center">
             {CONTINENTS.map((c) => (
@@ -323,7 +298,7 @@ export default function DestinationsPage() {
                 className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${
                   activeContinent === c
                     ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
-                    : 'border border-white/10 bg-white/5 text-white/55 hover:border-emerald-500/40 hover:text-white'
+                    : 'border border-gray-200 bg-white/5 text-gray-500 hover:border-emerald-500/40 hover:text-white'
                 }`}
               >
                 {c}
@@ -338,14 +313,14 @@ export default function DestinationsPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
           {/* Count */}
-          <div className="mb-6 text-sm text-white/35 text-center">
+          <div className="mb-6 text-sm text-gray-400 text-center">
             {filtered.length === ALL_COUNTRIES.length
               ? `${ALL_COUNTRIES.length} countries available`
               : `${filtered.length} of ${ALL_COUNTRIES.length} countries`}
           </div>
 
           {filtered.length === 0 ? (
-            <div className="py-20 text-center text-white/40">No countries found for &quot;{search}&quot;</div>
+            <div className="py-20 text-center text-gray-400">No countries found for &quot;{search}&quot;</div>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {filtered.map((country) => {
@@ -354,11 +329,11 @@ export default function DestinationsPage() {
                   <Link
                     key={country.name}
                     href={`/visa/${encodeURIComponent(detectedPassport)}/${encodeURIComponent(country.name)}`}
-                    className="group flex flex-col items-center gap-2.5 rounded-2xl border border-white/8 bg-white/[0.04] p-4 text-center transition-all hover:border-teal-500/50 hover:bg-white/[0.07] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-500/10"
+                    className="group flex flex-col items-center gap-2.5 rounded-2xl border border-gray-100 bg-white p-4 text-center transition-all hover:border-teal-500/50 hover:bg-white/[0.07] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-500/10"
                   >
                     <span className="text-4xl">{country.flag}</span>
-                    <div className="text-sm font-semibold text-white leading-tight">{country.name}</div>
-                    <div className="text-[10px] text-white/30">{country.continent}</div>
+                    <div className="text-sm font-semibold text-[#0f0c29] leading-tight">{country.name}</div>
+                    <div className="text-[10px] text-gray-400">{country.continent}</div>
                     <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${badge.bg} ${badge.text} ${badge.border}`}>
                       {country.visa}
                     </span>

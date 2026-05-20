@@ -157,32 +157,7 @@ export default async function BlogPostPage({
       {/* Social share — fixed vertical strip on desktop left */}
       <SocialShare title={post.title} slug={slug} />
 
-      {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="group flex items-center gap-2.5">
-            <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="rounded-xl" />
-            <span className="text-lg font-semibold tracking-tight">
-              <span className="text-[#1A1A1A]">Visit</span>
-              <span className="text-[#10B981]">Plane</span>
-            </span>
-          </Link>
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link href="/destinations" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">Explore</Link>
-            <Link href="/visa-requirements" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">Visa Requirements</Link>
-            <Link href="/blog" className="text-sm font-medium text-[#10B981]">Blog</Link>
-          </nav>
-          <Link
-            href="/"
-            className="group inline-flex items-center gap-2 rounded-full bg-[#10B981] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#059669]"
-          >
-            Check Visa
-            <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
-          </Link>
-        </div>
-      </header>
-
-      {/* ── IMMERSIVE HERO ───────────────────────────────────────────────── */}
+      {/* ── STICKY HEADER ────────────────────────────────────────────────── */}{/* ── IMMERSIVE HERO ───────────────────────────────────────────────── */}
       <div
         className="relative overflow-hidden"
         style={{ height: '70vh', minHeight: '480px', maxHeight: '780px' }}
@@ -419,27 +394,6 @@ export default async function BlogPostPage({
             </Link>
           </div>
         </div>
-      </section>
-
-      {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 px-4 py-8 text-sm text-gray-400 sm:flex-row sm:items-center sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <Image src="/logo-v2.png" alt="VisitPlane" width={20} height={20} className="rounded" />
-            <span>
-              <span className="text-gray-600">Visit</span>
-              <span className="text-[#10B981]">Plane</span>
-              <span className="ml-2">© {new Date().getFullYear()}</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/privacy" className="transition hover:text-gray-600">Privacy</Link>
-            <Link href="/terms" className="transition hover:text-gray-600">Terms</Link>
-            <Link href="/contact" className="transition hover:text-gray-600">Contact</Link>
-          </div>
-        </div>
-      </footer>
-
-    </div>
+      </section></div>
   )
 }

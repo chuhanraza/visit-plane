@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import Navbar from '@/app/interview-prep/components/Navbar'
-import Footer from '@/app/interview-prep/components/Footer'
 import WizardHero from './components/WizardHero'
 import WizardChat from './components/WizardChat'
 import WizardResults from './components/WizardResults'
@@ -55,7 +53,6 @@ export default function WizardClient() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">
-      <Navbar />
 
       {phase === 'hero' ? (
         <WizardHero onStart={handleStart} />
@@ -76,7 +73,6 @@ export default function WizardClient() {
         </div>
       )}
 
-      <Footer />
     </div>
   )
 }
