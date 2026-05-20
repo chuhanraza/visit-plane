@@ -904,9 +904,9 @@ export default function PassportStrengthPage() {
                   className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-emerald-700 shadow-xl transition hover:-translate-y-0.5 hover:shadow-2xl">
                   Check Requirements <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link href="/blog"
+                <Link href="/visa-free-map"
                   className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/12 px-7 py-3 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/20">
-                  Read Travel Guides
+                  🗺️ See Your Countries on a World Map →
                 </Link>
               </div>
             </div>

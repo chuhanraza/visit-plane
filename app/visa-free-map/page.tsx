@@ -2,17 +2,19 @@ import type { Metadata } from 'next'
 import VisaFreeMapClient from './VisaFreeMapClient'
 
 export const metadata: Metadata = {
-  title: 'Visa-Free World Map 2026 | See Where You Can Travel | VisitPlane',
+  title: 'Visa-Free World Map 2026 | Passport Power Explorer | VisitPlane',
   description:
-    'Interactive world map showing visa-free countries for your passport. See instantly where you can travel without a visa in 2026.',
+    'Interactive world map showing where your passport can take you. See visa-free, visa-on-arrival, and visa-required countries for 197 passports. Based on Henley Passport Index 2026.',
   keywords: [
-    'visa free map',
-    'visa free countries',
-    'passport visa map',
-    'interactive visa map',
-    'travel without visa 2026',
-    'visa on arrival map',
+    'visa free map 2026',
     'passport power map',
+    'henley passport index 2026',
+    'visa free countries',
+    'interactive visa world map',
+    'passport visa map',
+    'travel without visa 2026',
+    'visa on arrival countries',
+    'passport strength map',
   ],
   metadataBase: new URL('https://visitplane.com'),
   alternates: { canonical: '/visa-free-map' },
