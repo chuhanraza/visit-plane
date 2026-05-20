@@ -21,7 +21,7 @@ const RTL_LOCALES = ["ar", "ur"];
 export const metadata: Metadata = {
   title: "VisitPlane - Visa Requirements & Documents",
   description:
-    "Get instant visa requirements for 150+ countries. Know exactly what documents you need. Fast, free, always updated.",
+    "Get instant visa requirements for 197 countries. Know exactly what documents you need. Free, fast, always updated. No signup required.",
   keywords: [
     "visa requirements",
     "visa documents",
@@ -53,12 +53,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: "VisitPlane - Visa Requirements & Documents",
     description:
-      "Get instant visa requirements for 150+ countries. Know exactly what documents you need. Fast, free, always updated.",
+      "Get instant visa requirements for 197 countries. Know exactly what documents you need. Free, fast, always updated. No signup required.",
     url: "https://visitplane.com",
     siteName: "VisitPlane",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://visitplane.com/api/og-default",
         width: 1200,
         height: 630,
         alt: "VisitPlane – Visa Requirements & Documents",
@@ -71,8 +71,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "VisitPlane - Visa Requirements & Documents",
     description:
-      "Get instant visa requirements for 150+ countries. Know exactly what documents you need. Fast, free, always updated.",
-    images: ["/og-image.png"],
+      "Get instant visa requirements for 197 countries. Know exactly what documents you need. Free, fast, always updated. No signup required.",
+    images: ["https://visitplane.com/api/og-default"],
     site: "@visitplane",
   },
 };
@@ -84,7 +84,7 @@ const jsonLd = {
   name: "VisitPlane",
   url: "https://visitplane.com",
   description:
-    "Visa requirements platform — get instant visa requirements for 150+ countries and know exactly what documents you need.",
+    "Visa requirements platform — get instant visa requirements for 197 countries and know exactly what documents you need. Free, fast, always updated. No signup required.",
   applicationCategory: "TravelApplication",
   operatingSystem: "All",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },

@@ -1,54 +1,246 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useUserCountry } from '@/hooks/useUserCountry'
 
-const POPULAR_COUNTRIES = [
-  { name: 'UAE',            flag: '🇦🇪', region: 'Middle East', visa: 'eVisa' },
-  { name: 'Turkey',         flag: '🇹🇷', region: 'Europe / Asia', visa: 'eVisa' },
-  { name: 'Japan',          flag: '🇯🇵', region: 'Asia', visa: 'Visa Required' },
-  { name: 'United Kingdom', flag: '🇬🇧', region: 'Europe', visa: 'Visa Required' },
-  { name: 'Singapore',      flag: '🇸🇬', region: 'Asia', visa: 'Visa Free' },
-  { name: 'France',         flag: '🇫🇷', region: 'Europe', visa: 'Visa Required' },
-  { name: 'United States',  flag: '🇺🇸', region: 'Americas', visa: 'Visa Required' },
-  { name: 'Canada',         flag: '🇨🇦', region: 'Americas', visa: 'Visa Required' },
-  { name: 'Australia',      flag: '🇦🇺', region: 'Oceania', visa: 'eVisa' },
-  { name: 'Saudi Arabia',   flag: '🇸🇦', region: 'Middle East', visa: 'eVisa' },
-  { name: 'Thailand',       flag: '🇹🇭', region: 'Asia', visa: 'Visa Free' },
-  { name: 'Malaysia',       flag: '🇲🇾', region: 'Asia', visa: 'Visa Free' },
-  { name: 'Germany',        flag: '🇩🇪', region: 'Europe', visa: 'Visa Required' },
-  { name: 'South Korea',    flag: '🇰🇷', region: 'Asia', visa: 'Visa Required' },
-  { name: 'Qatar',          flag: '🇶🇦', region: 'Middle East', visa: 'Visa Free' },
-  { name: 'Indonesia',      flag: '🇮🇩', region: 'Asia', visa: 'Visa Free' },
-  { name: 'Egypt',          flag: '🇪🇬', region: 'Africa', visa: 'eVisa' },
-  { name: 'Morocco',        flag: '🇲🇦', region: 'Africa', visa: 'Visa Free' },
-  { name: 'Kenya',          flag: '🇰🇪', region: 'Africa', visa: 'eVisa' },
-  { name: 'New Zealand',    flag: '🇳🇿', region: 'Oceania', visa: 'eVisa' },
-  { name: 'Vietnam',        flag: '🇻🇳', region: 'Asia', visa: 'eVisa' },
-  { name: 'India',          flag: '🇮🇳', region: 'Asia', visa: 'eVisa' },
-  { name: 'Brazil',         flag: '🇧🇷', region: 'Americas', visa: 'Visa Required' },
-  { name: 'Mexico',         flag: '🇲🇽', region: 'Americas', visa: 'Visa Free' },
+// ─── All 197 countries organised by continent ──────────────────────────────
+const ALL_COUNTRIES: { name: string; flag: string; continent: string; visa: string }[] = [
+  // Asia
+  { name: 'Afghanistan',   flag: '🇦🇫', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Armenia',       flag: '🇦🇲', continent: 'Asia',        visa: 'eVisa' },
+  { name: 'Azerbaijan',    flag: '🇦🇿', continent: 'Asia',        visa: 'eVisa' },
+  { name: 'Bangladesh',    flag: '🇧🇩', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Bhutan',        flag: '🇧🇹', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Brunei',        flag: '🇧🇳', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Cambodia',      flag: '🇰🇭', continent: 'Asia',        visa: 'eVisa' },
+  { name: 'China',         flag: '🇨🇳', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Georgia',       flag: '🇬🇪', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Hong Kong',     flag: '🇭🇰', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'India',         flag: '🇮🇳', continent: 'Asia',        visa: 'eVisa' },
+  { name: 'Indonesia',     flag: '🇮🇩', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Iran',          flag: '🇮🇷', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Japan',         flag: '🇯🇵', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Kazakhstan',    flag: '🇰🇿', continent: 'Asia',        visa: 'eVisa' },
+  { name: 'Kyrgyzstan',    flag: '🇰🇬', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Laos',          flag: '🇱🇦', continent: 'Asia',        visa: 'eVisa' },
+  { name: 'Malaysia',      flag: '🇲🇾', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Maldives',      flag: '🇲🇻', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Mongolia',      flag: '🇲🇳', continent: 'Asia',        visa: 'eVisa' },
+  { name: 'Myanmar',       flag: '🇲🇲', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Nepal',         flag: '🇳🇵', continent: 'Asia',        visa: 'Visa on Arrival' },
+  { name: 'North Korea',   flag: '🇰🇵', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Pakistan',      flag: '🇵🇰', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Philippines',   flag: '🇵🇭', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Singapore',     flag: '🇸🇬', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'South Korea',   flag: '🇰🇷', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Sri Lanka',     flag: '🇱🇰', continent: 'Asia',        visa: 'eVisa' },
+  { name: 'Taiwan',        flag: '🇹🇼', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Tajikistan',    flag: '🇹🇯', continent: 'Asia',        visa: 'eVisa' },
+  { name: 'Thailand',      flag: '🇹🇭', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Timor-Leste',   flag: '🇹🇱', continent: 'Asia',        visa: 'Visa on Arrival' },
+  { name: 'Turkmenistan',  flag: '🇹🇲', continent: 'Asia',        visa: 'Visa Required' },
+  { name: 'Uzbekistan',    flag: '🇺🇿', continent: 'Asia',        visa: 'Visa Free' },
+  { name: 'Vietnam',       flag: '🇻🇳', continent: 'Asia',        visa: 'eVisa' },
+  // Europe
+  { name: 'Albania',       flag: '🇦🇱', continent: 'Europe',      visa: 'Visa Free' },
+  { name: 'Andorra',       flag: '🇦🇩', continent: 'Europe',      visa: 'Visa Free' },
+  { name: 'Austria',       flag: '🇦🇹', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Belarus',       flag: '🇧🇾', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Belgium',       flag: '🇧🇪', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Bosnia and Herzegovina', flag: '🇧🇦', continent: 'Europe', visa: 'Visa Free' },
+  { name: 'Bulgaria',      flag: '🇧🇬', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Croatia',       flag: '🇭🇷', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Cyprus',        flag: '🇨🇾', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Czech Republic',flag: '🇨🇿', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Denmark',       flag: '🇩🇰', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Estonia',       flag: '🇪🇪', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Finland',       flag: '🇫🇮', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'France',        flag: '🇫🇷', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Germany',       flag: '🇩🇪', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Greece',        flag: '🇬🇷', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Hungary',       flag: '🇭🇺', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Iceland',       flag: '🇮🇸', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Ireland',       flag: '🇮🇪', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Italy',         flag: '🇮🇹', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Kosovo',        flag: '🇽🇰', continent: 'Europe',      visa: 'Visa Free' },
+  { name: 'Latvia',        flag: '🇱🇻', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Liechtenstein', flag: '🇱🇮', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Lithuania',     flag: '🇱🇹', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Luxembourg',    flag: '🇱🇺', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Malta',         flag: '🇲🇹', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Moldova',       flag: '🇲🇩', continent: 'Europe',      visa: 'Visa Free' },
+  { name: 'Monaco',        flag: '🇲🇨', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Montenegro',    flag: '🇲🇪', continent: 'Europe',      visa: 'Visa Free' },
+  { name: 'Netherlands',   flag: '🇳🇱', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'North Macedonia',flag: '🇲🇰', continent: 'Europe',     visa: 'Visa Free' },
+  { name: 'Norway',        flag: '🇳🇴', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Poland',        flag: '🇵🇱', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Portugal',      flag: '🇵🇹', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Romania',       flag: '🇷🇴', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Russia',        flag: '🇷🇺', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'San Marino',    flag: '🇸🇲', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Serbia',        flag: '🇷🇸', continent: 'Europe',      visa: 'Visa Free' },
+  { name: 'Slovakia',      flag: '🇸🇰', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Slovenia',      flag: '🇸🇮', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Spain',         flag: '🇪🇸', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Sweden',        flag: '🇸🇪', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Switzerland',   flag: '🇨🇭', continent: 'Europe',      visa: 'Visa Required' },
+  { name: 'Turkey',        flag: '🇹🇷', continent: 'Europe',      visa: 'eVisa' },
+  { name: 'Ukraine',       flag: '🇺🇦', continent: 'Europe',      visa: 'Visa Free' },
+  { name: 'United Kingdom',flag: '🇬🇧', continent: 'Europe',      visa: 'Visa Required' },
+  // Americas
+  { name: 'Antigua and Barbuda', flag: '🇦🇬', continent: 'Americas', visa: 'Visa Free' },
+  { name: 'Argentina',     flag: '🇦🇷', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Bahamas',       flag: '🇧🇸', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Barbados',      flag: '🇧🇧', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Belize',        flag: '🇧🇿', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Bolivia',       flag: '🇧🇴', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Brazil',        flag: '🇧🇷', continent: 'Americas',    visa: 'Visa Required' },
+  { name: 'Canada',        flag: '🇨🇦', continent: 'Americas',    visa: 'Visa Required' },
+  { name: 'Chile',         flag: '🇨🇱', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Colombia',      flag: '🇨🇴', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Costa Rica',    flag: '🇨🇷', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Cuba',          flag: '🇨🇺', continent: 'Americas',    visa: 'Visa Required' },
+  { name: 'Dominica',      flag: '🇩🇲', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Dominican Republic', flag: '🇩🇴', continent: 'Americas', visa: 'Visa on Arrival' },
+  { name: 'Ecuador',       flag: '🇪🇨', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'El Salvador',   flag: '🇸🇻', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Grenada',       flag: '🇬🇩', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Guatemala',     flag: '🇬🇹', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Guyana',        flag: '🇬🇾', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Haiti',         flag: '🇭🇹', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Honduras',      flag: '🇭🇳', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Jamaica',       flag: '🇯🇲', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Mexico',        flag: '🇲🇽', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Nicaragua',     flag: '🇳🇮', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Panama',        flag: '🇵🇦', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Paraguay',      flag: '🇵🇾', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Peru',          flag: '🇵🇪', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Saint Kitts and Nevis', flag: '🇰🇳', continent: 'Americas', visa: 'Visa Free' },
+  { name: 'Saint Lucia',   flag: '🇱🇨', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Saint Vincent and the Grenadines', flag: '🇻🇨', continent: 'Americas', visa: 'Visa Free' },
+  { name: 'Suriname',      flag: '🇸🇷', continent: 'Americas',    visa: 'Visa Required' },
+  { name: 'Trinidad and Tobago', flag: '🇹🇹', continent: 'Americas', visa: 'Visa Free' },
+  { name: 'United States', flag: '🇺🇸', continent: 'Americas',    visa: 'Visa Required' },
+  { name: 'Uruguay',       flag: '🇺🇾', continent: 'Americas',    visa: 'Visa Free' },
+  { name: 'Venezuela',     flag: '🇻🇪', continent: 'Americas',    visa: 'Visa Free' },
+  // Middle East
+  { name: 'Bahrain',       flag: '🇧🇭', continent: 'Middle East', visa: 'eVisa' },
+  { name: 'Egypt',         flag: '🇪🇬', continent: 'Middle East', visa: 'eVisa' },
+  { name: 'Iraq',          flag: '🇮🇶', continent: 'Middle East', visa: 'Visa Required' },
+  { name: 'Israel',        flag: '🇮🇱', continent: 'Middle East', visa: 'Visa Free' },
+  { name: 'Jordan',        flag: '🇯🇴', continent: 'Middle East', visa: 'Visa on Arrival' },
+  { name: 'Kuwait',        flag: '🇰🇼', continent: 'Middle East', visa: 'Visa Required' },
+  { name: 'Lebanon',       flag: '🇱🇧', continent: 'Middle East', visa: 'Visa Required' },
+  { name: 'Oman',          flag: '🇴🇲', continent: 'Middle East', visa: 'eVisa' },
+  { name: 'Palestine',     flag: '🇵🇸', continent: 'Middle East', visa: 'Visa Required' },
+  { name: 'Qatar',         flag: '🇶🇦', continent: 'Middle East', visa: 'Visa Free' },
+  { name: 'Saudi Arabia',  flag: '🇸🇦', continent: 'Middle East', visa: 'eVisa' },
+  { name: 'Syria',         flag: '🇸🇾', continent: 'Middle East', visa: 'Visa Required' },
+  { name: 'UAE',           flag: '🇦🇪', continent: 'Middle East', visa: 'eVisa' },
+  { name: 'Yemen',         flag: '🇾🇪', continent: 'Middle East', visa: 'Visa Required' },
+  // Africa
+  { name: 'Algeria',       flag: '🇩🇿', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Angola',        flag: '🇦🇴', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Benin',         flag: '🇧🇯', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Botswana',      flag: '🇧🇼', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Burkina Faso',  flag: '🇧🇫', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Burundi',       flag: '🇧🇮', continent: 'Africa',      visa: 'Visa on Arrival' },
+  { name: 'Cameroon',      flag: '🇨🇲', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Cape Verde',    flag: '🇨🇻', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Central African Republic', flag: '🇨🇫', continent: 'Africa', visa: 'Visa Required' },
+  { name: 'Chad',          flag: '🇹🇩', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Comoros',       flag: '🇰🇲', continent: 'Africa',      visa: 'Visa on Arrival' },
+  { name: 'Democratic Republic of the Congo', flag: '🇨🇩', continent: 'Africa', visa: 'Visa Required' },
+  { name: 'Djibouti',      flag: '🇩🇯', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Equatorial Guinea', flag: '🇬🇶', continent: 'Africa',  visa: 'Visa Required' },
+  { name: 'Eritrea',       flag: '🇪🇷', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Ethiopia',      flag: '🇪🇹', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Gabon',         flag: '🇬🇦', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Gambia',        flag: '🇬🇲', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Ghana',         flag: '🇬🇭', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Guinea',        flag: '🇬🇳', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Guinea-Bissau', flag: '🇬🇼', continent: 'Africa',      visa: 'Visa on Arrival' },
+  { name: 'Ivory Coast',   flag: '🇨🇮', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Kenya',         flag: '🇰🇪', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Lesotho',       flag: '🇱🇸', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Liberia',       flag: '🇱🇷', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Libya',         flag: '🇱🇾', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Madagascar',    flag: '🇲🇬', continent: 'Africa',      visa: 'Visa on Arrival' },
+  { name: 'Malawi',        flag: '🇲🇼', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Mali',          flag: '🇲🇱', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Mauritania',    flag: '🇲🇷', continent: 'Africa',      visa: 'Visa on Arrival' },
+  { name: 'Mauritius',     flag: '🇲🇺', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Morocco',       flag: '🇲🇦', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Mozambique',    flag: '🇲🇿', continent: 'Africa',      visa: 'Visa on Arrival' },
+  { name: 'Namibia',       flag: '🇳🇦', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Niger',         flag: '🇳🇪', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Nigeria',       flag: '🇳🇬', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Republic of the Congo', flag: '🇨🇬', continent: 'Africa', visa: 'Visa Required' },
+  { name: 'Rwanda',        flag: '🇷🇼', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Sao Tome and Principe', flag: '🇸🇹', continent: 'Africa', visa: 'Visa on Arrival' },
+  { name: 'Senegal',       flag: '🇸🇳', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Seychelles',    flag: '🇸🇨', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Sierra Leone',  flag: '🇸🇱', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Somalia',       flag: '🇸🇴', continent: 'Africa',      visa: 'Visa on Arrival' },
+  { name: 'South Africa',  flag: '🇿🇦', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'South Sudan',   flag: '🇸🇸', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Sudan',         flag: '🇸🇩', continent: 'Africa',      visa: 'Visa Required' },
+  { name: 'Swaziland',     flag: '🇸🇿', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Tanzania',      flag: '🇹🇿', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Togo',          flag: '🇹🇬', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Tunisia',       flag: '🇹🇳', continent: 'Africa',      visa: 'Visa Free' },
+  { name: 'Uganda',        flag: '🇺🇬', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Zambia',        flag: '🇿🇲', continent: 'Africa',      visa: 'eVisa' },
+  { name: 'Zimbabwe',      flag: '🇿🇼', continent: 'Africa',      visa: 'Visa on Arrival' },
+  // Oceania
+  { name: 'Australia',     flag: '🇦🇺', continent: 'Oceania',     visa: 'eVisa' },
+  { name: 'Fiji',          flag: '🇫🇯', continent: 'Oceania',     visa: 'Visa Free' },
+  { name: 'Kiribati',      flag: '🇰🇮', continent: 'Oceania',     visa: 'Visa on Arrival' },
+  { name: 'Marshall Islands', flag: '🇲🇭', continent: 'Oceania',  visa: 'Visa Free' },
+  { name: 'Micronesia',    flag: '🇫🇲', continent: 'Oceania',     visa: 'Visa Free' },
+  { name: 'Nauru',         flag: '🇳🇷', continent: 'Oceania',     visa: 'Visa Required' },
+  { name: 'New Zealand',   flag: '🇳🇿', continent: 'Oceania',     visa: 'eVisa' },
+  { name: 'Palau',         flag: '🇵🇼', continent: 'Oceania',     visa: 'Visa Free' },
+  { name: 'Papua New Guinea', flag: '🇵🇬', continent: 'Oceania',  visa: 'Visa on Arrival' },
+  { name: 'Samoa',         flag: '🇼🇸', continent: 'Oceania',     visa: 'Visa Free' },
+  { name: 'Solomon Islands', flag: '🇸🇧', continent: 'Oceania',   visa: 'Visa Free' },
+  { name: 'Tonga',         flag: '🇹🇴', continent: 'Oceania',     visa: 'Visa Free' },
+  { name: 'Tuvalu',        flag: '🇹🇻', continent: 'Oceania',     visa: 'Visa on Arrival' },
+  { name: 'Vanuatu',       flag: '🇻🇺', continent: 'Oceania',     visa: 'Visa Free' },
 ]
 
-const VISA_BADGE: Record<string, { bg: string; text: string }> = {
-  'Visa Free':     { bg: 'bg-emerald-100', text: 'text-emerald-700' },
-  'eVisa':         { bg: 'bg-amber-100',   text: 'text-amber-700' },
-  'Visa Required': { bg: 'bg-rose-100',    text: 'text-rose-700' },
+const CONTINENTS = ['All', 'Asia', 'Europe', 'Americas', 'Middle East', 'Africa', 'Oceania']
+
+const VISA_BADGE: Record<string, { bg: string; text: string; border: string }> = {
+  'Visa Free':       { bg: 'bg-emerald-500/15', text: 'text-emerald-400', border: 'border-emerald-500/20' },
+  'eVisa':           { bg: 'bg-amber-500/15',   text: 'text-amber-400',   border: 'border-amber-500/20'   },
+  'Visa Required':   { bg: 'bg-rose-500/15',    text: 'text-rose-400',    border: 'border-rose-500/20'    },
+  'Visa on Arrival': { bg: 'bg-blue-500/15',    text: 'text-blue-400',    border: 'border-blue-500/20'    },
 }
 
 export default function DestinationsPage() {
-  const [search, setSearch] = useState('')
+  const [search, setSearch]             = useState('')
+  const [activeContinent, setContinent] = useState('All')
+  const { countryName } = useUserCountry()
+  const detectedPassport = countryName || 'Pakistan'
 
-  const filtered = POPULAR_COUNTRIES.filter(
-    (c) =>
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.region.toLowerCase().includes(search.toLowerCase()),
-  )
+  const filtered = useMemo(() => {
+    return ALL_COUNTRIES.filter((c) => {
+      const matchSearch =
+        !search ||
+        c.name.toLowerCase().includes(search.toLowerCase()) ||
+        c.continent.toLowerCase().includes(search.toLowerCase())
+      const matchContinent = activeContinent === 'All' || c.continent === activeContinent
+      return matchSearch && matchContinent
+    })
+  }, [search, activeContinent])
 
   return (
     <div className="min-h-screen bg-[#0f0c29] text-white antialiased">
-      {/* Navbar */}
+      {/* ── Navbar ─────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2.5">
@@ -72,26 +264,31 @@ export default function DestinationsPage() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden pt-20 pb-16">
+      {/* ── Hero ───────────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden pt-20 pb-10">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.12),transparent_60%)]" />
         </div>
         <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-400">
-            🌍 197 Countries
+            🌍 {ALL_COUNTRIES.length} Countries Available
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             <span className="text-white">Explore </span>
             <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-              197+ Destinations
+              197 Destinations
             </span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base text-white/50">
             Select any country to instantly check visa requirements, fees, processing times, and document checklists.
+            {countryName && (
+              <span className="block mt-2 text-sm text-teal-400">
+                📍 Showing results for <strong>{countryName}</strong> passport
+              </span>
+            )}
           </p>
 
-          {/* Search */}
+          {/* Search bar */}
           <div className="mx-auto mt-8 max-w-lg">
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-lg">🔍</span>
@@ -99,34 +296,74 @@ export default function DestinationsPage() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search countries or regions…"
+                placeholder="Search countries or continents…"
                 className="w-full rounded-2xl border border-white/10 bg-white/[0.06] pl-11 pr-4 py-3.5 text-sm text-white placeholder-white/30 outline-none focus:border-emerald-500/50 focus:bg-white/[0.08] transition"
               />
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition text-lg"
+                >
+                  ×
+                </button>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Grid */}
-      <section className="pb-24">
+      {/* ── Continent filter tabs ───────────────────────────────────────────── */}
+      <section className="sticky top-16 z-30 bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {CONTINENTS.map((c) => (
+              <button
+                key={c}
+                onClick={() => setContinent(c)}
+                className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${
+                  activeContinent === c
+                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                    : 'border border-white/10 bg-white/5 text-white/55 hover:border-emerald-500/40 hover:text-white'
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Country count + grid ────────────────────────────────────────────── */}
+      <section className="pb-24 pt-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+          {/* Count */}
+          <div className="mb-6 text-sm text-white/35 text-center">
+            {filtered.length === ALL_COUNTRIES.length
+              ? `${ALL_COUNTRIES.length} countries available`
+              : `${filtered.length} of ${ALL_COUNTRIES.length} countries`}
+          </div>
+
           {filtered.length === 0 ? (
             <div className="py-20 text-center text-white/40">No countries found for &quot;{search}&quot;</div>
           ) : (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {filtered.map((country) => {
                 const badge = VISA_BADGE[country.visa] ?? VISA_BADGE['Visa Required']
                 return (
                   <Link
                     key={country.name}
-                    href={`/visa/United%20States/${encodeURIComponent(country.name)}`}
-                    className="group flex flex-col items-center gap-2 rounded-2xl border border-white/8 bg-white/[0.04] p-4 text-center transition hover:border-emerald-500/40 hover:bg-white/[0.07] hover:-translate-y-0.5"
+                    href={`/visa/${encodeURIComponent(detectedPassport)}/${encodeURIComponent(country.name)}`}
+                    className="group flex flex-col items-center gap-2.5 rounded-2xl border border-white/8 bg-white/[0.04] p-4 text-center transition-all hover:border-teal-500/50 hover:bg-white/[0.07] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-500/10"
                   >
                     <span className="text-4xl">{country.flag}</span>
                     <div className="text-sm font-semibold text-white leading-tight">{country.name}</div>
-                    <div className="text-[10px] text-white/35">{country.region}</div>
-                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${badge.bg} ${badge.text}`}>
+                    <div className="text-[10px] text-white/30">{country.continent}</div>
+                    <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${badge.bg} ${badge.text} ${badge.border}`}>
                       {country.visa}
+                    </span>
+                    <span className="text-[10px] text-white/25 group-hover:text-teal-400 transition">
+                      View Requirements →
                     </span>
                   </Link>
                 )

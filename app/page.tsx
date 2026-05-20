@@ -297,6 +297,66 @@ const SMART_DESTINATION: Record<string, string> = {
   'Mexico':      'United States',
 }
 
+// ─── Live Ticker ──────────────────────────────────────────────────────────────
+const LIVE_SEARCHES = [
+  { from: '🇵🇰 Pakistan', to: '🇦🇪 UAE', ago: '2 min ago' },
+  { from: '🇮🇳 India', to: '🇨🇦 Canada', ago: '3 min ago' },
+  { from: '🇳🇬 Nigeria', to: '🇬🇧 UK', ago: '5 min ago' },
+  { from: '🇧🇩 Bangladesh', to: '🇲🇾 Malaysia', ago: '7 min ago' },
+  { from: '🇵🇭 Philippines', to: '🇺🇸 USA', ago: '8 min ago' },
+  { from: '🇮🇳 India', to: '🇩🇪 Germany', ago: '10 min ago' },
+  { from: '🇵🇰 Pakistan', to: '🇹🇷 Turkey', ago: '12 min ago' },
+  { from: '🇨🇳 China', to: '🇯🇵 Japan', ago: '15 min ago' },
+  { from: '🇪🇬 Egypt', to: '🇦🇪 UAE', ago: '18 min ago' },
+  { from: '🇰🇪 Kenya', to: '🇬🇧 UK', ago: '20 min ago' },
+]
+
+function LiveTicker() {
+  // Duplicate entries for seamless loop
+  const items = [...LIVE_SEARCHES, ...LIVE_SEARCHES]
+  return (
+    <div className="bg-[#0f0c29] border-y border-white/5 py-3 overflow-hidden">
+      <div className="flex items-center gap-6">
+        {/* Label */}
+        <div className="shrink-0 pl-4 flex items-center gap-2">
+          <span className="inline-flex h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+          <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-400 whitespace-nowrap">
+            Live Searches
+          </span>
+        </div>
+        {/* Scrolling track */}
+        <div className="flex-1 overflow-hidden">
+          <div
+            className="flex gap-8 whitespace-nowrap"
+            style={{
+              animation: 'ticker-scroll 40s linear infinite',
+            }}
+          >
+            {items.map((item, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-2 text-sm text-white/50 shrink-0"
+              >
+                <span className="text-white/70">{item.from}</span>
+                <span className="text-white/25">→</span>
+                <span className="text-white/70">{item.to}</span>
+                <span className="text-[11px] text-white/25 ml-1">{item.ago}</span>
+                <span className="text-white/10 ml-2">·</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+      <style>{`
+        @keyframes ticker-scroll {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
+    </div>
+  )
+}
+
 // ─── Animation variants ───────────────────────────────────────────────────────
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -782,6 +842,9 @@ export default function HomePage() {
         <div className="mt-20 h-24 bg-gradient-to-b from-transparent to-[#FAFAFA]" />
       </section>
 
+      {/* ────────────────────── LIVE TICKER ──────────────────────── */}
+      <LiveTicker />
+
       {/* ────────────────────── EMAIL CAPTURE ────────────────────── */}
       <section className="bg-[#FAFAFA] py-10">
         <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
@@ -886,7 +949,7 @@ export default function HomePage() {
                 return (
                   <motion.div key={d.slug} variants={fadeUp} transition={{ delay: i * 0.06 }}>
                     <Link
-                      href={`/visa/${nameToSlug('United States')}/${nameToSlug(d.slug)}`}
+                      href={`/visa/${nameToSlug(countryName || 'Pakistan')}/${nameToSlug(d.slug)}`}
                       className="group relative block overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/10"
                     >
                       <div className="relative h-44 overflow-hidden">
@@ -1007,7 +1070,7 @@ export default function HomePage() {
                   return (
                     <Link
                       key={d.name}
-                      href={`/visa/${nameToSlug('United States')}/${nameToSlug(d.name)}`}
+                      href={`/visa/${nameToSlug(countryName || 'Pakistan')}/${nameToSlug(d.name)}`}
                       className="group flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-3.5 transition-all hover:border-emerald-500/40 hover:bg-gray-50 hover:-translate-y-0.5 hover:shadow-md"
                     >
                       <span className="shrink-0 text-2xl">{d.flag}</span>

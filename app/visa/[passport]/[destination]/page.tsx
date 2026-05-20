@@ -123,8 +123,43 @@ export default async function VisaResultPage({
   const passportFlag    = resolveFlag(passportSlug,    passportName)
   const destinationFlag = resolveFlag(destinationSlug, destinationName)
 
+  // Build JSON-LD schema
+  const primaryVisa = allVisaData[0]
+  const answerText = primaryVisa
+    ? `${primaryVisa.visa_type ?? 'Visa information available'}. Processing time: ${primaryVisa.processing_time ?? 'varies'}. Fee: ${primaryVisa.pricing ?? 'see official embassy'}.`
+    : `Visa requirements vary. Please check the official embassy of ${destinationName} for the latest information.`
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `Do I need a visa to travel from ${passportName} to ${destinationName}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: answerText,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `What documents do I need for a ${passportName} passport holder to visit ${destinationName}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `${passportName} passport holders traveling to ${destinationName} should check visa requirements including ${answerText} Always verify with the official embassy or consulate before traveling.`,
+        },
+      },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1F2937] antialiased">
+
+      {/* JSON-LD Schema for Google rich snippets */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
 
       <DisclaimerBanner />
 
