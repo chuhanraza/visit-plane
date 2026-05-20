@@ -19,6 +19,16 @@ const PHOTO_IDS: Record<string, number> = {
   'usa-student-visa-f1-complete-guide-2026':       1486222,  // New York City
   'uae-residence-visa-complete-requirements-guide':2034335,  // Dubai / UAE
   'schengen-visa-indians-requirements-tips':       1559825,  // Travel destination
+  'schengen-visa-nigerians':                       161853,   // Paris / Eiffel Tower
+  'thailand-visa-indians':                         2048968,  // Thailand temple
+  'malaysia-visa-pakistanis':                      1994407,  // Petronas Twin Towers
+  'turkey-evisa-indians':                          1509667,  // Istanbul / Blue Mosque
+  'canada-student-visa-indians':                   1519088,  // Toronto / CN Tower
+  'dubai-work-visa-pakistanis':                    2034335,  // Dubai / Burj Khalifa
+  'uk-skilled-worker-visa-indians':                1796715,  // London / Big Ben
+  'schengen-visa-bangladeshis':                    1604950,  // Amsterdam canals
+  'south-korea-visa-indians':                      1416829,  // Seoul / Korean architecture
+  'singapore-visa-pakistanis':                     2045103,  // Marina Bay Sands
 }
 
 const DEFAULT_ID = 1486222 // New York City — beautiful fallback
@@ -55,6 +65,16 @@ export function getDestinationCaption(slug: string): string {
     'usa-student-visa-f1-complete-guide-2026':       '📍 New York City, United States',
     'uae-residence-visa-complete-requirements-guide':'📍 Dubai, United Arab Emirates',
     'schengen-visa-indians-requirements-tips':       '📍 Europe — Your Next Adventure Awaits',
+    'schengen-visa-nigerians':                       '📍 Paris, France — Most Popular Schengen Destination',
+    'thailand-visa-indians':                         '📍 Bangkok, Thailand — Temple of the Emerald Buddha',
+    'malaysia-visa-pakistanis':                      '📍 Kuala Lumpur, Malaysia — Petronas Twin Towers',
+    'turkey-evisa-indians':                          '📍 Istanbul, Turkey — Blue Mosque at Sunset',
+    'canada-student-visa-indians':                   '📍 Toronto, Canada — World-Class Education Hub',
+    'dubai-work-visa-pakistanis':                    '📍 Dubai, UAE — City of Opportunity',
+    'uk-skilled-worker-visa-indians':                '📍 London, United Kingdom — Global Financial Hub',
+    'schengen-visa-bangladeshis':                    '📍 Amsterdam, Netherlands — Heart of Schengen Zone',
+    'south-korea-visa-indians':                      '📍 Seoul, South Korea — Where Tradition Meets Modernity',
+    'singapore-visa-pakistanis':                     '📍 Singapore — The Lion City Skyline',
   }
   return captions[slug] ?? '📍 Your destination awaits'
 }
