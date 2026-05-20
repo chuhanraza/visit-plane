@@ -9,13 +9,20 @@ import matter from 'gray-matter'
 import { remark } from 'remark'
 import remarkHtml from 'remark-html'
 import { ReadingProgressBar, TableOfContents, SocialShare } from './BlogPostClient'
+import {
+  getBlogHeroImage,
+  getBlogCardImage,
+  getArticleInlineImage,
+  getDestinationCaption,
+  CATEGORY_COLORS,
+} from '@/utils/blogPhotos'
 
-// ── Static params ────────────────────────────────────────────────────────────
+// ── Static params ─────────────────────────────────────────────────────────────
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }))
 }
 
-// ── Metadata ─────────────────────────────────────────────────────────────────
+// ── Metadata ──────────────────────────────────────────────────────────────────
 export async function generateMetadata({
   params,
 }: {
@@ -37,14 +44,7 @@ export async function generateMetadata({
       url: `https://visitplane.com/blog/${post.slug}`,
       publishedTime: post.date,
       authors: ['VisitPlane Visa Team'],
-      images: [
-        {
-          url: ogUrl,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
+      images: [{ url: ogUrl, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -55,7 +55,7 @@ export async function generateMetadata({
   }
 }
 
-// ── Markdown loader with heading IDs ─────────────────────────────────────────
+// ── Markdown loader ───────────────────────────────────────────────────────────
 async function getPostContent(slug: string): Promise<string> {
   try {
     const filePath = path.join(process.cwd(), 'content', 'blog', `${slug}.md`)
@@ -71,6 +71,23 @@ async function getPostContent(slug: string): Promise<string> {
   } catch {
     return '<p>Content not available.</p>'
   }
+}
+
+// ── Split HTML for inline photo injection ─────────────────────────────────────
+// Finds the </h2> boundary closest to the 40 % mark and splits there.
+function splitAtMidHeading(html: string): [string, string] {
+  const positions: number[] = []
+  const re = /<\/h2>/gi
+  let m
+  while ((m = re.exec(html)) !== null) {
+    positions.push(m.index + m[0].length)
+  }
+  if (positions.length < 2) return [html, '']
+  const target = Math.floor(html.length * 0.4)
+  const best = positions.reduce((prev, curr) =>
+    Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev,
+  )
+  return [html.substring(0, best), html.substring(best)]
 }
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
@@ -104,6 +121,12 @@ export default async function BlogPostPage({
 
   const contentHtml = await getPostContent(slug)
   const relatedPosts = getRelatedPosts(slug, 3)
+  const [part1, part2] = splitAtMidHeading(contentHtml)
+
+  const heroImg = getBlogHeroImage(slug)
+  const inlineImg = getArticleInlineImage(slug)
+  const caption = getDestinationCaption(slug)
+  const catColor = CATEGORY_COLORS[post.category] ?? { bg: '#0d9488', text: '#fff' }
 
   // Article JSON-LD schema
   const articleSchema = {
@@ -115,35 +138,27 @@ export default async function BlogPostPage({
     dateModified: post.date,
     image: `https://visitplane.com/api/og?title=${encodeURIComponent(post.title)}&category=${encodeURIComponent(post.category)}&emoji=${encodeURIComponent(post.coverEmoji)}`,
     url: `https://visitplane.com/blog/${post.slug}`,
-    author: {
-      '@type': 'Organization',
-      name: 'VisitPlane',
-      url: 'https://visitplane.com',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'VisitPlane',
-      url: 'https://visitplane.com',
-    },
+    author: { '@type': 'Organization', name: 'VisitPlane', url: 'https://visitplane.com' },
+    publisher: { '@type': 'Organization', name: 'VisitPlane', url: 'https://visitplane.com' },
   }
 
   return (
     <div className="min-h-screen bg-white text-[#1A1A1A] antialiased">
 
-      {/* JSON-LD Schema */}
+      {/* JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
 
-      {/* Reading progress bar (client, fixed above everything) */}
+      {/* Reading progress bar — teal, fixed at very top */}
       <ReadingProgressBar />
 
-      {/* Social share (client, fixed on desktop left side) */}
+      {/* Social share — fixed vertical strip on desktop left */}
       <SocialShare title={post.title} slug={slug} />
 
-      {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-gray-100 bg-white shadow-sm">
+      {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="group flex items-center gap-2.5">
             <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="rounded-xl" />
@@ -167,73 +182,76 @@ export default async function BlogPostPage({
         </div>
       </header>
 
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-100 bg-[#F9FAFB]">
-        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
-          <nav className="flex items-center gap-2 text-xs text-gray-400">
-            <Link href="/" className="transition hover:text-gray-600">Home</Link>
-            <span>/</span>
-            <Link href="/blog" className="transition hover:text-gray-600">Blog</Link>
-            <span>/</span>
-            <Link href={`/blog?category=${encodeURIComponent(post.category)}`} className="transition hover:text-gray-600">{post.category}</Link>
-            <span>/</span>
-            <span className="truncate text-gray-600">{post.title}</span>
-          </nav>
+      {/* ── IMMERSIVE HERO ───────────────────────────────────────────────── */}
+      <div
+        className="relative overflow-hidden"
+        style={{ height: '70vh', minHeight: '480px', maxHeight: '780px' }}
+      >
+        {/* Country photo */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroImg})` }}
+        />
+        {/* Multi-stop gradient — dark at top-left and bottom, lighter in centre */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-transparent" />
+
+        {/* Back link + category — top-left */}
+        <div className="absolute left-5 top-5 z-10 flex flex-col items-start gap-2 sm:left-8 sm:top-7">
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-white/25"
+          >
+            <ArrowLeft className="h-3 w-3" />
+            All Guides
+          </Link>
+          <span
+            className="rounded-full px-3 py-1 text-xs font-bold text-white shadow"
+            style={{ backgroundColor: catColor.bg }}
+          >
+            {post.category}
+          </span>
+        </div>
+
+        {/* Title + meta — bottom centre */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 px-5 pb-10 text-center sm:px-8 sm:pb-14">
+          <h1 className="mx-auto max-w-3xl text-3xl font-extrabold leading-tight text-white drop-shadow sm:text-4xl lg:text-5xl">
+            {post.title}
+          </h1>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm text-white/70">
+            <span className="flex items-center gap-1.5">
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+              </svg>
+              {post.readTime}
+            </span>
+            <span>·</span>
+            <time dateTime={post.date}>
+              {new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </time>
+            <span>·</span>
+            <span>VisitPlane Visa Team</span>
+          </div>
+          {/* Scroll indicator */}
+          <div className="mt-5 animate-bounce text-lg text-white/50">↓</div>
         </div>
       </div>
 
-      {/* Two-column layout: Article + TOC sidebar */}
+      {/* ── TWO-COLUMN LAYOUT: article + TOC sidebar ─────────────────────── */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="flex gap-12 xl:gap-16">
 
-          {/* Main article column */}
+          {/* ── Main article ────────────────────────────────────────────── */}
           <article className="min-w-0 flex-1">
 
-            {/* Back link */}
-            <Link
-              href="/blog"
-              className="group mb-8 inline-flex items-center gap-2 text-sm text-gray-400 transition hover:text-[#10B981]"
-            >
-              <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-0.5" />
-              Back to all posts
-            </Link>
-
-            {/* Cover emoji */}
-            <div className="mb-8 flex h-48 items-center justify-center rounded-3xl bg-gradient-to-br from-[#F0FDF4] to-[#ECFDF5] text-8xl shadow-sm">
-              {post.coverEmoji}
-            </div>
-
-            {/* Category + Meta */}
-            <div className="mb-4 flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center rounded-full bg-[#F0FDF4] px-3 py-1 text-xs font-semibold text-[#10B981] ring-1 ring-inset ring-[#10B981]/20">
-                {post.category}
-              </span>
-              <span className="text-xs text-gray-400">{post.readTime}</span>
-              <time className="text-xs text-gray-400" dateTime={post.date}>
-                {new Date(post.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </time>
-            </div>
-
-            {/* Title */}
-            <h1 className="mb-6 text-3xl font-semibold leading-tight tracking-tight text-[#1A1A1A] sm:text-4xl">
-              {post.title}
-            </h1>
-
-            {/* ── AUTHOR CARD ─────────────────────────────────────────────── */}
-            <div className="mb-10 flex items-start gap-4 rounded-2xl border border-gray-100 bg-[#F9FAFB] p-4">
-              {/* Avatar */}
+            {/* Author card */}
+            <div className="mb-10 flex items-start gap-4 rounded-2xl border border-gray-100 bg-[#F9FAFB] p-4 shadow-sm">
               <div className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#10B981] to-[#059669] text-xl text-white shadow-sm">
                 ✈️
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-[#1A1A1A]">VisitPlane Visa Team</p>
-                <p className="text-xs text-gray-500">
-                  Verified by Official Embassy Sources
-                </p>
+                <p className="text-xs text-gray-500">Verified by Official Embassy Sources</p>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-400">
                   <span className="flex items-center gap-1">
                     <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -257,88 +275,144 @@ export default async function BlogPostPage({
               </div>
             </div>
 
-            {/* Markdown content */}
+            {/* ── Article part 1 ─────────────────────────────────────────── */}
             <div
               className="prose prose-gray max-w-none
-                prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-[#1A1A1A]
-                prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-2xl
-                prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-lg
-                prose-p:text-gray-600 prose-p:leading-relaxed
-                prose-li:text-gray-600
-                prose-strong:text-[#1A1A1A] prose-strong:font-semibold
-                prose-a:text-[#10B981] prose-a:no-underline hover:prose-a:underline
+                prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-[#111827]
+                prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-2xl prose-h2:text-[#111827]
+                prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-xl
+                prose-p:text-[#374151] prose-p:leading-[1.85] prose-p:text-lg
+                prose-li:text-[#374151] prose-li:leading-relaxed
+                prose-strong:text-[#111827] prose-strong:font-semibold
+                prose-a:text-[#0d9488] prose-a:no-underline hover:prose-a:underline
                 prose-ul:my-4 prose-ol:my-4
                 prose-hr:border-gray-200"
-              dangerouslySetInnerHTML={{ __html: contentHtml }}
+              dangerouslySetInnerHTML={{ __html: part1 }}
             />
 
-            {/* ── VISA CHECKER CTA CARD ───────────────────────────────────── */}
-            <div className="mt-12 overflow-hidden rounded-2xl bg-gradient-to-br from-[#0D9488] to-[#4F46E5] p-8 text-center text-white shadow-lg">
-              <div className="mb-2 text-3xl">🛂</div>
+            {/* ── INLINE COUNTRY PHOTO ───────────────────────────────────── */}
+            {part2 && (
+              <div className="my-12">
+                <div className="aspect-video w-full overflow-hidden rounded-2xl shadow-xl">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={inlineImg}
+                    alt={caption}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <p className="mt-3 text-center text-sm italic text-gray-400">{caption}</p>
+              </div>
+            )}
+
+            {/* ── Article part 2 ─────────────────────────────────────────── */}
+            {part2 && (
+              <div
+                className="prose prose-gray max-w-none
+                  prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-[#111827]
+                  prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-2xl
+                  prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-xl
+                  prose-p:text-[#374151] prose-p:leading-[1.85] prose-p:text-lg
+                  prose-li:text-[#374151] prose-li:leading-relaxed
+                  prose-strong:text-[#111827] prose-strong:font-semibold
+                  prose-a:text-[#0d9488] prose-a:no-underline hover:prose-a:underline
+                  prose-ul:my-4 prose-ol:my-4
+                  prose-hr:border-gray-200"
+                dangerouslySetInnerHTML={{ __html: part2 }}
+              />
+            )}
+
+            {/* ── MID-ARTICLE CTA CARD ──────────────────────────────────── */}
+            <div
+              className="mt-12 overflow-hidden rounded-3xl p-8 text-center text-white shadow-xl"
+              style={{ background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #0d9488 100%)' }}
+            >
+              <div className="mb-2 text-4xl">🛫</div>
               <p className="text-xl font-bold leading-tight">{post.ctaTitle}</p>
               <p className="mt-2 text-sm text-white/80">
-                Get instant visa requirements, fees, and processing times — free.
+                Get instant visa requirements, fees, and processing times — completely free.
               </p>
               <Link
                 href={post.visaLink}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-[#0D9488] shadow-sm transition hover:bg-gray-50 hover:shadow-md"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-[#0d9488] shadow-lg transition hover:scale-105 hover:shadow-xl"
               >
                 Check Visa Requirements →
               </Link>
             </div>
 
-            {/* Social share (mobile, renders inline below CTA) */}
+            {/* Social share (mobile — inline below CTA) */}
             <SocialShare title={post.title} slug={slug} />
 
           </article>
 
-          {/* ── TOC Sidebar (desktop only) ─────────────────────────────────── */}
+          {/* ── TOC Sidebar (desktop only) ─────────────────────────────── */}
           <aside className="hidden w-64 flex-shrink-0 xl:block">
             <TableOfContents contentHtml={contentHtml} />
           </aside>
         </div>
       </div>
 
-      {/* ── RELATED POSTS ───────────────────────────────────────────────────── */}
+      {/* ── RELATED POSTS ──────────────────────────────────────────────────── */}
       <section className="border-t border-gray-100 bg-[#F9FAFB]">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <h2 className="mb-2 text-xl font-semibold text-[#1A1A1A]">Related Visa Guides</h2>
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+          <h2 className="mb-1 text-2xl font-bold text-[#1A1A1A]">Related Visa Guides</h2>
           <p className="mb-8 text-sm text-gray-500">
             More guides for {post.passportCountry} passport holders and {post.destinationCountry} travelers
           </p>
+
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {relatedPosts.map((related) => (
-              <Link
-                key={related.slug}
-                href={`/blog/${related.slug}`}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-[#10B981]/30 hover:shadow-md"
-              >
-                {/* Mini cover */}
-                <div className="flex h-24 items-center justify-center bg-gradient-to-br from-[#F0FDF4] to-[#ECFDF5] text-5xl">
-                  {related.coverEmoji}
-                </div>
-                <div className="flex flex-1 flex-col gap-2 p-4">
-                  <span className="inline-flex w-fit items-center rounded-full bg-[#F0FDF4] px-2 py-0.5 text-xs font-semibold text-[#10B981] ring-1 ring-inset ring-[#10B981]/20">
-                    {related.category}
-                  </span>
-                  <p className="text-sm font-semibold leading-snug text-[#1A1A1A] transition group-hover:text-[#10B981] line-clamp-2">
-                    {related.title}
-                  </p>
-                  <p className="text-xs leading-relaxed text-gray-500 line-clamp-2">
-                    {related.excerpt}
-                  </p>
-                  <div className="mt-auto flex items-center justify-between pt-2">
-                    <span className="text-xs text-gray-400">{related.readTime}</span>
-                    <span className="text-xs font-semibold text-[#10B981]">Read more →</span>
+            {relatedPosts.map((related) => {
+              const relCat = CATEGORY_COLORS[related.category] ?? { bg: '#0d9488', text: '#fff' }
+              return (
+                <Link
+                  key={related.slug}
+                  href={`/blog/${related.slug}`}
+                  className="group flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-gray-200 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-[#10B981]/30"
+                >
+                  {/* Photo */}
+                  <div className="relative h-44 overflow-hidden">
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                      style={{ backgroundImage: `url(${getBlogCardImage(related.slug)})` }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
+                    {/* Category badge */}
+                    <div className="absolute left-3 top-3">
+                      <span
+                        className="rounded-full px-2.5 py-1 text-xs font-bold text-white shadow"
+                        style={{ backgroundColor: relCat.bg }}
+                      >
+                        {related.category}
+                      </span>
+                    </div>
+                    {/* Title overlaid on photo bottom */}
+                    <p className="absolute bottom-3 left-3 right-3 text-sm font-bold leading-snug text-white line-clamp-2 drop-shadow">
+                      {related.title}
+                    </p>
                   </div>
-                </div>
-              </Link>
-            ))}
+
+                  {/* Card body */}
+                  <div className="flex flex-1 flex-col gap-2 p-4">
+                    <p className="text-xs leading-relaxed text-gray-500 line-clamp-2">
+                      {related.excerpt}
+                    </p>
+                    <div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-100">
+                      <span className="text-xs text-gray-400">{related.readTime}</span>
+                      <span className="text-xs font-semibold text-[#10B981] transition group-hover:text-[#059669]">
+                        Read more →
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
-          <div className="mt-8 text-center">
+
+          <div className="mt-10 text-center">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#10B981] transition hover:text-[#059669]"
+              className="inline-flex items-center gap-2 rounded-full border border-[#10B981] px-6 py-2.5 text-sm font-semibold text-[#10B981] transition hover:bg-[#10B981] hover:text-white"
             >
               View all visa guides
               <ArrowRight className="h-4 w-4" />
@@ -347,7 +421,7 @@ export default async function BlogPostPage({
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
       <footer className="border-t border-gray-200 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 px-4 py-8 text-sm text-gray-400 sm:flex-row sm:items-center sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">

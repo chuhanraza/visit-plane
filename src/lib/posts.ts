@@ -17,6 +17,8 @@ export interface BlogPost {
   destinationCountry: string
   visaLink: string
   ctaTitle: string
+  /** Optional hero/card photo — resolved via utils/blogPhotos if not set */
+  heroImage?: string
 }
 
 export const blogPosts: BlogPost[] = [

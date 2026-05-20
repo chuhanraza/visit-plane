@@ -41,8 +41,9 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-white text-[#1A1A1A] antialiased">
-      {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-gray-100 bg-white shadow-sm">
+
+      {/* ── STICKY HEADER ──────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-white/95 shadow-sm backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="group flex items-center gap-2.5">
             <Image src="/logo-v2.png" alt="VisitPlane" width={36} height={36} className="rounded-xl" />
@@ -51,13 +52,11 @@ export default function BlogPage() {
               <span className="text-[#10B981]">Plane</span>
             </span>
           </Link>
-
           <nav className="hidden items-center gap-8 md:flex">
             <Link href="/destinations" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">Explore</Link>
             <Link href="/visa-requirements" className="text-sm text-gray-500 transition hover:text-[#1A1A1A]">Visa Requirements</Link>
             <Link href="/blog" className="text-sm font-medium text-[#10B981]">Blog</Link>
           </nav>
-
           <Link
             href="/"
             className="group inline-flex items-center gap-2 rounded-full bg-[#10B981] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#059669]"
@@ -68,40 +67,95 @@ export default function BlogPage() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="border-b border-gray-100 bg-gradient-to-b from-[#F0FDF4] to-white">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#10B981]">Visa Knowledge Base</p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-tight text-[#1A1A1A] sm:text-5xl">
-              Visa Guides &amp; Travel Tips
-            </h1>
-            <p className="mt-4 text-base text-gray-500">
-              Expert guides to help you navigate visa requirements, documentation, and processes
-              for destinations around the world.
-            </p>
+      {/* ── IMMERSIVE HERO ─────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden" style={{ minHeight: '62vh' }}>
+        {/* Deep indigo → teal gradient */}
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 45%, #0d9488 100%)' }}
+        />
+
+        {/* Subtle dot-grid texture */}
+        <div
+          className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
+            backgroundSize: '28px 28px',
+          }}
+        />
+
+        {/* Floating glow blobs */}
+        <div
+          className="absolute -left-32 -top-32 h-96 w-96 rounded-full opacity-20 blur-3xl"
+          style={{ background: 'radial-gradient(circle, #0d9488, transparent)' }}
+        />
+        <div
+          className="absolute -right-32 bottom-0 h-96 w-96 rounded-full opacity-20 blur-3xl"
+          style={{ background: 'radial-gradient(circle, #302b63, transparent)' }}
+        />
+
+        {/* Fade bottom into white */}
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent" />
+
+        {/* Content */}
+        <div className="relative z-10 mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8">
+
+          {/* Badge */}
+          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs font-semibold uppercase tracking-widest text-white/90 backdrop-blur-sm">
+            <span>✈️</span>
+            <span>Visa Knowledge Hub · Updated 2026</span>
+          </div>
+
+          {/* Headline */}
+          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl">
+            Travel Visa{' '}
+            <span style={{ color: '#2dd4bf' }}>Guides</span>
+          </h1>
+
+          {/* Subtext */}
+          <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/70">
+            Expert guides for every route. Real information, beautifully presented.
+          </p>
+
+          {/* Stats row */}
+          <div className="mt-12 flex justify-center gap-10 sm:gap-16">
+            {[
+              { number: `${blogPosts.length}+`, label: 'Visa Guides' },
+              { number: '197', label: 'Countries Covered' },
+              { number: '100%', label: 'Free Forever' },
+            ].map(({ number, label }) => (
+              <div key={label} className="text-center">
+                <div className="text-3xl font-bold text-white sm:text-4xl">{number}</div>
+                <div className="mt-1 text-xs font-medium uppercase tracking-wider text-white/50">{label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Interactive posts section: search + filter + grid */}
-      <main className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <BlogClientPage posts={sorted} />
+      {/* ── POSTS: search + filter + featured + grid ───────────────────────── */}
+      <main className="bg-[#FAFAFA]">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+          <BlogClientPage posts={sorted} />
+        </div>
       </main>
 
-      {/* CTA */}
-      <section className="border-t border-gray-100 bg-[#F0FDF4]">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      {/* ── CTA SECTION ────────────────────────────────────────────────────── */}
+      <section
+        style={{ background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #0d9488 100%)' }}
+      >
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-xl text-center">
-            <h2 className="text-2xl font-semibold tracking-tight text-[#1A1A1A]">
+            <p className="text-4xl">🛂</p>
+            <h2 className="mt-4 text-2xl font-bold tracking-tight text-white sm:text-3xl">
               Ready to check your visa requirements?
             </h2>
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-white/70">
               Get instant, accurate visa information for 197 countries — completely free.
             </p>
             <Link
               href="/"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#10B981] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#059669]"
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-[#0d9488] shadow-lg transition hover:scale-105 hover:shadow-xl"
             >
               Check Visa Requirements
               <ArrowRight className="h-4 w-4" />
@@ -110,7 +164,7 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
       <footer className="border-t border-gray-200 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 px-4 py-8 text-sm text-gray-400 sm:flex-row sm:items-center sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
@@ -128,6 +182,7 @@ export default function BlogPage() {
           </div>
         </div>
       </footer>
+
     </div>
   )
 }
