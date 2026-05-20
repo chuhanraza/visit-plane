@@ -489,6 +489,7 @@ export default function PassportStrengthPage() {
               <button className="rounded-lg px-3 py-2 text-sm text-white/55 hover:bg-white/5 hover:text-white transition flex items-center gap-1">Tools <span className="text-[10px]">▾</span></button>
               <div className="absolute top-full left-0 mt-1 w-56 rounded-xl border border-white/10 bg-[#0C1526] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 py-1">
                 <Link href="/passport-strength" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">💪 Passport Strength</Link>
+                <Link href="/visa-free-map" className="flex items-center gap-2 px-4 py-2.5 text-sm text-teal-400 font-semibold hover:text-teal-300 hover:bg-white/5 transition">🗺️ Visa-Free Map</Link>
                 <Link href="/compare" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⚖️ Compare Visas</Link>
                 <Link href="/checklist" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">📋 Checklist</Link>
                 <Link href="/processing-times" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 transition">⏱️ Processing Times</Link>
@@ -862,6 +863,26 @@ export default function PassportStrengthPage() {
         )}
       </AnimatePresence>
 
+      {/* ── Related Tool: Visa-Free Map ── */}
+      {result && (
+        <section className="py-8 sm:py-10">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <Link href={`/visa-free-map`}
+              className="group flex items-center justify-between gap-4 rounded-2xl border border-teal-500/20 bg-teal-500/5 px-6 py-4 hover:border-teal-500/40 hover:bg-teal-500/10 transition-all">
+              <div className="flex items-center gap-4">
+                <span className="text-3xl">🗺️</span>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-teal-400 mb-0.5">Related Tool</p>
+                  <h3 className="text-sm font-bold text-white">See It on a World Map</h3>
+                  <p className="text-xs text-white/40">Visualise your {result.passport} passport access on an interactive world map</p>
+                </div>
+              </div>
+              <span className="text-teal-400 text-sm font-bold group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
+          </div>
+        </section>
+      )}
+
       {/* ── Section 5: CTA ── */}
       <section className={`py-16 sm:py-20 ${result ? '' : 'bg-[#0A1120]'}`}>
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -907,7 +928,7 @@ export default function PassportStrengthPage() {
             <div>
               <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Tools</h4>
               <ul className="space-y-2.5">
-                {([['Passport Strength','/passport-strength'],['Visa Comparison','/compare'],['Document Checklist','/checklist'],['Currency Converter','/currency-converter'],['Embassy Finder','/embassy-finder']] as [string,string][]).map(([l,h]) => (
+                {([['Passport Strength','/passport-strength'],['🗺️ Visa-Free Map','/visa-free-map'],['Visa Comparison','/compare'],['Document Checklist','/checklist'],['Currency Converter','/currency-converter'],['Embassy Finder','/embassy-finder']] as [string,string][]).map(([l,h]) => (
                   <li key={l}><Link href={h} className="text-sm text-white/30 hover:text-white transition">{l}</Link></li>
                 ))}
               </ul>

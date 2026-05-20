@@ -536,6 +536,7 @@ export default function HomePage() {
                   {[
                     { label: '🤖 Visa Wizard',           href: '/wizard' },
                     { label: '🎯 Visa Checker',         href: '/visa-checker' },
+                    { label: '🗺️ Visa-Free Map',        href: '/visa-free-map' },
                     { label: '⚖️ Compare Visas',       href: '/compare' },
                     { label: '📋 Checklist',            href: '/checklist' },
                     { label: '⏱️ Processing Times',     href: '/processing-times' },
@@ -611,6 +612,7 @@ export default function HomePage() {
                 {[
                   { label: '🤖 Visa Wizard',           href: '/wizard' },
                   { label: '🎯 Visa Checker',         href: '/visa-checker' },
+                  { label: '🗺️ Visa-Free Map',        href: '/visa-free-map' },
                   { label: '⚖️ Compare Visas',       href: '/compare' },
                   { label: '📋 Checklist',            href: '/checklist' },
                   { label: '⏱️ Processing Times',     href: '/processing-times' },
@@ -1063,6 +1065,54 @@ export default function HomePage() {
                     <h3 className="mb-2 text-base font-bold text-gray-900">{f.title}</h3>
                     <p className="text-sm leading-relaxed text-gray-500">{f.desc}</p>
                   </div>
+                </motion.div>
+              ))}
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ────────────────────── POPULAR TOOLS ────────────────────── */}
+      <section className="bg-white py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <motion.div variants={fadeUp} className="mb-12 text-center">
+              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-500">🛠️ Popular Tools</p>
+              <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                Explore Our Travel Tools
+              </h2>
+              <p className="mx-auto mt-3 max-w-md text-sm text-gray-500">
+                Everything you need to plan visa-smart travel — all in one place.
+              </p>
+            </motion.div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                { icon: '🗺️', title: 'Visa-Free World Map', desc: 'See every country your passport unlocks on a beautiful interactive world map.', href: '/visa-free-map', highlight: true },
+                { icon: '💪', title: 'Passport Strength', desc: 'Score your passport out of 100 and see how it ranks globally.', href: '/passport-strength', highlight: false },
+                { icon: '🤖', title: 'AI Visa Wizard', desc: 'Get personalised visa guidance powered by AI for any passport + destination.', href: '/wizard', highlight: false },
+                { icon: '⚖️', title: 'Compare Visas', desc: 'Compare visa requirements side-by-side for multiple destinations.', href: '/compare', highlight: false },
+                { icon: '📋', title: 'Document Checklist', desc: 'Know exactly which documents you need before your visa application.', href: '/checklist', highlight: false },
+                { icon: '⏱️', title: 'Processing Times', desc: 'Check how long visa processing takes for any country pair.', href: '/processing-times', highlight: false },
+              ].map((tool, i) => (
+                <motion.div key={tool.title} variants={fadeUp} transition={{ delay: i * 0.07 }}>
+                  <Link href={tool.href}
+                    className={`group flex items-start gap-4 rounded-2xl border p-5 transition-all hover:-translate-y-1 hover:shadow-xl ${
+                      tool.highlight
+                        ? 'border-teal-500/30 bg-gradient-to-br from-teal-50 to-emerald-50 hover:border-teal-500/50'
+                        : 'border-gray-200 bg-white hover:border-emerald-500/30'
+                    }`}>
+                    <span className="text-3xl flex-shrink-0">{tool.icon}</span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-gray-900">{tool.title}</h3>
+                        {tool.highlight && <span className="rounded-full bg-teal-500/15 px-2 py-0.5 text-[10px] font-bold text-teal-600">NEW</span>}
+                      </div>
+                      <p className="mt-1 text-xs leading-relaxed text-gray-500">{tool.desc}</p>
+                      <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 group-hover:gap-2 transition-all">
+                        Try it <ArrowRight className="h-3 w-3" />
+                      </span>
+                    </div>
+                  </Link>
                 </motion.div>
               ))}
             </div>
