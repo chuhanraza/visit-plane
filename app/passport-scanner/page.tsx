@@ -270,7 +270,7 @@ function PassportScanner() {
 
     try {
       // Dynamic import to avoid SSR bundle issues
-      const { createWorker } = await import('tesseract.js')
+      const { createWorker, PSM } = await import('tesseract.js')
 
       const worker = await createWorker('eng', 1, {
         logger: (m: { status: string; progress: number }) => {
@@ -282,8 +282,7 @@ function PassportScanner() {
 
       await worker.setParameters({
         tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<',
-        tessedit_pageseg_mode: '6',
-        tessedit_ocr_engine_mode: '2',
+        tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
         preserve_interword_spaces: '0',
       })
 
