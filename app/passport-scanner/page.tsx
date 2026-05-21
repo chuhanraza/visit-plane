@@ -49,6 +49,89 @@ const SPECS_TABLE = [
   { country: '🇨🇦 Canada',       size: '50×70mm',        bg: 'White',       maxKB: '4MB',   dpi: '300' },
 ]
 
+// ─── Nationality Code → Full Name ────────────────────────────────────────────
+const NATIONALITY_CODES: Record<string, string> = {
+  'PAK': 'Pakistan',
+  'IND': 'India',
+  'USA': 'United States',
+  'GBR': 'United Kingdom',
+  'ARE': 'United Arab Emirates',
+  'SAU': 'Saudi Arabia',
+  'CAN': 'Canada',
+  'AUS': 'Australia',
+  'DEU': 'Germany',
+  'FRA': 'France',
+  'ITA': 'Italy',
+  'ESP': 'Spain',
+  'CHN': 'China',
+  'JPN': 'Japan',
+  'KOR': 'South Korea',
+  'NGA': 'Nigeria',
+  'BGD': 'Bangladesh',
+  'PHL': 'Philippines',
+  'MYS': 'Malaysia',
+  'SGP': 'Singapore',
+  'THA': 'Thailand',
+  'TUR': 'Turkey',
+  'IRN': 'Iran',
+  'IRQ': 'Iraq',
+  'EGY': 'Egypt',
+  'MAR': 'Morocco',
+  'ZAF': 'South Africa',
+  'KEN': 'Kenya',
+  'ETH': 'Ethiopia',
+  'GHA': 'Ghana',
+  'BRA': 'Brazil',
+  'MEX': 'Mexico',
+  'ARG': 'Argentina',
+  'RUS': 'Russia',
+  'NLD': 'Netherlands',
+  'BEL': 'Belgium',
+  'CHE': 'Switzerland',
+  'SWE': 'Sweden',
+  'NOR': 'Norway',
+  'DNK': 'Denmark',
+  'FIN': 'Finland',
+  'POL': 'Poland',
+  'GRC': 'Greece',
+  'PRT': 'Portugal',
+  'CZE': 'Czech Republic',
+  'HUN': 'Hungary',
+  'ROU': 'Romania',
+  'UKR': 'Ukraine',
+  'IDN': 'Indonesia',
+  'VNM': 'Vietnam',
+  'LKA': 'Sri Lanka',
+  'NPL': 'Nepal',
+  'AFG': 'Afghanistan',
+  'KWT': 'Kuwait',
+  'QAT': 'Qatar',
+  'BHR': 'Bahrain',
+  'OMN': 'Oman',
+  'JOR': 'Jordan',
+  'LBN': 'Lebanon',
+  'SYR': 'Syria',
+  'MMR': 'Myanmar',
+  'KHM': 'Cambodia',
+  'NZL': 'New Zealand',
+  'ZWE': 'Zimbabwe',
+  'ZMB': 'Zambia',
+  'UGA': 'Uganda',
+  'TZA': 'Tanzania',
+  'RWA': 'Rwanda',
+  'SEN': 'Senegal',
+  'CMR': 'Cameroon',
+  'CIV': "Ivory Coast",
+  'MLI': 'Mali',
+  'NER': 'Niger',
+  'TCD': 'Chad',
+  'SOM': 'Somalia',
+  'SDN': 'Sudan',
+  'LBY': 'Libya',
+  'TUN': 'Tunisia',
+  'DZA': 'Algeria',
+}
+
 // ─── MRZ Parser ──────────────────────────────────────────────────────────────
 function parseMRZ(text: string): PassportData | null {
   try {
@@ -69,8 +152,9 @@ function parseMRZ(text: string): PassportData | null {
     const surname   = (nameSplit[0] || '').replace(/</g, ' ').trim()
     const givenNames = (nameSplit[1] || '').replace(/</g, ' ').trim()
 
-    const passportNumber = line2.slice(0, 9).replace(/</g, '')
-    const nationality    = line2.slice(10, 13).replace(/</g, '')
+    const passportNumber  = line2.slice(0, 9).replace(/</g, '')
+    const nationality     = line2.slice(10, 13).replace(/</g, '')
+    const nationalityFull = NATIONALITY_CODES[nationality] || nationality
 
     const dobRaw    = line2.slice(13, 19)
     const year      = parseInt(dobRaw.slice(0, 2), 10)
@@ -93,7 +177,7 @@ function parseMRZ(text: string): PassportData | null {
       fullName: `${givenNames} ${surname}`.trim(),
       surname,
       givenNames,
-      nationality,
+      nationality: nationalityFull,
       passportNumber,
       dateOfBirth,
       expiryDate,
@@ -102,6 +186,33 @@ function parseMRZ(text: string): PassportData | null {
   } catch {
     return null
   }
+}
+
+// ─── Image resizer (speeds up Tesseract 3–5×) ────────────────────────────────
+function resizeImage(file: File): Promise<string> {
+  return new Promise((resolve) => {
+    const img    = new Image()
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const MAX    = 1200
+        let w = img.width
+        let h = img.height
+        if (w > MAX) {
+          h = (h * MAX) / w
+          w = MAX
+        }
+        canvas.width  = w
+        canvas.height = h
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0, w, h)
+        resolve(canvas.toDataURL('image/jpeg', 0.85))
+      }
+      img.src = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  })
 }
 
 // ─── Passport Scanner Tool ────────────────────────────────────────────────────
@@ -113,7 +224,14 @@ function PassportScanner() {
   const [scanError, setScanError]               = useState('')
   const [dragging, setDragging]                 = useState(false)
   const [copied, setCopied]                     = useState(false)
+  const [copiedField, setCopiedField]           = useState('')
   const passportInputRef = useRef<HTMLInputElement>(null)
+
+  const copyField = (value: string, field: string) => {
+    navigator.clipboard.writeText(value)
+    setCopiedField(field)
+    setTimeout(() => setCopiedField(''), 1500)
+  }
 
   const handlePassportUpload = async (file: File) => {
     if (!file.type.match(/image\/(jpeg|jpg|png|webp)/)) {
@@ -149,10 +267,14 @@ function PassportScanner() {
 
       await worker.setParameters({
         tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<',
+        tessedit_pageseg_mode: '6',
+        tessedit_ocr_engine_mode: '2',
         preserve_interword_spaces: '0',
       })
 
-      const { data: { text } } = await worker.recognize(file)
+      // Resize to max 1200px for 3–5× speed boost
+      const resizedDataUrl              = await resizeImage(file)
+      const { data: { text } } = await worker.recognize(resizedDataUrl)
       await worker.terminate()
 
       const result = parseMRZ(text)
@@ -302,8 +424,18 @@ function PassportScanner() {
                 { label: 'Gender',        value: scanResult.gender         },
               ].map(({ label, value }) => (
                 <div key={label} className="flex items-center justify-between px-3 py-2.5">
-                  <span className="text-xs font-medium text-teal-700">{label}</span>
-                  <span className="text-right text-xs font-bold text-gray-800 max-w-[55%] break-all">{value || '—'}</span>
+                  <span className="text-xs font-medium text-teal-700 w-24 shrink-0">{label}</span>
+                  <span className="text-right text-xs font-bold text-gray-800 flex-1 mr-2 break-all">{value || '—'}</span>
+                  <button
+                    onClick={() => copyField(value || '', label)}
+                    className="text-gray-400 hover:text-teal-500 transition-colors ml-1 shrink-0 w-5 text-center"
+                    title={`Copy ${label}`}
+                  >
+                    {copiedField === label
+                      ? <span className="text-green-500 text-xs">✓</span>
+                      : <span className="text-xs">📋</span>
+                    }
+                  </button>
                 </div>
               ))}
             </div>
