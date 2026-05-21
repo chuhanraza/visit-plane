@@ -21,6 +21,7 @@ const TOOLS = [
   { label: '💱 Currency Converter',    href: '/currency-converter' },
   { label: '📊 Visa Tracker',          href: '/visa-tracker'       },
   { label: '🎤 Interview Prep',        href: '/interview-prep'     },
+  { label: '📷 Passport Scanner',      href: '/passport-scanner'   },
 ]
 
 const TOOL_PATHS = TOOLS.map((t) => t.href)
