@@ -7,6 +7,7 @@ import { createClient } from '@supabase/supabase-js'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useUserCountry } from '@/hooks/useUserCountry'
 import CountrySelect from '@/components/CountrySelect'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -452,7 +453,9 @@ export default function PassportStrengthPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* ── HERO ── */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
+      <ToolBreadcrumb toolName="Passport Strength" toolEmoji="💪" />
+      {/* ── HERO ── */}
       <section className="relative overflow-hidden pt-16 pb-24 sm:pt-24 sm:pb-32">
         {/* Background glows */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -519,7 +522,7 @@ export default function PassportStrengthPage() {
 
             {/* Quick picks */}
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              <span className="text-xs text-white/25">Quick pick:</span>
+              <span className="text-xs text-gray-400">Quick pick:</span>
               {[
                 ['Pakistan', '🇵🇰'], ['India', '🇮🇳'], ['United States', '🇺🇸'],
                 ['United Kingdom', '🇬🇧'], ['Japan', '🇯🇵'], ['UAE', '🇦🇪'],
@@ -527,8 +530,8 @@ export default function PassportStrengthPage() {
                 <button key={c} onClick={() => setPassport(c)}
                   className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
                     passport === c
-                      ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-400'
-                      : 'border-gray-200 bg-white/5 text-gray-500 hover:border-emerald-500/40 hover:text-[#0f0c29] hover:bg-white/8'
+                      ? 'border-teal-500/60 bg-teal-500/15 text-teal-500'
+                      : 'border-gray-200 bg-white text-gray-500 hover:border-teal-400/50 hover:text-[#0f0c29]'
                   }`}>
                   {f} {c}
                 </button>
@@ -743,7 +746,7 @@ export default function PassportStrengthPage() {
 
                       {/* Preview */}
                       <div className="mb-6 rounded-xl border border-gray-100 bg-gray-100 px-5 py-4 text-left">
-                        <p className="text-sm leading-relaxed text-white/65 font-mono whitespace-pre-line">
+                        <p className="text-sm leading-relaxed text-gray-600 font-mono whitespace-pre-line">
                           {`My ${result.passport} ${FLAGS[result.passport] ?? '🌍'} passport scores ${result.score}/100\nand can access ${result.free} countries visa-free! 🛂✈️\nCheck yours → visitplane.com/passport-strength`}
                         </p>
                       </div>

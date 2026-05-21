@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import CountrySelect from '@/components/CountrySelect'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 import { useUserCountry } from '@/hooks/useUserCountry'
 import { ALL_COUNTRIES } from '@/components/CountrySelect'
 import dynamic from 'next/dynamic'
@@ -172,8 +173,8 @@ export default function VisaFreeMapClient() {
 
   return (
     <div className="min-h-screen text-[#0f0c29] antialiased overflow-x-hidden" style={{ background: '#060C18' }}>
-
-      {/* ── NAVBAR ── */}{/* ── HERO ── */}
+      <ToolBreadcrumb toolName="Visa-Free Map" toolEmoji="🗺️" variant="dark" />
+      {/* ── HERO ── */}
       <section className="bg-[#FAFAFA] pt-14 pb-16 sm:pt-20 sm:pb-24">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           {/* Spinning globe */}

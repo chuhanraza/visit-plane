@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 const VISA_COSTS: Record<string, Record<string, { fee: string; service: string; total: string }>> = {
   'Tourist': {
@@ -27,7 +28,9 @@ export default function CostCalculatorPage() {
   const result = destination && VISA_COSTS[visaType]?.[destination]
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">{/* Hero */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">
+      <ToolBreadcrumb toolName="Cost Calculator" toolEmoji="💰" />
+      {/* Hero */}
       <section className="relative overflow-hidden pt-20 pb-8">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.12),transparent_60%)]" />

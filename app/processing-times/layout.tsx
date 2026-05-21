@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Visa Processing Time Tracker | VisitPlane',
-  description: 'Check visa processing times worldwide',
+  title: 'Visa Processing Times 2026 | VisitPlane',
+  description:
+    'Check how long your visa will take. Real processing time estimates for standard and express applications worldwide.',
 }
 
 export default function ProcessingTimesLayout({ children }: { children: React.ReactNode }) {

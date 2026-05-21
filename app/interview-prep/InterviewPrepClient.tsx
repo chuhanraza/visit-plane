@@ -8,6 +8,7 @@ import InterviewResults from './components/InterviewResults'
 import InterviewTips    from './components/InterviewTips'
 import InterviewChecklist   from './components/InterviewChecklist'
 import InterviewSocialProof from './components/InterviewSocialProof'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 type View = 'home' | 'room' | 'results'
 
@@ -76,6 +77,7 @@ export default function InterviewPrepClient() {
   // ── Home view (hero + tips + checklist + social proof) ────────────────────
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
+      <ToolBreadcrumb toolName="Interview Prep" toolEmoji="🎤" />
       <InterviewHero
         country={country}
         visaType={visaType}

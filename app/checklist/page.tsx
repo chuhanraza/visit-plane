@@ -7,6 +7,7 @@ import { createClient } from '@supabase/supabase-js'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useUserCountry } from '@/hooks/useUserCountry'
 import CountrySelect from '@/components/CountrySelect'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 // ─── Supabase ──────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -468,7 +469,9 @@ export default function ChecklistPage() {
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-33.333%); } }
       `}</style>
 
-      <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* ── SECTION 1: HERO ──────────────────────────────────────────────── */}
+      <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
+        <ToolBreadcrumb toolName="Document Checklist" toolEmoji="📋" />
+        {/* ── SECTION 1: HERO ──────────────────────────────────────────────── */}
         <section className="relative overflow-hidden pt-16 sm:pt-20 lg:pt-24 pb-12">
           {/* Glow blobs */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden">

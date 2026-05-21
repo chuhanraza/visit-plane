@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Visa Approval Probability Calculator 2026 | VisitPlane',
+  title: 'Visa Approval Probability Quiz 2026 | VisitPlane',
   description:
-    'Find out your chances of getting a visa approved. Answer 5 questions and get your personalized visa success probability score instantly. Free.',
+    'Find out your chances of getting a visa. Answer 5 questions and get your personalized visa success probability score.',
   openGraph: {
-    title: 'Visa Approval Probability Calculator 2026 | VisitPlane',
+    title: 'Visa Approval Probability Quiz 2026 | VisitPlane',
     description:
-      'Find out your chances of getting a visa approved. Answer 5 questions and get your personalized visa success probability score instantly. Free.',
+      'Find out your chances of getting a visa. Answer 5 questions and get your personalized visa success probability score.',
     url: 'https://visitplane.com/visa-checker',
   },
 }

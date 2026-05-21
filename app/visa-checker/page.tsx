@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import type { QuizAnswers, DenialValue, FinancialValue } from './data'
 import { EMPTY_ANSWERS } from './data'
 import LandingSection    from './components/LandingSection'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 import ProgressBar       from './components/ProgressBar'
 import Step1Passport     from './components/Step1Passport'
 import Step2Destination  from './components/Step2Destination'
@@ -35,6 +36,7 @@ export default function VisaCheckerPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
+      <ToolBreadcrumb toolName="Visa Checker" toolEmoji="🎯" />
       {/* ── Landing ─────────────────────────────────────────────── */}
       {step === 0 && <LandingSection onStart={() => setStep(1)} />}
 

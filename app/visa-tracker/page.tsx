@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 const COUNTRIES = [
   'Afghanistan','Albania','Algeria','Argentina','Australia','Austria','Bahrain','Bangladesh','Belgium',
@@ -34,7 +35,9 @@ export default function VisaTrackerPage() {
   const lbl = 'block text-[10px] font-bold uppercase tracking-widest text-teal-400 mb-1.5'
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">{/* HERO */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">
+      <ToolBreadcrumb toolName="Visa Tracker" toolEmoji="📊" />
+      {/* HERO */}
       <section className="relative overflow-hidden pt-16 pb-12 sm:pt-24 sm:pb-16">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,0.12),transparent_60%)]" />

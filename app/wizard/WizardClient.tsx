@@ -5,6 +5,7 @@ import WizardHero from './components/WizardHero'
 import WizardChat from './components/WizardChat'
 import WizardResults from './components/WizardResults'
 import type { WizardAnswers } from './components/WizardChat'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 type Phase = 'hero' | 'chat'
 
@@ -53,6 +54,7 @@ export default function WizardClient() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">
+      <ToolBreadcrumb toolName="AI Visa Wizard" toolEmoji="🤖" />
 
       {phase === 'hero' ? (
         <WizardHero onStart={handleStart} />

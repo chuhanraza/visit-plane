@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 const CURR = ['USD','EUR','GBP','PKR','INR','AED','SAR','CAD','AUD','JPY','CNY','CHF','SGD','MYR','THB','TRY','EGP','NGN','BDT','PHP']
 const PAIRS: [string,string][] = [['USD','PKR'],['USD','INR'],['USD','AED'],['GBP','PKR'],['EUR','PKR'],['SAR','PKR']]
@@ -57,7 +58,9 @@ export default function CurrencyConverterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* HERO */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
+      <ToolBreadcrumb toolName="Currency Converter" toolEmoji="💱" />
+      {/* HERO */}
       <section className="relative overflow-hidden pt-20 pb-10 text-center">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute left-1/2 top-0 h-[600px] w-[1000px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.15),transparent_60%)]" />

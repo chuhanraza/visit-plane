@@ -254,6 +254,7 @@ const POPULAR_PILLS: Record<string, { label: string; dest: string }[]> = {
     { label: '🇹🇷 Turkey',       dest: 'Turkey' },
     { label: '🇬🇧 UK',           dest: 'United Kingdom' },
     { label: '🇺🇸 USA',          dest: 'United States' },
+    { label: '🇨🇦 Canada',       dest: 'Canada' },
   ],
   'India': [
     { label: '🇦🇪 UAE',          dest: 'UAE' },
@@ -261,19 +262,38 @@ const POPULAR_PILLS: Record<string, { label: string; dest: string }[]> = {
     { label: '🇨🇦 Canada',       dest: 'Canada' },
     { label: '🇬🇧 UK',           dest: 'United Kingdom' },
     { label: '🇦🇺 Australia',    dest: 'Australia' },
+    { label: '🇩🇪 Germany',      dest: 'Germany' },
   ],
   'Nigeria': [
     { label: '🇬🇧 UK',           dest: 'United Kingdom' },
     { label: '🇺🇸 USA',          dest: 'United States' },
     { label: '🇨🇦 Canada',       dest: 'Canada' },
-    { label: '🇿🇦 South Africa', dest: 'South Africa' },
     { label: '🇦🇪 UAE',          dest: 'UAE' },
+    { label: '🇿🇦 South Africa', dest: 'South Africa' },
+    { label: '🇩🇪 Germany',      dest: 'Germany' },
+  ],
+  'Bangladesh': [
+    { label: '🇸🇦 Saudi Arabia', dest: 'Saudi Arabia' },
+    { label: '🇦🇪 UAE',          dest: 'UAE' },
+    { label: '🇲🇾 Malaysia',     dest: 'Malaysia' },
+    { label: '🇬🇧 UK',           dest: 'United Kingdom' },
+    { label: '🇺🇸 USA',          dest: 'United States' },
+    { label: '🇰🇷 South Korea',  dest: 'South Korea' },
   ],
   'United States': [
     { label: '🇬🇧 UK',           dest: 'United Kingdom' },
     { label: '🇨🇦 Canada',       dest: 'Canada' },
     { label: '🇲🇽 Mexico',       dest: 'Mexico' },
     { label: '🇫🇷 France',       dest: 'France' },
+    { label: '🇯🇵 Japan',        dest: 'Japan' },
+    { label: '🇮🇹 Italy',        dest: 'Italy' },
+  ],
+  'United Kingdom': [
+    { label: '🇫🇷 France',       dest: 'France' },
+    { label: '🇪🇸 Spain',        dest: 'Spain' },
+    { label: '🇮🇹 Italy',        dest: 'Italy' },
+    { label: '🇺🇸 USA',          dest: 'United States' },
+    { label: '🇦🇺 Australia',    dest: 'Australia' },
     { label: '🇯🇵 Japan',        dest: 'Japan' },
   ],
 }
@@ -283,6 +303,7 @@ const DEFAULT_PILLS = [
   { label: '🇦🇪 UAE',    dest: 'UAE' },
   { label: '🇨🇦 Canada', dest: 'Canada' },
   { label: '🇯🇵 Japan',  dest: 'Japan' },
+  { label: '🇦🇺 Australia', dest: 'Australia' },
 ]
 
 // Smart default destination by passport country

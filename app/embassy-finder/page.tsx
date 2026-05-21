@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useUserCountry } from '@/hooks/useUserCountry'
 import CountrySelect from '@/components/CountrySelect'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 const COUNTRIES = ['India','Nigeria','Pakistan','Philippines','United Kingdom','United States']
 const EMBASSIES = [
@@ -33,6 +34,7 @@ export default function EmbassyFinderPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">
+      <ToolBreadcrumb toolName="Embassy Finder" toolEmoji="🏛️" />
       <section className="relative overflow-hidden pt-20 pb-16 text-center">
         <div className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[1000px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.13),transparent_60%)]" />
         <div className="relative mx-auto max-w-3xl px-4">

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useUserCountry } from '@/hooks/useUserCountry'
 import CountrySelect from '@/components/CountrySelect'
+import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 const PASSPORTS = [
   'Afghanistan','Albania','Algeria','Andorra','Angola','Antigua and Barbuda',
@@ -78,7 +79,9 @@ export default function ProcessingTimesPage() {
   }, [countryName, geoLoading, passport])
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">      {/* HERO */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">
+      <ToolBreadcrumb toolName="Processing Times" toolEmoji="⏱️" />
+      {/* HERO */}
       <section className="relative overflow-hidden pt-20 pb-12 text-center px-4">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(20,184,166,0.12),transparent_65%)]" />
         <div className="relative mx-auto max-w-3xl">
