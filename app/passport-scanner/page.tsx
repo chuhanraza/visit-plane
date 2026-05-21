@@ -137,7 +137,12 @@ function parseMRZ(text: string): PassportData | null {
   try {
     const lines = text
       .split('\n')
-      .map(l => l.trim().replace(/\s/g, ''))
+      .map(l =>
+        l.trim()
+         .replace(/\s/g, '')
+         // OCR often reads '<' filler chars as 'L' — normalize runs of 3+ L's back to '<'
+         .replace(/L{3,}/g, s => '<'.repeat(s.length))
+      )
       .filter(l => l.length >= 30)
 
     const mrzLines = lines.filter(l => /^[A-Z0-9<]{30,44}$/.test(l))
