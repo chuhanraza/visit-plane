@@ -154,8 +154,18 @@ function parseMRZ(text: string): PassportData | null {
 
     const namePart  = line1.slice(5, 44)
     const nameSplit = namePart.split('<<')
-    const surname   = (nameSplit[0] || '').replace(/</g, ' ').trim()
-    const givenNames = (nameSplit[1] || '').replace(/</g, ' ').trim()
+
+    // Split each field by '<', drop empty segments AND segments that are
+    // pure L's (OCR frequently reads '<' filler characters as 'L')
+    const cleanNameParts = (raw: string) =>
+      raw
+        .split('<')
+        .filter(p => p.length > 0 && !/^L+$/.test(p))
+        .join(' ')
+        .trim()
+
+    const surname    = cleanNameParts(nameSplit[0] || '')
+    const givenNames = cleanNameParts(nameSplit[1] || '')
 
     const passportNumber  = line2.slice(0, 9).replace(/</g, '')
     const nationality     = line2.slice(10, 13).replace(/</g, '')
