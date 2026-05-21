@@ -22,6 +22,7 @@ const TOOLS = [
   { label: '📊 Visa Tracker',          href: '/visa-tracker'       },
   { label: '🎤 Interview Prep',        href: '/interview-prep'     },
   { label: '📷 Passport Scanner',      href: '/passport-scanner'   },
+  { label: '🔐 Visa Vault',            href: '/visa-vault'         },
 ]
 
 const TOOL_PATHS = TOOLS.map((t) => t.href)
