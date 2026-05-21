@@ -762,18 +762,7 @@ export default function VisaVaultPage() {
     }
   }, [])
 
-  if (!mounted) return (
-    <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
-      <div className="flex items-center gap-2 text-teal-600">
-        <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-        </svg>
-        <span className="text-sm font-semibold">Loading vault...</span>
-      </div>
-    </div>
-  )
-
+  // ── Hooks must all be called before any conditional return (Rules of Hooks) ──
   const update = useCallback((field: keyof ProfileData, value: string | string[]) => {
     setProfile(prev => {
       const next = { ...prev, [field]: value }
@@ -791,6 +780,18 @@ export default function VisaVaultPage() {
     setSaved(true)
     setTimeout(() => { setSaved(false); setView('dashboard') }, 1200)
   }, [profile])
+
+  if (!mounted) return (
+    <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+      <div className="flex items-center gap-2 text-teal-600">
+        <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+        <span className="text-sm font-semibold">Loading vault...</span>
+      </div>
+    </div>
+  )
 
   const handleClearVault = () => {
     if (window.confirm('Are you sure you want to delete your vault? This cannot be undone.')) {
