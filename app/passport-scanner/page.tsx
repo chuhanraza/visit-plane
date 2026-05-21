@@ -3,8 +3,6 @@
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 
-export const metadata = undefined // client component, metadata exported from layout
-
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface PassportData {
   fullName: string
