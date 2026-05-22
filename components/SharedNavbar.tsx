@@ -8,21 +8,22 @@ import { useLocale } from 'next-intl'
 import LanguageSwitcher from '@/app/components/LanguageSwitcher'
 
 const TOOLS = [
-  { label: '🤖 AI Visa Wizard',       href: '/wizard'             },
-  { label: '🎯 Visa Checker',          href: '/visa-checker'       },
-  { label: '🗺️ Visa-Free Map',         href: '/visa-free-map'      },
-  { label: '💪 Passport Strength',     href: '/passport-strength'  },
-  { label: '⚖️ Compare Visas',         href: '/compare'            },
-  { label: '📋 Document Checklist',    href: '/checklist'          },
-  { label: '⏱️ Processing Times',      href: '/processing-times'   },
-  { label: '🛡️ Travel Insurance',      href: '/travel-insurance'   },
-  { label: '🏛️ Embassy Finder',        href: '/embassy-finder'     },
-  { label: '💰 Cost Calculator',       href: '/cost-calculator'    },
-  { label: '💱 Currency Converter',    href: '/currency-converter' },
-  { label: '📊 Visa Tracker',          href: '/visa-tracker'       },
-  { label: '🎤 Interview Prep',        href: '/interview-prep'     },
-  { label: '📷 Passport Scanner',      href: '/passport-scanner'   },
-  { label: '🔐 Visa Vault',            href: '/visa-vault'         },
+  { label: '🤖 AI Visa Wizard',       href: '/wizard'                },
+  { label: '🎯 Visa Checker',          href: '/visa-checker'          },
+  { label: '🗺️ Visa-Free Map',         href: '/visa-free-map'         },
+  { label: '💪 Passport Strength',     href: '/passport-strength'     },
+  { label: '⚖️ Compare Visas',         href: '/compare'               },
+  { label: '📋 Document Checklist',    href: '/checklist'             },
+  { label: '✈️ Itinerary Generator',   href: '/itinerary-generator'   },
+  { label: '⏱️ Processing Times',      href: '/processing-times'      },
+  { label: '🛡️ Travel Insurance',      href: '/travel-insurance'      },
+  { label: '🏛️ Embassy Finder',        href: '/embassy-finder'        },
+  { label: '💰 Cost Calculator',       href: '/cost-calculator'       },
+  { label: '💱 Currency Converter',    href: '/currency-converter'    },
+  { label: '📊 Visa Tracker',          href: '/visa-tracker'          },
+  { label: '🎤 Interview Prep',        href: '/interview-prep'        },
+  { label: '📷 Passport Scanner',      href: '/passport-scanner'      },
+  { label: '🔐 Visa Vault',            href: '/visa-vault'            },
 ]
 
 const TOOL_PATHS = TOOLS.map((t) => t.href)

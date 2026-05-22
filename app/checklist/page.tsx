@@ -862,7 +862,25 @@ export default function ChecklistPage() {
               </Link>
             </div>
           </div>
-        </section>{/* ── PRINT HEADER (only visible when printing) ─────────────────────── */}
+        </section>
+
+        {/* ── Itinerary Generator CTA ─────────────────────────────────── */}
+        <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pb-10 no-print">
+          <div className="rounded-2xl border border-teal-100 bg-gradient-to-r from-teal-50 to-emerald-50 px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p className="font-semibold text-[#0f0c29] text-sm">✈️ Need a Flight Itinerary?</p>
+              <p className="text-xs text-gray-500 mt-0.5">Generate a professional, embassy-accepted flight or hotel itinerary PDF — free &amp; instant.</p>
+            </div>
+            <a
+              href="/itinerary-generator"
+              className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-teal-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-600 transition shadow-md shadow-teal-200"
+            >
+              Generate Itinerary →
+            </a>
+          </div>
+        </section>
+
+        {/* ── PRINT HEADER (only visible when printing) ─────────────────────── */}
         <div className="hidden print:block fixed top-0 left-0 right-0 p-6 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold text-gray-900">Visit<span className="text-teal-600">Plane</span></span>
