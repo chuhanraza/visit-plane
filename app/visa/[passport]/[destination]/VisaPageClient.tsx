@@ -584,7 +584,7 @@ export default function VisaPageClient({
           {/* Meta badges row */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
-              🕐 Updated today
+              🕐 Updated: May 2026
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
               🏛️ Official Embassy Data
