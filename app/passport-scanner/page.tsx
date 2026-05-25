@@ -206,449 +206,56 @@ interface ScanResult extends PassportData {
   confidence: number
 }
 
-// ─── MRZ Character Correction (fixes common OCR-B font confusion) ────────────
-const correctMRZCharacters = (text: string): string => {
-  const lines = text.split('\n')
-  return lines.map(line => {
-    if (line.length < 20) return line
-    let corrected = line.toUpperCase()
-    corrected = corrected
-      // Space should be < in MRZ
-      .replace(/ /g, '<')
-      // Common OCR symbol errors
-      .replace(/\|/g, 'I')   // pipe → I
-      .replace(/!/g, 'I')    // ! → I
-      .replace(/\$/g, 'S')   // $ → S
-      .replace(/&/g, '<')    // & → <
-      .replace(/\./g, '<')   // period → <
-      .replace(/,/g, '<')    // comma → <
-      .replace(/'/g, '<')    // apostrophe → <
-      // Numbers often confused with letters in name sections
-      .replace(/(?<=[A-Z<]{3,})0(?=[A-Z<])/g, 'O') // 0 → O in name section
-      .replace(/(?<=[A-Z<]{3,})1(?=[A-Z<])/g, 'I') // 1 → I in name section
-    return corrected
-  }).join('\n')
+// ─── Claude Vision API Passport Scanner ──────────────────────────────────────
+async function scanPassportWithClaude(imageBase64: string, mimeType: string) {
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1000,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image",
+              source: { type: "base64", media_type: mimeType, data: imageBase64 }
+            },
+            {
+              type: "text",
+              text: `Extract passport data from this image. Read BOTH the printed text fields AND the MRZ lines at the bottom.
+Return ONLY a valid JSON object, no explanation, no markdown, no backticks:
+{
+  "fullName": "Given Names Surname (natural order, Title Case)",
+  "surname": "Surname only (Title Case)",
+  "givenNames": "Given names only (Title Case)",
+  "nationality": "Country name",
+  "passportNo": "Passport number exactly as printed",
+  "dateOfBirth": "DD/MM/YYYY",
+  "expiryDate": "DD/MM/YYYY",
+  "gender": "Male or Female"
 }
+Rules:
+- fullName must be Given Names first, then Surname (e.g. "Muhammad Salman Ashraf" NOT "Ashraf Muhammad Salman")
+- Use Title Case for all names (e.g. "Muhammad Salman Ashraf" not "MUHAMMAD SALMAN ASHRAF")
+- For Pakistani passports: Surname field is the family name, Given Names are the personal names
+- Read directly from the printed fields, not just MRZ, for maximum accuracy`
+            }
+          ]
+        }
+      ]
+    })
+  });
+  const data = await response.json();
+  const text = data.content?.find((c: any) => c.type === "text")?.text || ""; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-// ─── Name Validation & Title Case display ────────────────────────────────────
-const validateAndCleanName = (name: string): string => {
-  if (!name) return ''
-  // Remove any stray < and normalise spaces
-  let cleaned = name.replace(/</g, ' ').replace(/\s+/g, ' ').trim()
-  // Convert MUHAMMAD SALMAN → Muhammad Salman
-  cleaned = cleaned
-    .split(' ')
-    .filter(Boolean)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ')
-  return cleaned.length >= 3 ? cleaned : ''
-}
-
-// ─── MRZ Name Helpers ─────────────────────────────────────────────────────────
-function correctMRZNameChars(raw: string): string {
-  return raw
-    .replace(/0/g, "O")
-    .replace(/1/g, "I")
-    .replace(/2/g, "Z")
-    .replace(/5/g, "S")
-    .replace(/6/g, "G")
-    .replace(/8/g, "B");
-}
-function toTitleCase(str: string): string {
-  return str.toLowerCase().split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-}
-function parseMRZLine1(line1: string): { fullName: string; givenNames: string; surname: string } {
-  const clean = line1.trim().toUpperCase();
-  const nameField = /^P[<A-Z][A-Z]{3}/i.test(clean) ? clean.substring(5) : clean;
-  const corrected = correctMRZNameChars(nameField);
-  const doubleFillIdx = corrected.indexOf("<<");
-  const surname = doubleFillIdx !== -1 ? corrected.substring(0, doubleFillIdx) : "";
-  const givenRaw = doubleFillIdx !== -1 ? corrected.substring(doubleFillIdx + 2) : corrected;
-  const surnameTC = toTitleCase(surname.replace(/<+/g, " ").trim());
-  const givenTC = toTitleCase(givenRaw.replace(/<+/g, " ").trim());
-  return {
-    surname: surnameTC,
-    givenNames: givenTC,
-    fullName: [givenTC, surnameTC].filter(Boolean).join(" "),
-  };
-}
-
-// ─── Layer 3: Smart MRZ Parser ────────────────────────────────────────────────
-function parseMRZSmart(text: string): ScanResult | null {
   try {
-    // Clean up OCR output
-    const cleaned = text
-      .toUpperCase()
-      .replace(/\s+/g, '\n')
-      .replace(/[^A-Z0-9<\n]/g, '<') // Replace bad chars with <
-
-    const lines = cleaned
-      .split('\n')
-      .map(l => l.trim())
-      .filter(l => l.length >= 30)
-
-    // Strategy 1: Find perfect TD3 lines (44 chars)
-    let mrzLines = lines.filter(l =>
-      l.length >= 40 &&
-      /^[A-Z0-9<]{30,}$/.test(l)
-    )
-
-    // Strategy 2: Fuzzy match — look for lines with many < characters
-    if (mrzLines.length < 2) {
-      mrzLines = lines
-        .filter(l => l.length >= 25)
-        .filter(l => (l.match(/</g) || []).length >= 2)
-        .sort((a, b) => b.length - a.length)
-        .slice(0, 2)
-    }
-
-    // Strategy 3: Find P< pattern (passport indicator)
-    if (mrzLines.length < 1) {
-      const passportLine = lines.find(l =>
-        l.includes('P<') || l.startsWith('P')
-      )
-      if (passportLine) mrzLines = [passportLine]
-    }
-
-    if (mrzLines.length < 1) return null
-
-    const line1 = mrzLines[0].padEnd(44, '<')
-    const line2 = (mrzLines[1] || '').padEnd(44, '<')
-
-    // Extract from line 1 using robust parser with OCR char correction & title case
-    const { fullName: parsedFullName, givenNames, surname } = parseMRZLine1(line1)
-
-    // Extract from line 2: PASSPORTNO<CHECKNATIONALITYDOB<CHECKGENDEREXPIRY<CHECK
-    const passportNumber = line2.slice(0, 9).replace(/</g, '').trim()
-
-    const nationalityCode = line2.slice(10, 13).replace(/</g, '').trim()
-
-    // Date of birth: YYMMDD
-    const dobRaw = line2.slice(13, 19)
-    let dateOfBirth = ''
-    if (dobRaw && /^\d{6}$/.test(dobRaw)) {
-      const yy = parseInt(dobRaw.slice(0, 2))
-      const mm = dobRaw.slice(2, 4)
-      const dd = dobRaw.slice(4, 6)
-      const currentYear = new Date().getFullYear() % 100
-      const fullYear = yy > currentYear ? `19${dobRaw.slice(0, 2)}` : `20${dobRaw.slice(0, 2)}`
-      dateOfBirth = `${dd}/${mm}/${fullYear}`
-    }
-
-    // Gender
-    const genderChar = line2.slice(20, 21)
-    const gender = genderChar === 'M' ? 'Male' : genderChar === 'F' ? 'Female' : 'Unknown'
-
-    // Expiry date: YYMMDD
-    const expiryRaw = line2.slice(21, 27)
-    let expiryDate = ''
-    if (expiryRaw && /^\d{6}$/.test(expiryRaw)) {
-      const mm = expiryRaw.slice(2, 4)
-      const dd = expiryRaw.slice(4, 6)
-      expiryDate = `${dd}/${mm}/20${expiryRaw.slice(0, 2)}`
-    }
-
-    const nationality = NATIONALITY_CODES[nationalityCode] || nationalityCode
-
-    // Must have at least a passport number
-    if (!passportNumber || passportNumber.length < 3) return null
-
-    const confidence = [surname, givenNames, passportNumber, dateOfBirth, expiryDate]
-      .filter(v => v && v.length > 0).length
-
-    // fullName = given names FIRST + surname LAST  (natural order, title case)
-    // e.g. Muhammad Salman Ashraf  ✅  (NOT: Ashraf Muhammad Salman / NOT: MUHAMMAD SALMAN ASHRAF)
-    const fullName = parsedFullName
-
-    return {
-      surname:       surname    || 'Not detected',
-      givenNames:    givenNames || 'Not detected',
-      fullName:      fullName   || 'Not detected',
-      passportNumber,
-      nationality,
-      dateOfBirth: dateOfBirth || 'Not detected',
-      expiryDate:  expiryDate  || 'Not detected',
-      gender,
-      confidence,
-    }
+    const clean = text.replace(/```json|```/g, "").trim();
+    return JSON.parse(clean);
   } catch {
-    return null
+    throw new Error("Could not parse passport data. Please try a clearer image.");
   }
-}
-
-// ─── Layer 2: Tesseract with MRZ-optimised settings ──────────────────────────
-async function scanWithTesseract(
-  canvas: HTMLCanvasElement,
-  onProgress: (p: number) => void
-): Promise<string> {
-  const { createWorker } = await import('tesseract.js')
-
-  const worker = await createWorker('eng', 1, {
-    logger: (m: { status: string; progress: number }) => {
-      if (m.status === 'recognizing text') {
-        onProgress(Math.round(m.progress * 100))
-      }
-    },
-  })
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (worker.setParameters as any)({
-    // Only allow MRZ characters
-    tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<',
-    // Single uniform block — MRZ is uniform text (PSM 6)
-    tessedit_pageseg_mode: '6',
-    // Legacy OCR engine — better for structured text (OEM 1)
-    tessedit_ocr_engine_mode: '1',
-    // Disable word segmentation
-    preserve_interword_spaces: '0',
-  })
-
-  const blob = await new Promise<Blob>((resolve) =>
-    canvas.toBlob((b) => resolve(b!), 'image/png')
-  )
-
-  const { data: { text } } = await worker.recognize(blob)
-  await worker.terminate()
-  return text
-}
-
-// ─── Layer 1: Image Preprocessing ────────────────────────────────────────────
-function preprocessImage(file: File): Promise<HTMLCanvasElement> {
-  return new Promise((resolve) => {
-    const img = new Image()
-    const reader = new FileReader()
-
-    reader.onload = (e) => {
-      img.onload = () => {
-        // Step 1: Scale up small images (MRZ needs minimum 300px height)
-        let w = img.width
-        let h = img.height
-        const minH = 600
-        if (h < minH) {
-          w = Math.round(w * (minH / h))
-          h = minH
-        }
-        const maxW = 2400
-        if (w > maxW) {
-          h = Math.round(h * (maxW / w))
-          w = maxW
-        }
-
-        const canvas = document.createElement('canvas')
-        canvas.width = w
-        canvas.height = h
-        const ctx = canvas.getContext('2d')!
-        ctx.drawImage(img, 0, 0, w, h)
-
-        // Step 2: Convert to grayscale
-        const imageData = ctx.getImageData(0, 0, w, h)
-        const data = imageData.data
-        for (let i = 0; i < data.length; i += 4) {
-          const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2])
-          data[i] = gray
-          data[i + 1] = gray
-          data[i + 2] = gray
-        }
-        ctx.putImageData(imageData, 0, 0)
-
-        // Step 3: Increase contrast dramatically
-        const tempCanvas = document.createElement('canvas')
-        tempCanvas.width = w
-        tempCanvas.height = h
-        const tempCtx = tempCanvas.getContext('2d')!
-        tempCtx.filter = 'contrast(200%) brightness(110%)'
-        tempCtx.drawImage(canvas, 0, 0)
-
-        // Step 4: Crop to bottom 35% — MRZ is ALWAYS at the bottom of passport
-        const mrzCanvas = document.createElement('canvas')
-        const mrzH = Math.round(h * 0.35)
-        const mrzY = h - mrzH
-        mrzCanvas.width = w
-        mrzCanvas.height = mrzH
-        const mrzCtx = mrzCanvas.getContext('2d')!
-        mrzCtx.drawImage(tempCanvas, 0, mrzY, w, mrzH, 0, 0, w, mrzH)
-
-        resolve(mrzCanvas)
-      }
-      img.src = e.target?.result as string
-    }
-    reader.readAsDataURL(file)
-  })
-}
-
-function preprocessImageHighContrast(file: File): Promise<HTMLCanvasElement> {
-  return new Promise((resolve) => {
-    const img = new Image()
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        canvas.width = img.width
-        canvas.height = img.height
-        const ctx = canvas.getContext('2d')!
-
-        // Ultra high contrast for difficult images
-        ctx.filter = 'grayscale(100%) contrast(300%) brightness(120%)'
-        ctx.drawImage(img, 0, 0)
-
-        // Crop bottom 35%
-        const mrzCanvas = document.createElement('canvas')
-        const mrzH = Math.round(img.height * 0.35)
-        mrzCanvas.width = img.width
-        mrzCanvas.height = mrzH
-        const mrzCtx = mrzCanvas.getContext('2d')!
-        mrzCtx.drawImage(canvas, 0, img.height - mrzH, img.width, mrzH, 0, 0, img.width, mrzH)
-        resolve(mrzCanvas)
-      }
-      img.src = e.target?.result as string
-    }
-    reader.readAsDataURL(file)
-  })
-}
-
-function preprocessFullImage(file: File): Promise<HTMLCanvasElement> {
-  return new Promise((resolve) => {
-    const img = new Image()
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        canvas.width = img.width * 2   // Double size
-        canvas.height = img.height * 2
-        const ctx = canvas.getContext('2d')!
-        ctx.filter = 'grayscale(100%) contrast(250%)'
-        ctx.drawImage(img, 0, 0, img.width * 2, img.height * 2)
-        resolve(canvas)
-      }
-      img.src = e.target?.result as string
-    }
-    reader.readAsDataURL(file)
-  })
-}
-
-// ─── Layer 1b: Sharper preprocessing specifically for MRZ line 1 (names) ──────
-// Crops just the top MRZ line and applies very high contrast to reduce
-// M/H, R/N confusion caused by shadows or glare.
-function preprocessMRZLine1(file: File): Promise<HTMLCanvasElement> {
-  return new Promise((resolve) => {
-    const img    = new Image()
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      img.onload = () => {
-        // Double-scale for better OCR accuracy
-        const scale  = 2.5
-        const canvas = document.createElement('canvas')
-        canvas.width  = img.width  * scale
-        canvas.height = img.height * scale
-        const ctx = canvas.getContext('2d')!
-
-        // Very high contrast + grayscale to sharpen OCR-B font
-        ctx.filter = [
-          'grayscale(100%)',
-          'contrast(400%)',
-          'brightness(130%)',
-          'saturate(0%)',
-        ].join(' ')
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-
-        // MRZ line 1 sits at ~67–75% of the full image height
-        const totalH = canvas.height
-        const lineH  = Math.round(totalH * 0.08)   // ~8% of height per line
-        const lineY  = Math.round(totalH * 0.67)   // start at 67%
-
-        const mrzCanvas = document.createElement('canvas')
-        mrzCanvas.width  = canvas.width
-        mrzCanvas.height = lineH * 2               // 2× stretch for readability
-        const mrzCtx = mrzCanvas.getContext('2d')!
-        mrzCtx.drawImage(
-          canvas,
-          0, lineY, canvas.width, lineH,
-          0, 0,     canvas.width, lineH * 2
-        )
-        resolve(mrzCanvas)
-      }
-      img.src = e.target?.result as string
-    }
-    reader.readAsDataURL(file)
-  })
-}
-
-// ─── Layer 4: Multi-Attempt Scanning ─────────────────────────────────────────
-async function scanPassportMultiAttempt(
-  file: File,
-  onProgress: (p: number, msg: string) => void
-): Promise<ScanResult | null> {
-  const results: ScanResult[] = []
-
-  // Attempt 1: Normal preprocessing
-  onProgress(10, '📸 Preparing your passport image...')
-  const canvas1 = await preprocessImage(file)
-  onProgress(20, '🔍 Scanning MRZ zone (bottom of passport)...')
-  const rawText1 = await scanWithTesseract(
-    canvas1,
-    (p) => onProgress(20 + Math.round(p * 0.3), `⚡ Reading passport data... ${p}%`)
-  )
-  const text1   = correctMRZCharacters(rawText1)
-  const result1 = parseMRZSmart(text1)
-  if (result1) results.push(result1)
-
-  // Attempt 2: Higher contrast (if first attempt low-confidence)
-  if (!result1 || result1.confidence < 4) {
-    onProgress(55, '🔄 Enhancing image for better accuracy...')
-    const canvas2 = await preprocessImageHighContrast(file)
-    onProgress(60, '🔍 Second scan with enhanced contrast...')
-    const rawText2 = await scanWithTesseract(
-      canvas2,
-      (p) => onProgress(60 + Math.round(p * 0.2), `⚡ Rescanning... ${p}%`)
-    )
-    const text2   = correctMRZCharacters(rawText2)
-    const result2 = parseMRZSmart(text2)
-    if (result2) results.push(result2)
-  }
-
-  // Attempt 3: Full image (not just bottom crop)
-  if (results.length === 0) {
-    onProgress(80, '🔎 Trying full image scan...')
-    const canvas3 = await preprocessFullImage(file)
-    const rawText3 = await scanWithTesseract(
-      canvas3,
-      (p) => onProgress(80 + Math.round(p * 0.15), `⚡ Full scan... ${p}%`)
-    )
-    const text3   = correctMRZCharacters(rawText3)
-    const result3 = parseMRZSmart(text3)
-    if (result3) results.push(result3)
-  }
-
-  // Attempt 4: Ultra-sharp crop of name line only (fixes M→H, R→N confusion)
-  if (results.length === 0 || results[0].fullName === 'Not detected' || results[0].confidence < 3) {
-    onProgress(88, '🔬 Applying ultra-sharp name scan...')
-    const canvas4 = await preprocessMRZLine1(file)
-    const rawText4 = await scanWithTesseract(
-      canvas4,
-      (p) => onProgress(88 + Math.round(p * 0.1), `⚡ Name line scan... ${p}%`)
-    )
-    const text4   = correctMRZCharacters(rawText4)
-    const result4 = parseMRZSmart(text4)
-    if (result4) results.push(result4)
-  }
-
-  if (results.length === 0) return null
-
-  // Return highest-confidence result
-  return results.sort((a, b) => b.confidence - a.confidence)[0]
-}
-
-// ─── Layer 5: Error tips ──────────────────────────────────────────────────────
-function getErrorTips(attempt: number): string[] {
-  const tips = [
-    '📸 Make sure the BOTTOM of the passport is clearly visible',
-    '💡 Improve lighting — avoid shadows on the passport',
-    '📐 Keep passport flat — avoid curved or bent pages',
-    '🔍 Use a higher resolution image if possible',
-    '📱 Try taking the photo in good daylight',
-    '✂️ Crop the image to show only the passport data page',
-  ]
-  return tips.slice(0, attempt + 2)
 }
 
 // ─── Passport Scanner Tool ────────────────────────────────────────────────────
@@ -701,29 +308,43 @@ function PassportScanner() {
     setScanError('')
     setErrorTips([])
     setScanProgress(0)
-    setScanMessage('📸 Preparing your passport image...')
+    setScanMessage('🤖 Sending to Claude Vision AI...')
 
     try {
-      const result = await scanPassportMultiAttempt(
-        file,
-        (p, msg) => {
-          setScanProgress(p)
-          setScanMessage(msg)
+      // Convert image to base64
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const b64reader = new FileReader()
+        b64reader.onload = () => {
+          const result = b64reader.result as string
+          resolve(result.split(',')[1])
         }
-      )
+        b64reader.onerror = reject
+        b64reader.readAsDataURL(file)
+      })
 
-      if (result) {
-        setScanMessage('✅ Passport data extracted!')
-        setScanResult(result)
-      } else {
-        setScanMessage('')
-        setScanError('Could not detect MRZ data in this image.')
-        setErrorTips(getErrorTips(2))
-      }
-    } catch {
+      setScanProgress(40)
+      setScanMessage('🔍 Claude is reading your passport...')
+
+      const mimeType = (file.type || 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif'
+      const passportData = await scanPassportWithClaude(base64, mimeType)
+
+      setScanProgress(100)
+      setScanMessage('✅ Passport data extracted!')
+
+      setScanResult({
+        fullName:       passportData.fullName    || 'Not detected',
+        surname:        passportData.surname     || 'Not detected',
+        givenNames:     passportData.givenNames  || 'Not detected',
+        nationality:    passportData.nationality || 'Not detected',
+        passportNumber: passportData.passportNo  || 'Not detected',
+        dateOfBirth:    passportData.dateOfBirth || 'Not detected',
+        expiryDate:     passportData.expiryDate  || 'Not detected',
+        gender:         passportData.gender      || 'Not detected',
+        confidence:     5,
+      })
+    } catch (err: unknown) {
       setScanMessage('')
-      setScanError('Scan failed. Please try again with a clearer image.')
-      setErrorTips(getErrorTips(1))
+      setScanError(err instanceof Error ? err.message : 'Scan failed. Please try again.')
     } finally {
       setScanning(false)
     }
