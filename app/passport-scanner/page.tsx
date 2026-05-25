@@ -2,6 +2,8 @@
 
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import Tesseract from 'tesseract.js'
+import { parse } from 'mrz'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface PassportData {
@@ -206,18 +208,113 @@ interface ScanResult extends PassportData {
   confidence: number
 }
 
-// ─── Passport Scanner ────────────────────────────────────────────────────────
-async function scanPassport(imageBase64: string, mimeType: string) {
-  const response = await fetch("/api/scan-passport", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ imageBase64, mimeType }),
-  });
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || "Scan failed");
+// ─── Passport Scanner (100% browser-side: Tesseract OCR + mrz parser) ────────
+async function scanPassportFree(imageFile: File): Promise<{
+  fullName: string
+  surname: string
+  givenNames: string
+  nationality: string
+  passportNo: string
+  dateOfBirth: string
+  expiryDate: string
+  gender: string
+}> {
+  // Step 1: Draw image on canvas and crop bottom 22% (MRZ zone)
+  const imageBitmap = await createImageBitmap(imageFile)
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')!
+  canvas.width = imageBitmap.width
+  canvas.height = imageBitmap.height
+  ctx.drawImage(imageBitmap, 0, 0)
+
+  // Crop to bottom 22% where MRZ lives
+  const mrzHeight = Math.floor(imageBitmap.height * 0.22)
+  const mrzCanvas = document.createElement('canvas')
+  // 2× upscale for better OCR accuracy
+  mrzCanvas.width = imageBitmap.width * 2
+  mrzCanvas.height = mrzHeight * 2
+  const mrzCtx = mrzCanvas.getContext('2d')!
+  mrzCtx.filter = 'contrast(2.5) brightness(1.3) grayscale(1)'
+  mrzCtx.drawImage(
+    canvas,
+    0, imageBitmap.height - mrzHeight,
+    imageBitmap.width, mrzHeight,
+    0, 0,
+    imageBitmap.width * 2, mrzHeight * 2,
+  )
+
+  // Step 2: Run Tesseract on MRZ zone only
+  const mrzBlob = await new Promise<Blob>((resolve) =>
+    mrzCanvas.toBlob((b) => resolve(b!), 'image/png'),
+  )
+  const result = await Tesseract.recognize(mrzBlob, 'eng', {
+    tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<',
+    tessedit_pageseg_mode: '6',
+  } as any)
+
+  const rawText = result.data.text
+
+  // Step 3: Extract MRZ lines (44 chars each, must contain '<')
+  const lines = rawText
+    .split('\n')
+    .map((l: string) => l.trim().replace(/[^A-Z0-9<]/g, ''))
+    .filter((l: string) => l.length >= 30 && l.includes('<'))
+
+  if (lines.length < 2) {
+    throw new Error('Could not detect MRZ lines. Please use a clearer, well-lit photo.')
   }
-  return await response.json();
+
+  // Pad/trim to exactly 44 chars
+  const line1 = lines[0].padEnd(44, '<').substring(0, 44)
+  const line2 = lines[1].padEnd(44, '<').substring(0, 44)
+
+  // Step 4: Parse with mrz library
+  let parsed: any
+  try {
+    parsed = parse([line1, line2])
+  } catch {
+    throw new Error('Could not parse passport data. Please try a clearer image.')
+  }
+
+  const fields = parsed.fields
+
+  // Step 5: Format names — Given Names first, then Surname
+  function toTitleCase(str: string): string {
+    return (str || '')
+      .toLowerCase()
+      .split(' ')
+      .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ')
+  }
+
+  const surname    = toTitleCase(fields.lastName || '')
+  const givenNames = toTitleCase((fields.firstName || '').replace(/<+/g, ' ').trim())
+  const fullName   = [givenNames, surname].filter(Boolean).join(' ')
+
+  // Step 6: Format dates from YYMMDD → DD/MM/YYYY
+  function formatMRZDate(d: string): string {
+    if (!d || d.length !== 6) return ''
+    const yy   = parseInt(d.substring(0, 2))
+    const mm   = d.substring(2, 4)
+    const dd   = d.substring(4, 6)
+    const yyyy = yy > 30 ? 1900 + yy : 2000 + yy
+    return `${dd}/${mm}/${yyyy}`
+  }
+
+  const nationalityMap: Record<string, string> = {
+    ...NATIONALITY_CODES,
+  }
+
+  return {
+    fullName,
+    surname,
+    givenNames,
+    nationality:  nationalityMap[fields.nationality] || fields.nationality || '',
+    passportNo:   fields.documentNumber || '',
+    dateOfBirth:  formatMRZDate(fields.birthDate  || ''),
+    expiryDate:   formatMRZDate(fields.expiryDate || ''),
+    gender:       fields.sex === 'M' ? 'Male' : fields.sex === 'F' ? 'Female' : '',
+  }
 }
 
 // ─── Passport Scanner Tool ────────────────────────────────────────────────────
@@ -270,25 +367,13 @@ function PassportScanner() {
     setScanError('')
     setErrorTips([])
     setScanProgress(0)
-    setScanMessage('🤖 Sending to scanner...')
+    setScanMessage('🔍 Reading MRZ zone...')
 
     try {
-      // Convert image to base64
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const b64reader = new FileReader()
-        b64reader.onload = () => {
-          const result = b64reader.result as string
-          resolve(result.split(',')[1])
-        }
-        b64reader.onerror = reject
-        b64reader.readAsDataURL(file)
-      })
+      setScanProgress(20)
+      setScanMessage('🔍 Running OCR on passport...')
 
-      setScanProgress(40)
-      setScanMessage('🔍 Reading your passport...')
-
-      const mimeType = (file.type || 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif'
-      const passportData = await scanPassport(base64, mimeType)
+      const passportData = await scanPassportFree(file)
 
       setScanProgress(100)
       setScanMessage('✅ Passport data extracted!')

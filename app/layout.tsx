@@ -21,26 +21,48 @@ const RTL_LOCALES = ["ar", "ur"];
 
 // ─── 1. Metadata ──────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
-  title: "VisitPlane - Visa Requirements & Documents",
+  metadataBase: new URL("https://www.visitplane.com"),
+
+  title: {
+    default: "VisitPlane - Visa Requirements for 197 Countries",
+    template: "%s | VisitPlane",
+  },
+
   description:
-    "Get instant visa requirements for 197 countries. Know exactly what documents you need. Free, fast, always updated. No signup required.",
+    "VisitPlane: Free visa requirements, passport strength checker, document checklists and embassy finder for 197 countries. Instant visa information. No signup required.",
+
   keywords: [
+    "VisitPlane",
+    "visitplane.com",
     "visa requirements",
-    "visa documents",
-    "passport requirements",
-    "travel visa",
-    "visa checker",
-    "do I need a visa",
-    "country visa guide",
-    "immigration documents",
-    "travel documents",
-    "visa on arrival",
+    "passport strength checker",
+    "visa free countries",
+    "embassy finder",
+    "visa checklist",
+    "travel visa guide",
+    "Pakistan visa requirements",
+    "India visa requirements",
+    "schengen visa",
+    "uk visa requirements",
+    "usa visa requirements",
+    "dubai visa requirements",
+    "free visa information",
+    "visa processing time",
+    "visa cost calculator",
   ],
+
+  authors: [{ name: "VisitPlane" }],
+  creator: "VisitPlane",
+  publisher: "VisitPlane",
+
   verification: {
     google: "_1giyu5DMW8eS91AviSVAkCw5XGFIZHLU7gsHINSAm8",
   },
-  metadataBase: new URL("https://visitplane.com"),
-  alternates: { canonical: "/" },
+
+  alternates: {
+    canonical: "https://www.visitplane.com",
+  },
+
   robots: {
     index: true,
     follow: true,
@@ -52,39 +74,79 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+
   openGraph: {
-    title: "VisitPlane - Visa Requirements & Documents",
-    description:
-      "Get instant visa requirements for 197 countries. Know exactly what documents you need. Free, fast, always updated. No signup required.",
-    url: "https://visitplane.com",
-    siteName: "VisitPlane",
-    images: [
-      {
-        url: "https://visitplane.com/api/og-default",
-        width: 1200,
-        height: 630,
-        alt: "VisitPlane – Visa Requirements & Documents",
-      },
-    ],
     type: "website",
     locale: "en_US",
+    url: "https://www.visitplane.com",
+    siteName: "VisitPlane",
+    title: "VisitPlane - Visa Requirements for 197 Countries",
+    description:
+      "Free visa requirements, passport strength checker, document checklists and embassy finder for 197 countries. Instant visa information. No signup required.",
+    images: [
+      {
+        url: "/api/og-default",
+        width: 1200,
+        height: 630,
+        alt: "VisitPlane - Visa Requirements for 197 Countries",
+      },
+    ],
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "VisitPlane - Visa Requirements & Documents",
-    description:
-      "Get instant visa requirements for 197 countries. Know exactly what documents you need. Free, fast, always updated. No signup required.",
-    images: ["https://visitplane.com/api/og-default"],
     site: "@visitplane",
+    creator: "@visitplane",
+    title: "VisitPlane - Visa Requirements for 197 Countries",
+    description:
+      "Free visa requirements for 197 countries. Passport strength checker, embassy finder and more.",
+    images: ["/api/og-default"],
   },
 };
 
 // ─── 2. JSON-LD ───────────────────────────────────────────────────────────────
-const jsonLd = {
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "VisitPlane",
+  url: "https://www.visitplane.com",
+  logo: "https://www.visitplane.com/logo-v2.png",
+  description:
+    "Free visa requirements and travel tools for 197 countries — passport strength checker, embassy finder, document checklists and more.",
+  sameAs: [
+    "https://twitter.com/visitplane",
+    "https://www.facebook.com/visitplane",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer service",
+    url: "https://www.visitplane.com/contact",
+  },
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "VisitPlane",
+  url: "https://www.visitplane.com",
+  description:
+    "Free visa requirements for 197 countries — VisitPlane gives travelers instant, accurate visa information with no signup required.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate:
+        "https://www.visitplane.com/visa/{passport}/{destination}",
+    },
+    "query-input": "required name=destination",
+  },
+};
+
+const webAppSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "VisitPlane",
-  url: "https://visitplane.com",
+  url: "https://www.visitplane.com",
   description:
     "Visa requirements platform — get instant visa requirements for 197 countries and know exactly what documents you need. Free, fast, always updated. No signup required.",
   applicationCategory: "TravelApplication",
@@ -108,7 +170,15 @@ export default async function RootLayout({
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
         />
       </head>
       <body className="min-h-full flex flex-col bg-[#FAFAFA]">

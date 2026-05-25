@@ -8,12 +8,15 @@ export const metadata: Metadata = {
   title: 'Visa Blog — Expert Guides for Every Route | VisitPlane',
   description:
     'Expert visa guides for Pakistani and Indian travelers. Schengen, Dubai, UK, Canada, Australia, Germany, Japan, USA, and more. Updated 2026.',
+  alternates: {
+    canonical: 'https://www.visitplane.com/blog',
+  },
   openGraph: {
     title: 'Visa Guides & Travel Tips — VisitPlane',
     description:
       'Expert visa guides for every passport and destination. Schengen, Dubai, UK, Canada, Australia, Germany, Japan, USA, and more.',
     type: 'website',
-    url: 'https://visitplane.com/blog',
+    url: 'https://www.visitplane.com/blog',
   },
 }
 

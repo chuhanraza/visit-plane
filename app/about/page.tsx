@@ -97,7 +97,7 @@ export default function AboutPage() {
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.16 }}
             className="mt-5 max-w-xl mx-auto text-base leading-relaxed text-gray-500">
-            We built VisitPlane because checking visa requirements was needlessly complicated. Confusing government websites, outdated forums, and expensive travel agents shouldn&apos;t stand between you and the world.
+            VisitPlane is a free visa requirements platform built because checking visa requirements was needlessly complicated. Confusing government websites, outdated forums, and expensive travel agents shouldn&apos;t stand between you and the world. VisitPlane changes that.
           </motion.p>
         </div>
       </section>
@@ -123,9 +123,9 @@ export default function AboutPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
             className="rounded-2xl border border-teal-500/20 bg-teal-500/8 p-8 text-center">
             <div className="mb-4 text-4xl">🚀</div>
-            <h2 className="mb-3 text-xl font-bold text-[#0f0c29]">Our Mission</h2>
+            <h2 className="mb-3 text-xl font-bold text-[#0f0c29]">The VisitPlane Mission</h2>
             <p className="text-sm leading-relaxed text-gray-500">
-              To make global travel accessible by giving every traveler instant, clear, and accurate visa information — completely free. We believe the complexity of international travel should never be a barrier to exploring the world.
+              VisitPlane&apos;s mission is to make global travel accessible by giving every traveler instant, clear, and accurate visa information — completely free. VisitPlane covers 197 countries and provides tools like the passport strength checker, document checklist generator, embassy finder, visa cost calculator, and more. We believe the complexity of international travel should never be a barrier to exploring the world — and VisitPlane is here to remove that barrier.
             </p>
           </motion.div>
         </div>
@@ -156,11 +156,13 @@ export default function AboutPage() {
         <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
             className="rounded-2xl border border-gray-100 bg-white p-8">
-            <h2 className="mb-3 text-xl font-bold text-[#0f0c29]">Ready to check your visa?</h2>
-            <p className="mb-6 text-sm text-gray-500">Select your passport country and destination to get instant requirements — no sign-up needed.</p>
+            <h2 className="mb-3 text-xl font-bold text-[#0f0c29]">Start using VisitPlane today</h2>
+            <p className="mb-6 text-sm text-gray-500">
+              VisitPlane provides instant visa requirements for travelers worldwide — no sign-up needed. Select your passport country and destination to get started with VisitPlane right now.
+            </p>
             <Link href="/destinations"
               className="inline-flex items-center gap-2 rounded-full bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:-translate-y-px">
-              Check Visa Requirements <ArrowRight className="h-3.5 w-3.5" />
+              Check Visa Requirements on VisitPlane <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </motion.div>
         </div>
