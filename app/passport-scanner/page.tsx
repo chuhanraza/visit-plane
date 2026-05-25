@@ -206,8 +206,8 @@ interface ScanResult extends PassportData {
   confidence: number
 }
 
-// ─── Claude Vision API Passport Scanner ──────────────────────────────────────
-async function scanPassportWithClaude(imageBase64: string, mimeType: string) {
+// ─── Passport Scanner ────────────────────────────────────────────────────────
+async function scanPassport(imageBase64: string, mimeType: string) {
   const response = await fetch("/api/scan-passport", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -270,7 +270,7 @@ function PassportScanner() {
     setScanError('')
     setErrorTips([])
     setScanProgress(0)
-    setScanMessage('🤖 Sending to Claude Vision AI...')
+    setScanMessage('🤖 Sending to scanner...')
 
     try {
       // Convert image to base64
@@ -285,10 +285,10 @@ function PassportScanner() {
       })
 
       setScanProgress(40)
-      setScanMessage('🔍 Claude is reading your passport...')
+      setScanMessage('🔍 Reading your passport...')
 
       const mimeType = (file.type || 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif'
-      const passportData = await scanPassportWithClaude(base64, mimeType)
+      const passportData = await scanPassport(base64, mimeType)
 
       setScanProgress(100)
       setScanMessage('✅ Passport data extracted!')
@@ -358,7 +358,7 @@ function PassportScanner() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 text-xl">📄</div>
           <div>
             <h2 className="font-bold text-white text-lg">Passport MRZ Scanner</h2>
-            <p className="text-teal-100 text-xs">Upload passport → AI reads your data instantly</p>
+            <p className="text-teal-100 text-xs">Upload passport → Reads your data instantly</p>
           </div>
         </div>
       </div>
@@ -428,7 +428,7 @@ function PassportScanner() {
               />
             </div>
             <p className="text-xs text-gray-400 mt-2 text-center">
-              Browser AI is reading the passport — no data leaves your device
+              Reading your passport — no data leaves your device
             </p>
           </div>
         )}
@@ -912,7 +912,7 @@ export default function PassportScannerPage() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-xl text-base text-gray-500 sm:text-lg leading-relaxed">
-            Upload your passport photo and our browser-based AI instantly reads your details.
+            Upload your passport photo and our scanner instantly reads your details.
             Generate a perfect visa photo for any country — no data ever leaves your device.
           </p>
 
@@ -957,9 +957,9 @@ export default function PassportScannerPage() {
                 desc:  'Take a clear photo of your passport data page or upload an existing scan. JPG, PNG, or WEBP accepted.',
               },
               {
-                step: '02', emoji: '🤖', color: 'indigo',
-                title: 'Browser AI Reads MRZ',
-                desc:  'Tesseract OCR runs directly in your browser — reads the two MRZ lines and extracts all details instantly.',
+                step: '02', emoji: '🔍', color: 'indigo',
+                title: 'Smart Scanner Reads MRZ',
+                desc:  'Our scanner runs directly in your browser — reads the two MRZ lines and extracts all details instantly.',
               },
               {
                 step: '03', emoji: '✅', color: 'purple',
