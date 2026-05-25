@@ -208,54 +208,16 @@ interface ScanResult extends PassportData {
 
 // ─── Claude Vision API Passport Scanner ──────────────────────────────────────
 async function scanPassportWithClaude(imageBase64: string, mimeType: string) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetch("/api/scan-passport", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "image",
-              source: { type: "base64", media_type: mimeType, data: imageBase64 }
-            },
-            {
-              type: "text",
-              text: `Extract passport data from this image. Read BOTH the printed text fields AND the MRZ lines at the bottom.
-Return ONLY a valid JSON object, no explanation, no markdown, no backticks:
-{
-  "fullName": "Given Names Surname (natural order, Title Case)",
-  "surname": "Surname only (Title Case)",
-  "givenNames": "Given names only (Title Case)",
-  "nationality": "Country name",
-  "passportNo": "Passport number exactly as printed",
-  "dateOfBirth": "DD/MM/YYYY",
-  "expiryDate": "DD/MM/YYYY",
-  "gender": "Male or Female"
-}
-Rules:
-- fullName must be Given Names first, then Surname (e.g. "Muhammad Salman Ashraf" NOT "Ashraf Muhammad Salman")
-- Use Title Case for all names (e.g. "Muhammad Salman Ashraf" not "MUHAMMAD SALMAN ASHRAF")
-- For Pakistani passports: Surname field is the family name, Given Names are the personal names
-- Read directly from the printed fields, not just MRZ, for maximum accuracy`
-            }
-          ]
-        }
-      ]
-    })
+    body: JSON.stringify({ imageBase64, mimeType }),
   });
-  const data = await response.json();
-  const text = data.content?.find((c: any) => c.type === "text")?.text || ""; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-  try {
-    const clean = text.replace(/```json|```/g, "").trim();
-    return JSON.parse(clean);
-  } catch {
-    throw new Error("Could not parse passport data. Please try a clearer image.");
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || "Scan failed");
   }
+  return await response.json();
 }
 
 // ─── Passport Scanner Tool ────────────────────────────────────────────────────
