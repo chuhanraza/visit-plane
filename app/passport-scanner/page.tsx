@@ -244,6 +244,35 @@ const validateAndCleanName = (name: string): string => {
   return cleaned.length >= 3 ? cleaned : ''
 }
 
+// ─── MRZ Name Helpers ─────────────────────────────────────────────────────────
+function correctMRZNameChars(raw: string): string {
+  return raw
+    .replace(/0/g, "O")
+    .replace(/1/g, "I")
+    .replace(/2/g, "Z")
+    .replace(/5/g, "S")
+    .replace(/6/g, "G")
+    .replace(/8/g, "B");
+}
+function toTitleCase(str: string): string {
+  return str.toLowerCase().split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+}
+function parseMRZLine1(line1: string): { fullName: string; givenNames: string; surname: string } {
+  const clean = line1.trim().toUpperCase();
+  const nameField = /^P[<A-Z][A-Z]{3}/i.test(clean) ? clean.substring(5) : clean;
+  const corrected = correctMRZNameChars(nameField);
+  const doubleFillIdx = corrected.indexOf("<<");
+  const surname = doubleFillIdx !== -1 ? corrected.substring(0, doubleFillIdx) : "";
+  const givenRaw = doubleFillIdx !== -1 ? corrected.substring(doubleFillIdx + 2) : corrected;
+  const surnameTC = toTitleCase(surname.replace(/<+/g, " ").trim());
+  const givenTC = toTitleCase(givenRaw.replace(/<+/g, " ").trim());
+  return {
+    surname: surnameTC,
+    givenNames: givenTC,
+    fullName: [givenTC, surnameTC].filter(Boolean).join(" "),
+  };
+}
+
 // ─── Layer 3: Smart MRZ Parser ────────────────────────────────────────────────
 function parseMRZSmart(text: string): ScanResult | null {
   try {
@@ -286,17 +315,8 @@ function parseMRZSmart(text: string): ScanResult | null {
     const line1 = mrzLines[0].padEnd(44, '<')
     const line2 = (mrzLines[1] || '').padEnd(44, '<')
 
-    // Extract from line 1: P<COUNLASTNAME<<FIRSTNAME<MIDDLE
-    // Example: P<PAKASHRAF<<MUHAMMADSALMAN<<<<
-    //   nameSection = ASHRAF<<MUHAMMADSALMAN<<<<
-    //   parts[0]    = ASHRAF        → surname
-    //   parts[1]    = MUHAMMADSALMAN → given names (MUHAMMAD SALMAN)
-    //   fullName    = Muhammad Salman Ashraf  (given names first, surname last)
-    const namePart = line1.slice(5).split('<<')
-    const rawSurname    = (namePart[0] || '').replace(/</g, ' ').replace(/\s+/g, ' ').trim()
-    const rawGivenNames = (namePart[1] || '').replace(/</g, ' ').replace(/\s+/g, ' ').trim()
-    const surname    = validateAndCleanName(rawSurname)
-    const givenNames = validateAndCleanName(rawGivenNames)
+    // Extract from line 1 using robust parser with OCR char correction & title case
+    const { fullName: parsedFullName, givenNames, surname } = parseMRZLine1(line1)
 
     // Extract from line 2: PASSPORTNO<CHECKNATIONALITYDOB<CHECKGENDEREXPIRY<CHECK
     const passportNumber = line2.slice(0, 9).replace(/</g, '').trim()
@@ -336,9 +356,9 @@ function parseMRZSmart(text: string): ScanResult | null {
     const confidence = [surname, givenNames, passportNumber, dateOfBirth, expiryDate]
       .filter(v => v && v.length > 0).length
 
-    // fullName = given names FIRST + surname LAST  (natural order)
-    // e.g. Muhammad Salman Ashraf  ✅  (NOT: Ashraf Muhammad Salman)
-    const fullName = [givenNames, surname].filter(Boolean).join(' ').trim()
+    // fullName = given names FIRST + surname LAST  (natural order, title case)
+    // e.g. Muhammad Salman Ashraf  ✅  (NOT: Ashraf Muhammad Salman / NOT: MUHAMMAD SALMAN ASHRAF)
+    const fullName = parsedFullName
 
     return {
       surname:       surname    || 'Not detected',
