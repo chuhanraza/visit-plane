@@ -435,7 +435,6 @@ const BENEFITS = [
 
 const TRUST_STATS = [
   { icon: <UsersIcon />,      num: '10,000+', label: 'Travelers Helped' },
-  { icon: <PercentIcon />,    num: '99.2%',   label: 'Accuracy Rate' },
   { icon: <HeadphonesIcon />, num: '24/7',    label: 'Support' },
   { icon: <NoDollarIcon />,   num: 'Free',    label: 'Visa Information' },
 ]
@@ -961,7 +960,7 @@ export default function VisaPageClient({
               </div>
 
               <p className="mt-4 text-center text-xs text-gray-400">
-                VisitPlane provides information only. Requirements may change without notice. Always verify with the official embassy.
+                ⚠️ Information shown is for guidance only. Always verify with the official embassy before booking travel.
               </p>
             </div>
 

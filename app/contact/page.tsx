@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
   return (
@@ -12,29 +11,6 @@ function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
     </svg>
   )
 }
-function MenuIcon({ className = 'h-5 w-5' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="4" y1="6" x2="20" y2="6" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="18" x2="20" y2="18" />
-    </svg>
-  )
-}
-function XIcon({ className = 'h-5 w-5' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 6 6 18M6 6l12 12" />
-    </svg>
-  )
-}
-
-const NAV_LINKS = [
-  { label: 'Explore',           href: '/destinations' },
-  { label: 'Visa Requirements', href: '/destinations' },
-  { label: 'Passport Strength', href: '/passport-strength' },
-  { label: '⚖️ Compare Visas',  href: '/compare' },
-  { label: '📋 Checklist',      href: '/checklist' },
-  { label: 'Guides',            href: '/blog' },
-]
 
 const CONTACT_CARDS = [
   {
@@ -57,27 +33,44 @@ const CONTACT_CARDS = [
   },
   {
     icon: '🐛',
-    title: 'Report an Issue',
-    desc: 'Found incorrect visa data or a bug on the site? Let us know.',
-    email: 'support@visitplane.com',
+    title: 'Report Wrong Data',
+    desc: 'Found incorrect visa information? Please tell us — it helps everyone.',
+    email: 'hello@visitplane.com',
   },
 ]
 
-export default function ContactPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
-  const [submitted, setSubmitted] = useState(false)
+// ── Formspree endpoint ─────────────────────────────────────────────────────
+// Replace meedvaee with the ID from formspree.io/forms after creating a
+// free form at https://formspree.io (email: hello@visitplane.com)
+const FORMSPREE_URL = 'https://formspree.io/f/meedvaee'
 
-  function handleSubmit(e: React.FormEvent) {
+export default function ContactPage() {
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // Opens mailto as a fallback (no backend needed)
-    const mailto = `mailto:hello@visitplane.com?subject=${encodeURIComponent(form.subject || 'Contact from VisitPlane')}&body=${encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`)}`
-    window.location.href = mailto
-    setSubmitted(true)
+    setStatus('sending')
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) {
+        setStatus('success')
+        setForm({ name: '', email: '', subject: '', message: '' })
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* HERO */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
+      {/* HERO */}
       <section className="relative pt-16 pb-12 overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,0.1),transparent_60%)]" />
@@ -88,13 +81,17 @@ export default function ContactPage() {
               💬 Get in Touch
             </div>
           </motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.08 }}
-            className="text-4xl font-extrabold tracking-tight sm:text-5xl text-[#0f0c29]">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.08 }}
+            className="text-4xl font-extrabold tracking-tight sm:text-5xl text-[#0f0c29]"
+          >
             Contact Us
           </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.16 }}
-            className="mt-4 max-w-xl mx-auto text-sm leading-relaxed text-gray-500">
-            Have a question, spotted incorrect visa data, or want to collaborate? We&apos;d love to hear from you. We typically respond within 2 business days.
+          <motion.p
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.16 }}
+            className="mt-4 max-w-xl mx-auto text-sm leading-relaxed text-gray-500"
+          >
+            Have a question, spotted incorrect visa data, or want to share feedback? We read every message and reply within 48 hours.
           </motion.p>
         </div>
       </section>
@@ -104,9 +101,12 @@ export default function ContactPage() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {CONTACT_CARDS.map((card, i) => (
-              <motion.a key={card.title} href={`mailto:${card.email}`}
+              <motion.a
+                key={card.title}
+                href={`mailto:${card.email}`}
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.5 }}
-                className="group rounded-2xl border border-gray-100 bg-white p-5 transition hover:border-teal-500/30 hover:bg-white">
+                className="group rounded-2xl border border-gray-100 bg-white p-5 transition hover:border-teal-500/30"
+              >
                 <div className="mb-3 text-2xl">{card.icon}</div>
                 <h3 className="mb-1 text-sm font-bold text-[#0f0c29]">{card.title}</h3>
                 <p className="mb-3 text-xs leading-relaxed text-gray-500">{card.desc}</p>
@@ -120,35 +120,38 @@ export default function ContactPage() {
       {/* CONTACT FORM */}
       <section className="pb-24">
         <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-            className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8">
-            <h2 className="mb-6 text-lg font-bold text-[#0f0c29]">Send a Message</h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+            className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8"
+          >
+            <h2 className="mb-2 text-lg font-bold text-[#0f0c29]">Send a Message</h2>
+            <p className="mb-6 text-xs text-gray-400">We reply within 48 hours. For wrong visa data, please include the passport country, destination, and a link to the official source if you have one.</p>
 
-            {submitted ? (
+            {status === 'success' ? (
               <div className="rounded-xl border border-teal-500/25 bg-teal-500/10 p-6 text-center">
                 <div className="mb-2 text-3xl">✅</div>
-                <p className="text-sm font-semibold text-teal-400">Opening your email client…</p>
-                <p className="mt-1 text-xs text-gray-500">If nothing opened, email us directly at hello@visitplane.com</p>
+                <p className="text-sm font-semibold text-teal-400">Message sent — thank you!</p>
+                <p className="mt-1 text-xs text-gray-500">We will reply to your email within 48 hours.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold text-gray-500">Your Name</label>
+                    <label className="mb-1.5 block text-xs font-semibold text-gray-500">Your Name *</label>
                     <input
                       type="text" required value={form.name}
                       onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                      className="w-full rounded-xl border border-gray-200 bg-white/5 px-4 py-2.5 text-sm text-[#0f0c29] placeholder-white/25 outline-none focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/30 transition"
-                      placeholder="John Smith"
+                      className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-[#0f0c29] placeholder-gray-300 outline-none focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/30 transition"
+                      placeholder="Your name"
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold text-gray-500">Email Address</label>
+                    <label className="mb-1.5 block text-xs font-semibold text-gray-500">Email Address *</label>
                     <input
                       type="email" required value={form.email}
                       onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                      className="w-full rounded-xl border border-gray-200 bg-white/5 px-4 py-2.5 text-sm text-[#0f0c29] placeholder-white/25 outline-none focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/30 transition"
-                      placeholder="john@example.com"
+                      className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-[#0f0c29] placeholder-gray-300 outline-none focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/30 transition"
+                      placeholder="you@example.com"
                     />
                   </div>
                 </div>
@@ -157,27 +160,36 @@ export default function ContactPage() {
                   <input
                     type="text" value={form.subject}
                     onChange={e => setForm(f => ({ ...f, subject: e.target.value }))}
-                    className="w-full rounded-xl border border-gray-200 bg-white/5 px-4 py-2.5 text-sm text-[#0f0c29] placeholder-white/25 outline-none focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/30 transition"
-                    placeholder="Question about visa requirements"
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-[#0f0c29] placeholder-gray-300 outline-none focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/30 transition"
+                    placeholder="e.g. Wrong visa info for Pakistan → Japan"
                   />
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-gray-500">Message</label>
+                  <label className="mb-1.5 block text-xs font-semibold text-gray-500">Message *</label>
                   <textarea
                     required rows={5} value={form.message}
                     onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
-                    className="w-full rounded-xl border border-gray-200 bg-white/5 px-4 py-2.5 text-sm text-[#0f0c29] placeholder-white/25 outline-none focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/30 transition resize-none"
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-[#0f0c29] placeholder-gray-300 outline-none focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/30 transition resize-none"
                     placeholder="Tell us what's on your mind…"
                   />
                 </div>
-                <button type="submit"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:-translate-y-px">
-                  Send Message <ArrowRight className="h-3.5 w-3.5" />
+
+                {status === 'error' && (
+                  <p className="text-xs text-rose-400">Something went wrong. Please email us directly at hello@visitplane.com</p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === 'sending'}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-teal-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:-translate-y-px disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {status === 'sending' ? 'Sending…' : <>Send Message <ArrowRight className="h-3.5 w-3.5" /></>}
                 </button>
               </form>
             )}
           </motion.div>
         </div>
-      </section></div>
+      </section>
+    </div>
   )
 }

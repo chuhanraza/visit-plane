@@ -287,8 +287,23 @@ async function scanPassportFree(imageFile: File): Promise<{
       .join(' ')
   }
 
-  const surname    = toTitleCase(fields.lastName || '')
-  const givenNames = toTitleCase((fields.firstName || '').replace(/<+/g, ' ').trim())
+  // A "name part" (substring between < characters) is OCR garbage if:
+  //   1. It contains any non-letter character, OR
+  //   2. It is 4+ chars long AND has only 1–2 unique letters
+  //      (e.g. "LLLLLL", "KKKKLLLL") — runs of Tesseract-misread filler
+  const isJunkNamePart = (part: string): boolean => {
+    if (!/^[A-Z]+$/.test(part)) return true
+    if (part.length >= 4 && new Set(part).size <= 2) return true
+    return false
+  }
+  const cleanNameSegment = (raw: string): string =>
+    raw
+      .split(/[\s<]+/)
+      .filter((p: string) => p.length > 0 && !isJunkNamePart(p))
+      .join(' ')
+
+  const surname    = toTitleCase(cleanNameSegment(fields.lastName || ''))
+  const givenNames = toTitleCase(cleanNameSegment(fields.firstName || ''))
   const fullName   = [givenNames, surname].filter(Boolean).join(' ')
 
   // Step 6: Format dates from YYMMDD → DD/MM/YYYY

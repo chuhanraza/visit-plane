@@ -5,19 +5,16 @@ const COLS = [
   {
     title: 'Explore',
     links: [
-      { label: 'Destinations',      href: '/destinations'    },
+      { label: 'Destinations',      href: '/destinations'     },
       { label: 'Visa Requirements', href: '/visa-requirements' },
-      { label: 'Travel Guides',     href: '/blog'            },
+      { label: 'Travel Guides',     href: '/blog'             },
     ],
   },
   {
     title: 'Resources',
     links: [
-      { label: 'Blog',               href: '/blog'              },
-      { label: 'Visa Calculator',    href: '/cost-calculator'   },
-      { label: 'Embassy Finder',     href: '/embassy-finder'    },
-      { label: 'Travel Insurance',   href: '/travel-insurance'  },
-      { label: 'FAQ',                href: '/faq'               },
+      { label: 'Blog', href: '/blog' },
+      { label: 'FAQ',  href: '/faq'  },
     ],
   },
   {
@@ -27,7 +24,6 @@ const COLS = [
       { label: 'Privacy Policy',   href: '/privacy' },
       { label: 'Terms of Service', href: '/terms'   },
       { label: 'Contact',          href: '/contact' },
-      { label: 'Advertise',        href: '/contact' },
     ],
   },
 ]

@@ -168,7 +168,6 @@ const CONTINENT_DESTINATIONS: Record<string, { name: string; flag: string; visa:
 
 const STATS = [
   { value: '197', label: 'Countries Covered', icon: '🌍' },
-  { value: '99.2%', label: 'Accuracy Rate', icon: '✅' },
   { value: '10,000+', label: 'Travelers Helped', icon: '✈️' },
   { value: '24/7', label: 'Support', icon: '🛟' },
 ]
@@ -584,7 +583,7 @@ export default function HomePage() {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-400 backdrop-blur-sm">
               <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-              Backed by official embassy sources, updated daily
+              Sourced from official embassy data. Always verify with the embassy before traveling.
               <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
             </div>
           </motion.div>

@@ -1,28 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 
 function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
-    </svg>
-  )
-}
-function MenuIcon({ className = 'h-5 w-5' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="4" y1="6" x2="20" y2="6" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="18" x2="20" y2="18" />
-    </svg>
-  )
-}
-function XIcon({ className = 'h-5 w-5' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 6 6 18M6 6l12 12" />
     </svg>
   )
 }
@@ -34,65 +19,63 @@ function ChevronDown({ className = 'h-4 w-4' }: { className?: string }) {
   )
 }
 
-const NAV_LINKS = [
-  { label: 'Explore',           href: '/destinations' },
-  { label: 'Visa Requirements', href: '/destinations' },
-  { label: 'Passport Strength', href: '/passport-strength' },
-  { label: '⚖️ Compare Visas',  href: '/compare' },
-  { label: '📋 Checklist',      href: '/checklist' },
-  { label: 'Guides',            href: '/blog' },
-]
-
 const FAQS = [
   {
-    q: 'What is a visa and when do I need one?',
-    a: `A visa is an official authorization — usually a stamp or sticker in your passport — that permits you to enter, stay in, or transit through a foreign country for a specific purpose (tourism, business, study, work) and time period. Whether you need one depends on your nationality and the destination country. Many countries have bilateral agreements that allow citizens to travel visa-free or obtain a visa on arrival. Use VisitPlane to instantly check whether you need a visa for any specific trip.`,
+    q: 'Is VisitPlane free?',
+    a: `Yes — completely. VisitPlane is free to use, no account required, no subscription, no hidden fees. You can check visa requirements for any passport–destination combination as many times as you want. We keep it free because we believe access to clear visa information should not cost anything.`,
   },
   {
-    q: 'What is the difference between visa-free, visa on arrival, and e-Visa?',
-    a: `Visa-free means you don't need any visa — you simply show your passport at immigration and are admitted for a set period (usually 30–90 days). Visa on Arrival (VOA) means you can obtain a visa when you arrive at the airport or border crossing — no pre-approval needed, but you may need to pay a fee and present certain documents. An e-Visa (electronic visa) must be applied for and approved online before you travel. It's linked to your passport digitally, so you don't receive a physical stamp but you must receive approval before departing.`,
+    q: 'How accurate is your visa data?',
+    a: `We work hard to keep our data accurate, cross-referencing official government websites, embassy sources, and immigration authority portals. That said, visa policies change frequently — sometimes with little notice — and we are a small team, not a government database. Always treat VisitPlane as a reliable starting point, then verify the final details with the official embassy or consulate of your destination country before you travel.`,
   },
   {
-    q: 'How far in advance should I apply for a visa?',
-    a: `It depends on the country and visa type. As a general rule, apply at least 4–8 weeks before your travel date. Some visas — such as US, UK, Canada, and Schengen visas — can take 4–12 weeks due to appointment availability and processing times. Some countries offer expedited processing for an additional fee. Always check the specific embassy or consulate website for current processing times, as these can change seasonally. Never book non-refundable flights before your visa is approved.`,
+    q: 'Do you process visa applications?',
+    a: `No. VisitPlane is an information tool — we tell you what visa you need, what documents are required, and what to expect. We do not submit applications, collect passport details, or act as a travel agency or visa agent. For the actual application, you go directly to the official embassy, consulate, or government e-visa portal of your destination country.`,
   },
   {
-    q: 'What is a Schengen visa and which countries accept it?',
-    a: `A Schengen visa allows travel across 27 European countries that are part of the Schengen Area — a zone where internal border checks have been abolished. These include Germany, France, Italy, Spain, Netherlands, Switzerland, Sweden, Norway, Portugal, Greece, Austria, Belgium, Denmark, Finland, Czech Republic, Hungary, Poland, and others. A single Schengen visa lets you move freely between all member states for up to 90 days within any 180-day period. Note that the UK and Ireland are not part of the Schengen Area and require separate visas.`,
+    q: 'How often is the data updated?',
+    a: `We update our database regularly as we become aware of policy changes. Major changes — like a country opening up visa-free access or introducing an e-visa — are updated as soon as we verify them from official sources. Smaller tweaks (fee adjustments, processing time changes) are reviewed periodically. We do not follow a fixed weekly or monthly release cycle because visa policy does not either.`,
   },
   {
-    q: 'My visa was denied — what can I do?',
-    a: `A visa denial is not the end. First, read the rejection letter carefully — it should state the reason for denial (incomplete documents, insufficient funds, lack of ties to home country, etc.). Address those specific issues before reapplying. You can often reapply after fixing the problems. In some cases, you may be able to appeal the decision. Consider using an immigration lawyer or consultant for complex cases. Each application is independent, so a previous denial doesn't automatically mean future rejections, but you must declare prior denials on most visa applications.`,
+    q: 'Where does your data come from?',
+    a: `Our primary sources are official government websites, embassy and consulate portals, and national immigration authority pages. We also monitor IATA Travel Centre announcements and official foreign ministry travel advisories. We do not rely on user-submitted data or travel forums as primary sources.`,
   },
   {
-    q: 'What documents are typically required for a tourist visa?',
-    a: `While requirements vary by country, most tourist visa applications require: a valid passport (usually with at least 6 months validity beyond your stay), completed visa application form, recent passport-sized photos, proof of accommodation (hotel bookings or invitation letter), proof of sufficient funds (bank statements), return flight itinerary, travel insurance, and proof of ties to your home country (employment letter, property ownership, family ties). Some countries also require a cover letter explaining your trip. Use VisitPlane's Document Checklist tool to get a specific list for your journey.`,
+    q: 'Can I trust this for my actual travel plans?',
+    a: `You can use VisitPlane to plan and understand your visa situation — that is exactly what it is built for. However, do not book non-refundable flights or make irrevocable commitments based solely on what you read here. Visa rules can change between when we update our database and when you travel. For any trip, double-check the current requirements on the official embassy website or contact the consulate directly. Think of us as the informed friend who gives you a solid overview — not the final legal authority.`,
   },
   {
-    q: 'What is passport validity and why does it matter for travel?',
-    a: `Many countries require your passport to be valid for at least 6 months beyond your intended stay — not just valid at the time of entry. For example, if you plan to visit a country on December 1st and stay for 2 weeks, your passport should be valid until at least June 1st of the following year. Airlines may also refuse to board you if your passport doesn't meet the destination country's validity requirements. Always check the specific requirements for your destination and renew your passport well in advance if needed.`,
+    q: 'Do I need to create an account?',
+    a: `No account, no sign-up, no email required. You open the site, select your passport country and destination, and get your results instantly. We deliberately built it this way — your travel plans are your own business.`,
   },
   {
-    q: 'Can I extend my visa while abroad?',
-    a: `Yes, many countries allow visa extensions, but the process varies. You typically need to apply at the local immigration authority before your current visa expires — don't wait until the last day. You'll usually need to provide valid reasons (medical emergency, flight cancellation, etc.) along with supporting documents. Some countries allow extensions for tourists who simply want to stay longer. Overstaying a visa without an approved extension can result in fines, deportation, and bans on future entry. Always check local immigration rules and apply for extensions with plenty of time to spare.`,
+    q: 'Can I get visa alerts for my route?',
+    a: `Not yet. Visa alerts — notifying you when requirements change for a specific passport–destination pair — are on our roadmap. If this would be useful to you, let us know via the contact page. For now, we recommend bookmarking the relevant page and rechecking it a few weeks before you travel.`,
   },
   {
-    q: 'What is a transit visa and when do I need one?',
-    a: `A transit visa is needed when you pass through a country's immigration/passport control — even if you're just connecting to another flight and not officially "entering" the country for tourism. Whether you need a transit visa depends on your passport nationality, the layover country, and whether you stay airside (in the international transit area without going through immigration) or landside (going through immigration). Some airports in the UK, France, Germany, and others require transit visas for certain nationalities even for short layovers. Always check transit requirements if you have a connecting flight.`,
+    q: 'What if I find wrong information?',
+    a: `Please tell us. Use the Contact page and describe the passport, destination, and what you believe is incorrect — ideally with a link to the official source. We take data accuracy seriously and will investigate and update as quickly as we can. Getting this right matters: bad visa data can mean missed flights and denied entry.`,
   },
   {
-    q: 'Is the visa information on VisitPlane 100% accurate and up to date?',
-    a: `We work hard to keep our information accurate and regularly update our database from official government sources, embassy websites, and immigration authorities. However, visa policies change frequently — sometimes without much notice — and we cannot guarantee that every piece of information is current at the exact moment you check it. VisitPlane should be used as a starting point for your research, not as the final word. Before you travel, always verify requirements with the official embassy or consulate of your destination country. VisitPlane is not responsible for any travel disruptions arising from outdated information.`,
+    q: 'How can I support VisitPlane?',
+    a: `The best way to support us is to share the site with other travelers who would find it useful. If you spot wrong data and report it, that directly improves the product for everyone. We are a small independent tool with no investor funding — we run on word of mouth. If you would like to contribute in other ways, reach out via the Contact page.`,
   },
 ]
 
 function FAQItem({ faq, index }: { faq: { q: string; a: string }; index: number }) {
   const [open, setOpen] = useState(false)
   return (
-    <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.05, duration: 0.5 }}
-      className="rounded-2xl border border-gray-100 bg-white overflow-hidden">
-      <button onClick={() => setOpen(!open)}
-        className="flex w-full items-start justify-between gap-4 p-5 text-left transition hover:bg-white/3">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.05, duration: 0.5 }}
+      className="rounded-2xl border border-gray-100 bg-white overflow-hidden"
+    >
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-start justify-between gap-4 p-5 text-left transition hover:bg-gray-50"
+      >
         <span className="text-sm font-semibold text-[#0f0c29] leading-snug">{faq.q}</span>
         <span className={`mt-0.5 shrink-0 text-teal-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}>
           <ChevronDown className="h-4 w-4" />
@@ -100,8 +83,13 @@ function FAQItem({ faq, index }: { faq: { q: string; a: string }; index: number 
       </button>
       <AnimatePresence initial={false}>
         {open && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }}
-            className="overflow-hidden">
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden"
+          >
             <p className="px-5 pb-5 text-sm leading-relaxed text-gray-500">{faq.a}</p>
           </motion.div>
         )}
@@ -111,10 +99,9 @@ function FAQItem({ faq, index }: { faq: { q: string; a: string }; index: number 
 }
 
 export default function FAQPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* HERO */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
+      {/* HERO */}
       <section className="relative pt-16 pb-12 overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,0.1),transparent_60%)]" />
@@ -125,13 +112,17 @@ export default function FAQPage() {
               ❓ Frequently Asked Questions
             </div>
           </motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.08 }}
-            className="text-4xl font-extrabold tracking-tight sm:text-5xl text-[#0f0c29]">
-            Visa FAQ
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.08 }}
+            className="text-4xl font-extrabold tracking-tight sm:text-5xl text-[#0f0c29]"
+          >
+            FAQ
           </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.16 }}
-            className="mt-4 max-w-xl mx-auto text-sm leading-relaxed text-gray-500">
-            Everything you need to know about visas, travel documents, and international entry requirements — answered clearly and concisely.
+          <motion.p
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.16 }}
+            className="mt-4 max-w-xl mx-auto text-sm leading-relaxed text-gray-500"
+          >
+            Real answers about how VisitPlane works, where our data comes from, and what we can — and cannot — do for you.
           </motion.p>
         </div>
       </section>
@@ -143,20 +134,25 @@ export default function FAQPage() {
             <FAQItem key={faq.q} faq={faq} index={i} />
           ))}
 
-          <div className="rounded-2xl border border-teal-500/20 bg-teal-500/8 p-6 text-center">
+          <div className="rounded-2xl border border-teal-500/20 bg-teal-500/[0.08] p-6 text-center">
             <p className="text-sm text-gray-500">
-              Still have questions?{' '}
-              <Link href="/contact" className="font-semibold text-teal-400 hover:text-teal-300 transition">Contact us</Link>
-              {' '}and we&apos;ll get back to you within 2 business days.
+              Still have a question?{' '}
+              <Link href="/contact" className="font-semibold text-teal-400 hover:text-teal-300 transition">
+                Contact us
+              </Link>
+              {' '}— we reply within 48 hours.
             </p>
             <div className="mt-4">
-              <Link href="/destinations"
-                className="inline-flex items-center gap-2 rounded-full bg-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:-translate-y-px">
+              <Link
+                href="/destinations"
+                className="inline-flex items-center gap-2 rounded-full bg-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:-translate-y-px"
+              >
                 Check Visa Requirements <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </div>
         </div>
-      </section></div>
+      </section>
+    </div>
   )
 }
