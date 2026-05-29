@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react'
 import Link from 'next/link'
+import PostLookupModal from '@/components/PostLookupModal'
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 export type VisaRecord = {
@@ -992,6 +993,9 @@ export default function VisaPageClient({
           </div>{/* end cards column */}
         </div>{/* end flex */}
       </div>
+
+      {/* ── Capture Point 1 — Post-Lookup Modal ──────────────────────────────── */}
+      <PostLookupModal passport={passportName} destination={destinationName} />
     </div>
   )
 }

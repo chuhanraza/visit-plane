@@ -4,6 +4,7 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import SharedNavbar from "@/components/SharedNavbar";
+import ExitIntentModal from "@/components/ExitIntentModal";
 import SharedFooter from "@/components/SharedFooter";
 import "./globals.css";
 
@@ -188,6 +189,8 @@ export default async function RootLayout({
           <SharedFooter />
         </NextIntlClientProvider>
         <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
+        {/* Capture Point 3 — Exit Intent Modal (desktop only) */}
+        <ExitIntentModal />
       </body>
     </html>
   );

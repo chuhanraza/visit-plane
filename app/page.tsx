@@ -504,6 +504,7 @@ export default function HomePage() {
   const [geoApplied, setGeoApplied] = useState(false)
   const [emailInput, setEmailInput] = useState('')
   const [emailStatus, setEmailStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [emailConsent, setEmailConsent] = useState(true)
 
   const { countryName, countryCode, loading: geoLoading } = useUserCountry()
 
@@ -545,13 +546,21 @@ export default function HomePage() {
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!emailInput || !emailInput.includes('@')) return
+    if (!emailInput || !emailInput.includes('@') || !emailConsent) return
     setEmailStatus('loading')
     try {
-      const { error } = await getSupabase()
-        .from('waitlist')
-        .insert([{ email: emailInput.trim().toLowerCase() }])
-      if (error && error.code !== '23505') throw error // 23505 = duplicate
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: emailInput.trim().toLowerCase(),
+          passport: passport || null,
+          destination: destination || null,
+          captured_from: 'hero',
+          consent: emailConsent,
+        }),
+      })
+      if (!res.ok) throw new Error('non-ok')
       setEmailStatus('success')
       setEmailInput('')
     } catch {
@@ -714,22 +723,33 @@ export default function HomePage() {
                 ✓ You&apos;re on the list! We&apos;ll alert you when visa rules change.
               </div>
             ) : (
-              <form onSubmit={handleEmailSubmit} className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <input
-                  type="email"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="your@email.com"
-                  required
-                  className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none focus:border-teal-400 focus:bg-white transition placeholder-gray-400"
-                />
-                <button
-                  type="submit"
-                  disabled={emailStatus === 'loading'}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-500 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-600 disabled:opacity-60 transition whitespace-nowrap"
-                >
-                  {emailStatus === 'loading' ? 'Saving…' : 'Get Free Alerts →'}
-                </button>
+              <form onSubmit={handleEmailSubmit} className="mt-5 flex flex-col gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <input
+                    type="email"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    placeholder="your@email.com"
+                    required
+                    className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none focus:border-teal-400 focus:bg-white transition placeholder-gray-400"
+                  />
+                  <button
+                    type="submit"
+                    disabled={emailStatus === 'loading' || !emailConsent}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-500 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-600 disabled:opacity-60 transition whitespace-nowrap"
+                  >
+                    {emailStatus === 'loading' ? 'Saving…' : 'Get Free Alerts →'}
+                  </button>
+                </div>
+                <label className="flex cursor-pointer items-start gap-2 text-xs text-gray-500">
+                  <input
+                    type="checkbox"
+                    checked={emailConsent}
+                    onChange={(e) => setEmailConsent(e.target.checked)}
+                    className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-teal-500"
+                  />
+                  I agree to receive email alerts about visa rule changes. Unsubscribe anytime.
+                </label>
               </form>
             )}
             {emailStatus === 'error' && (
