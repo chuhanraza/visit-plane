@@ -82,7 +82,7 @@ const POPULAR_DESTINATIONS = [
   },
   {
     slug: 'Singapore', name: 'Singapore', flag: '🇸🇬',
-    visa: 'Visa Free', visaColor: 'emerald',
+    visa: 'Visa Required', visaColor: 'rose',
     photo: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=600&q=80',
     tagline: 'The Lion City',
   },
@@ -94,24 +94,29 @@ const POPULAR_DESTINATIONS = [
   },
 ]
 
+// ── Verified 2026-05-28 for Pakistani passport holders ──
+// Only includes destinations with free visa on arrival or visa-free entry.
+// Removed: Thailand (eVisa required since Jan 2025), Malaysia (eVisa required),
+//          Sri Lanka (ETA required since Oct 2025).
+// Added: China (visa-free until Dec 31 2026 per bilateral agreement).
 const NO_VISA_DESTINATIONS = [
   { name: 'Maldives', flag: '🇲🇻', photo: 'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=400&q=80', days: '30 days' },
-  { name: 'Thailand', flag: '🇹🇭', photo: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=80', days: '30 days' },
-  { name: 'Malaysia', flag: '🇲🇾', photo: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=400&q=80', days: '30 days' },
-  { name: 'Nepal', flag: '🇳🇵', photo: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400&q=80', days: '90 days' },
-  { name: 'Sri Lanka', flag: '🇱🇰', photo: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80', days: '30 days' },
+  { name: 'Nepal', flag: '🇳🇵', photo: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400&q=80', days: '30 days' },
+  { name: 'China', flag: '🇨🇳', photo: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=400&q=80', days: '30 days' },
   { name: 'Cambodia', flag: '🇰🇭', photo: 'https://images.unsplash.com/photo-1508159452718-d22f6734a236?w=400&q=80', days: '30 days' },
+  { name: 'Senegal', flag: '🇸🇳', photo: 'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?w=400&q=80', days: '90 days' },
+  { name: 'Rwanda', flag: '🇷🇼', photo: 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&q=80', days: '30 days' },
 ]
 
 const CONTINENT_DESTINATIONS: Record<string, { name: string; flag: string; visa: string }[]> = {
   'Asia': [
     { name: 'Japan', flag: '🇯🇵', visa: 'Visa Required' },
     { name: 'South Korea', flag: '🇰🇷', visa: 'Visa Required' },
-    { name: 'Thailand', flag: '🇹🇭', visa: 'Visa Free' },
+    { name: 'Thailand', flag: '🇹🇭', visa: 'eVisa' },
     { name: 'Vietnam', flag: '🇻🇳', visa: 'eVisa' },
-    { name: 'Indonesia', flag: '🇮🇩', visa: 'Visa Free' },
+    { name: 'Indonesia', flag: '🇮🇩', visa: 'eVisa' },
     { name: 'India', flag: '🇮🇳', visa: 'eVisa' },
-    { name: 'Singapore', flag: '🇸🇬', visa: 'Visa Free' },
+    { name: 'Singapore', flag: '🇸🇬', visa: 'Visa Required' },
     { name: 'Malaysia', flag: '🇲🇾', visa: 'Visa Free' },
   ],
   'Europe': [
@@ -136,8 +141,8 @@ const CONTINENT_DESTINATIONS: Record<string, { name: string; flag: string; visa:
   ],
   'Middle East': [
     { name: 'UAE', flag: '🇦🇪', visa: 'eVisa' },
-    { name: 'Saudi Arabia', flag: '🇸🇦', visa: 'eVisa' },
-    { name: 'Qatar', flag: '🇶🇦', visa: 'Visa Free' },
+    { name: 'Saudi Arabia', flag: '🇸🇦', visa: 'Visa Required' },
+    { name: 'Qatar', flag: '🇶🇦', visa: 'eVisa' },
     { name: 'Oman', flag: '🇴🇲', visa: 'eVisa' },
     { name: 'Jordan', flag: '🇯🇴', visa: 'Visa on Arrival' },
     { name: 'Bahrain', flag: '🇧🇭', visa: 'eVisa' },

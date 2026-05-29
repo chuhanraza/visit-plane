@@ -21,6 +21,7 @@ export type VisaRecord = {
   apply_url?: string
   application_url?: string
   visa_required?: boolean | string | null
+  last_verified?: string | null
   [key: string]: unknown
 }
 
@@ -759,10 +760,12 @@ export default function VisaPageClient({
                 <div>
                   <h2 className="text-2xl font-bold text-[#1F2937] sm:text-3xl">{visaName}</h2>
                   <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                    {/* Verified badge */}
+                    {/* Last verified badge — shows date from DB if available */}
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-[#D1FAE5] px-3 py-1 text-xs font-semibold text-[#10B981]">
                       <CheckIcon className="h-3.5 w-3.5" />
-                      Data verified
+                      {selectedVisa?.last_verified
+                        ? `Last verified: ${new Date(selectedVisa.last_verified).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                        : 'Data verified'}
                     </span>
                     {/* FIX 1: Smart color-coded visa badge */}
                     <VisaBadge visaType={visaName} size="sm" />
