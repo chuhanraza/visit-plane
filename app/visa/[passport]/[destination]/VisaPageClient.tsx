@@ -204,11 +204,11 @@ function parseDocuments(r: VisaRecord): { docs: string[]; note: string } {
     }
   }
 
-  // If database has its own list, use it
-  if (r.required_documents) {
+  // If database has its own list, use it (supports both required_documents and required_docs field names)
+  const rawDocs = r.required_documents ?? (r as Record<string, unknown>).required_docs
+  if (rawDocs) {
     try {
-      const raw = r.required_documents
-      const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw
+      const parsed = typeof rawDocs === 'string' ? JSON.parse(rawDocs) : rawDocs
       if (Array.isArray(parsed) && parsed.length > 0) {
         return { docs: parsed as string[], note: '' }
       }
