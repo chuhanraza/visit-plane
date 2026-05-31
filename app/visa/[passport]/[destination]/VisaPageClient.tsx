@@ -873,12 +873,17 @@ export default function VisaPageClient({
               </div>
 
               {/* AI Document Checker CTA */}
-              <button
-                onClick={() => setShowChecker(true)}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#14B8A6]/50 bg-[#14B8A6]/5 px-6 py-3.5 text-sm font-semibold text-[#14B8A6] transition hover:border-[#14B8A6] hover:bg-[#14B8A6]/10"
-              >
-                🤖 Check My Documents with AI
-              </button>
+              <div className="relative mt-4">
+                <div className="absolute -inset-0.5 animate-pulse rounded-2xl bg-gradient-to-r from-[#14B8A6] to-[#6366F1] opacity-60 blur-sm" />
+                <button
+                  onClick={() => setShowChecker(true)}
+                  className="relative flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#14B8A6] to-[#6366F1] px-6 py-4 text-sm font-bold text-white shadow-lg transition hover:from-[#0d9488] hover:to-[#4F46E5] hover:shadow-xl active:scale-95"
+                >
+                  <span className="text-lg">🤖</span>
+                  <span>Check My Documents with AI</span>
+                  <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold tracking-wide">FREE</span>
+                </button>
+              </div>
             </div>
 
             {/* ─ Card 3: Why VisitPlane ─────────────────────────────────────── */}
