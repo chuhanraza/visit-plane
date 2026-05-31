@@ -879,7 +879,6 @@ export default function VisaPageClient({
               >
                 🤖 Check My Documents with AI
               </button>
-              </div>
             </div>
 
             {/* ─ Card 3: Why VisitPlane ─────────────────────────────────────── */}
