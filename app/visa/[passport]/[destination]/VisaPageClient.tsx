@@ -2,7 +2,13 @@
 
 import { useState, useMemo, useCallback } from 'react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import PostLookupModal from '@/components/PostLookupModal'
+
+const DocumentChecker = dynamic(
+  () => import('@/app/components/DocumentChecker'),
+  { ssr: false }
+)
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 export type VisaRecord = {
@@ -471,6 +477,8 @@ export default function VisaPageClient({
   destinationFlag,
 }: Props) {
 
+  const [showChecker, setShowChecker] = useState(false)
+
   // Categorise records
   const tourismVisas = useMemo(
     () => allVisaData.filter(r => categorizeVisa(getVisaName(r)) === 'tourism'),
@@ -863,6 +871,15 @@ export default function VisaPageClient({
                   Download PDF
                 </button>
               </div>
+
+              {/* AI Document Checker CTA */}
+              <button
+                onClick={() => setShowChecker(true)}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#14B8A6]/50 bg-[#14B8A6]/5 px-6 py-3.5 text-sm font-semibold text-[#14B8A6] transition hover:border-[#14B8A6] hover:bg-[#14B8A6]/10"
+              >
+                🤖 Check My Documents with AI
+              </button>
+              </div>
             </div>
 
             {/* ─ Card 3: Why VisitPlane ─────────────────────────────────────── */}
@@ -996,6 +1013,14 @@ export default function VisaPageClient({
 
       {/* ── Capture Point 1 — Post-Lookup Modal ──────────────────────────────── */}
       <PostLookupModal passport={passportName} destination={destinationName} />
+
+      {showChecker && (
+        <DocumentChecker
+          country={destinationName.toLowerCase()}
+          countryLabel={destinationName}
+          onClose={() => setShowChecker(false)}
+        />
+      )}
     </div>
   )
 }
