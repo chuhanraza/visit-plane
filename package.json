@@ -18,7 +18,7 @@
     "@anthropic-ai/sdk": "^0.39.0",
     "@google/generative-ai": "^0.24.0",
     "jspdf": "^2.5.2",
-    "jspdf-autotable": "^3.8.5",
+    "jspdf-autotable": "^3.8.3",
     "react-dropzone": "^14.3.8",
     "mrz": "^5.0.2",
     "multer": "^2.1.1",
