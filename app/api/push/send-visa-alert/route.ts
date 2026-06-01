@@ -14,13 +14,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import webPush from 'web-push';
 import { createClient } from '@supabase/supabase-js';
 
-// ⚠️ WARNING: VAPID keys from env only — never hardcode
-webPush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
-  process.env.VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -29,6 +22,13 @@ function getSupabase() {
 }
 
 export async function POST(req: NextRequest) {
+  // Init VAPID inside handler so env vars are available at runtime, not build time
+  webPush.setVapidDetails(
+    process.env.VAPID_EMAIL!,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+  );
+
   // ⚠️ Auth check — reject requests without the admin secret
   if (req.headers.get('x-admin-secret') !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

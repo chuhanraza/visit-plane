@@ -15,8 +15,7 @@ try {
     swSrc:           'src/service-worker.js',    // Your Workbox source (Deliverable 2)
     swDest:          'public/sw.js',             // Output — committed to public/
     injectionPoint:  'self.__WB_MANIFEST',       // Matches service-worker.js
-    disable:         process.env.NODE_ENV === 'development' &&
-                     process.env.NEXT_PUBLIC_ENABLE_SW !== 'true',
+    disable:         true, // Turbopack (Next 16 default) breaks Serwist — sw.js served as static file
     globPatterns: [
       '_next/static/**/*.{js,css}',
       '_next/static/media/**/*.{woff,woff2}',
