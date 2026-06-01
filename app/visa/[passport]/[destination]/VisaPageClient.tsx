@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import PostLookupModal from '@/components/PostLookupModal'
+import { getOfficialSources, type OfficialSource } from '@/data/officialSources'
 
 const DocumentChecker = dynamic(
   () => import('@/app/components/DocumentChecker'),
@@ -29,6 +30,9 @@ export type VisaRecord = {
   application_url?: string
   visa_required?: boolean | string | null
   last_verified?: string | null
+  // Official sources — populated via DB migration or static data/officialSources.ts
+  official_sources?: OfficialSource[]
+  source_status?: 'verified' | 'pending_verification' | 'unverified'
   [key: string]: unknown
 }
 
@@ -96,32 +100,31 @@ function VisaBadge({ visaType, size = 'sm' }: { visaType: string; size?: 'xs' | 
 }
 
 // ─── FIX 2: Smart fee display ────────────────────────────────────────────────
-function getSmartFee(r: VisaRecord, destinationName: string): { display: string; color: string; showLink: boolean; searchQuery: string } {
+function getSmartFee(r: VisaRecord, _destinationName: string): { display: string; color: string; showLink: false } {
   const visaName = getVisaName(r)
   const raw = (r.price ?? r.fee ?? r.cost ?? '').toString().trim()
 
   // Visa free → always FREE
   if (/free/i.test(visaName) || /no visa/i.test(visaName)) {
-    return { display: '✓ FREE', color: 'text-green-600', showLink: false, searchQuery: '' }
+    return { display: '✓ FREE', color: 'text-green-600', showLink: false }
   }
 
   // Explicit free fee values
   if (/^free$/i.test(raw) || raw === '$0' || raw === '0') {
-    return { display: '✓ FREE', color: 'text-green-600', showLink: false, searchQuery: '' }
+    return { display: '✓ FREE', color: 'text-green-600', showLink: false }
   }
 
   // Has a real fee value
   if (raw && !/contact embassy/i.test(raw) && !/n\/a/i.test(raw)) {
     const prefixed = /^\$/.test(raw) ? raw : `$${raw}`
-    return { display: `💰 ${prefixed}`, color: 'text-teal-600', showLink: false, searchQuery: '' }
+    return { display: `💰 ${prefixed}`, color: 'text-teal-600', showLink: false }
   }
 
-  // Unknown / contact embassy
+  // Unknown / contact embassy — show neutral text, no Google link
   return {
-    display: 'Check official source',
+    display: 'See official source',
     color: 'text-gray-500',
-    showLink: true,
-    searchQuery: `${destinationName} ${visaName} visa fee official`,
+    showLink: false,
   }
 }
 
@@ -456,6 +459,94 @@ const RELATED_DESTINATIONS = [
   { name: 'Malaysia',       flag: '🇲🇾' },
 ]
 
+// ─── OfficialSources component ───────────────────────────────────────────────────
+const SOURCE_TYPE_ICON: Record<string, string> = {
+  mofa:         '🏛️',
+  embassy:      '🏛️',
+  evisa_portal: '🌐',
+  iata:         '✈️',
+  other:        '📋',
+}
+
+function OfficialSourcesCard({
+  passportName,
+  destinationName,
+}: {
+  passportName: string
+  destinationName: string
+}) {
+  const { sources, source_status } = getOfficialSources(passportName, destinationName)
+
+  if (source_status === 'pending_verification' || sources.length === 0) {
+    return (
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm sm:p-8">
+        <div className="flex items-start gap-3">
+          <span className="text-2xl">🟡</span>
+          <div>
+            <h3 className="text-lg font-bold text-[#1F2937]">Official Sources</h3>
+            <p className="mt-2 text-sm leading-relaxed text-amber-800">
+              We&apos;re currently verifying official government sources for this route.
+              Please confirm all requirements directly with the official embassy of{' '}
+              <strong>{destinationName}</strong> before booking travel.
+            </p>
+            <p className="mt-3 text-xs text-amber-700">
+              ⚠️ Information shown is for guidance only. Do not rely solely on this page for travel decisions.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="rounded-2xl border border-[#E5E7EB] bg-gradient-to-br from-[#F0FDFA] to-white p-6 shadow-sm sm:p-8">
+      <div className="flex items-start gap-3">
+        <span className="text-2xl">📚</span>
+        <div>
+          <h3 className="text-lg font-bold text-[#1F2937]">Official Sources</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Always confirm requirements directly with official government sources before applying.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 divide-y divide-[#E5E7EB] rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
+        {sources.map((src, i) => (
+          <a
+            key={i}
+            href={src.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-start gap-3 px-5 py-4 transition hover:bg-[#F0FDFA] group"
+          >
+            <span className="mt-0.5 shrink-0 text-lg">{SOURCE_TYPE_ICON[src.type] ?? '📋'}</span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-[#1F2937] group-hover:text-[#14B8A6] leading-snug">
+                {src.label}
+              </p>
+              <p className="mt-0.5 truncate text-xs text-gray-400">{src.url}</p>
+            </div>
+            <div className="shrink-0 text-right">
+              <p className="text-[10px] text-gray-400 whitespace-nowrap">
+                Verified {src.verified_at}
+              </p>
+              {src.is_authoritative && (
+                <span className="mt-1 inline-block rounded-full bg-green-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-green-700">
+                  Authoritative
+                </span>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <p className="mt-4 text-center text-xs text-gray-400">
+        ⚠️ Information shown is for guidance only. Always verify with the official embassy before booking travel.
+      </p>
+    </div>
+  )
+}
+
 // ─── Props ───────────────────────────────────────────────────────────────────────
 interface Props {
   allVisaData: VisaRecord[]
@@ -619,16 +710,6 @@ export default function VisaPageClient({
               <div className="flex flex-col items-center gap-0.5 px-4 py-4 text-center">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">💰 Fee</span>
                 <span className={`mt-0.5 text-sm font-bold ${smartFee.color}`}>{smartFee.display}</span>
-                {smartFee.showLink && (
-                  <a
-                    href={`https://www.google.com/search?q=${encodeURIComponent(smartFee.searchQuery)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-0.5 text-[10px] text-teal-500 underline hover:text-teal-700"
-                  >
-                    🔗 Official source
-                  </a>
-                )}
               </div>
               {/* Validity */}
               <div className="flex flex-col items-center gap-0.5 px-4 py-4 text-center">
@@ -698,18 +779,13 @@ export default function VisaPageClient({
                   })
                 ) : (
                   // FIX 8: Better empty state
-                  <div className="rounded-xl border border-dashed border-gray-200 px-3 py-4 text-center">
-                    <p className="text-xs text-gray-400 italic">
-                      No Tourism visa data available yet for this route.
+                  <div className="rounded-xl border border-dashed border-amber-200 bg-amber-50 px-3 py-4 text-center">
+                    <p className="text-xs text-amber-700 italic">
+                      No Tourism visa data yet for this route.
                     </p>
-                    <a
-                      href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' tourist visa requirements')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 block text-[11px] text-teal-500 underline hover:text-teal-700"
-                    >
-                      Check official embassy
-                    </a>
+                    <p className="mt-1 text-[11px] text-amber-600">
+                      🟡 See Official Sources below
+                    </p>
                   </div>
                 )}
               </div>
@@ -742,18 +818,13 @@ export default function VisaPageClient({
                   })
                 ) : (
                   // FIX 8: Better empty state
-                  <div className="rounded-xl border border-dashed border-gray-200 px-3 py-4 text-center">
-                    <p className="text-xs text-gray-400 italic">
-                      No Work visa data available yet for this route.
+                  <div className="rounded-xl border border-dashed border-amber-200 bg-amber-50 px-3 py-4 text-center">
+                    <p className="text-xs text-amber-700 italic">
+                      No Work visa data yet for this route.
                     </p>
-                    <a
-                      href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' work visa requirements')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 block text-[11px] text-teal-500 underline hover:text-teal-700"
-                    >
-                      Check official embassy
-                    </a>
+                    <p className="mt-1 text-[11px] text-amber-600">
+                      🟡 See Official Sources below
+                    </p>
                   </div>
                 )}
               </div>
@@ -795,16 +866,6 @@ export default function VisaPageClient({
                   <span className="text-[#14B8A6]"><DollarIcon /></span>
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Visa Fee</p>
                   <p className={`text-sm font-bold ${smartFee.color}`}>{smartFee.display}</p>
-                  {smartFee.showLink && (
-                    <a
-                      href={`https://www.google.com/search?q=${encodeURIComponent(smartFee.searchQuery)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[10px] text-teal-500 underline hover:text-teal-700"
-                    >
-                      🔗 Embassy site
-                    </a>
-                  )}
                 </div>
                 {/* Validity */}
                 <div className="flex flex-col items-center gap-1.5 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-4 text-center">
@@ -854,15 +915,15 @@ export default function VisaPageClient({
 
               {/* Action buttons */}
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' embassy official visa application')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => {
+                    document.getElementById('official-sources-card')?.scrollIntoView({ behavior: 'smooth' })
+                  }}
                   className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#14B8A6] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0d9488] hover:shadow-md"
                 >
-                  Check Official Embassy Website
+                  View Official Sources
                   <ArrowRightIcon className="h-4 w-4" />
-                </a>
+                </button>
                 <button
                   onClick={handleDownloadPDF}
                   className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-[#14B8A6] px-6 py-3.5 text-sm font-semibold text-[#14B8A6] transition hover:bg-[#14B8A6]/5"
@@ -952,41 +1013,12 @@ export default function VisaPageClient({
               </div>
             </div>
 
-            {/* ─ FIX 7: Official Embassy Links card ────────────────────────── */}
-            <div className="rounded-2xl border border-[#E5E7EB] bg-gradient-to-br from-[#F0FDFA] to-white p-6 shadow-sm sm:p-8">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">📋</span>
-                <div>
-                  <h3 className="text-lg font-bold text-[#1F2937]">Official Sources</h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Verify with Official Sources — always confirm requirements directly with the official embassy before applying.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' embassy official website')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#14B8A6] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0d9488]"
-                >
-                  🌐 Official Embassy Website
-                  <ArrowRightIcon className="h-4 w-4" />
-                </a>
-                <a
-                  href={`https://www.google.com/search?q=${encodeURIComponent(destinationName + ' embassy in ' + passportName)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-[#14B8A6] px-5 py-3 text-sm font-semibold text-[#14B8A6] transition hover:bg-[#14B8A6]/5"
-                >
-                  🔍 Search Embassy Near Me
-                </a>
-              </div>
-
-              <p className="mt-4 text-center text-xs text-gray-400">
-                ⚠️ Information shown is for guidance only. Always verify with the official embassy before booking travel.
-              </p>
+            {/* ─ Official Sources card ──────────────────────────────────────── */}
+            <div id="official-sources-card">
+              <OfficialSourcesCard
+                passportName={passportName}
+                destinationName={destinationName}
+              />
             </div>
 
             {/* ─ Also check ─────────────────────────────────────────────────── */}
