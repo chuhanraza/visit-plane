@@ -128,6 +128,17 @@ export default async function BlogPostPage({
   const caption = getDestinationCaption(slug)
   const catColor = CATEGORY_COLORS[post.category] ?? { bg: '#0d9488', text: '#fff' }
 
+  // FAQPage JSON-LD schema (only when post has faqs)
+  const faqSchema = post.faqs && post.faqs.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: post.faqs.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  } : null
+
   // Article JSON-LD schema
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -145,11 +156,23 @@ export default async function BlogPostPage({
   return (
     <div className="min-h-screen bg-white text-[#1A1A1A] antialiased">
 
-      {/* JSON-LD */}
+      {/* JSON-LD: Article schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
+
+      {/* JSON-LD: FAQPage schema (when faqs present — enables Google rich results) */}
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+
+      {/* Preload hero image — critical for LCP score */}
+      {/* eslint-disable-next-line @next/next/no-head-element */}
+      <link rel="preload" as="image" href={heroImg} fetchPriority="high" />
 
       {/* Reading progress bar — teal, fixed at very top */}
       <ReadingProgressBar />
@@ -162,10 +185,16 @@ export default async function BlogPostPage({
         className="relative overflow-hidden"
         style={{ height: '70vh', minHeight: '480px', maxHeight: '780px' }}
       >
-        {/* Country photo */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroImg})` }}
+        {/* Country photo — LCP element, loaded eagerly */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={heroImg}
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ pointerEvents: 'none' }}
         />
         {/* Multi-stop gradient — dark at top-left and bottom, lighter in centre */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/25" />
@@ -316,7 +345,63 @@ export default async function BlogPostPage({
               </Link>
             </div>
 
-            {/* Social share (mobile — inline below CTA) */}
+            {/* ── INTERNAL VISA LINKS ───────────────────────────────────── */}
+            <div className="mt-12 rounded-2xl border border-[#10B981]/20 bg-[#F0FDF9] p-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#059669] mb-3">
+                📋 Check Visa Requirements
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href={post.visaLink}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#10B981] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#059669] transition"
+                >
+                  {post.passportCountry} → {post.destinationCountry} Requirements →
+                </Link>
+                <Link
+                  href={`/visa-free-countries-for-${post.passportCountry.toLowerCase().replace(/\s+/g, '-')}-passport`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#10B981] px-4 py-2 text-sm font-semibold text-[#10B981] hover:bg-[#10B981]/10 transition"
+                >
+                  All Visa-Free for {post.passportCountry} →
+                </Link>
+                <Link
+                  href={`/visa-requirements-for-${post.passportCountry.toLowerCase().replace(/\s+/g, '-')}-citizens`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-600 hover:border-[#10B981]/40 transition"
+                >
+                  Full Requirements Matrix →
+                </Link>
+                <Link
+                  href="/checklist"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-600 hover:border-[#10B981]/40 transition"
+                >
+                  Document Checklist →
+                </Link>
+              </div>
+            </div>
+
+            {/* ── FAQ SECTION ───────────────────────────────────────────────── */}
+            {post.faqs && post.faqs.length > 0 && (
+              <div className="mt-14">
+                <h2 className="text-2xl font-bold text-[#1A1A1A] mb-6">Frequently Asked Questions</h2>
+                <div className="space-y-3">
+                  {post.faqs.map(({ q, a }) => (
+                    <details
+                      key={q}
+                      className="group rounded-xl border border-gray-200 bg-white open:shadow-sm transition-shadow"
+                    >
+                      <summary className="flex cursor-pointer items-start justify-between gap-4 px-5 py-4">
+                        <span className="font-semibold text-[#1A1A1A] text-sm leading-snug">{q}</span>
+                        <span className="mt-0.5 shrink-0 text-gray-400 group-open:rotate-180 transition-transform">▾</span>
+                      </summary>
+                      <p className="px-5 pb-5 text-sm text-gray-500 leading-relaxed border-t border-gray-100 pt-3">
+                        {a}
+                      </p>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Social share (mobile — inline below FAQ) */}
             <SocialShare title={post.title} slug={slug} />
 
           </article>

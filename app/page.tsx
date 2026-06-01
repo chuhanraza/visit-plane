@@ -9,6 +9,7 @@ import { motion, useInView, AnimatePresence, type Variants } from 'framer-motion
 import { useUserCountry } from '@/hooks/useUserCountry'
 import { useTranslations } from 'next-intl'
 import CountrySelect from '@/components/CountrySelect'
+import InstallButton from '@/components/InstallButton'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -700,6 +701,16 @@ export default function HomePage() {
                 </button>
               ))}
             </div>
+          </motion.div>
+
+          {/* PWA Install CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-6 flex justify-center"
+          >
+            <InstallButton />
           </motion.div>
         </div>
 

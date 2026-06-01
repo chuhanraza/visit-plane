@@ -6,16 +6,19 @@ import { getLocale, getMessages } from "next-intl/server";
 import SharedNavbar from "@/components/SharedNavbar";
 import ExitIntentModal from "@/components/ExitIntentModal";
 import SharedFooter from "@/components/SharedFooter";
+import PWAProvider from "@/components/PWAProvider";
 import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap", // Prevents invisible text during font load (helps CLS + LCP)
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const RTL_LOCALES = ["ar", "ur"];
@@ -55,6 +58,18 @@ export const metadata: Metadata = {
   authors: [{ name: "VisitPlane" }],
   creator: "VisitPlane",
   publisher: "VisitPlane",
+
+  // ── PWA manifest + theme ──────────────────────────────────────────────────
+  manifest: "/manifest.json",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#10B981" },
+    { media: "(prefers-color-scheme: dark)",  color: "#10B981" },
+  ],
+  appleWebApp: {
+    capable:         true,
+    statusBarStyle:  "default",
+    title:           "VisitPlane",
+  },
 
   verification: {
     google: "_1giyu5DMW8eS91AviSVAkCw5XGFIZHLU7gsHINSAm8",
@@ -169,6 +184,31 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        {/* ── PWA: Apple touch icons ─────────────────────────────────────── */}
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-maskable-192.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-72.png" />
+
+        {/* ── PWA: iOS splash screens ────────────────────────────────────── */}
+        {/* iPhone 14 Pro Max */}
+        <link rel="apple-touch-startup-image" media="screen and (device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/splash/apple-splash-1290-2796.png" />
+        {/* iPhone 14 Pro */}
+        <link rel="apple-touch-startup-image" media="screen and (device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/splash/apple-splash-1179-2556.png" />
+        {/* iPhone 12/13/14 */}
+        <link rel="apple-touch-startup-image" media="screen and (device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/splash/apple-splash-1170-2532.png" />
+        {/* iPhone 12 Pro Max */}
+        <link rel="apple-touch-startup-image" media="screen and (device-width:428px) and (device-height:926px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/splash/apple-splash-1284-2778.png" />
+        {/* iPhone X/XS/11 Pro */}
+        <link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/splash/apple-splash-1125-2436.png" />
+        {/* iPhone SE */}
+        <link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/splash/apple-splash-750-1334.png" />
+        {/* iPad Pro 12.9" */}
+        <link rel="apple-touch-startup-image" media="screen and (device-width:1024px) and (device-height:1366px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/splash/apple-splash-2048-2732.png" />
+
+        {/* ── PWA: Windows tile ──────────────────────────────────────────── */}
+        <meta name="msapplication-TileColor" content="#10B981" />
+        <meta name="msapplication-TileImage" content="/icons/icon-144.png" />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
@@ -191,6 +231,8 @@ export default async function RootLayout({
         <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
         {/* Capture Point 3 — Exit Intent Modal (desktop only) */}
         <ExitIntentModal />
+        {/* PWA: registers SW, handles install prompt, bg-sync, transitions */}
+        <PWAProvider />
       </body>
     </html>
   );

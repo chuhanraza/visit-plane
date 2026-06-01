@@ -1,0 +1,65 @@
+/*
+ * VisitPlane — PWA Navigation Transitions + Splash (Deliverable 7)
+ * Import in app/globals.css:  @import '../src/pwa-transitions.css';
+ */
+
+/* ── Splash / FOUC prevention ────────────────────────────────────────────── */
+html.vp-loading body { opacity: 0; }
+html.vp-ready    body { opacity: 1; transition: opacity 0.2s ease-in; }
+
+#vp-splash {
+  position: fixed; inset: 0;
+  background: #060C18;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 14px;
+  z-index: 10000;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+#vp-splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+#vp-splash .sp-logo {
+  width: 72px; height: 72px; border-radius: 18px;
+  animation: vp-scale-in 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+#vp-splash .sp-name {
+  font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.3px;
+  animation: vp-fade-up 0.45s 0.18s ease both;
+}
+#vp-splash .sp-tag {
+  font-size: 13px; color: #64748b;
+  animation: vp-fade-up 0.45s 0.3s ease both;
+}
+@keyframes vp-scale-in {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+@keyframes vp-fade-up {
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── View Transitions API ────────────────────────────────────────────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 260ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html[data-nav="forward"] ::view-transition-old(root) { animation-name: vp-out-left;  }
+html[data-nav="forward"] ::view-transition-new(root) { animation-name: vp-in-right;  }
+html[data-nav="back"]    ::view-transition-old(root) { animation-name: vp-out-right; }
+html[data-nav="back"]    ::view-transition-new(root) { animation-name: vp-in-left;   }
+html:not([data-nav])     ::view-transition-old(root) { animation-name: vp-fade-out;  }
+html:not([data-nav])     ::view-transition-new(root) { animation-name: vp-fade-in;   }
+
+@keyframes vp-out-left  { to   { transform: translateX(-100%); } }
+@keyframes vp-in-right  { from { transform: translateX(100%);  } }
+@keyframes vp-out-right { to   { transform: translateX(100%);  } }
+@keyframes vp-in-left   { from { transform: translateX(-100%); } }
+@keyframes vp-fade-out  { to   { opacity: 0; } }
+@keyframes vp-fade-in   { from { opacity: 0; } }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation-duration: 1ms !important; }
+}
