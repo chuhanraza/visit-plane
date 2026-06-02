@@ -3,9 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
-import SharedNavbar from "@/components/SharedNavbar";
+import SiteHeader from "@/components/layout/SiteHeader";
+import SiteFooter from "@/components/layout/SiteFooter";
+import CommandPalette from "@/components/layout/CommandPalette";
+import { CommandPaletteProvider } from "@/components/layout/CommandPaletteContext";
 import ExitIntentModal from "@/components/ExitIntentModal";
-import SharedFooter from "@/components/SharedFooter";
 import PWAProvider from "@/components/PWAProvider";
 import "./globals.css";
 
@@ -224,9 +226,12 @@ export default async function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-[#FAFAFA]">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <SharedNavbar />
-          <main className="flex-1">{children}</main>
-          <SharedFooter />
+          <CommandPaletteProvider>
+            <SiteHeader />
+            <CommandPalette />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+          </CommandPaletteProvider>
         </NextIntlClientProvider>
         <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
         {/* Capture Point 3 — Exit Intent Modal (desktop only) */}
