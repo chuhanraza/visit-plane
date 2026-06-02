@@ -5,11 +5,16 @@
  *
  * Separate from /visa/[passport]/[destination] — this is the long-form SEO page
  * optimised for "pakistan to uae visa requirements" style queries.
+ *
+ * Data priority:
+ *   1. visa_requirements table (verified, route-specific)
+ *   2. destinations table (legacy, for page existence check + SEO hero)
  */
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import VisaRequirementsBlock, { type VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
 
 // ── Slug → country name resolution ───────────────────────────────────────────
 // Converts "pakistan" → "Pakistan", "united-kingdom" → "United Kingdom"
@@ -54,6 +59,39 @@ async function fetchVisaData(passportCountry: string, destinationCountry: string
   return data ?? []
 }
 
+// ISO slug → ISO 3166-1 alpha-3 mapping for the top routes
+const SLUG_TO_ISO3: Record<string, string> = {
+  'pakistan': 'PAK', 'uae': 'ARE', 'united-arab-emirates': 'ARE',
+  'saudi-arabia': 'SAU', 'turkey': 'TUR', 'thailand': 'THA',
+  'malaysia': 'MYS', 'united-kingdom': 'GBR', 'uk': 'GBR',
+  'germany': 'DEU', 'united-states': 'USA', 'usa': 'USA',
+  'china': 'CHN', 'singapore': 'SGP', 'indonesia': 'IDN',
+  'sri-lanka': 'LKA', 'maldives': 'MDV', 'qatar': 'QAT',
+  'oman': 'OMN', 'azerbaijan': 'AZE', 'georgia': 'GEO',
+  'japan': 'JPN', 'south-korea': 'KOR', 'nepal': 'NPL',
+}
+
+async function fetchVerifiedRequirement(
+  passportSlug: string,
+  destinationSlug: string,
+): Promise<VisaRequirement | null> {
+  const passportIso    = SLUG_TO_ISO3[passportSlug.toLowerCase()]
+  const destinationIso = SLUG_TO_ISO3[destinationSlug.toLowerCase()]
+  if (!passportIso || !destinationIso) return null
+
+  const supabase = getSupabase()
+  const { data, error } = await supabase
+    .from('visa_requirements')
+    .select('*')
+    .eq('passport_iso', passportIso)
+    .eq('destination_iso', destinationIso)
+    .eq('purpose', 'tourist')
+    .single()
+
+  if (error || !data) return null
+  return data as VisaRequirement
+}
+
 // ── Metadata ──────────────────────────────────────────────────────────────────
 export async function generateMetadata({
   params,
@@ -87,10 +125,24 @@ export default async function LongFormVisaPage({
   const passportName    = resolveCountry(passportSlug)
   const destinationName = resolveCountry(destinationSlug)
 
-  const visaData = await fetchVisaData(passportName, destinationName)
+  // Fetch both: verified (new) and legacy (for page existence + hero data)
+  const [visaData, verifiedReq] = await Promise.all([
+    fetchVisaData(passportName, destinationName),
+    fetchVerifiedRequirement(passportSlug, destinationSlug),
+  ])
+
   if (visaData.length === 0) notFound()
 
   const primary = visaData[0]
+
+  // Use verified data for structured FAQ schema when available
+  const feeText   = verifiedReq?.fee_is_free
+    ? 'Free'
+    : verifiedReq?.fee_amount && verifiedReq?.fee_currency
+      ? `${verifiedReq.fee_currency} ${verifiedReq.fee_amount} (≈ USD ${verifiedReq.fee_amount_usd ?? '?'})`
+      : primary.pricing ?? 'Pending verification'
+
+  const processingText = verifiedReq?.processing_label ?? primary.processing_time ?? 'Varies'
 
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -101,7 +153,9 @@ export default async function LongFormVisaPage({
         name: `Does a ${passportName} passport holder need a visa to visit ${destinationName}?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: primary.visa_type
+          text: verifiedReq
+            ? `${passportName} passport holders need a ${verifiedReq.visa_category.replace(/_/g, ' ')} to enter ${destinationName}. Processing time is ${processingText}. Fee: ${feeText}.`
+            : primary.visa_type
             ? `${passportName} passport holders require a ${primary.visa_type} to enter ${destinationName}. ${primary.processing_time ? `Processing time is approximately ${primary.processing_time}.` : ''} ${primary.pricing ? `The visa fee is ${primary.pricing}.` : ''}`
             : `Visa requirements apply. Please verify with the official ${destinationName} embassy before traveling.`,
         },
@@ -111,9 +165,7 @@ export default async function LongFormVisaPage({
         name: `How long does a ${passportName} to ${destinationName} visa take?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: primary.processing_time
-            ? `The processing time for a ${destinationName} visa for ${passportName} passport holders is typically ${primary.processing_time}. Apply well in advance of your planned travel date.`
-            : `Processing times vary. Check with the official embassy for current timelines.`,
+          text: `The processing time is typically ${processingText}. Apply well in advance of your planned travel date.`,
         },
       },
       {
@@ -121,7 +173,9 @@ export default async function LongFormVisaPage({
         name: `What documents do ${passportName} citizens need for a ${destinationName} visa?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `Standard documents for a ${passportName} to ${destinationName} visa application typically include: a valid passport (at least 6 months validity), completed visa application form, recent passport-size photographs, proof of accommodation, return flight ticket, bank statements showing sufficient funds, travel insurance, and any destination-specific documents. Always verify the current requirements with the official embassy.`,
+          text: verifiedReq?.required_documents?.length
+            ? `For ${passportName} to ${destinationName} (${verifiedReq.visa_category.replace(/_/g, ' ')}): ${verifiedReq.required_documents.filter(d => d.mandatory).map(d => d.name).join(', ')}.`
+            : `Standard documents typically include: valid passport, completed application form, recent passport photos, return ticket, accommodation proof, bank statements, travel insurance, and proof of employment. Always verify with the official embassy.`,
         },
       },
       {
@@ -129,8 +183,10 @@ export default async function LongFormVisaPage({
         name: `How much does a ${destinationName} visa cost for ${passportName} citizens?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: primary.pricing
-            ? `The ${destinationName} visa fee for ${passportName} passport holders is ${primary.pricing}. Additional service fees may apply when using a visa facilitation center.`
+          text: verifiedReq?.fee_is_free
+            ? `Entry to ${destinationName} is free for ${passportName} passport holders (no visa fee).`
+            : verifiedReq?.fee_amount
+            ? `The ${destinationName} visa fee for ${passportName} passport holders is ${feeText}. ${verifiedReq.fee_notes ?? ''}`
             : `Visa fees vary. Contact the official ${destinationName} embassy or consulate for the current fee schedule.`,
         },
       },
@@ -139,9 +195,13 @@ export default async function LongFormVisaPage({
         name: `Can I get a ${destinationName} visa on arrival as a ${passportName} citizen?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: primary.visa_type?.toLowerCase().includes('arrival')
-            ? `Yes, ${passportName} citizens can obtain a ${destinationName} visa on arrival. ${primary.pricing ? `The fee is ${primary.pricing}.` : ''} Bring sufficient cash and passport photos.`
-            : `${passportName} passport holders typically cannot get a ${destinationName} visa on arrival and must apply in advance. Check VisitPlane for the most current requirements.`,
+          text: verifiedReq?.visa_category === 'visa_on_arrival'
+            ? `Yes, ${passportName} citizens can obtain a ${destinationName} visa on arrival. Fee: ${feeText}. Bring sufficient cash and passport photos.`
+            : verifiedReq?.visa_category === 'evisa'
+            ? `${passportName} passport holders must apply online for a ${destinationName} eVisa before travel. Apply at: ${verifiedReq.application_url ?? 'the official government portal'}.`
+            : verifiedReq?.visa_category === 'visa_free'
+            ? `${passportName} passport holders can enter ${destinationName} without a visa.`
+            : `${passportName} passport holders typically cannot get a ${destinationName} visa on arrival and must apply in advance.`,
         },
       },
     ],
@@ -198,13 +258,28 @@ export default async function LongFormVisaPage({
             visa type, fees, processing time, documents checklist, and how to apply.
           </p>
 
-          {/* Quick stats */}
+          {/* Quick stats — prefer verified data, fall back to legacy */}
           {primary && (
             <div className="mt-8 grid grid-cols-3 gap-4 max-w-xl">
               {[
-                { label: 'Visa Type', value: primary.visa_type ?? 'Check embassy' },
-                { label: 'Processing', value: primary.processing_time ?? 'Varies' },
-                { label: 'Fee', value: primary.pricing ?? 'See embassy' },
+                {
+                  label: 'Visa Type',
+                  value: verifiedReq
+                    ? verifiedReq.visa_category.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+                    : (primary.visa_type ?? 'Check embassy'),
+                },
+                {
+                  label: 'Processing',
+                  value: verifiedReq?.processing_label ?? primary.processing_time ?? 'Varies',
+                },
+                {
+                  label: 'Fee',
+                  value: verifiedReq?.fee_is_free
+                    ? 'Free'
+                    : verifiedReq?.fee_amount && verifiedReq?.fee_currency
+                      ? `${verifiedReq.fee_currency} ${verifiedReq.fee_amount}`
+                      : (primary.pricing ?? 'Pending verification'),
+                },
               ].map(({ label, value }) => (
                 <div key={label} className="rounded-xl bg-white/10 backdrop-blur p-4">
                   <div className="text-xs text-white/60 uppercase tracking-wider mb-1">{label}</div>
@@ -220,63 +295,25 @@ export default async function LongFormVisaPage({
 
         {/* Unique opening paragraph — varies by visa type */}
         <p className="text-gray-600 text-base leading-relaxed mb-10">
-          {primary.visa_type?.toLowerCase().includes('free')
+          {(verifiedReq?.visa_category ?? primary.visa_type?.toLowerCase()) === 'visa_free' || primary.visa_type?.toLowerCase().includes('free')
             ? `Great news for ${passportName} passport holders: ${destinationName} grants visa-free entry, meaning you can travel directly without applying for a visa in advance. This guide covers what you still need to know — including entry requirements, maximum stay duration, and documents to carry.`
-            : primary.visa_type?.toLowerCase().includes('arrival')
+            : (verifiedReq?.visa_category ?? '') === 'evisa'
+            ? `${passportName} passport holders apply for a ${destinationName} eVisa online — no embassy appointment needed. The process is fully digital. Below you'll find the verified fee, documents, processing time, and the direct link to the official application portal.`
+            : (verifiedReq?.visa_category ?? primary.visa_type?.toLowerCase())?.includes('arrival')
             ? `${passportName} passport holders can enter ${destinationName} with a visa on arrival, making the process straightforward — no prior embassy appointment needed. Below you'll find the complete guide covering fees, documents to carry, and important tips for a smooth arrival.`
             : `Visiting ${destinationName} as a ${passportName} passport holder requires a visa obtained before travel. This comprehensive guide walks you through every step of the application — from eligibility to approval — so you can travel with confidence.`}
         </p>
 
-        {/* Requirements section */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#1F2937] mb-6">Visa Requirements at a Glance</h2>
-          <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
-            <table className="w-full text-sm">
-              <tbody className="divide-y divide-gray-50">
-                {[
-                  { label: 'Visa Type', value: primary.visa_type },
-                  { label: 'Processing Time', value: primary.processing_time },
-                  { label: 'Visa Fee', value: primary.pricing },
-                  { label: 'Passport Validity Required', value: 'Minimum 6 months beyond stay' },
-                  { label: 'Photos Required', value: '2 recent passport-size photographs' },
-                  { label: 'Travel Insurance', value: 'Recommended (required for Schengen)' },
-                ].map(({ label, value }) => (
-                  <tr key={label}>
-                    <td className="px-5 py-3.5 font-medium text-gray-500 w-44 bg-gray-50">{label}</td>
-                    <td className="px-5 py-3.5 font-semibold text-[#1F2937]">{value ?? 'Verify with embassy'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* Documents section */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[#1F2937] mb-4">Required Documents</h2>
-          <p className="text-gray-500 text-sm mb-5">
-            Standard documents required for {passportName} citizens applying for a {destinationName} visa.
-            Always verify the latest requirements with the official embassy before applying.
-          </p>
-          <ul className="space-y-2">
-            {[
-              'Valid passport (minimum 6 months validity beyond intended stay)',
-              'Completed and signed visa application form',
-              '2 recent passport-size photographs (white background, 35×45mm)',
-              'Confirmed return/onward flight ticket',
-              'Hotel booking or confirmed accommodation proof',
-              'Bank statements showing sufficient funds (last 3–6 months)',
-              'Travel insurance covering the full trip duration',
-              'Employment letter or proof of income / business registration',
-              'Visa fee payment receipt',
-            ].map((doc) => (
-              <li key={doc} className="flex items-start gap-2.5 text-sm text-gray-600">
-                <span className="mt-0.5 text-[#14B8A6] shrink-0">✓</span>
-                {doc}
-              </li>
-            ))}
-          </ul>
-        </section>
+        {/* ── Verified requirements block (replaces generic fee + doc table) ── */}
+        <div className="mb-12">
+          <VisaRequirementsBlock
+            requirement={verifiedReq}
+            passportName={passportName}
+            destinationName={destinationName}
+            passportIso={SLUG_TO_ISO3[passportSlug.toLowerCase()] ?? ''}
+            destinationIso={SLUG_TO_ISO3[destinationSlug.toLowerCase()] ?? ''}
+          />
+        </div>
 
         {/* How to apply */}
         <section className="mb-12">

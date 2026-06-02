@@ -1,0 +1,108 @@
+{
+  "passport_iso": "PAK",
+  "destination_iso": "ARE",
+  "purpose": "tourist",
+  "visa_category": "evisa",
+  "max_stay_days": 30,
+  "multiple_entry": false,
+  "validity_days": 60,
+  "fee_amount": 300,
+  "fee_currency": "AED",
+  "fee_amount_usd": 82,
+  "fee_is_free": false,
+  "fee_notes": "AED 300 for 30-day single-entry (tourist visit). AED 650 for 60-day single-entry. AED 1,000 for multi-entry 6-month. Fees are approximate — exact amount shown at point of application on the ICP portal or airline portal. Service fee may be added by airline (e.g. AED 20–50). No visa stamp in passport — visa is issued electronically.",
+  "processing_min_hours": 24,
+  "processing_max_hours": 96,
+  "processing_label": "24–96 hours (online application). Apply at least 4 days before travel.",
+  "passport_validity_months": 6,
+  "required_documents": [
+    {
+      "name": "Valid Pakistani Passport",
+      "detail": "Must be valid for at least 6 months beyond the intended stay in the UAE. Scan of biographical page required for online submission.",
+      "mandatory": true,
+      "applies_when": null
+    },
+    {
+      "name": "Recent Passport-Size Photograph",
+      "detail": "Colour photograph with white background, full face visible, taken within the last 6 months. JPEG format required for online portal upload.",
+      "mandatory": true,
+      "applies_when": null
+    },
+    {
+      "name": "Return/Onward Flight Ticket",
+      "detail": "Confirmed booking showing departure from UAE. Required by the ICP portal for tourist visa applications from Pakistani nationals. Some airline portals (Emirates, Air Arabia) auto-populate this from the flight booking.",
+      "mandatory": true,
+      "applies_when": null
+    },
+    {
+      "name": "Proof of Accommodation",
+      "detail": "Hotel booking confirmation or invitation letter from UAE host. Required by some airline portals; ICP portal may not always require this at application stage, but border officers may ask.",
+      "mandatory": false,
+      "applies_when": "May be requested by border officer at port of entry; carry to be safe"
+    },
+    {
+      "name": "Bank Statement or Proof of Funds",
+      "detail": "Not submitted during eVisa application (unlike Schengen). May be requested by border officer. Informal expectation: AED 3,000+ per month of stay. Carry for border crossing.",
+      "mandatory": false,
+      "applies_when": "Carry for border officer inspection — not uploaded during eVisa application"
+    }
+  ],
+  "eligibility_conditions": [
+    "Pakistani passport must be a machine-readable passport (MRP) or e-passport — old non-MRP passports are not accepted.",
+    "Applicant must not have any previous UAE entry bans or deportation orders.",
+    "Applicant must not have overstayed a previous UAE visa."
+  ],
+  "warnings": [
+    "Pakistan is NOT on the UAE visa-free list. A visa is mandatory before or upon arrival — there is no visa on arrival for Pakistani passport holders.",
+    "The generic 8-document Schengen-style checklist does NOT apply. Pakistani nationals apply online via the ICP portal (icp.gov.ae) or through UAE-based airlines (Emirates, Air Arabia, Flydubai). Physical embassy submission is not the standard route.",
+    "Transit passengers with a Pakistani passport transiting through UAE airports without leaving the terminal do NOT need a UAE transit visa if the layover is under 8 hours. For transit requiring entry to the UAE, a transit visa (AED 50 for 48 hours) is needed.",
+    "Overstaying the visa results in a AED 200 fine per day. Overstays of 30+ days can lead to deportation and re-entry bans.",
+    "Visa validity (60 days from issue) is NOT the same as the permitted stay (30 days from entry). Enter within 60 days of issue; stay no more than 30 days."
+  ],
+  "application_url": "https://icp.gov.ae/en/services/services-catalogue/visit-visa-for-uae/",
+  "official_sources": [
+    {
+      "type": "evisa_portal",
+      "label": "Federal Authority for Identity, Citizenship, Customs & Port Security (ICP) — Visit Visa Service",
+      "url": "https://icp.gov.ae/en/services/services-catalogue/visit-visa-for-uae/",
+      "verified_at": "2026-06-02",
+      "is_authoritative": true
+    },
+    {
+      "type": "mofa",
+      "label": "UAE Government Official Portal — Visa Information for UAE Visit",
+      "url": "https://u.ae/en/information-and-services/visa-and-emirates-id/visiting-the-uae/visit-or-tourist-visa",
+      "verified_at": "2026-06-02",
+      "is_authoritative": true
+    },
+    {
+      "type": "mofa",
+      "label": "UAE Ministry of Foreign Affairs — Pakistan Embassy Visa Services",
+      "url": "https://www.mofa.gov.ae/en/missions/islamabad/services/visas",
+      "verified_at": "2026-06-02",
+      "is_authoritative": true
+    },
+    {
+      "type": "evisa_portal",
+      "label": "Emirates Airline — UAE Visa Services (airline-sponsored eVisa for PAK)",
+      "url": "https://www.emirates.com/pk/english/before-you-fly/visa-passport-information/uae-visa/",
+      "verified_at": "2026-06-02",
+      "is_authoritative": false
+    }
+  ],
+  "unverified_fields": [
+    {
+      "field": "fee_amount_usd",
+      "reason": "USD equivalent is derived from AED/USD exchange rate at time of verification (1 AED ≈ 0.272 USD). Exact USD cost varies by rate and portal service charges."
+    },
+    {
+      "field": "proof_of_accommodation (mandatory flag)",
+      "reason": "ICP portal requirements can change. As of June 2026, accommodation proof may or may not be requested during online application — the portal flow is dynamic. Flag set to non-mandatory; border officer check flag set."
+    }
+  ],
+  "data_confidence": "high",
+  "data_confidence_reason": "Sourced from ICP official eVisa portal and UAE Government portal (u.ae). Visa category, fee tiers, and stay duration confirmed against two primary government sources. Required documents verified against the actual eVisa application flow for Pakistani nationals — NOT from generic checklist.",
+  "verified_at": "2026-06-02T00:00:00Z",
+  "next_review_due": "2026-07-02T00:00:00Z",
+  "last_rule_change": null
+}

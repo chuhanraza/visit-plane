@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/visa/run-pipeline?cron=1&mode=overdue",
+      "schedule": "0 2 * * 1"
+    }
+  ]
+}
