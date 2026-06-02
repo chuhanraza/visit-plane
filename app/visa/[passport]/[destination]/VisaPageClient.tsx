@@ -447,6 +447,68 @@ const RELATED_DESTINATIONS = [
   { name: 'Malaysia',       flag: '🇲🇾' },
 ]
 
+// ─── Official Sources Card ───────────────────────────────────────────────────────
+const SOURCE_TYPE_ICONS: Record<string, string> = {
+  mofa:         '🏛️',
+  embassy:      '🏢',
+  evisa_portal: '💻',
+  iata:         '✈️',
+  other:        '🔗',
+}
+
+function OfficialSourcesCard({ passportName, destinationName }: { passportName: string; destinationName: string }) {
+  const { sources, source_status } = getOfficialSources(passportName, destinationName)
+
+  if (source_status === 'pending_verification' || sources.length === 0) {
+    return (
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+        <div className="flex items-start gap-3">
+          <span className="text-xl">🟡</span>
+          <div>
+            <p className="font-semibold text-amber-800 text-sm">Source verification pending</p>
+            <p className="text-amber-700 text-xs mt-1">
+              We&apos;re currently verifying official government sources for this route.
+              Please check the destination country&apos;s official immigration website directly.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 space-y-3">
+      <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
+        <span>🔗</span> Official Government Sources
+      </h3>
+      <div className="space-y-2">
+        {sources.map((src, i) => (
+          <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
+            <span className="text-lg flex-shrink-0">{SOURCE_TYPE_ICONS[src.type] ?? '🔗'}</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-800">{src.label}</p>
+              <a
+                href={src.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:underline break-all"
+              >
+                {src.url}
+              </a>
+              {src.verified_date && (
+                <p className="text-xs text-gray-400 mt-0.5">Verified {src.verified_date}</p>
+              )}
+            </div>
+            <span className="text-xs bg-green-100 text-green-700 border border-green-200 rounded-full px-2 py-0.5 flex-shrink-0 font-medium">
+              ✓ Official
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Props ───────────────────────────────────────────────────────────────────────
 interface Props {
   allVisaData: VisaRecord[]
