@@ -495,8 +495,8 @@ function OfficialSourcesCard({ passportName, destinationName }: { passportName: 
               >
                 {src.url}
               </a>
-              {src.verified_date && (
-                <p className="text-xs text-gray-400 mt-0.5">Verified {src.verified_date}</p>
+              {src.verified_at && (
+                <p className="text-xs text-gray-400 mt-0.5">Verified {src.verified_at}</p>
               )}
             </div>
             <span className="text-xs bg-green-100 text-green-700 border border-green-200 rounded-full px-2 py-0.5 flex-shrink-0 font-medium">
