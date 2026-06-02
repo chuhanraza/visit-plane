@@ -1,6 +1,47 @@
 @import "tailwindcss";
 @import "../src/pwa-transitions.css";
 
+/* ── Print stylesheet — clean PDF output for visa checklist ──────────────── */
+@media print {
+  /* Reset background to white */
+  body, .min-h-screen { background: #fff !important; color: #1f2937 !important; }
+
+  /* Hide non-essential UI */
+  nav[aria-label="Breadcrumb"],
+  .print\:hidden,
+  header, footer,
+  [class*="sticky"],
+  [class*="fixed"] { display: none !important; }
+
+  /* Ensure all content is visible */
+  .print\:block { display: block !important; }
+
+  /* Section layout */
+  section { page-break-inside: avoid; margin-bottom: 1.5rem; }
+
+  /* Cards */
+  .rounded-2xl, .rounded-xl { border: 1px solid #e5e7eb !important; background: #fff !important; box-shadow: none !important; }
+
+  /* Remove animations */
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+
+  /* Hero card */
+  #visa-hero .rounded-2xl { border: 2px solid #14b8a6 !important; }
+
+  /* Links */
+  a[href]::after { content: " (" attr(href) ")"; font-size: 10px; color: #6b7280; }
+  a[href^="#"]::after, button::after { content: "" !important; }
+
+  /* Typography */
+  h1 { font-size: 22px !important; }
+  h2 { font-size: 16px !important; }
+  p, li, .text-sm { font-size: 12px !important; }
+  .text-xs { font-size: 10px !important; }
+
+  /* Page margins */
+  @page { margin: 1.5cm; }
+}
+
 :root {
   --background: #060C18;
   --foreground: #ffffff;
