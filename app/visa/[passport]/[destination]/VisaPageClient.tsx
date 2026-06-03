@@ -263,6 +263,7 @@ export default function VisaPageClient({
         <DocumentChecker
           country={destinationName.toLowerCase()}
           countryLabel={destinationName}
+          visaType={primaryVisa ? getVisaName(primaryVisa) : undefined}
           onClose={() => setShowChecker(false)}
         />
       )}

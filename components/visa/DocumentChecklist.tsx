@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { VisaRecord } from '@/app/visa/[passport]/[destination]/VisaPageClient'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -251,6 +252,74 @@ function Tooltip({ text }: { text: string }) {
   )
 }
 
+// ─── AI Checker CTA with hover animation ─────────────────────────────────────
+function AICheckerCTA({ onOpen }: { onOpen?: () => void }) {
+  const [hovered, setHovered] = useState(false)
+  const DOCS = ['🛂', '🖼️', '🏦', '🛡️', '✈️']
+  return (
+    <div className="relative mt-6 print:hidden">
+      {/* Glow */}
+      <div className={`absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-[#14B8A6] to-[#6366F1] blur-sm transition-opacity duration-300 ${hovered ? 'opacity-70' : 'opacity-40 animate-pulse'}`} />
+      <button
+        onClick={onOpen}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className="relative w-full rounded-2xl bg-gradient-to-r from-[#14B8A6] to-[#6366F1] px-6 py-4 text-sm font-bold text-white shadow-lg transition-all hover:from-[#0d9488] hover:to-[#4F46E5] hover:shadow-xl active:scale-[0.99]"
+      >
+        <div className="flex items-center gap-3">
+          <span className="text-xl">🤖</span>
+          <div className="text-left flex-1">
+            <div className="font-bold">Check My Documents with AI · FREE</div>
+            <AnimatePresence mode="wait">
+              {hovered ? (
+                <motion.div
+                  key="hover"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center gap-1 mt-0.5"
+                >
+                  {DOCS.map((d, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.5, y: 6 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ delay: i * 0.06, type: 'spring', stiffness: 400 }}
+                      className="text-sm"
+                    >
+                      {d}
+                    </motion.span>
+                  ))}
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.35 }}
+                    className="text-xs opacity-80 ml-1"
+                  >
+                    → analyzing…
+                  </motion.span>
+                </motion.div>
+              ) : (
+                <motion.p
+                  key="idle"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-xs opacity-80 font-normal mt-0.5"
+                >
+                  Upload your docs — instant AI feedback before you submit
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+          <span className="shrink-0 rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-bold tracking-wide">FREE</span>
+        </div>
+      </button>
+    </div>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function DocumentChecklist({
   visaRecord,
@@ -345,22 +414,7 @@ export default function DocumentChecklist({
         </div>
 
         {/* AI Document Checker CTA */}
-        {!isFree && (
-          <div className="relative mt-6 print:hidden">
-            <div className="absolute -inset-0.5 animate-pulse rounded-2xl bg-gradient-to-r from-[#14B8A6] to-[#6366F1] opacity-50 blur-sm" />
-            <button
-              onClick={onOpenAIChecker}
-              className="relative flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#14B8A6] to-[#6366F1] px-6 py-4 text-sm font-bold text-white shadow-lg transition hover:from-[#0d9488] hover:to-[#4F46E5] hover:shadow-xl active:scale-[0.99]"
-            >
-              <span className="text-xl">🤖</span>
-              <div className="text-left">
-                <div className="font-bold">Check My Documents with AI</div>
-                <div className="text-xs opacity-80 font-normal">Upload your docs — get instant completeness feedback</div>
-              </div>
-              <span className="ml-auto rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-bold tracking-wide">FREE</span>
-            </button>
-          </div>
-        )}
+        {!isFree && <AICheckerCTA onOpen={onOpenAIChecker} />}
       </div>
     </section>
   )
