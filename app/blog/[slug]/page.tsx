@@ -16,6 +16,9 @@ import {
   getDestinationCaption,
   CATEGORY_COLORS,
 } from '@/utils/blogPhotos'
+import BlogTripBox from '@/components/affiliate/BlogTripBox'
+import AffiliateDisclosure from '@/components/affiliate/AffiliateDisclosure'
+import { isInsuranceRequired, affiliateTrackingUrl } from '@/src/lib/affiliates'
 
 // ── Static params ─────────────────────────────────────────────────────────────
 export function generateStaticParams() {
@@ -401,6 +404,40 @@ export default async function BlogPostPage({
               </div>
             )}
 
+            {/* ── AFFILIATE: Recommended for this trip ────────────────────── */}
+            <BlogTripBox
+              destinationName={post.destinationCountry}
+              passportCountry={post.passportCountry}
+              blogSlug={slug}
+            />
+
+            {/* ── AFFILIATE: Inline insurance callout (Schengen only) ─────── */}
+            {isInsuranceRequired(post.destinationCountry) && (
+              <div className="mt-8 rounded-xl border border-red-200 bg-red-50/60 p-4 flex items-start gap-3">
+                <span className="text-xl shrink-0 mt-0.5">⚠️</span>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-red-700">
+                    Required: Travel insurance covering {post.destinationCountry}
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                    Your {post.destinationCountry} visa application requires proof of travel
+                    insurance covering €30,000+ medical emergencies. SafetyWing meets all
+                    Schengen requirements from $1.50/day.
+                  </p>
+                  <a
+                    href={affiliateTrackingUrl('safetywing', {
+                      placement: 'blog_post',
+                      blogSlug: slug,
+                    })}
+                    rel="nofollow sponsored"
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-red-700"
+                  >
+                    Get quote — meets Schengen requirements →
+                  </a>
+                </div>
+              </div>
+            )}
+
             {/* Social share (mobile — inline below FAQ) */}
             <SocialShare title={post.title} slug={slug} />
 
@@ -412,6 +449,9 @@ export default async function BlogPostPage({
           </aside>
         </div>
       </div>
+
+      {/* ── AFFILIATE DISCLOSURE ───────────────────────────────────────────── */}
+      <AffiliateDisclosure />
 
       {/* ── RELATED POSTS ──────────────────────────────────────────────────── */}
       <section className="border-t border-gray-100 bg-[#F9FAFB]">

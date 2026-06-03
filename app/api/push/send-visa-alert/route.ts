@@ -54,7 +54,10 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!subs?.length) return NextResponse.json({ success: true, sent: 0 });
 
-  const payload = JSON.stringify({ title, body: msgBody, url: url ?? '/', image, country, changeType, sentAt: new Date().toISOString() });
+  // Append soft affiliate mention to body (Sprint 6 monetization)
+  const bodyWithAffiliate = `${msgBody}\n\nP.S. Don't forget travel insurance for your trip → visitplane.com/go/safetywing?placement=email`
+
+  const payload = JSON.stringify({ title, body: bodyWithAffiliate, url: url ?? '/', image, country, changeType, sentAt: new Date().toISOString() });
   const stale: string[] = [];
   const results = { sent: 0, failed: 0, stale: 0 };
 

@@ -161,8 +161,44 @@ export default function SiteFooter() {
           </div>
         </div>
 
+        {/* Recommended partners strip */}
+        <div className="mt-10 border-t border-white/5 pt-8">
+          <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-white/30">
+            Recommended Partners
+          </p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <a
+              href="/go/safetywing?placement=homepage"
+              rel="nofollow sponsored"
+              className="text-xs text-white/25 transition hover:text-white/60"
+            >
+              SafetyWing Insurance
+            </a>
+            <span className="text-white/10">·</span>
+            <a
+              href="/go/airalo?placement=homepage"
+              rel="nofollow sponsored"
+              className="text-xs text-white/25 transition hover:text-white/60"
+            >
+              Airalo eSIM
+            </a>
+            <span className="text-white/10">·</span>
+            <a
+              href="/go/wayaway?placement=homepage"
+              rel="nofollow sponsored"
+              className="text-xs text-white/25 transition hover:text-white/60"
+            >
+              WayAway Flights
+            </a>
+            <span className="text-white/10 hidden sm:inline">·</span>
+            <span className="text-[10px] text-white/15 w-full sm:w-auto">
+              Partner links — VisitPlane may earn a commission. Never affects your price.
+            </span>
+          </div>
+        </div>
+
         {/* Bottom strip */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-2 border-t border-white/5 pt-8 sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-white/5 pt-6 sm:flex-row">
           <p className="text-xs text-white/20">
             © {new Date().getFullYear()} VisitPlane · All rights reserved.
           </p>
