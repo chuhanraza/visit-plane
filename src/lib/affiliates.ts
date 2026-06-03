@@ -160,8 +160,10 @@ export function buildAffiliateUrl(
       return `https://tp.media/r?marker=${AFFILIATE_IDS.TRAVELPAYOUTS_MARKER}&trs=visitplane_${subId}&p=${AFFILIATE_IDS.KIWI_PROGRAM_ID}&u=${u}&utm_source=visitplane&utm_medium=affiliate`
     }
 
-    default:
-      return AFFILIATE_PARTNERS[partner].baseUrl
+    default: {
+      const p = partner as AffiliatePartner
+      return (AFFILIATE_PARTNERS[p] as { baseUrl: string }).baseUrl
+    }
   }
 }
 
