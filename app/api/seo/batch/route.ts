@@ -59,16 +59,18 @@ export async function POST(req: NextRequest) {
   const jobId    = `batch-${template}-phase${phase}-${Date.now()}`
   const supabase = getSupabase()
 
-  // Record job
-  await supabase.from('seo_generation_jobs').insert({
-    id:           jobId,
-    phase,
-    total_routes: 0,      // updated when batch starts
-    completed:    0,
-    failed:       0,
-    status:       'running',
-    started_at:   new Date().toISOString(),
-  }).then(() => null).catch(() => null)
+  // Record job (fire-and-forget — ignore errors if table doesn't exist yet)
+  await Promise.resolve(
+    supabase.from('seo_generation_jobs').insert({
+      id:           jobId,
+      phase,
+      total_routes: 0,
+      completed:    0,
+      failed:       0,
+      status:       'running',
+      started_at:   new Date().toISOString(),
+    })
+  ).catch(() => null)
 
   // Fire-and-forget
   const opts: BatchOptions = {
@@ -76,30 +78,33 @@ export async function POST(req: NextRequest) {
     phase,
     concurrency:   3,
     skipExisting:  !body.forceRegenerate,
-    onProgress: async (done, total, current) => {
-      await supabase.from('seo_generation_jobs')
-        .update({ completed: done, total_routes: total, updated_at: new Date().toISOString() })
-        .eq('id', jobId)
-        .then(() => null).catch(() => null)
+    onProgress: async (done, total, _current) => {
+      await Promise.resolve(
+        supabase.from('seo_generation_jobs')
+          .update({ completed: done, total_routes: total, updated_at: new Date().toISOString() })
+          .eq('id', jobId)
+      ).catch(() => null)
     },
   }
 
   batchGenerate(opts).then(async (summary) => {
-    await supabase.from('seo_generation_jobs')
-      .update({
-        status:       'done',
-        total_routes: summary.total,
-        completed:    summary.succeeded + summary.reviewNeeded,
-        failed:       summary.failed,
-        finished_at:  new Date().toISOString(),
-      })
-      .eq('id', jobId)
-      .then(() => null).catch(() => null)
+    await Promise.resolve(
+      supabase.from('seo_generation_jobs')
+        .update({
+          status:       'done',
+          total_routes: summary.total,
+          completed:    summary.succeeded + summary.reviewNeeded,
+          failed:       summary.failed,
+          finished_at:  new Date().toISOString(),
+        })
+        .eq('id', jobId)
+    ).catch(() => null)
   }).catch(async (err) => {
-    await supabase.from('seo_generation_jobs')
-      .update({ status: 'error', error: String(err) })
-      .eq('id', jobId)
-      .then(() => null).catch(() => null)
+    await Promise.resolve(
+      supabase.from('seo_generation_jobs')
+        .update({ status: 'error', error: String(err) })
+        .eq('id', jobId)
+    ).catch(() => null)
   })
 
   return NextResponse.json({
