@@ -13,7 +13,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { headers } from 'next/headers'
@@ -86,7 +86,7 @@ function PartnerBadge({ partner }: { partner: string }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function AffiliatesAdminPage() {
-  if (!(await checkAdminAccess())) return notFound()
+  if (!(await checkAdminAccess())) redirect('/admin/login?from=/admin/affiliates')
 
   const supabase = getSupabase()
 

@@ -15,7 +15,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import { notFound } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -249,7 +249,7 @@ function statusBadge(status: string) {
 
 export default async function SEOAdminPage() {
   const isAdmin = await checkAdmin()
-  if (!isAdmin) notFound()
+  if (!isAdmin) redirect('/admin/login?from=/admin/seo')
 
   const d = await getDashboardData()
 
