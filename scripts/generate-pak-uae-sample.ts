@@ -10,7 +10,16 @@
  *   SUPABASE_SERVICE_ROLE_KEY
  */
 
-import 'dotenv/config'
+// Load .env.local (Next.js convention) without requiring the dotenv package
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
+try {
+  const envPath = resolve(process.cwd(), '.env.local')
+  readFileSync(envPath, 'utf-8').split('\n').forEach(line => {
+    const [key, ...rest] = line.split('=')
+    if (key && rest.length) process.env[key.trim()] = rest.join('=').trim()
+  })
+} catch { /* .env.local not found — assume env vars already set */ }
 import { generatePageContent, saveGeneratedContent } from '../lib/seo/contentGenerator'
 import type { ContentGenerationRequest } from '../lib/seo/contentGenerator'
 
