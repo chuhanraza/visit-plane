@@ -538,10 +538,37 @@ export default function HomePage() {
       })
   }, [passport])
 
+  const [redirecting, setRedirecting] = useState(false)
+  const [noPassportError, setNoPassportError] = useState(false)
+
   const canSubmit = passport && destination && passport !== destination
   const handleCheck = () => {
     if (!canSubmit) return
     router.push(`/visa/${nameToSlug(passport)}/${nameToSlug(destination)}`)
+  }
+
+  const handleDestinationChange = (dest: string) => {
+    if (!dest) return
+    if (!passport) {
+      setNoPassportError(true)
+      return
+    }
+    setDestination(dest)
+    setNoPassportError(false)
+    setRedirecting(true)
+    setTimeout(() => {
+      router.push(`/visa/${nameToSlug(passport)}/${nameToSlug(dest)}`)
+    }, 300)
+  }
+
+  const handlePillClick = (dest: string) => {
+    if (!passport) {
+      setNoPassportError(true)
+      return
+    }
+    setNoPassportError(false)
+    setRedirecting(true)
+    router.push(`/visa/${nameToSlug(passport)}/${nameToSlug(dest)}`)
   }
   const continents = Object.keys(CONTINENT_DESTINATIONS)
 
@@ -570,132 +597,196 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0c29] text-white antialiased overflow-x-hidden">
+    <div className="min-h-screen bg-[#FAFAF7] text-[#0F1419] antialiased overflow-x-hidden">
 
-      {/* ────────────────────── HERO ──────────────────────────────── */}
-      <section className="relative overflow-hidden pt-16 sm:pt-20 lg:pt-28 pb-0">
-        {/* Glow blobs */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute left-1/2 top-0 h-[700px] w-[1100px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.13),transparent_60%)]" />
-          <div className="absolute -left-48 top-48 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.07),transparent_70%)]" />
-          <div className="absolute -right-48 top-32 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.07),transparent_70%)]" />
-        </div>
-        {/* Grid */}
+      {/* ────────────────────── HERO (light off-white redesign) ──── */}
+      <section
+        className="relative overflow-hidden pb-0"
+        style={{ paddingTop: '40px', background: '#FAFAF7' }}
+      >
+        {/* Subtle radial accent — top-right corner only */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)',
-            backgroundSize: '64px 64px',
-          }}
-        />
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+          aria-hidden="true"
+        >
+          <div
+            className="absolute"
+            style={{
+              right: 0, top: 0, width: '70%', height: '100%',
+              background: 'radial-gradient(circle at 80% 0%, #ECFDF5 0%, transparent 60%)',
+            }}
+          />
+        </div>
 
         <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
+
+          {/* ── Trust banner ── */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55 }}
-            className="flex justify-center mb-6"
+            className="flex justify-center"
+            style={{ marginBottom: '32px' }}
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-400 backdrop-blur-sm">
-              <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-              Sourced from official embassy data. Always verify with the embassy before traveling.
-              <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+            <div
+              className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[13px] font-semibold"
+              style={{ borderColor: 'rgba(16,185,129,0.3)', background: '#F0FDF4', color: '#065f46' }}
+            >
+              <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+              Sourced from official embassy data. Always verify before traveling.
+              <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
             </div>
           </motion.div>
 
+          {/* ── H1 ── */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.08 }}
-            className="text-5xl font-extrabold leading-[1.06] tracking-tight sm:text-6xl lg:text-[5rem]"
+            className="font-extrabold leading-[1.06]"
+            style={{
+              fontSize: 'clamp(40px, 5vw, 64px)',
+              color: '#0F1419',
+              letterSpacing: '-0.02em',
+            }}
           >
-            <span className="text-white">Know Exactly Which Visa You Need</span>
+            Know Exactly Which Visa You Need
             <br />
-            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+            <span
+              style={{
+                background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
               — In 10 Seconds.
             </span>
           </motion.h1>
 
+          {/* ── Subtitle ── */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.16 }}
-            className="mx-auto mt-6 max-w-lg text-base text-white/45 sm:text-lg"
+            className="mx-auto max-w-lg text-base sm:text-lg"
+            style={{ color: '#4A5568', marginTop: '24px' }}
           >
             Free visa requirements for 197 countries. Updated daily from official embassy sources. No signup required.
           </motion.p>
 
-          {/* Search card */}
+          {/* ── Search card ── */}
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.24 }}
-            className="mx-auto mt-10 max-w-2xl"
+            className="mx-auto max-w-2xl"
+            style={{ marginTop: '40px' }}
           >
-            <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-2 backdrop-blur-sm shadow-2xl shadow-black/50">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/8 via-transparent to-cyan-500/8 pointer-events-none" />
-              <div className="relative rounded-xl bg-[#16122f] p-4">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div>
-                    <CountrySelect
-                      value={passport}
-                      onChange={(v) => { setPassport(v); setGeoBadgeDismissed(true) }}
-                      placeholder={geoLoading ? `🌍 ${t('common.loading')}` : t('hero.selectPassport')}
-                      label={t('hero.passportLabel')}
-                    />
-                    {passport && !geoBadgeDismissed && !geoLoading && (
-                      <div className="mt-1.5 flex items-center justify-between px-1">
-                        <span className="text-[10px] text-teal-400">
-                          📍 {t('hero.autoDetected')}
-                        </span>
-                        <button
-                          onClick={() => setGeoBadgeDismissed(true)}
-                          className="text-[10px] text-white/30 hover:text-white/60 transition"
-                        >
-                          {t('hero.notYou')} →
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                  <CountrySelect
-                    value={destination}
-                    onChange={setDestination}
-                    placeholder={
-                      !passport               ? t('hero.selectDestination') :
-                      loadingDests            ? 'Loading…'                  :
-                      destinations.length === 0 ? 'No destinations'         :
-                                                'Select destination'
-                    }
-                    label={t('hero.destinationLabel')}
-                    options={destinations.length > 0 ? destinations : undefined}
-                    disabled={!passport || loadingDests}
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={handleCheck}
-                  disabled={!canSubmit}
-                  className="group mt-3 flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:shadow-emerald-500/50 hover:from-emerald-600 hover:to-teal-600 disabled:from-white/8 disabled:to-white/5 disabled:text-white/25 disabled:shadow-none disabled:cursor-not-allowed"
-                >
-                  <PlaneIcon className="h-4 w-4 group-enabled:group-hover:translate-x-0.5 transition" />
-                  {t('hero.checkButton')}
-                </button>
-                {passport && destination && passport === destination && (
-                  <p className="mt-2 text-center text-xs text-amber-400">
-                    Please choose a different destination from your passport country.
-                  </p>
-                )}
-              </div>
+            {/* Screen-reader aria-live region for redirect feedback */}
+            <div aria-live="polite" className="sr-only">
+              {redirecting && 'Loading visa information, redirecting now.'}
+              {noPassportError && 'Please select your passport country first.'}
             </div>
 
-            {/* Smart popular pills — dynamic by detected passport country */}
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              <span className="text-xs text-white/25">{t('hero.popularLabel')}</span>
+            <div
+              className="rounded-2xl p-3"
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 4px 24px rgba(15, 20, 25, 0.06)',
+              }}
+            >
+              <div className="grid gap-3 sm:grid-cols-2">
+                {/* Passport */}
+                <div>
+                  <CountrySelect
+                    variant="light"
+                    value={passport}
+                    onChange={(v) => {
+                      setPassport(v)
+                      setGeoBadgeDismissed(true)
+                      setNoPassportError(false)
+                    }}
+                    placeholder={geoLoading ? '🌍 Detecting...' : t('hero.selectPassport')}
+                    label={t('hero.passportLabel')}
+                  />
+                  {passport && !geoBadgeDismissed && !geoLoading && (
+                    <div className="mt-1.5 flex items-center justify-between px-1">
+                      <span className="text-[10px] text-emerald-600">
+                        📍 {t('hero.autoDetected')}
+                      </span>
+                      <button
+                        onClick={() => setGeoBadgeDismissed(true)}
+                        className="text-[10px] text-gray-400 hover:text-gray-600 transition"
+                      >
+                        {t('hero.notYou')} →
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Destination — auto-redirects on select */}
+                <CountrySelect
+                  variant="light"
+                  value={destination}
+                  onChange={handleDestinationChange}
+                  placeholder={
+                    !passport               ? t('hero.selectDestination') :
+                    loadingDests            ? 'Loading…'                  :
+                    destinations.length === 0 ? 'No destinations'         :
+                                              'Traveling to...'
+                  }
+                  label={t('hero.destinationLabel')}
+                  options={destinations.length > 0 ? destinations : undefined}
+                  disabled={!passport || loadingDests}
+                />
+              </div>
+
+              {/* Inline messages */}
+              {noPassportError && (
+                <p className="mt-2 text-center text-xs font-semibold text-amber-600">
+                  Please select your passport first.
+                </p>
+              )}
+              {redirecting && (
+                <p className="mt-2 text-center text-xs font-semibold text-emerald-600 animate-pulse">
+                  Loading visa info...
+                </p>
+              )}
+              {passport && destination && passport === destination && (
+                <p className="mt-2 text-center text-xs text-amber-600">
+                  Please choose a different destination from your passport country.
+                </p>
+              )}
+
+              {/* Ghost fallback button */}
+              <button
+                type="button"
+                onClick={handleCheck}
+                disabled={!canSubmit}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border px-6 py-2.5 text-sm font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{
+                  borderColor: '#E2E8F0',
+                  color: '#4A5568',
+                }}
+                onMouseEnter={e => { if (canSubmit) { (e.currentTarget as HTMLElement).style.borderColor = '#10B981'; (e.currentTarget as HTMLElement).style.color = '#0F1419' } }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#E2E8F0'; (e.currentTarget as HTMLElement).style.color = '#4A5568' }}
+              >
+                <PlaneIcon className="h-4 w-4" />
+                {t('hero.checkButton')}
+              </button>
+            </div>
+
+            {/* Popular chips — auto-redirect on click */}
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+              <span className="text-sm" style={{ color: '#94A3B8' }}>Popular:</span>
               {(POPULAR_PILLS[countryName] ?? DEFAULT_PILLS).map((pill) => (
                 <button
                   key={pill.dest}
-                  onClick={() => setDestination(pill.dest)}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/45 transition hover:border-emerald-500/40 hover:text-white hover:bg-emerald-500/10"
+                  onClick={() => handlePillClick(pill.dest)}
+                  className="text-sm transition-all hover:underline hover:text-emerald-600"
+                  style={{ color: '#4A5568' }}
                 >
                   {pill.label}
                 </button>
@@ -714,8 +805,11 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        {/* Bottom fade */}
-        <div className="mt-20 h-24 bg-gradient-to-b from-transparent to-[#FAFAFA]" />
+        {/* Bottom fade — light → light */}
+        <div
+          className="mt-12 h-10"
+          style={{ background: 'linear-gradient(to bottom, transparent, #FAFAF7)' }}
+        />
       </section>
 
       {/* ────────────────────── LIVE TICKER ──────────────────────── */}
