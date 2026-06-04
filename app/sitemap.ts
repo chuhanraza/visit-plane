@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import { blogPosts } from '@/src/lib/posts'
+import { COUNTRIES, TOP_50_ROUTES, BY_ISO3 } from '@/lib/seo/countries'
+import { getSitemapPriority } from '@/lib/seo/internalLinks'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -144,60 +146,141 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     if (error || !data) return [...staticPages, ...blogPages]
 
-    // Template B: /{passport}-to-{destination}-visa-requirements (38,809 pages)
+    // Legacy visa pages: /visa/{passport}/{destination}
     const visaPages: MetadataRoute.Sitemap = data.map((row) => ({
       url: `${base}/visa/${encodeURIComponent(row.passport_country)}/${encodeURIComponent(row.country_name)}`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
-      priority: 0.8,
+      priority: 0.7,
     }))
 
-    // Unique passport countries
-    const passports = [...new Set(data.map((r) => r.passport_country))]
-    // Unique destination countries
-    const destinations = [...new Set(data.map((r) => r.country_name))]
+    // Unique passport countries from legacy data (for old templates)
+    const legacyPassports = [...new Set(data.map((r) => r.passport_country))]
+    const legacyDests     = [...new Set(data.map((r) => r.country_name))]
 
-    // Template A: /visa-free-countries-for-{nationality}-passport (197 pages)
-    const templateAPages: MetadataRoute.Sitemap = passports.map((passport) => ({
-      url: `${base}/visa-free-countries-for-${getNationality(passport)}-passport`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.85,
+    // ── NEW programmatic SEO templates (from lib/seo/countries.ts) ────────────
+
+    // Template 1: /visa-requirements-for-{nationality}-citizens-to-{destination}
+    // Priority scaled by traffic potential (high-traffic passport+dest combos get 0.95)
+    const template1Pages: MetadataRoute.Sitemap = TOP_50_ROUTES.flatMap(([passportIso, destIso]) => {
+      const pp   = BY_ISO3[passportIso]
+      const dest = BY_ISO3[destIso]
+      if (!pp || !dest) return []
+      return [{
+        url:             `${base}/visa-requirements-for-${pp.nationality}-citizens-to-${dest.slug}`,
+        lastModified:    new Date(),
+        changeFrequency: 'weekly' as const,
+        priority:        getSitemapPriority(1, passportIso, destIso),
+      }]
+    })
+
+    // Template 1: full matrix from seo_page_content (published pages only)
+    const { data: publishedT1 } = await supabase
+      .from('seo_page_content')
+      .select('url_slug, updated_at')
+      .eq('template', 'template1')
+      .eq('published', true)
+      .order('updated_at', { ascending: false })
+      .limit(20000)
+
+    const template1Full: MetadataRoute.Sitemap = (publishedT1 ?? []).map((row) => ({
+      url:             `${base}/${row.url_slug}`,
+      lastModified:    new Date(row.updated_at),
+      changeFrequency: 'weekly' as const,
+      priority:        0.85,
     }))
 
-    // Template C: /visa-requirements-for-{nationality}-citizens (197 pages)
-    const templateCPages: MetadataRoute.Sitemap = passports.map((passport) => ({
+    // Template 2: /visa-free-countries-for-{nationality}-passport
+    const template2Pages: MetadataRoute.Sitemap = COUNTRIES.map((c) => ({
+      url:             `${base}/visa-free-countries-for-${c.nationality}-passport`,
+      lastModified:    new Date(),
+      changeFrequency: 'weekly' as const,
+      priority:        getSitemapPriority(2, c.iso3),
+    }))
+
+    // Template 3: /cheapest-visas-from-{slug}-passport
+    const template3Pages: MetadataRoute.Sitemap = COUNTRIES.map((c) => ({
+      url:             `${base}/cheapest-visas-from-${c.slug}-passport`,
+      lastModified:    new Date(),
+      changeFrequency: 'weekly' as const,
+      priority:        getSitemapPriority(3, c.iso3),
+    }))
+
+    // Template 4: /{destination}-visa-guide-for-{nounPlural}
+    const template4Pages: MetadataRoute.Sitemap = TOP_50_ROUTES.flatMap(([passportIso, destIso]) => {
+      const pp   = BY_ISO3[passportIso]
+      const dest = BY_ISO3[destIso]
+      if (!pp || !dest) return []
+      return [{
+        url:             `${base}/${dest.slug}-visa-guide-for-${pp.nounPlural}`,
+        lastModified:    new Date(),
+        changeFrequency: 'weekly' as const,
+        priority:        getSitemapPriority(4, passportIso, destIso),
+      }]
+    })
+
+    // Template 4: full published matrix
+    const { data: publishedT4 } = await supabase
+      .from('seo_page_content')
+      .select('url_slug, updated_at')
+      .eq('template', 'template4')
+      .eq('published', true)
+      .order('updated_at', { ascending: false })
+      .limit(20000)
+
+    const template4Full: MetadataRoute.Sitemap = (publishedT4 ?? []).map((row) => ({
+      url:             `${base}/${row.url_slug}`,
+      lastModified:    new Date(row.updated_at),
+      changeFrequency: 'weekly' as const,
+      priority:        0.9,
+    }))
+
+    // Legacy old templates (kept for backwards compat)
+    const oldTemplateAPages: MetadataRoute.Sitemap = legacyPassports.map((passport) => ({
       url: `${base}/visa-requirements-for-${getNationality(passport)}-citizens`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
-      priority: 0.85,
+      priority: 0.75,
     }))
 
-    // Template D: /cheapest-visa-from-{passport} (197 pages)
-    const templateDPages: MetadataRoute.Sitemap = passports.map((passport) => ({
+    const oldTemplateDPages: MetadataRoute.Sitemap = legacyPassports.map((passport) => ({
       url: `${base}/cheapest-visa-from-${getNationality(passport)}-passport`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
-      priority: 0.8,
+      priority: 0.7,
     }))
 
-    // Destination hub pages: /destinations/{country} (197 pages)
-    const destinationHubPages: MetadataRoute.Sitemap = destinations.map((dest) => ({
+    const destinationHubPages: MetadataRoute.Sitemap = legacyDests.map((dest) => ({
       url: `${base}/destinations/${encodeURIComponent(dest)}`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
       priority: 0.75,
     }))
 
-    return [
+    // Deduplicate by URL
+    const allPages = [
       ...staticPages,
       ...blogPages,
+      ...template1Pages,
+      ...template1Full,
+      ...template2Pages,
+      ...template3Pages,
+      ...template4Pages,
+      ...template4Full,
       ...visaPages,
-      ...templateAPages,
-      ...templateCPages,
-      ...templateDPages,
+      ...oldTemplateAPages,
+      ...oldTemplateDPages,
       ...destinationHubPages,
     ]
+
+    const seen = new Set<string>()
+    const deduped = allPages.filter(p => {
+      if (seen.has(p.url)) return false
+      seen.add(p.url)
+      return true
+    })
+
+    return deduped
   } catch {
     return [...staticPages, ...blogPages]
   }
