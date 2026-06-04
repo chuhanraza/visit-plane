@@ -22,13 +22,18 @@ export const dynamic = 'force-dynamic'
 // Simple header-based secret. For production, replace with proper auth.
 import { headers } from 'next/headers'
 
+function parseCookie(cookieHeader: string, name: string): string {
+  const match = cookieHeader.split(';').map(c => c.trim())
+    .find(c => c.startsWith(`${name}=`))
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : ''
+}
+
 async function checkAdminAccess() {
   const hdrs = await headers()
-  const secret = hdrs.get('x-admin-secret')
-  // Also accept via cookie (set after login)
+  const secret = hdrs.get('x-admin-secret') ?? ''
   const cookie = hdrs.get('cookie') ?? ''
-  const cookieOk = cookie.includes(`admin_secret=${process.env.ADMIN_SECRET}`)
-  return secret === process.env.ADMIN_SECRET || cookieOk
+  const cookieVal = parseCookie(cookie, 'admin_secret')
+  return secret === process.env.ADMIN_SECRET || cookieVal === process.env.ADMIN_SECRET
 }
 
 // ─── Data fetching ────────────────────────────────────────────────────────────

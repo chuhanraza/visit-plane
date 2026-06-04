@@ -22,12 +22,18 @@ export const metadata: Metadata = { title: 'Affiliate Analytics — VisitPlane A
 export const dynamic = 'force-dynamic'
 
 // ─── Auth guard ───────────────────────────────────────────────────────────────
+function parseCookie(cookieHeader: string, name: string): string {
+  const match = cookieHeader.split(';').map(c => c.trim())
+    .find(c => c.startsWith(`${name}=`))
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : ''
+}
+
 async function checkAdminAccess() {
   const hdrs = await headers()
-  const secret = hdrs.get('x-admin-secret')
+  const secret = hdrs.get('x-admin-secret') ?? ''
   const cookie = hdrs.get('cookie') ?? ''
-  const cookieOk = cookie.includes(`admin_secret=${process.env.ADMIN_SECRET}`)
-  return secret === process.env.ADMIN_SECRET || cookieOk
+  const cookieVal = parseCookie(cookie, 'admin_secret')
+  return secret === process.env.ADMIN_SECRET || cookieVal === process.env.ADMIN_SECRET
 }
 
 function getSupabase() {
