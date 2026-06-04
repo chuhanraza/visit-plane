@@ -11,7 +11,6 @@
  *  - Quality gates run automatically; failures go to review queue
  */
 
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai'
 import { createClient } from '@supabase/supabase-js'
 import { COUNTRIES, BY_ISO3 } from './countries'
 import { runQualityGates, type QualityResult } from './qualityGates'
@@ -54,12 +53,40 @@ type ContentSource = {
   type: 'mofa' | 'embassy' | 'evisa_portal' | 'official' | 'other'
 }
 
-// ─── Gemini client ────────────────────────────────────────────────────────────
+// ─── Groq client (OpenAI-compatible, free tier: 14,400 req/day) ──────────────
 
-function getGemini() {
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) throw new Error('GEMINI_API_KEY not set')
-  return new GoogleGenerativeAI(apiKey)
+async function callGroq(prompt: string): Promise<string> {
+  const apiKey = process.env.GROQ_API_KEY
+  if (!apiKey) throw new Error('GROQ_API_KEY not set — get a free key at console.groq.com')
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a senior travel writer and visa expert. Always respond with valid JSON only — no markdown, no preamble, no explanation.',
+        },
+        { role: 'user', content: prompt },
+      ],
+      temperature: 0.7,
+      max_tokens: 4096,
+      response_format: { type: 'json_object' },
+    }),
+  })
+
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Groq API error ${res.status}: ${err}`)
+  }
+
+  const data = await res.json() as { choices: Array<{ message: { content: string } }> }
+  return data.choices[0].message.content
 }
 
 function getSupabase() {
@@ -322,24 +349,7 @@ export async function generatePageContent(
   const prompt = buildPrompt(req.template, passportCountry, destinationCountry)
 
   try {
-    const genAI = getGemini()
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash',
-      safetySettings: [
-        { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
-        { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
-      ],
-      generationConfig: {
-        temperature: 0.7,        // Balanced — creative but factual
-        topP: 0.95,
-        topK: 40,
-        maxOutputTokens: 4096,
-        responseMimeType: 'application/json',
-      },
-    })
-
-    const result = await model.generateContent(prompt)
-    const text   = result.response.text().trim()
+    const text = await callGroq(prompt)
 
     let content: GeneratedContent
     try {
@@ -347,7 +357,7 @@ export async function generatePageContent(
     } catch {
       // Try to extract JSON if wrapped in markdown
       const jsonMatch = text.match(/```json\s*([\s\S]+?)\s*```/) ?? text.match(/\{[\s\S]+\}/)
-      if (!jsonMatch) return { success: false, error: 'Failed to parse Gemini JSON response' }
+      if (!jsonMatch) return { success: false, error: 'Failed to parse Groq JSON response' }
       content = JSON.parse(jsonMatch[1] ?? jsonMatch[0])
     }
 
