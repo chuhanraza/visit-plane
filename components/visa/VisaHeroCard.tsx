@@ -47,7 +47,7 @@ function resolveApplyUrl(record: VisaRecord, destinationName: string): string {
 
 function resolveSmartFee(record: VisaRecord, visaType: string): string {
   if (/free|no visa/i.test(visaType)) return 'Free'
-  const raw = (record.price ?? record.fee ?? record.cost ?? '').toString().trim()
+  const raw = (record.price ?? record.fee ?? record.cost ?? (record as Record<string, unknown>).pricing ?? '').toString().trim()
   if (!raw || /n\/a|contact|check/i.test(raw)) return 'Check official source'
   if (/^\$/.test(raw)) return raw
   if (/^\d/.test(raw)) return `$${raw}`
