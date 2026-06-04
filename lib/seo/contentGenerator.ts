@@ -485,9 +485,9 @@ export async function batchGenerate(opts: BatchOptions): Promise<{
     await Promise.all(batch.map(async (route) => {
       const label = `${route.passportIso}→${route.destinationIso ?? '(passport-only)'}`
       try {
-        const result = await generatePageContent({ template, ...route })
+        const result = await generatePageContent(route)
         if (result.success && result.content && result.qualityResult) {
-          await saveGeneratedContent({ template, ...route }, result.content, result.qualityResult)
+          await saveGeneratedContent(route, result.content, result.qualityResult)
           if (result.qualityResult.passed) stats.succeeded++
           else stats.reviewNeeded++
         } else {
