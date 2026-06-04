@@ -28,19 +28,19 @@ const ROUTES: Array<ContentGenerationRequest & { slug: string }> = [
     template: 'template1',
     passportIso: 'PAK',
     destinationIso: 'ARE',
-    forceRegenerate: true,
+    forceRegenerate: false,
     slug: 'visa-requirements-for-pakistani-citizens-to-uae',
   },
   {
     template: 'template2',
     passportIso: 'PAK',
-    forceRegenerate: true,
+    forceRegenerate: false,
     slug: 'visa-free-countries-for-pakistani-passport',
   },
   {
     template: 'template3',
     passportIso: 'PAK',
-    forceRegenerate: true,
+    forceRegenerate: false,
     slug: 'cheapest-visas-from-pakistan-passport',
   },
   {
@@ -85,8 +85,9 @@ async function main() {
         console.log(`   ⚠  Save error: ${saved.error}`)
       }
 
-      // Rate limit
-      await new Promise(r => setTimeout(r, 2000))
+      // Rate limit — Groq free tier: 12,000 TPM, wait 20s between calls
+      console.log(`   ⏳ Waiting 20s (rate limit)...`)
+      await new Promise(r => setTimeout(r, 20000))
 
     } catch (err) {
       console.error(`   ❌ ERROR:`, err instanceof Error ? err.message : err)
