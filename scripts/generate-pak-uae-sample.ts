@@ -28,19 +28,19 @@ const ROUTES: Array<ContentGenerationRequest & { slug: string }> = [
     template: 'template1',
     passportIso: 'PAK',
     destinationIso: 'ARE',
-    forceRegenerate: false,
+    forceRegenerate: true,
     slug: 'visa-requirements-for-pakistani-citizens-to-uae',
   },
   {
     template: 'template2',
     passportIso: 'PAK',
-    forceRegenerate: false,
+    forceRegenerate: true,
     slug: 'visa-free-countries-for-pakistani-passport',
   },
   {
     template: 'template3',
     passportIso: 'PAK',
-    forceRegenerate: false,
+    forceRegenerate: true,
     slug: 'cheapest-visas-from-pakistan-passport',
   },
   {

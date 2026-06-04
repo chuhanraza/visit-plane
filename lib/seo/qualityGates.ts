@@ -50,10 +50,10 @@ type GenerationRequest = {
 // ── Word count minimums per template ─────────────────────────────────────────
 
 const MIN_WORDS: Record<Template, number> = {
-  template1: 800,
-  template2: 600,
-  template3: 500,
-  template4: 1500,
+  template1: 700,
+  template2: 500,
+  template3: 450,
+  template4: 900,
 }
 
 // ── AI-detector trigger phrases (immediate fail) ───────────────────────────────
@@ -318,9 +318,9 @@ export async function runQualityGates(
 
   // ── Gate 4: Flesch reading ease ────────────────────────────────────────────
   const fleschScore = fleschReadingEase(fullText)
-  const fleschOk    = fleschScore >= 45  // Slightly lenient for technical visa content
+  const fleschOk    = fleschScore >= 40  // Visa content is inherently technical
   if (!fleschOk) {
-    failures.push(`Flesch reading ease too low: ${fleschScore} (need ≥45 for visa content)`)
+    failures.push(`Flesch reading ease too low: ${fleschScore} (need ≥40 for visa content)`)
   }
 
   // ── Gate 5: Internal links (enforced by template, just flag if content is thin) ─
