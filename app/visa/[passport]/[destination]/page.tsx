@@ -3,6 +3,9 @@ import type { Metadata } from 'next'
 import DisclaimerBanner from '../../../components/DisclaimerBanner'
 import VisaPageClient, { type VisaRecord } from './VisaPageClient'
 
+// Force dynamic rendering — always fetch fresh data from Supabase
+export const dynamic = 'force-dynamic'
+
 // ─── Country lookup (by 2-letter code) ────────────────────────────────────────
 const COUNTRY_MAP: Record<string, { name: string; flag: string }> = {
   us: { name: 'United States',  flag: '🇺🇸' },
@@ -101,6 +104,7 @@ async function fetchAllVisaTypes(passportName: string, destinationName: string):
     .select('*')
     .ilike('passport_country', passportName)
     .ilike('country_name', destinationName)
+    .order('id', { ascending: true })
     .limit(20)
   if (error) { console.error('Supabase error:', error); return [] }
   return (data ?? []) as VisaRecord[]
