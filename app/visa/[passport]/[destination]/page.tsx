@@ -82,8 +82,16 @@ async function fetchOtherPassports(destinationName: string, excludePassport: str
     .select('passport_country')
     .ilike('country_name', destinationName)
     .neq('passport_country', excludePassport)
-    .limit(5)
-  return (data ?? []).map((r) => r.passport_country)
+    .limit(25) // fetch extra to account for duplicates across visa types
+  // Deduplicate — the destinations table has multiple rows per country (one per visa type)
+  const seen = new Set<string>()
+  const unique: string[] = []
+  for (const r of (data ?? [])) {
+    const name = r.passport_country
+    if (name && !seen.has(name)) { seen.add(name); unique.push(name) }
+    if (unique.length >= 5) break
+  }
+  return unique
 }
 
 async function fetchRelatedDestinations(passportName: string, excludeDestination: string): Promise<string[]> {
@@ -93,8 +101,16 @@ async function fetchRelatedDestinations(passportName: string, excludeDestination
     .select('country_name')
     .ilike('passport_country', passportName)
     .neq('country_name', excludeDestination)
-    .limit(6)
-  return (data ?? []).map((r) => r.country_name)
+    .limit(25) // fetch extra to account for duplicates across visa types
+  // Deduplicate — the destinations table has multiple rows per country (one per visa type)
+  const seen = new Set<string>()
+  const unique: string[] = []
+  for (const r of (data ?? [])) {
+    const name = r.country_name
+    if (name && !seen.has(name)) { seen.add(name); unique.push(name) }
+    if (unique.length >= 5) break
+  }
+  return unique
 }
 
 async function fetchAllVisaTypes(passportName: string, destinationName: string): Promise<VisaRecord[]> {

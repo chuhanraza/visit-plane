@@ -307,10 +307,10 @@ export default function SiteHeader() {
             </svg>
           </button>
 
-          {/* Smart CTA */}
+          {/* Smart CTA — desktop only (md+). Mobile CTA lives inside the mobile menu. */}
           <button
             onClick={handleCta}
-            className="hidden sm:inline-flex items-center gap-2 rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:shadow-teal-500/40 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0c29]"
+            className="hidden md:inline-flex items-center gap-2 rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:shadow-teal-500/40 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0c29]"
           >
             Check My Visa →
           </button>

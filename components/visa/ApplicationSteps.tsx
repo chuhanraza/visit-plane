@@ -64,8 +64,20 @@ function resolveSteps(record: VisaRecord, passportName: string, destinationName:
   const visaType = (record.visa_type ?? record.type ?? '').toString().toLowerCase()
   const isFree     = /free|no visa/i.test(visaType)
   const isArrival  = /arrival/i.test(visaType)
-  const fee        = (record.price ?? record.fee ?? record.cost ?? '').toString().trim()
-  const feeDisplay = fee && !/n\/a|contact/i.test(fee) ? (/^\$/.test(fee) ? fee : `$${fee}`) : '$90'
+  // Mirror VisaHeroCard.resolveSmartFee exactly — read `pricing` field just as the hero card does
+  const rawFee = (
+    record.price ??
+    record.fee ??
+    record.cost ??
+    (record as Record<string, unknown>).pricing as string ??
+    ''
+  ).toString().trim()
+  const feeResolved: string | null = isFree
+    ? 'Free'
+    : rawFee && !/n\/a|contact|check/i.test(rawFee)
+      ? (/^\$/.test(rawFee) ? rawFee : /^\d/.test(rawFee) ? `$${rawFee}` : rawFee)
+      : null
+  const feeDisplay = feeResolved ?? 'check official portal'
   const processing = (record.processing_time ?? '3–5 business days').toString()
   const applyInfo  = resolveApplyInfo(destinationName, record)
 
@@ -83,7 +95,7 @@ function resolveSteps(record: VisaRecord, passportName: string, destinationName:
       { num: '✅', emoji: '✅', title: 'Check eligibility', summary: `${passportName} passport holders qualify for visa on arrival`, status: 'done' },
       { num: 2, emoji: '📋', title: 'Prepare documents', summary: 'Gather passport, photo, return ticket, proof of funds', detail: 'Pack a small envelope with your airport documents for easy access at immigration.' },
       { num: 3, emoji: '✈️', title: 'Fly to your destination', summary: 'Book and board your flight — no pre-approval required' },
-      { num: 4, emoji: '🏦', title: 'Pay visa fee on arrival', summary: `Pay ${feeDisplay} in cash at the airport counter`, detail: 'Most airports only accept USD or local currency. Bring exact change if possible.' },
+      { num: 4, emoji: '🏦', title: 'Pay visa fee on arrival', summary: feeResolved ? `Pay ${feeDisplay} in cash at the airport counter` : 'Pay the visa fee in cash at the airport counter (check official source for current amount)', detail: 'Most airports only accept USD or local currency. Bring exact change if possible.' },
       { num: 5, emoji: '🛂', title: 'Get your visa stamp', summary: 'Immigration officer reviews documents and stamps your passport', detail: 'The process typically takes 5–20 minutes depending on queue length.' },
     ]
   }
@@ -115,8 +127,10 @@ function resolveSteps(record: VisaRecord, passportName: string, destinationName:
     {
       num: 4,
       emoji: '💳',
-      title: `Pay ${feeDisplay} visa fee`,
-      summary: 'Pay by credit or debit card through the official portal',
+      title: feeResolved ? `Pay ${feeDisplay} visa fee` : 'Pay visa fee',
+      summary: feeResolved
+        ? `Pay ${feeDisplay} by credit or debit card through the official portal`
+        : 'Pay the required fee by credit or debit card through the official portal (see fee at portal)',
       detail: 'Only pay through the official government portal. Third-party services may charge extra fees. Save your payment receipt.',
     },
     {
