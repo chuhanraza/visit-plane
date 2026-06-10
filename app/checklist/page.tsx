@@ -321,6 +321,26 @@ export default function ChecklistPage() {
   const [dbVisaName, setDbVisaName]       = useState('')
   const [copied, setCopied]               = useState(false)
 
+  // ── localStorage key for this checklist ───────────────────────────────────
+  const lsKey = passport && destination ? `vp_checklist_${passport}_${destination}_${visaType}` : null
+
+  // ── Restore checked state from localStorage on checklist generation ────────
+  useEffect(() => {
+    if (!lsKey) return
+    try {
+      const saved = localStorage.getItem(lsKey)
+      if (saved) setChecked(JSON.parse(saved))
+    } catch { /* ignore */ }
+  }, [lsKey])
+
+  // ── Persist checked state to localStorage whenever it changes ─────────────
+  useEffect(() => {
+    if (!lsKey || Object.keys(checked).length === 0) return
+    try {
+      localStorage.setItem(lsKey, JSON.stringify(checked))
+    } catch { /* ignore */ }
+  }, [checked, lsKey])
+
   // ── Auto-detect country from IP
   useEffect(() => {
     if (countryName && !geoLoading && !passport) {
@@ -381,8 +401,11 @@ export default function ChecklistPage() {
       setProcessingTime(time)
       setVisaFee(fee)
       setDbVisaName(name)
-      // Reset checkboxes
+      // Reset checkboxes (also clear any old localStorage entry for this key)
       setChecked({})
+      if (lsKey) {
+        try { localStorage.removeItem(lsKey) } catch { /* ignore */ }
+      }
     } catch {
       setDocuments(fallbackDocs)
       setProcessingTime(fallbackTime)

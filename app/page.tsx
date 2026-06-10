@@ -683,7 +683,7 @@ export default function HomePage() {
             className="mx-auto max-w-lg text-base sm:text-lg"
             style={{ color: '#4A5568', marginTop: '24px' }}
           >
-            Free visa requirements for 197 countries. Updated daily from official embassy sources. No signup required.
+            Free visa requirements for 197 countries. Sourced from official embassy data, verified per route. No signup required.
           </motion.p>
 
           {/* ── Search card ── */}
@@ -905,7 +905,7 @@ export default function HomePage() {
             {[
               { icon: '✓', text: 'Free Forever' },
               { icon: '✓', text: '197 Countries Covered' },
-              { icon: '✓', text: 'Updated Daily' },
+              { icon: '✓', text: 'Embassy-Verified Data' },
               { icon: '✓', text: 'No Registration Required' },
               { icon: '✓', text: 'Official Embassy Sources' },
             ].map((item) => (
