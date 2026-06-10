@@ -314,13 +314,13 @@ export default function CountrySelect({
   // ─── Style tokens ───────────────────────────────────────────────────────────
   const triggerBase = isDark
     ? 'bg-[#16122f] border-white/10 hover:border-teal-500/50'
-    : 'bg-white border-gray-200 hover:border-teal-400/70 shadow-sm'
+    : 'bg-white border-[#E2E8F0] hover:border-[#10B981] shadow-sm'
 
   const triggerOpen = isDark
     ? 'border-teal-500 ring-2 ring-teal-500/20'
-    : 'border-teal-500 ring-2 ring-teal-500/20'
+    : 'border-[#10B981] ring-2 ring-[#10B981]/20'
 
-  const triggerText = isDark ? 'text-white' : 'text-[#0f0c29]'
+  const triggerText = isDark ? 'text-white' : 'text-[#0F1419]'
   const triggerPlaceholder = isDark ? 'text-gray-400' : 'text-gray-400'
 
   const dropdownBg = isDark
@@ -339,15 +339,15 @@ export default function CountrySelect({
 
   const itemBase = isDark
     ? 'border-white/5 text-white hover:bg-teal-500/10'
-    : 'border-gray-100 text-[#0f0c29] hover:bg-teal-50'
+    : 'border-[#E2E8F0] text-[#0F1419] hover:bg-[#F1F5F9]'
 
   const itemSelected = isDark
     ? 'bg-teal-500/20 text-teal-400'
-    : 'bg-teal-50 text-teal-700'
+    : 'bg-emerald-50 text-emerald-700'
 
-  const itemHighlighted = isDark ? 'bg-teal-500/10' : 'bg-teal-50/70'
+  const itemHighlighted = isDark ? 'bg-teal-500/10' : 'bg-[#F1F5F9]'
 
-  const itemNameHover = isDark ? 'group-hover:text-teal-300' : 'group-hover:text-teal-600'
+  const itemNameHover = isDark ? 'group-hover:text-teal-300' : 'group-hover:text-emerald-600'
 
   const footerBg = isDark
     ? 'bg-[#16122f] border-white/10 text-gray-500'
@@ -377,7 +377,8 @@ export default function CountrySelect({
         }}
         className={[
           'w-full flex items-center justify-between',
-          'px-4 py-3 rounded-xl border transition-all duration-200',
+          isDark ? 'px-4 py-3' : 'px-4 py-[14px] min-h-[56px] text-base',
+          'rounded-xl border transition-all duration-200',
           triggerBase,
           isOpen ? triggerOpen : '',
           disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
@@ -445,7 +446,7 @@ export default function CountrySelect({
           </div>
 
           {/* Countries list */}
-          <div ref={listRef} className="max-h-64 overflow-y-auto">
+          <div ref={listRef} className={isDark ? 'max-h-64 overflow-y-auto' : 'max-h-[320px] overflow-y-auto'}>
             {filtered.length === 0 ? (
               <div className="px-4 py-8 text-center">
                 <span className="text-3xl">🔍</span>
@@ -475,7 +476,7 @@ export default function CountrySelect({
                     {/* Left: checkmark + name */}
                     <div className="flex items-center gap-3 min-w-0">
                       {isSelected ? (
-                        <svg className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-teal-400' : 'text-teal-600'}`}
+                        <svg className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-teal-400' : 'text-emerald-600'}`}
                           fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
@@ -517,7 +518,7 @@ function highlightMatch(text: string, search: string, isDark: boolean) {
   return (
     <>
       {text.slice(0, index)}
-      <span className={`font-bold ${isDark ? 'text-teal-400' : 'text-teal-600'}`}>
+      <span className={`font-bold ${isDark ? 'text-teal-400' : 'text-emerald-600'}`}>
         {text.slice(index, index + search.length)}
       </span>
       {text.slice(index + search.length)}

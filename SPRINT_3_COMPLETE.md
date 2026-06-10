@@ -1,6 +1,6 @@
 # Sprint 3 Complete — Homepage Light Redesign + Auto-Redirect Search
 
-**Completed:** 2026-06-10  
+**Completed:** 2026-06-10 (CountrySelect light variant updated 12:46 PM)  
 **Branch:** main  
 
 ---
@@ -24,6 +24,17 @@ Added light color system under `:root`:
 - Subtitle: 197 countries, updated daily, no signup
 - Search card: white `#FFFFFF` background, 16px border-radius, soft shadow
 - Entire hero + search bar visible above fold at 1440×900
+
+### Phase 3 — CountrySelect Light Variant (`components/CountrySelect.tsx`)
+Updated light variant to match Phase 3 spec exactly:
+- **Hover border**: `hover:border-[#10B981]` (was teal-400/70)
+- **Focus ring**: `ring-2 ring-[#10B981]/20` + `border-[#10B981]` on open (was teal-500)
+- **Input height**: `min-h-[56px] py-[14px] text-base` (16px font, ~56px tall — was py-3/~46px)
+- **Dropdown max-height**: `max-h-[320px]` (was max-h-64/256px)
+- **Item hover bg**: `hover:bg-[#F1F5F9]` (was teal-50)
+- **Item highlight**: `bg-[#F1F5F9]` (was teal-50/70)
+- **Selected/match text**: `text-emerald-600` (was teal-600)
+- **Border color**: `border-[#E2E8F0]` (matches --border-soft variable)
 
 ### Phase 3 — Auto-Redirect Search (verified in `app/page.tsx`)
 - Passport dropdown: updates state only, no redirect
