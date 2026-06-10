@@ -174,8 +174,8 @@ const CONTINENT_DESTINATIONS: Record<string, { name: string; flag: string; visa:
 
 const STATS = [
   { value: '197', label: 'Countries Covered', icon: '🌍' },
-  { value: '10,000+', label: 'Travelers Helped', icon: '✈️' },
-  { value: '24/7', label: 'Support', icon: '🛟' },
+  { value: '6',   label: 'Free Tools',        icon: '🛠️' },
+  { value: 'Free', label: 'No Signup Required', icon: '🔓' },
 ]
 
 const FEATURES = [
@@ -337,8 +337,6 @@ const LIVE_SEARCHES = [
 ]
 
 function LiveTicker() {
-  // Duplicate entries for seamless loop
-  const items = [...LIVE_SEARCHES, ...LIVE_SEARCHES]
   return (
     <div className="bg-[#0f0c29] border-y border-white/5 py-3 overflow-hidden">
       <div className="flex items-center gap-6">
@@ -353,13 +351,26 @@ function LiveTicker() {
         <div className="flex-1 overflow-hidden">
           <div
             className="flex gap-8 whitespace-nowrap"
-            style={{
-              animation: 'ticker-scroll 40s linear infinite',
-            }}
+            style={{ animation: 'ticker-scroll 40s linear infinite' }}
           >
-            {items.map((item, i) => (
+            {/* Primary set — read by screen readers */}
+            {LIVE_SEARCHES.map((item, i) => (
               <span
                 key={i}
+                className="inline-flex items-center gap-2 text-sm text-white/50 shrink-0"
+              >
+                <span className="text-white/70">{item.from}</span>
+                <span className="text-white/25">→</span>
+                <span className="text-white/70">{item.to}</span>
+                <span className="text-[11px] text-white/25 ml-1">{item.ago}</span>
+                <span className="text-white/10 ml-2">·</span>
+              </span>
+            ))}
+            {/* Duplicate set — visual loop only, hidden from assistive tech */}
+            {LIVE_SEARCHES.map((item, i) => (
+              <span
+                key={`dup-${i}`}
+                aria-hidden="true"
                 className="inline-flex items-center gap-2 text-sm text-white/50 shrink-0"
               >
                 <span className="text-white/70">{item.from}</span>
@@ -868,7 +879,7 @@ export default function HomePage() {
       {/* ────────────────────── STATS BAR ────────────────────────── */}
       <section className="border-y border-gray-200 bg-[#FAFAFA]">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 divide-x divide-gray-200 sm:grid-cols-4">
+          <div className="grid grid-cols-1 divide-y divide-gray-200 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
             {STATS.map((s, i) => (
               <motion.div
                 key={s.label}

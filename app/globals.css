@@ -45,6 +45,18 @@
 :root {
   --background: #060C18;
   --foreground: #ffffff;
+
+  /* ── Sprint 3 light color system ────────────────────────── */
+  --bg-primary:     #FAFAF7;
+  --bg-secondary:   #FFFFFF;
+  --bg-accent:      #ECFDF5;
+  --text-primary:   #0F1419;
+  --text-secondary: #4A5568;
+  --text-tertiary:  #94A3B8;
+  --accent-green:   #10B981;
+  --accent-cyan:    #06B6D4;
+  --border-soft:    #E2E8F0;
+  --shadow-soft:    0 4px 24px rgba(15, 20, 25, 0.06);
 }
 
 @theme inline {
