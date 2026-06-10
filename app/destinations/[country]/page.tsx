@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { ALL_COUNTRIES } from '../DestinationsClient'
+import { ALL_COUNTRIES } from '../data'
 import DestinationCountryClient from './DestinationCountryClient'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
