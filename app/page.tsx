@@ -516,7 +516,7 @@ export default function HomePage() {
   const [geoApplied, setGeoApplied] = useState(false)
   const [emailInput, setEmailInput] = useState('')
   const [emailStatus, setEmailStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-  const [emailConsent, setEmailConsent] = useState(true)
+  const [emailConsent, setEmailConsent] = useState(false)
 
   const { countryName, countryCode, loading: geoLoading } = useUserCountry()
 
@@ -835,8 +835,9 @@ export default function HomePage() {
               We&apos;ll notify you when visa rules change for your passport + destination combo.
             </p>
             {emailStatus === 'success' ? (
-              <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm font-semibold text-emerald-700">
-                ✓ You&apos;re on the list! We&apos;ll alert you when visa rules change.
+              <div className="mt-5 rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-4 text-center">
+                <p className="text-sm font-bold text-emerald-700">✓ Check your email to confirm</p>
+                <p className="mt-1 text-xs text-emerald-600">We sent a confirmation link. Click it to activate your alerts.</p>
               </div>
             ) : (
               <form onSubmit={handleEmailSubmit} className="mt-5 flex flex-col gap-3">

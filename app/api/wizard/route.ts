@@ -1,127 +1,136 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// ── Hardcoded decision-tree fallback (used when Claude API is unavailable) ─────
-function buildFallbackResponse(
+// ── In-memory cache for Gemini results (24h TTL per state hash) ───────────────
+const cache = new Map<string, { insight: string; ts: number }>()
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
+
+// ── IP-based rate limiting (10 wizard runs / IP / hour) ───────────────────────
+const rateLimits = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT = 10
+const RATE_WINDOW_MS = 60 * 60 * 1000 // 1 hour
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimits.get(ip)
+  if (!entry || now > entry.resetAt) {
+    rateLimits.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
+    return true
+  }
+  if (entry.count >= RATE_LIMIT) return false
+  entry.count++
+  return true
+}
+
+function stateHash(passport: string, destination: string, purpose: string, duration: string): string {
+  return `${passport}|${destination}|${purpose}|${duration}`
+}
+
+// ── Gemini Flash prompt ────────────────────────────────────────────────────────
+async function callGemini(
   passport: string,
   destination: string,
   purpose: string,
   duration: string,
   travelDate: string,
-): string {
-  const purposeLabel = purpose.replace(/^[^\s]+\s/, '')
-  const durationLabel = duration.replace(/^[^\s]+\s/, '')
-  const isUrgent = travelDate.toLowerCase().includes('2 weeks')
+  visaDataJson: string
+): Promise<string | null> {
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) return null
 
-  const urgentNote = isUrgent
-    ? '\n\n⚡ **Urgent Travel Note:** You mentioned traveling within 2 weeks. Apply immediately and request express/priority processing if available.'
-    : ''
+  const prompt = `You are a visa expert. A ${passport} citizen wants to visit ${destination} for ${purpose}, staying ${duration} days${travelDate ? `, traveling on ${travelDate}` : ''}.
 
-  return `🛂 **Visa Guidance: ${passport} → ${destination}**
+Given this visa data: ${visaDataJson}
 
-Based on your answers, here is your personalised visa summary:
+Generate a concise, friendly response with exactly these 4 sections:
+1. A 2-sentence personalized summary of their specific situation
+2. Top 3 "things to know" specific to this passport/destination route
+3. One practical warning or pro-tip
+4. Estimated total trip cost hint (visa fee + rough flight/hotel estimate if possible)
 
-📋 **Your Trip Details**
-• Passport: ${passport}
-• Destination: ${destination}
-• Purpose: ${purposeLabel}
-• Planned stay: ${durationLabel}
-• Travel window: ${travelDate}
+Tone: friendly travel advisor. Use emoji sparingly. Total response under 250 words.`
 
-📄 **Documents You Will Likely Need**
-1. Valid passport (minimum 6 months validity beyond your travel dates)
-2. Completed visa application form
-3. Passport-sized photographs (2 copies, white background)
-4. Bank statements — last 3 months showing sufficient funds
-5. Round-trip flight itinerary or confirmed tickets
-6. Hotel booking confirmation for your entire stay
-7. Travel insurance (minimum USD $30,000 coverage)
-${purposeLabel.toLowerCase().includes('business') ? '8. Invitation letter from host company\n9. Company registration documents' : purposeLabel.toLowerCase().includes('study') ? '8. University acceptance letter\n9. Academic transcripts' : '8. Employment letter / proof of employment'}
-
-⏱️ **Processing Time**
-Standard processing typically takes 5–15 business days. Express services (where available) can reduce this to 3–5 business days.
-
-💰 **Estimated Fee**
-Visa fees vary by nationality and visa type, typically between USD $50–$200 for tourist/visitor visas. Check the official embassy website for exact, current fees.
-
-💡 **Top Tips for ${destination}**
-1. Apply well in advance — at least 4–6 weeks before your travel date
-2. Ensure all documents are certified/notarised where required
-3. Double-check passport validity (most countries require 6 months beyond your return date)
-
-⚠️ **Important Reminder**
-This guidance is based on general visa knowledge. Requirements change frequently. Always verify the current requirements on the **official ${destination} embassy or consulate website** before submitting your application.
-
-🔗 **Next Step:** Visit visitplane.com/visa/${encodeURIComponent(passport)}/${encodeURIComponent(destination)} for detailed, route-specific requirements.${urgentNote}`
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
+        }),
+        signal: AbortSignal.timeout(8000), // 8s timeout
+      }
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? null
+  } catch {
+    return null // timeout or error → fallback to no AI
+  }
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    const { passport, destination, purpose, duration, travelDate } = await req.json()
+  const ip =
+    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+    req.headers.get('x-real-ip') ??
+    'unknown'
 
-    // If no API key configured, use decision-tree fallback immediately
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json({
-        text: buildFallbackResponse(passport, destination, purpose, duration, travelDate),
-      })
-    }
-
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
-        system:
-          "You are VisitPlane's visa expert AI assistant. You provide accurate, helpful visa guidance. Always be friendly, concise and practical. Format your response in clear sections. Base answers on general visa knowledge.",
-        messages: [
-          {
-            role: 'user',
-            content: `A traveler needs visa guidance:
-- Passport: ${passport}
-- Destination: ${destination}
-- Purpose: ${purpose}
-- Duration: ${duration}
-- Travel date: ${travelDate}
-
-Provide a complete visa guide including:
-1. Visa requirement (required/free/on arrival)
-2. Recommended visa type
-3. Key documents needed (5-7 items)
-4. Estimated processing time
-5. Estimated cost
-6. Top 3 tips for this specific route
-7. One important warning/reminder
-
-Keep response friendly and under 300 words. Use emojis for readability.`,
-          },
-        ],
-      }),
-    })
-
-    if (!res.ok) {
-      const err = await res.text()
-      console.error('Claude API error:', err)
-      // Graceful fallback instead of error response
-      return NextResponse.json({
-        text: buildFallbackResponse(passport, destination, purpose, duration, travelDate),
-      })
-    }
-
-    const data = await res.json()
-    return NextResponse.json({ text: data.content[0].text })
-  } catch (e) {
-    console.error('Wizard route error:', e)
-    // Last-resort fallback
-    try {
-      const body = await (req as NextRequest & { _body?: { passport: string; destination: string; purpose: string; duration: string; travelDate: string } })._body
-      void body
-    } catch { /* ignore */ }
-    return NextResponse.json({
-      text: '🛂 We could not connect to the AI right now. Please visit visitplane.com/destinations to check visa requirements directly, or try again in a moment.',
-    })
+  // Rate limit check
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Please try again later.' },
+      { status: 429 }
+    )
   }
+
+  let passport = '', destination = '', purpose = '', duration = '', travelDate = ''
+  try {
+    const body = await req.json()
+    passport = body.passport ?? ''
+    destination = body.destination ?? ''
+    purpose = body.purpose ?? 'Tourism'
+    duration = body.duration ?? '7'
+    travelDate = body.travelDate ?? ''
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
+
+  if (!passport || !destination) {
+    return NextResponse.json({ error: 'passport and destination required' }, { status: 400 })
+  }
+
+  // Check cache
+  const hash = stateHash(passport, destination, purpose, duration)
+  const cached = cache.get(hash)
+  if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
+    return NextResponse.json({ insight: cached.insight })
+  }
+
+  // Fetch visa data for context
+  let visaDataJson = '{}'
+  try {
+    const params = new URLSearchParams({ passport, destination, purpose })
+    const visaRes = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://visitplane.com'}/api/visa-data?${params}`,
+      { next: { revalidate: 86400 } }
+    )
+    if (visaRes.ok) {
+      visaDataJson = await visaRes.text()
+    }
+  } catch {
+    // Continue without visa data context
+  }
+
+  // Try Gemini Flash
+  const insight = await callGemini(passport, destination, purpose, duration, travelDate, visaDataJson)
+
+  if (insight) {
+    cache.set(hash, { insight, ts: Date.now() })
+    return NextResponse.json({ insight })
+  }
+
+  // No Gemini key or Gemini failed → return empty insight
+  // The result card (decision tree) is already shown; this is enhancement only
+  return NextResponse.json({ insight: '' })
 }

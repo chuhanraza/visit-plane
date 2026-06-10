@@ -9,6 +9,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const SUPPRESS_DAYS = 30
@@ -35,13 +36,16 @@ function shownThisSession(): boolean {
 }
 
 export default function ExitIntentModal() {
+  const pathname = usePathname()
   const [visible, setVisible] = useState(false)
   const [email,   setEmail]   = useState('')
-  const [consent, setConsent] = useState(true)
+  const [consent, setConsent] = useState(false)
   const [status,  setStatus]  = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const firedRef = useRef(false)
 
   useEffect(() => {
+    // Homepage only — never on visa pages or other routes
+    if (pathname !== '/') return
     // Desktop-only: skip on narrow viewports
     if (typeof window === 'undefined' || window.innerWidth < 768) return
 
@@ -134,9 +138,9 @@ export default function ExitIntentModal() {
               /* ── Success ───────────────────────────────────────────────── */
               <div className="flex flex-col items-center gap-3 py-4 text-center">
                 <span className="text-4xl">📬</span>
-                <p className="text-lg font-bold text-gray-900">Check your inbox!</p>
+                <p className="text-lg font-bold text-gray-900">Check your email ✉️</p>
                 <p className="text-sm text-gray-500 leading-relaxed">
-                  Your free guide is on its way. Safe travels! ✈️
+                  We sent a confirmation link. Click it and your guide will be on its way!
                 </p>
               </div>
             ) : (

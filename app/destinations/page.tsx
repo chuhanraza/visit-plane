@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import DestinationsClient, { ALL_COUNTRIES } from './DestinationsClient'
+import DestinationsClient from './DestinationsClient'
+import { ALL_COUNTRIES } from './data'
 
 // ─── SEO metadata ──────────────────────────────────────────────────────────
 

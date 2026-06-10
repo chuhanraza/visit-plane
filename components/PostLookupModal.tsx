@@ -45,7 +45,7 @@ interface Props {
 export default function PostLookupModal({ passport, destination }: Props) {
   const [visible, setVisible] = useState(false)
   const [email,   setEmail]   = useState('')
-  const [consent, setConsent] = useState(true)
+  const [consent, setConsent] = useState(false)
   const [status,  setStatus]  = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   useEffect(() => {
@@ -113,10 +113,10 @@ export default function PostLookupModal({ passport, destination }: Props) {
             /* ── Success state ──────────────────────────────────────────── */
             <div className="flex flex-col items-center gap-2 py-2 text-center">
               <span className="text-3xl">✅</span>
-              <p className="text-sm font-bold text-gray-900">You&apos;re on the list!</p>
+              <p className="text-sm font-bold text-gray-900">Check your email ✉️</p>
               <p className="text-xs text-gray-500 leading-relaxed">
-                We&apos;ll notify you if <span className="font-semibold">{destination}</span> visa
-                rules change for <span className="font-semibold">{passport}</span> passport holders.
+                We sent a confirmation link. Click it to activate your{' '}
+                <span className="font-semibold">{destination}</span> alerts.
               </p>
             </div>
           ) : (
