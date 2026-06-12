@@ -30,10 +30,17 @@ export function useUserCountry(): UserCountry {
       // ignore localStorage errors
     }
 
-    // Fetch from our geo API
-    fetch('/api/geo')
+    // Fetch from our geo API — abort after 4 s to prevent infinite "Detecting..."
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => {
+      controller.abort()
+      setData({ countryCode: 'PK', countryName: 'Pakistan', loading: false })
+    }, 4000)
+
+    fetch('/api/geo', { signal: controller.signal })
       .then((r) => r.json())
       .then((result) => {
+        clearTimeout(timeoutId)
         const countryData = {
           countryCode: result.countryCode,
           countryName: result.countryName,
@@ -46,9 +53,17 @@ export function useUserCountry(): UserCountry {
         }
         setData({ countryCode: countryData.countryCode, countryName: countryData.countryName, loading: false })
       })
-      .catch(() => {
-        setData({ countryCode: 'PK', countryName: 'Pakistan', loading: false })
+      .catch((err) => {
+        clearTimeout(timeoutId)
+        if (err?.name !== 'AbortError') {
+          setData({ countryCode: 'PK', countryName: 'Pakistan', loading: false })
+        }
       })
+
+    return () => {
+      clearTimeout(timeoutId)
+      controller.abort()
+    }
   }, [])
 
   return data

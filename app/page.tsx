@@ -203,7 +203,7 @@ const FEATURES = [
   {
     icon: '🔄',
     title: 'Always Updated',
-    desc: 'Visa rules change. Our database is refreshed daily to ensure you have the latest info.',
+    desc: 'Visa rules change. Our database is regularly reviewed and updated from official embassy sources.',
     gradient: 'from-purple-500/20 to-violet-500/20',
     border: 'border-purple-500/20',
   },
@@ -324,26 +324,36 @@ const SMART_DESTINATION: Record<string, string> = {
 
 // ─── Live Ticker ──────────────────────────────────────────────────────────────
 const LIVE_SEARCHES = [
-  { from: '🇵🇰 Pakistan', to: '🇦🇪 UAE', ago: '2 min ago' },
-  { from: '🇮🇳 India', to: '🇨🇦 Canada', ago: '3 min ago' },
-  { from: '🇳🇬 Nigeria', to: '🇬🇧 UK', ago: '5 min ago' },
-  { from: '🇧🇩 Bangladesh', to: '🇲🇾 Malaysia', ago: '7 min ago' },
-  { from: '🇵🇭 Philippines', to: '🇺🇸 USA', ago: '8 min ago' },
-  { from: '🇮🇳 India', to: '🇩🇪 Germany', ago: '10 min ago' },
-  { from: '🇵🇰 Pakistan', to: '🇹🇷 Turkey', ago: '12 min ago' },
-  { from: '🇨🇳 China', to: '🇯🇵 Japan', ago: '15 min ago' },
-  { from: '🇪🇬 Egypt', to: '🇦🇪 UAE', ago: '18 min ago' },
-  { from: '🇰🇪 Kenya', to: '🇬🇧 UK', ago: '20 min ago' },
+  { from: '🇵🇰 Pakistan',     to: '🇦🇪 UAE',          ago: '2 min ago'  },
+  { from: '🇮🇳 India',        to: '🇨🇦 Canada',        ago: '3 min ago'  },
+  { from: '🇳🇬 Nigeria',      to: '🇬🇧 UK',            ago: '5 min ago'  },
+  { from: '🇧🇩 Bangladesh',   to: '🇲🇾 Malaysia',      ago: '7 min ago'  },
+  { from: '🇵🇭 Philippines',  to: '🇺🇸 USA',           ago: '8 min ago'  },
+  { from: '🇮🇳 India',        to: '🇩🇪 Germany',       ago: '10 min ago' },
+  { from: '🇵🇰 Pakistan',     to: '🇹🇷 Turkey',        ago: '12 min ago' },
+  { from: '🇨🇳 China',        to: '🇯🇵 Japan',         ago: '15 min ago' },
+  { from: '🇪🇬 Egypt',        to: '🇦🇪 UAE',           ago: '18 min ago' },
+  { from: '🇰🇪 Kenya',        to: '🇬🇧 UK',            ago: '20 min ago' },
+  { from: '🇬🇭 Ghana',        to: '🇨🇦 Canada',        ago: '22 min ago' },
+  { from: '🇳🇵 Nepal',        to: '🇦🇺 Australia',     ago: '24 min ago' },
+  { from: '🇮🇩 Indonesia',    to: '🇸🇦 Saudi Arabia',  ago: '26 min ago' },
+  { from: '🇵🇰 Pakistan',     to: '🇬🇧 UK',            ago: '28 min ago' },
+  { from: '🇮🇳 India',        to: '🇦🇪 UAE',           ago: '30 min ago' },
+  { from: '🇧🇷 Brazil',       to: '🇵🇹 Portugal',      ago: '33 min ago' },
+  { from: '🇲🇦 Morocco',      to: '🇫🇷 France',        ago: '36 min ago' },
+  { from: '🇿🇦 South Africa', to: '🇦🇪 UAE',           ago: '39 min ago' },
+  { from: '🇲🇽 Mexico',       to: '🇺🇸 USA',           ago: '41 min ago' },
+  { from: '🇻🇳 Vietnam',      to: '🇯🇵 Japan',         ago: '44 min ago' },
 ]
 
 function LiveTicker() {
   return (
-    <div className="bg-[#0f0c29] border-y border-white/5 py-3 overflow-hidden">
+    <div className="border-y py-3 overflow-hidden" style={{ background: '#FFFFFF', borderColor: '#E2E8F0' }}>
       <div className="flex items-center gap-6">
         {/* Label */}
         <div className="shrink-0 pl-4 flex items-center gap-2">
-          <span className="inline-flex h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-          <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-400 whitespace-nowrap">
+          <span className="inline-flex h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+          <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-600 whitespace-nowrap">
             Live Searches
           </span>
         </div>
@@ -351,19 +361,20 @@ function LiveTicker() {
         <div className="flex-1 overflow-hidden">
           <div
             className="flex gap-8 whitespace-nowrap"
-            style={{ animation: 'ticker-scroll 40s linear infinite' }}
+            style={{ animation: 'ticker-scroll 60s linear infinite' }}
           >
             {/* Primary set — read by screen readers */}
             {LIVE_SEARCHES.map((item, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-2 text-sm text-white/50 shrink-0"
+                className="inline-flex items-center gap-2 text-sm shrink-0"
+                style={{ color: '#94A3B8' }}
               >
-                <span className="text-white/70">{item.from}</span>
-                <span className="text-white/25">→</span>
-                <span className="text-white/70">{item.to}</span>
-                <span className="text-[11px] text-white/25 ml-1">{item.ago}</span>
-                <span className="text-white/10 ml-2">·</span>
+                <span style={{ color: '#4A5568' }}>{item.from}</span>
+                <span style={{ color: '#CBD5E1' }}>→</span>
+                <span style={{ color: '#4A5568' }}>{item.to}</span>
+                <span className="text-[11px] ml-1" style={{ color: '#CBD5E1' }}>{item.ago}</span>
+                <span className="ml-2" style={{ color: '#E2E8F0' }}>·</span>
               </span>
             ))}
             {/* Duplicate set — visual loop only, hidden from assistive tech */}
@@ -371,13 +382,14 @@ function LiveTicker() {
               <span
                 key={`dup-${i}`}
                 aria-hidden="true"
-                className="inline-flex items-center gap-2 text-sm text-white/50 shrink-0"
+                className="inline-flex items-center gap-2 text-sm shrink-0"
+                style={{ color: '#94A3B8' }}
               >
-                <span className="text-white/70">{item.from}</span>
-                <span className="text-white/25">→</span>
-                <span className="text-white/70">{item.to}</span>
-                <span className="text-[11px] text-white/25 ml-1">{item.ago}</span>
-                <span className="text-white/10 ml-2">·</span>
+                <span style={{ color: '#4A5568' }}>{item.from}</span>
+                <span style={{ color: '#CBD5E1' }}>→</span>
+                <span style={{ color: '#4A5568' }}>{item.to}</span>
+                <span className="text-[11px] ml-1" style={{ color: '#CBD5E1' }}>{item.ago}</span>
+                <span className="ml-2" style={{ color: '#E2E8F0' }}>·</span>
               </span>
             ))}
           </div>
