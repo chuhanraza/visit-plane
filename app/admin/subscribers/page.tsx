@@ -147,12 +147,6 @@ export default async function SubscribersPage() {
           <form action="/api/admin/export-subscribers" method="GET">
             <button
               type="button"
-              onClick={`(() => {
-                const a = document.createElement('a');
-                a.href = 'data:text/csv;base64,${csvB64}';
-                a.download = 'visitplane_subscribers_${new Date().toISOString().slice(0,10)}.csv';
-                a.click();
-              })()`}
               className="rounded-xl bg-gray-800 border border-gray-700 px-5 py-2.5 text-sm font-semibold hover:bg-gray-700 transition"
               id="csv-export-btn"
             >
