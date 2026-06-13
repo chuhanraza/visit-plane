@@ -131,7 +131,7 @@ export default function WizardStep({ step, answers, onAnswer, onNext, onBack }: 
                   <button
                     key={opt.value}
                     type="button"
-                    onClick={() => onAnswer('purpose', opt.value)}
+                    onClick={() => { onAnswer('purpose', opt.value); onNext() }}
                     className={[
                       'flex flex-col items-start rounded-xl border px-4 py-3 text-left transition-all duration-150',
                       selected

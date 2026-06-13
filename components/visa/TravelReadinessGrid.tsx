@@ -131,12 +131,12 @@ function TravelCard({
       <p className="text-xs text-gray-500 leading-relaxed flex-1 mb-4">{card.details}</p>
 
       {/* Price + CTA */}
-      <div className="flex items-center justify-between mt-auto">
-        <span className="text-sm font-bold text-[#14B8A6]">{card.price}</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 mt-auto">
+        <span className="text-sm font-bold text-[#14B8A6] min-w-0">{card.price}</span>
         <a
           href={trackingUrl}
           rel="nofollow sponsored"
-          className={`rounded-xl px-4 py-2 text-xs font-bold text-white transition active:scale-95 ${
+          className={`shrink-0 whitespace-nowrap rounded-xl px-4 py-2 text-xs font-bold text-white transition active:scale-95 ${
             card.required
               ? 'bg-red-500 hover:bg-red-600'
               : 'bg-[#14B8A6] hover:bg-[#0d9488]'
