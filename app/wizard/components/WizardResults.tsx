@@ -6,6 +6,7 @@ import type { WizardAnswers } from './WizardStep'
 import type { VisaData } from '@/lib/visa-engine'
 import { shortName } from '@/lib/visa-engine'
 import { ALL_COUNTRIES } from '@/components/CountrySelect'
+import TravelReadinessGrid from '@/components/visa/TravelReadinessGrid'
 
 interface Props {
   answers: WizardAnswers
@@ -66,6 +67,11 @@ export default function WizardResults({ answers, visaData, aiInsight, aiLoading,
   const whatsappText = encodeURIComponent(
     `${passportFlag} ${passportShort} → ${destFlag} ${destShort} visa plan:\n${visaData.icon} ${visaData.visaLabel} · ${visaData.costUSD != null ? `$${visaData.costUSD} USD` : 'Free'} · ${answers.duration} days\n\nGenerated free at: ${shareUrl}`
   )
+
+  const tweetText = encodeURIComponent(
+    `${passportShort} → ${destShort}: ${visaData.icon} ${visaData.visaLabel} (${visaData.costUSD != null ? `$${visaData.costUSD}` : 'Free'}, ${answers.duration} days). Got my free visa plan from @visitplane:`
+  )
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(shareUrl)}`
 
   async function handleCopyLink() {
     await navigator.clipboard.writeText(shareUrl)
@@ -334,6 +340,14 @@ export default function WizardResults({ answers, visaData, aiInsight, aiLoading,
             >
               <span>💬</span> WhatsApp
             </a>
+            <a
+              href={tweetUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition"
+            >
+              <span>𝕏</span> Post
+            </a>
             <button
               onClick={handleCopyLink}
               className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-teal-400 hover:bg-teal-50 transition"
@@ -373,6 +387,15 @@ export default function WizardResults({ answers, visaData, aiInsight, aiLoading,
           </div>
         </div>
       )}
+
+      {/* ── Travel Readiness (affiliate) ──────────────────────────────────────── */}
+      <div className="mt-4">
+        <TravelReadinessGrid
+          passportName={answers.passport}
+          destinationName={answers.destination}
+          destinationFlag={destFlag}
+        />
+      </div>
 
       {/* Disclaimer */}
       <p className="mt-6 text-center text-xs text-slate-400 leading-relaxed">

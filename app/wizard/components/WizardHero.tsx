@@ -37,7 +37,7 @@ export default function WizardHero({ onStart }: Props) {
         {/* Trust pills */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
           {[
-            '✓ Powered by Claude AI',
+            '✓ AI-Powered',
             '✓ 197 Countries',
             '✓ Instant Results',
           ].map((pill) => (
@@ -62,6 +62,44 @@ export default function WizardHero({ onStart }: Props) {
         <p className="mt-4 text-xs text-slate-400">
           Free · No signup required · Results in ~10 seconds
         </p>
+
+        {/* What you'll get */}
+        <div className="mt-14 text-left">
+          <div className="mx-auto max-w-md rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur-sm">
+            <p className="mb-4 text-center text-sm font-bold uppercase tracking-widest text-slate-400">
+              What you&apos;ll get
+            </p>
+            <ul className="space-y-3">
+              {[
+                'Personalized visa category for YOUR route',
+                'Document checklist tailored to your situation',
+                'Exact cost breakdown in USD',
+                'Timeline based on your travel date',
+                'AI-generated tips specific to your route',
+                'Shareable plan link for family / group travel',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2.5 text-sm text-slate-600">
+                  <span className="mt-0.5 flex-shrink-0 text-emerald-500">✓</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              onClick={onStart}
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-emerald-500 px-8 py-3.5 text-base font-bold text-white shadow-lg shadow-teal-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-teal-500/50"
+            >
+              Start Wizard →
+            </button>
+          </div>
+        </div>
+
+        {/* Stats row */}
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-slate-500">
+          <span className="inline-flex items-center gap-1.5">⚡ Used by travelers worldwide</span>
+          <span className="inline-flex items-center gap-1.5">🔒 No signup needed</span>
+          <span className="inline-flex items-center gap-1.5">💯 197 countries covered</span>
+        </div>
       </div>
     </section>
   )
