@@ -5,9 +5,8 @@ import { QUESTIONS } from './data'
 import InterviewHero    from './components/InterviewHero'
 import InterviewRoom    from './components/InterviewRoom'
 import InterviewResults from './components/InterviewResults'
-import InterviewTips    from './components/InterviewTips'
 import InterviewChecklist   from './components/InterviewChecklist'
-import InterviewSocialProof from './components/InterviewSocialProof'
+import InterviewLandingSections from './components/InterviewLandingSections'
 import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 
 type View = 'home' | 'room' | 'results'
@@ -69,7 +68,6 @@ export default function InterviewPrepClient() {
           onRetry={handleRetry}
         />
         <InterviewChecklist country={country} visaType={visaType} />
-        <InterviewSocialProof />
       </div>
     )
   }
@@ -85,9 +83,12 @@ export default function InterviewPrepClient() {
         onVisaTypeChange={setVisaType}
         onEnter={handleEnter}
       />
-      <InterviewTips />
+      <InterviewLandingSections
+        onJumpToSelector={() => {
+          document.getElementById('ip-selector')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }}
+      />
       <InterviewChecklist country={country} visaType={visaType} />
-      <InterviewSocialProof />
     </div>
   )
 }

@@ -21,32 +21,33 @@ export default function InterviewHero({ country, visaType, onCountryChange, onVi
           <div className="flex-1 lg:max-w-[58%]">
             {/* Badge */}
             <span className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-4 py-1.5 text-xs font-bold text-teal-600 mb-6">
-              🎤 Live Interview Simulator
+              🎤 Interview Prep
             </span>
 
             {/* Headline */}
             <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight text-[#0f0c29] leading-[1.05] mb-5">
-              Step Into The<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-500">Interview Room.</span>
+              Pass Your Visa Interview<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-500">With Confidence.</span>
             </h1>
 
             {/* Subtext */}
             <p className="text-lg text-gray-500 mb-7 max-w-md leading-relaxed">
-              Our AI simulates a real visa officer.<br />Practice until you&apos;re unshakeable.
+              Practice with AI, prep with real questions, walk in ready. Free for every passport,
+              every destination.
             </p>
 
-            {/* Trust pills */}
+            {/* Trust pills — real, no invented numbers */}
             <div className="flex flex-wrap gap-3 mb-8">
               <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
-                📊 225,000+ Real Interviews Analyzed
+                📚 Questions sourced from official consular guidance
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
-                🌍 5 Countries · 3 Visa Types
+                🤖 AI-powered mock interview practice
               </span>
             </div>
 
             {/* Selectors */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-5">
+            <div id="ip-selector" className="flex flex-col sm:flex-row gap-3 mb-5 scroll-mt-24">
               <div className="flex-1">
                 <CountrySelect
                   value={country}
@@ -76,8 +77,9 @@ export default function InterviewHero({ country, visaType, onCountryChange, onVi
               disabled={!canEnter}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 px-8 py-4 text-base font-bold text-white shadow-xl shadow-teal-500/30 hover:from-teal-600 hover:to-emerald-600 hover:-translate-y-0.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Enter Interview Room →
+              Start Practice →
             </button>
+            <p className="mt-3 text-xs text-gray-400">Free · No signup · ~5 minutes</p>
           </div>
 
           {/* ── Right (40%) — Animated Officer Panel ───────────────────────── */}
