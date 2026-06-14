@@ -61,7 +61,14 @@ Tone: friendly travel advisor. Use emoji sparingly. Total response under 250 wor
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
+            generationConfig: {
+              maxOutputTokens: 800,
+              temperature: 0.7,
+              // Gemini 2.5 models "think" by default, which consumes the token
+              // budget before producing text and truncates short answers.
+              // Disable thinking for this lightweight task.
+              thinkingConfig: { thinkingBudget: 0 },
+            },
           }),
           signal: AbortSignal.timeout(8000), // 8s timeout
         }
