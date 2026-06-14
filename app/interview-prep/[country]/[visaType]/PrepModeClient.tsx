@@ -98,10 +98,10 @@ export default function PrepModeClient({
 
   // ── AI feedback ────────────────────────────────────────────────────────────
   function setAns(id: string, patch: Partial<AnswerState>) {
-    setAnswers((prev) => ({
-      ...prev,
-      [id]: { text: '', loading: false, error: '', feedback: null, ...prev[id], ...patch },
-    }))
+    setAnswers((prev) => {
+      const base: AnswerState = prev[id] ?? { text: '', loading: false, error: '', feedback: null }
+      return { ...prev, [id]: { ...base, ...patch } }
+    })
   }
 
   async function getFeedback(q: InterviewQuestion) {
