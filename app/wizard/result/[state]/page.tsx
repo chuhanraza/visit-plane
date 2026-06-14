@@ -11,10 +11,12 @@ interface Props {
 
 function decodeState(encoded: string): WizardAnswers | null {
   try {
-    // Works in both browser (atob) and Node (Buffer)
+    // Accept base64url (and tolerate standard base64): restore +/ and padding
+    let b64 = encoded.replace(/-/g, '+').replace(/_/g, '/')
+    while (b64.length % 4) b64 += '='
     const decoded = typeof atob !== 'undefined'
-      ? atob(encoded)
-      : Buffer.from(encoded, 'base64').toString('utf-8')
+      ? atob(b64)
+      : Buffer.from(b64, 'base64').toString('utf-8')
     const json = decodeURIComponent(decoded)
     const obj = JSON.parse(json)
     if (!obj.p || !obj.d) return null

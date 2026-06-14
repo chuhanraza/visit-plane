@@ -32,6 +32,7 @@ function encodeState(answers: WizardAnswers): string {
     dt: answers.travelDate,
   }
   return btoa(encodeURIComponent(JSON.stringify(state)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') // base64url — path-safe
 }
 
 function formatDate(isoDate: string): string {
