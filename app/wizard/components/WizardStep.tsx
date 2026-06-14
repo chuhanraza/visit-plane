@@ -88,8 +88,8 @@ export default function WizardStep({ step, answers, onAnswer, onNext, onBack }: 
         </div>
       </div>
 
-      {/* Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      {/* Card — note: NO overflow-hidden, or the country dropdown gets clipped */}
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
         {/* Question */}
         <div className="px-6 pt-7 pb-5">
           <div className="mb-1">
@@ -186,7 +186,7 @@ export default function WizardStep({ step, answers, onAnswer, onNext, onBack }: 
         </div>
 
         {/* Actions */}
-        <div className="border-t border-slate-100 bg-slate-50 px-6 py-4 flex items-center gap-3">
+        <div className="border-t border-slate-100 bg-slate-50 px-6 py-4 flex items-center gap-3 rounded-b-2xl">
           {step > 1 && (
             <button
               type="button"
