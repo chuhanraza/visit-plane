@@ -56,6 +56,11 @@ export default function MockClient({
   const [seconds, setSeconds] = useState(0)
   const recognitionRef = useRef<any>(null)
 
+  const [emailVal, setEmailVal] = useState('')
+  const [emailSub, setEmailSub] = useState(true)
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
+  const [emailMsg, setEmailMsg] = useState('')
+
   const voiceAvailable = typeof window !== 'undefined' && speechSupported()
 
   // ── Timer ────────────────────────────────────────────────────────────────
@@ -356,8 +361,33 @@ export default function MockClient({
   const topStrengths = Array.from(new Set(results.flatMap((r) => r.strengths))).slice(0, 4)
   const topImprovements = Array.from(new Set(results.flatMap((r) => r.improvements))).slice(0, 4)
 
-  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}${prepUrl}` : prepUrl
+  // Build a shareable result URL encoding the score summary
+  const catAvg: Record<string, number> = {}
+  Object.entries(catAgg).forEach(([k, v]) => { catAvg[k] = Math.round((v.sum / v.n) * 10) / 10 })
+  const resultUrl =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/interview-prep/result/${btoa(encodeURIComponent(JSON.stringify({ c: countrySlug, v: visaCode, s: overall, cat: catAvg })))}`
+      : ''
+  const shareUrl = resultUrl || (typeof window !== 'undefined' ? `${window.location.origin}${prepUrl}` : prepUrl)
   const shareText = `I scored ${overall}/100 on my ${countryName} ${visaLabel} mock visa interview at VisitPlane 🎤`
+
+  async function sendReport() {
+    if (!emailVal.trim()) { setEmailStatus('error'); setEmailMsg('Enter your email.'); return }
+    setEmailStatus('loading'); setEmailMsg('')
+    try {
+      const res = await fetch('/api/interview/email-report', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          email: emailVal.trim(), subscribe: emailSub, country: countryName, visaLabel,
+          overall, categories: catAvg, strengths: topStrengths, improvements: topImprovements,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.ok) { setEmailStatus('error'); setEmailMsg(data.error ?? 'Failed to send.'); return }
+      setEmailStatus('sent'); setEmailMsg(data.message ?? 'Sent!')
+    } catch { setEmailStatus('error'); setEmailMsg('Network error.') }
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29]">
@@ -403,6 +433,37 @@ export default function MockClient({
             <ul className="mt-2 space-y-1">{topImprovements.map((s, i) => <li key={i} className="text-sm text-slate-700">• {s}</li>)}</ul>
           </div>
         )}
+
+        {/* Email report */}
+        <div className="mt-4 rounded-2xl border border-teal-200 bg-teal-50 p-5">
+          <p className="text-sm font-bold text-teal-800">📧 Email me my full report</p>
+          {emailStatus === 'sent' ? (
+            <p className="mt-2 text-sm font-semibold text-emerald-700">✓ {emailMsg}</p>
+          ) : (
+            <div className="mt-2 space-y-2">
+              <input
+                type="email"
+                value={emailVal}
+                onChange={(e) => setEmailVal(e.target.value)}
+                placeholder="your@email.com"
+                className="w-full rounded-lg border border-teal-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/15"
+              />
+              <label className="flex items-start gap-2 text-xs text-slate-600">
+                <input type="checkbox" checked={emailSub} onChange={(e) => setEmailSub(e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-slate-300 text-teal-500" />
+                Also send me visa updates for {countryName}. No spam, unsubscribe anytime.
+              </label>
+              <button
+                type="button"
+                onClick={sendReport}
+                disabled={emailStatus === 'loading'}
+                className="w-full rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50"
+              >
+                {emailStatus === 'loading' ? 'Sending…' : 'Send My Report'}
+              </button>
+              {emailStatus === 'error' && <p className="text-xs text-rose-600">{emailMsg}</p>}
+            </div>
+          )}
+        </div>
 
         {/* Share */}
         <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
