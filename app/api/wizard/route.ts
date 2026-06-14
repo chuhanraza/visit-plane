@@ -49,25 +49,36 @@ Generate a concise, friendly response with exactly these 4 sections:
 
 Tone: friendly travel advisor. Use emoji sparingly. Total response under 250 words.`
 
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
-        }),
-        signal: AbortSignal.timeout(8000), // 8s timeout
+  // Try current Gemini models in order (older ones are deprecated/retired).
+  // Falls through to the next on any error; returns null if all fail.
+  const models = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-2.5-flash-lite']
+  for (const model of models) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
+          }),
+          signal: AbortSignal.timeout(8000), // 8s timeout
+        }
+      )
+      if (!res.ok) {
+        console.error(`Gemini ${model} error: ${res.status} ${await res.text().catch(() => '')}`)
+        continue // try next model
       }
-    )
-    if (!res.ok) return null
-    const data = await res.json()
-    return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? null
-  } catch {
-    return null // timeout or error → fallback to no AI
+      const data = await res.json()
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
+      if (text) return text
+    } catch (e) {
+      console.error(`Gemini ${model} exception:`, e)
+      // try next model
+    }
   }
+  return null // all models failed → fallback to no AI
 }
 
 export async function POST(req: NextRequest) {
