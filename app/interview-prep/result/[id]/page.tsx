@@ -16,8 +16,11 @@ interface Decoded {
 
 function decode(id: string): Decoded | null {
   try {
+    // Accept base64url (and tolerate standard base64): restore +/ and padding
+    let b64 = id.replace(/-/g, '+').replace(/_/g, '/')
+    while (b64.length % 4) b64 += '='
     const json =
-      typeof atob !== 'undefined' ? atob(id) : Buffer.from(id, 'base64').toString('utf-8')
+      typeof atob !== 'undefined' ? atob(b64) : Buffer.from(b64, 'base64').toString('utf-8')
     const obj = JSON.parse(decodeURIComponent(json))
     if (typeof obj.s !== 'number' || !obj.c || !obj.v) return null
     return { c: obj.c, v: obj.v, s: obj.s, cat: obj.cat ?? {} }

@@ -364,10 +364,12 @@ export default function MockClient({
   // Build a shareable result URL encoding the score summary
   const catAvg: Record<string, number> = {}
   Object.entries(catAgg).forEach(([k, v]) => { catAvg[k] = Math.round((v.sum / v.n) * 10) / 10 })
-  const resultUrl =
+  const resultHash =
     typeof window !== 'undefined'
-      ? `${window.location.origin}/interview-prep/result/${btoa(encodeURIComponent(JSON.stringify({ c: countrySlug, v: visaCode, s: overall, cat: catAvg })))}`
+      ? btoa(encodeURIComponent(JSON.stringify({ c: countrySlug, v: visaCode, s: overall, cat: catAvg })))
+          .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') // base64url — path-safe
       : ''
+  const resultUrl = resultHash ? `${window.location.origin}/interview-prep/result/${resultHash}` : ''
   const shareUrl = resultUrl || (typeof window !== 'undefined' ? `${window.location.origin}${prepUrl}` : prepUrl)
   const shareText = `I scored ${overall}/100 on my ${countryName} ${visaLabel} mock visa interview at VisitPlane 🎤`
 
