@@ -149,9 +149,17 @@ export default function PrepModeClient({
             </Link>
           </div>
           {questions.length > 0 && (
-            <p className="mt-3 text-xs font-medium text-slate-500">
-              Practice progress: {reviewedCount} / {questions.length} reviewed
-            </p>
+            <>
+              <p className="mt-3 text-xs font-medium text-slate-500">
+                Practice progress: {reviewedCount} / {questions.length} reviewed
+              </p>
+              <Link
+                href={`/interview-prep/mock/${countrySlug}-${visaCode.toLowerCase()}`}
+                className="mt-3 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-sm shadow-teal-500/30"
+              >
+                🎤 Start Mock Interview →
+              </Link>
+            </>
           )}
         </div>
 
