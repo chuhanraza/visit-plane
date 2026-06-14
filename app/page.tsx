@@ -203,7 +203,7 @@ const FEATURES = [
   {
     icon: '🔄',
     title: 'Always Updated',
-    desc: 'Visa rules change. Our database is regularly reviewed and updated from official embassy sources.',
+    desc: 'Sourced from official embassy data, verified per route with timestamped updates.',
     gradient: 'from-purple-500/20 to-violet-500/20',
     border: 'border-purple-500/20',
   },
@@ -217,7 +217,7 @@ const FEATURES = [
   {
     icon: '🛡️',
     title: 'Trusted Data',
-    desc: 'Sourced from official embassies and consulates worldwide. Verified and cross-checked.',
+    desc: 'Each route links to official MOFA, embassy, and IATA sources you can independently verify.',
     gradient: 'from-indigo-500/20 to-blue-500/20',
     border: 'border-indigo-500/20',
   },
@@ -730,6 +730,8 @@ export default function HomePage() {
                       setPassport(v)
                       setGeoBadgeDismissed(true)
                       setNoPassportError(false)
+                      // Remember choice so geo-fallback can reuse it next visit
+                      try { if (v) localStorage.setItem('visitplane_passport', v) } catch {}
                     }}
                     placeholder={geoLoading ? '🌍 Detecting...' : t('hero.selectPassport')}
                     label={t('hero.passportLabel')}

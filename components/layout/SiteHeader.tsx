@@ -338,10 +338,10 @@ export default function SiteHeader() {
         </div>
       </div>
 
-      {/* ── Mobile Menu ── */}
+      {/* ── Mobile Menu (mounted only when open → single "Check My Visa" CTA in SSR DOM) ── */}
+      {mobileOpen && (
       <div
         id="mobile-menu"
-        hidden={!mobileOpen}
         className="border-t border-white/5 bg-[#060C18]/98 backdrop-blur-xl md:hidden"
         role="navigation"
         aria-label="Mobile navigation"
@@ -430,6 +430,7 @@ export default function SiteHeader() {
           </div>
         </div>
       </div>
+      )}
     </header>
   )
 }

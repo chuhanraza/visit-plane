@@ -383,6 +383,7 @@ export default function MockClient({
         body: JSON.stringify({
           email: emailVal.trim(), subscribe: emailSub, country: countryName, visaLabel,
           overall, categories: catAvg, strengths: topStrengths, improvements: topImprovements,
+          resultUrl,
         }),
       })
       const data = await res.json()

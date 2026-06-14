@@ -65,7 +65,7 @@ export default function InterviewSocialProof() {
         {/* Bottom CTA nudge */}
         <div className="mt-10 text-center">
           <p className="text-sm text-gray-400">
-            Join <span className="font-bold text-[#0f0c29]">225,000+</span> travelers who prepared with VisitPlane
+            Prep with real questions sourced from official consular guidance — free, for every passport
           </p>
         </div>
       </div>
