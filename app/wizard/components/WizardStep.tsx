@@ -1,6 +1,7 @@
 'use client'
 
 import CountrySelect, { ALL_COUNTRIES } from '@/components/CountrySelect'
+import InlineCalendar from './InlineCalendar'
 
 export interface WizardAnswers {
   passport: string
@@ -181,12 +182,9 @@ export default function WizardStep({ step, answers, onAnswer, onNext, onBack, au
 
           {step === 5 && (
             <div>
-              <input
-                type="date"
+              <InlineCalendar
                 value={answers.travelDate ?? ''}
-                min={new Date().toISOString().split('T')[0]}
-                onChange={(e) => onAnswer('travelDate', e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-base font-semibold text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition"
+                onChange={(v) => onAnswer('travelDate', v)}
               />
               <p className="mt-2 text-xs text-slate-500">
                 📅 Helps us calculate your earliest application date — optional
