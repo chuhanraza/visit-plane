@@ -1,6 +1,6 @@
 'use client'
 
-import CountrySelect from '@/components/CountrySelect'
+import CountrySelect, { ALL_COUNTRIES } from '@/components/CountrySelect'
 
 export interface WizardAnswers {
   passport: string
@@ -40,9 +40,11 @@ interface Props {
   onAnswer: (field: keyof WizardAnswers, value: string) => void
   onNext: () => void
   onBack: () => void
+  /** Country auto-detected from saved choice or IP — shown as a hint on step 1 */
+  autoDetected?: string | null
 }
 
-export default function WizardStep({ step, answers, onAnswer, onNext, onBack }: Props) {
+export default function WizardStep({ step, answers, onAnswer, onNext, onBack, autoDetected }: Props) {
   const config = STEPS[step - 1]
   const progress = (step / 5) * 100
 
@@ -106,12 +108,20 @@ export default function WizardStep({ step, answers, onAnswer, onNext, onBack }: 
         {/* Input area */}
         <div className="px-6 pb-6">
           {step === 1 && (
-            <CountrySelect
-              value={answers.passport ?? ''}
-              onChange={(v) => onAnswer('passport', v)}
-              placeholder="Search passport country…"
-              variant="light"
-            />
+            <>
+              <CountrySelect
+                value={answers.passport ?? ''}
+                onChange={(v) => onAnswer('passport', v)}
+                placeholder="Search passport country…"
+                variant="light"
+              />
+              {autoDetected && answers.passport === autoDetected && (
+                <p className="mt-2 text-xs text-slate-500">
+                  📍 Auto-detected: {ALL_COUNTRIES.find((c) => c.name === autoDetected)?.flag ?? '🌍'}{' '}
+                  {autoDetected} — change above if this isn&apos;t right
+                </p>
+              )}
+            </>
           )}
 
           {step === 2 && (

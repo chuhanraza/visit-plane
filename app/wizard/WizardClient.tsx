@@ -6,8 +6,23 @@ import WizardStep, { type WizardAnswers } from './components/WizardStep'
 import WizardResults from './components/WizardResults'
 import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 import type { VisaData } from '@/lib/visa-engine'
+import { ALL_COUNTRIES } from '@/components/CountrySelect'
 
 type Phase = 'hero' | 'steps' | 'loading' | 'results'
+
+// Map IP-geo names to the canonical CountrySelect names where they differ
+const GEO_ALIASES: Record<string, string> = {
+  UAE: 'United Arab Emirates',
+}
+
+/** Returns the canonical CountrySelect name for a detected name, or null if unknown. */
+function canonicalCountry(name: string): string | null {
+  if (!name) return null
+  const normalized = GEO_ALIASES[name] ?? name
+  return (
+    ALL_COUNTRIES.find((c) => c.name.toLowerCase() === normalized.toLowerCase())?.name ?? null
+  )
+}
 
 interface Props {
   /** Pre-loaded state from a shareable URL (base64 decoded) */
@@ -21,12 +36,48 @@ export default function WizardClient({ initialAnswers }: Props) {
   const [visaData, setVisaData] = useState<VisaData | null>(null)
   const [aiInsight, setAiInsight] = useState<string>('')
   const [aiLoading, setAiLoading] = useState(false)
+  const [autoDetected, setAutoDetected] = useState<string | null>(null)
 
   // Auto-run when pre-loaded from shareable URL
   useEffect(() => {
     if (initialAnswers) {
       fetchResults(initialAnswers as WizardAnswers)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Pre-fill passport from saved choice, else IP-based country detection.
+  // Skipped when arriving via a shared result URL (initialAnswers present).
+  useEffect(() => {
+    if (initialAnswers) return
+    let cancelled = false
+
+    const apply = (name: string) => {
+      const canonical = canonicalCountry(name)
+      if (!canonical || cancelled) return false
+      setAnswers((prev) => (prev.passport ? prev : { ...prev, passport: canonical }))
+      setAutoDetected(canonical)
+      try { localStorage.setItem('visitplane_passport', canonical) } catch { /* ignore */ }
+      return true
+    }
+
+    // 1. Saved passport from a previous session
+    try {
+      const saved = localStorage.getItem('visitplane_passport')
+      if (saved && apply(saved)) return
+    } catch { /* ignore */ }
+
+    // 2. IP-based detection (Vercel geo header, free)
+    ;(async () => {
+      try {
+        const res = await fetch('/api/geo')
+        if (!res.ok) return
+        const data = await res.json()
+        if (data?.countryName) apply(data.countryName)
+      } catch { /* ignore — user picks manually */ }
+    })()
+
+    return () => { cancelled = true }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -121,6 +172,7 @@ export default function WizardClient({ initialAnswers }: Props) {
             onAnswer={handleAnswer}
             onNext={handleNext}
             onBack={handleBack}
+            autoDetected={autoDetected}
           />
         </div>
       )}
