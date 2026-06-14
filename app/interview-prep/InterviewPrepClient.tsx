@@ -1,85 +1,30 @@
 'use client'
 
 import { useState } from 'react'
-import { QUESTIONS } from './data'
-import InterviewHero    from './components/InterviewHero'
-import InterviewRoom    from './components/InterviewRoom'
-import InterviewResults from './components/InterviewResults'
-import InterviewChecklist   from './components/InterviewChecklist'
+import { useRouter } from 'next/navigation'
+import InterviewHero from './components/InterviewHero'
 import InterviewLandingSections from './components/InterviewLandingSections'
 import ToolBreadcrumb from '@/components/ToolBreadcrumb'
-
-type View = 'home' | 'room' | 'results'
+import { INTERVIEW_COUNTRIES } from '@/lib/data/interview-questions'
 
 export default function InterviewPrepClient() {
-  const [view,     setView]     = useState<View>('home')
-  const [country,  setCountry]  = useState('')
-  const [visaType, setVisaType] = useState('')
-  const [currentQ, setCurrentQ] = useState(0)
-
-  const questions = country && visaType ? (QUESTIONS[country]?.[visaType] ?? []) : []
+  const router = useRouter()
+  const [country, setCountry] = useState('') // country NAME (matches CountrySelect)
+  const [visaType, setVisaType] = useState('') // visa CODE (e.g. B1B2)
 
   const handleEnter = () => {
-    if (!country || !visaType || questions.length === 0) return
-    setCurrentQ(0)
-    setView('room')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    const c = INTERVIEW_COUNTRIES.find((x) => x.name === country)
+    if (!c || !visaType) return
+    router.push(`/interview-prep/${c.slug}/${visaType.toLowerCase()}`)
   }
 
-  const handlePrev = () => setCurrentQ(q => Math.max(0, q - 1))
-  const handleNext = () => setCurrentQ(q => Math.min(questions.length - 1, q + 1))
-
-  const handleComplete = () => {
-    setView('results')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const handleRetry = () => {
-    setCurrentQ(0)
-    setView('home')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  // ── Interview Room view (full dark immersive page) ────────────────────────
-  if (view === 'room') {
-    return (
-      <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased">
-        <InterviewRoom
-          questions={questions}
-          country={country}
-          visaType={visaType}
-          currentQ={currentQ}
-          onPrev={handlePrev}
-          onNext={handleNext}
-          onComplete={handleComplete}
-        />
-      </div>
-    )
-  }
-
-  // ── Results view ──────────────────────────────────────────────────────────
-  if (view === 'results') {
-    return (
-      <div className="min-h-screen bg-[#FAFAFA] antialiased">
-        <InterviewResults
-          country={country}
-          visaType={visaType}
-          questionCount={questions.length}
-          onRetry={handleRetry}
-        />
-        <InterviewChecklist country={country} visaType={visaType} />
-      </div>
-    )
-  }
-
-  // ── Home view (hero + tips + checklist + social proof) ────────────────────
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
       <ToolBreadcrumb toolName="Interview Prep" toolEmoji="🎤" />
       <InterviewHero
         country={country}
         visaType={visaType}
-        onCountryChange={v => { setCountry(v); setVisaType('') }}
+        onCountryChange={(v) => { setCountry(v); setVisaType('') }}
         onVisaTypeChange={setVisaType}
         onEnter={handleEnter}
       />
@@ -88,7 +33,6 @@ export default function InterviewPrepClient() {
           document.getElementById('ip-selector')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
         }}
       />
-      <InterviewChecklist country={country} visaType={visaType} />
     </div>
   )
 }

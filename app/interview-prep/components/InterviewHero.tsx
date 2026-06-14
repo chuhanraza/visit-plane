@@ -1,5 +1,5 @@
 'use client'
-import { COUNTRIES, VISA_TYPES } from '../data'
+import { INTERVIEW_COUNTRIES } from '@/lib/data/interview-questions'
 import CountrySelect from '@/components/CountrySelect'
 
 interface Props {
@@ -54,7 +54,7 @@ export default function InterviewHero({ country, visaType, onCountryChange, onVi
                   onChange={(v) => { onCountryChange(v); onVisaTypeChange('') }}
                   placeholder="Select country…"
                   label="Country"
-                  options={COUNTRIES.map(c => c.value)}
+                  options={INTERVIEW_COUNTRIES.map(c => c.name)}
                 />
               </div>
               <div className="flex-1">
@@ -66,7 +66,9 @@ export default function InterviewHero({ country, visaType, onCountryChange, onVi
                   className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm font-medium text-[#0f0c29] outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/15 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <option value="">Select visa type…</option>
-                  {VISA_TYPES.map(v => <option key={v} value={v}>{v}</option>)}
+                  {(INTERVIEW_COUNTRIES.find(c => c.name === country)?.visa_types ?? []).map(v => (
+                    <option key={v.code} value={v.code}>{v.label}</option>
+                  ))}
                 </select>
               </div>
             </div>

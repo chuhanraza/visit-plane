@@ -1,0 +1,424 @@
+// ── VisitPlane Interview Question Bank ───────────────────────────────────────
+// Pre-seeded, structured visa-interview questions. AI (Gemini) is used only to
+// SCORE user answers (see /api/interview/*), never to generate this bank.
+//
+// This is a growing foundation: US B1/B2 is seeded comprehensively across every
+// category; UK and Canada have starter sets. Add more entries over time to reach
+// ~50 per country — the accessor functions below work regardless of volume.
+
+export type QuestionCategory =
+  | 'personal'
+  | 'purpose'
+  | 'financial'
+  | 'ties'
+  | 'trip_details'
+  | 'post_travel'
+  | 'red_flag'
+
+export interface InterviewQuestion {
+  id: string
+  country_iso: string
+  visa_types: string[]
+  category: QuestionCategory
+  question: string
+  why_asked: string
+  strong_answer_pattern: string
+  weak_answer_pattern: string
+  pro_tip: string
+  keywords_to_use: string[]
+  keywords_to_avoid: string[]
+  difficulty: 1 | 2 | 3
+  source_url?: string
+}
+
+// ── Category display metadata ────────────────────────────────────────────────
+export const CATEGORY_META: Record<QuestionCategory, { label: string; icon: string }> = {
+  personal: { label: 'Personal', icon: '👤' },
+  purpose: { label: 'Purpose', icon: '🎯' },
+  financial: { label: 'Financial', icon: '💰' },
+  ties: { label: 'Ties to Home', icon: '🏠' },
+  trip_details: { label: 'Trip Details', icon: '✈️' },
+  post_travel: { label: 'After Travel', icon: '🔁' },
+  red_flag: { label: 'Red-Flag Avoidance', icon: '🚩' },
+}
+
+// ── Country + visa-type metadata (drives selectors and routing) ───────────────
+export interface InterviewCountry {
+  iso: string
+  name: string
+  flag: string
+  slug: string
+  visa_types: { code: string; label: string }[]
+}
+
+export const INTERVIEW_COUNTRIES: InterviewCountry[] = [
+  {
+    iso: 'US', name: 'United States', flag: '🇺🇸', slug: 'us',
+    visa_types: [
+      { code: 'B1B2', label: 'B1/B2 Tourist / Business' },
+      { code: 'F1', label: 'F-1 Student' },
+      { code: 'H1B', label: 'H-1B Work' },
+    ],
+  },
+  {
+    iso: 'GB', name: 'United Kingdom', flag: '🇬🇧', slug: 'uk',
+    visa_types: [
+      { code: 'VISITOR', label: 'Standard Visitor' },
+      { code: 'STUDENT', label: 'Student' },
+      { code: 'SKILLED', label: 'Skilled Worker' },
+    ],
+  },
+  {
+    iso: 'CA', name: 'Canada', flag: '🇨🇦', slug: 'canada',
+    visa_types: [
+      { code: 'TRV', label: 'Visitor (TRV)' },
+      { code: 'STUDY', label: 'Study Permit' },
+      { code: 'WORK', label: 'Work Permit' },
+    ],
+  },
+  {
+    iso: 'AU', name: 'Australia', flag: '🇦🇺', slug: 'australia',
+    visa_types: [
+      { code: 'VISITOR', label: 'Visitor (600)' },
+      { code: 'STUDENT', label: 'Student (500)' },
+    ],
+  },
+  {
+    iso: 'DE', name: 'Germany (Schengen)', flag: '🇩🇪', slug: 'germany',
+    visa_types: [
+      { code: 'SCHENGEN', label: 'Schengen Short-Stay' },
+      { code: 'STUDENT', label: 'Student' },
+    ],
+  },
+  {
+    iso: 'AE', name: 'United Arab Emirates', flag: '🇦🇪', slug: 'uae',
+    visa_types: [{ code: 'TOURIST', label: 'Tourist' }],
+  },
+  {
+    iso: 'JP', name: 'Japan', flag: '🇯🇵', slug: 'japan',
+    visa_types: [{ code: 'TOURIST', label: 'Tourist' }],
+  },
+]
+
+// ── The question bank ────────────────────────────────────────────────────────
+export const QUESTION_BANK: InterviewQuestion[] = [
+  // ═══════════════ UNITED STATES — B1/B2 ═══════════════
+  {
+    id: 'us-b1b2-purpose-01', country_iso: 'US', visa_types: ['B1B2'], category: 'purpose',
+    question: 'Why do you want to visit the United States?',
+    why_asked: 'Officers test whether your trip purpose is specific and credible. Vague answers trigger Section 214(b) concerns about non-immigrant intent.',
+    strong_answer_pattern: 'I am visiting my brother in Houston for two weeks. He recently had his first child and I want to see my nephew. I will stay with him for the trip and return on the 20th.',
+    weak_answer_pattern: 'I want to see America. / I just want to travel. / I want a vacation.',
+    pro_tip: 'Name a specific place, person, or event. Vague answers signal weak ties or overstay risk.',
+    keywords_to_use: ['specific city', 'specific person', 'specific dates', 'return date'],
+    keywords_to_avoid: ['settle', 'find work', 'stay forever', 'might stay'],
+    difficulty: 1,
+    source_url: 'https://travel.state.gov/content/travel/en/us-visas/tourism-visit/visitor.html',
+  },
+  {
+    id: 'us-b1b2-purpose-02', country_iso: 'US', visa_types: ['B1B2'], category: 'purpose',
+    question: 'Why do you want to travel now, at this particular time?',
+    why_asked: 'Officers check that there is a genuine, time-bound reason for the trip rather than an open-ended plan to relocate.',
+    strong_answer_pattern: 'My sister graduates in May and I want to attend the ceremony, then travel for a week before returning to work.',
+    weak_answer_pattern: 'No particular reason, I just have free time now.',
+    pro_tip: 'Tie the timing to a concrete event or your approved leave dates.',
+    keywords_to_use: ['event', 'graduation', 'approved leave', 'specific month'],
+    keywords_to_avoid: ['whenever', 'no reason', 'open-ended'],
+    difficulty: 2,
+  },
+  {
+    id: 'us-b1b2-personal-01', country_iso: 'US', visa_types: ['B1B2'], category: 'personal',
+    question: 'What do you do for a living?',
+    why_asked: 'Your job is a primary tie to home. Officers gauge whether you have a stable reason to return.',
+    strong_answer_pattern: 'I am a senior accountant at Khan & Co. in Lahore. I have worked there six years and have approved leave for this trip.',
+    weak_answer_pattern: 'I am between jobs. / I do a bit of everything.',
+    pro_tip: 'State role, employer, tenure, and that your leave is approved. Stability signals return.',
+    keywords_to_use: ['job title', 'employer name', 'years employed', 'approved leave'],
+    keywords_to_avoid: ['unemployed', 'looking for work', 'freelance gigs'],
+    difficulty: 1,
+  },
+  {
+    id: 'us-b1b2-personal-02', country_iso: 'US', visa_types: ['B1B2'], category: 'personal',
+    question: 'Are you married? Do you have children?',
+    why_asked: 'Family ties at home are strong evidence you intend to return.',
+    strong_answer_pattern: 'Yes, I am married and have two children in school here. They are staying home while I travel.',
+    weak_answer_pattern: 'No family, I am completely free to go anywhere.',
+    pro_tip: 'If you have dependents staying home, say so — it is a powerful tie.',
+    keywords_to_use: ['spouse', 'children', 'staying home', 'school here'],
+    keywords_to_avoid: ['no ties', 'free to relocate'],
+    difficulty: 1,
+  },
+  {
+    id: 'us-b1b2-financial-01', country_iso: 'US', visa_types: ['B1B2'], category: 'financial',
+    question: 'How will you pay for this trip?',
+    why_asked: 'Officers confirm you can fund the trip without working illegally in the US.',
+    strong_answer_pattern: 'I am self-funding from my savings. I have around $8,000 set aside, and my bank statements show consistent balances over the last six months.',
+    weak_answer_pattern: 'A friend in the US is paying for everything. / I am not sure of the amount.',
+    pro_tip: 'Self-funding shows independence. Know your numbers; avoid sudden large deposits.',
+    keywords_to_use: ['savings', 'specific amount', 'bank statements', 'self-funded'],
+    keywords_to_avoid: ['not sure', 'someone else pays', 'borrowed'],
+    difficulty: 2,
+  },
+  {
+    id: 'us-b1b2-financial-02', country_iso: 'US', visa_types: ['B1B2'], category: 'financial',
+    question: 'What is your monthly income?',
+    why_asked: 'Income demonstrates you can afford the trip and have an economic anchor at home.',
+    strong_answer_pattern: 'I earn about $1,800 a month after tax, and I have additional rental income from a property I own.',
+    weak_answer_pattern: 'I do not really track it. / It varies a lot.',
+    pro_tip: 'Give a clear figure. Mention any additional income or assets.',
+    keywords_to_use: ['specific salary', 'rental income', 'assets'],
+    keywords_to_avoid: ['varies', 'cash only', 'no fixed income'],
+    difficulty: 2,
+  },
+  {
+    id: 'us-b1b2-ties-01', country_iso: 'US', visa_types: ['B1B2'], category: 'ties',
+    question: 'What ties do you have to your home country?',
+    why_asked: 'The single most important factor. Officers look for concrete reasons you will return.',
+    strong_answer_pattern: 'I own my apartment, I have a permanent job I have held for six years, and my immediate family lives here. I must return for a work project in August.',
+    weak_answer_pattern: 'Not many, honestly. I am quite free. I like it better abroad.',
+    pro_tip: 'List property, job, family, and commitments. The more concrete, the stronger.',
+    keywords_to_use: ['own property', 'permanent job', 'family', 'commitment to return'],
+    keywords_to_avoid: ['no ties', 'prefer abroad', 'nothing keeping me'],
+    difficulty: 1,
+    source_url: 'https://travel.state.gov/content/travel/en/us-visas/tourism-visit/visitor.html',
+  },
+  {
+    id: 'us-b1b2-ties-02', country_iso: 'US', visa_types: ['B1B2'], category: 'ties',
+    question: 'Will you return to your home country?',
+    why_asked: 'Directly probes immigrant intent. Hesitation or conditional answers are red flags.',
+    strong_answer_pattern: 'Yes, absolutely. My job, my home, and my children are here. My return flight is booked for the 20th.',
+    weak_answer_pattern: 'I might stay if I find a good opportunity. / We will see how it goes.',
+    pro_tip: 'Answer with a confident "yes" and back it with concrete ties and a booked return.',
+    keywords_to_use: ['yes', 'return flight booked', 'job', 'family'],
+    keywords_to_avoid: ['might', 'maybe', 'if I find', 'we will see'],
+    difficulty: 1,
+  },
+  {
+    id: 'us-b1b2-trip-01', country_iso: 'US', visa_types: ['B1B2'], category: 'trip_details',
+    question: 'How long do you plan to stay and where?',
+    why_asked: 'A clear, bounded itinerary signals a genuine short visit, not an open-ended stay.',
+    strong_answer_pattern: 'Two weeks. Five days in New York, then a week with my brother in Houston, returning on the 20th.',
+    weak_answer_pattern: 'As long as possible. / Until my visa runs out.',
+    pro_tip: 'Give a specific duration and a rough route, plus your return date.',
+    keywords_to_use: ['specific days', 'cities', 'return date'],
+    keywords_to_avoid: ['as long as possible', 'until visa expires', 'not sure'],
+    difficulty: 1,
+  },
+  {
+    id: 'us-b1b2-trip-02', country_iso: 'US', visa_types: ['B1B2'], category: 'trip_details',
+    question: 'Where will you stay?',
+    why_asked: 'Confirms the trip is planned and you are accountable for your accommodation.',
+    strong_answer_pattern: 'I have hotel bookings in New York and will stay with my brother in Houston. I can show the confirmations.',
+    weak_answer_pattern: 'I will figure it out when I arrive.',
+    pro_tip: 'Have confirmations ready; vagueness here undermines the whole application.',
+    keywords_to_use: ['hotel booking', 'confirmation', 'host address'],
+    keywords_to_avoid: ['not decided', 'figure it out there'],
+    difficulty: 1,
+  },
+  {
+    id: 'us-b1b2-posttravel-01', country_iso: 'US', visa_types: ['B1B2'], category: 'post_travel',
+    question: 'What will you do when you come back?',
+    why_asked: 'Forces you to articulate the life you are returning to — a strong return signal.',
+    strong_answer_pattern: 'I return to my job on the 22nd and have a project deadline at the end of the month.',
+    weak_answer_pattern: 'I have not really thought about it.',
+    pro_tip: 'Name a concrete commitment waiting for you at home.',
+    keywords_to_use: ['return to work', 'deadline', 'responsibility'],
+    keywords_to_avoid: ['no plans', 'nothing specific'],
+    difficulty: 2,
+  },
+  {
+    id: 'us-b1b2-redflag-01', country_iso: 'US', visa_types: ['B1B2'], category: 'red_flag',
+    question: 'Do you have relatives in the United States?',
+    why_asked: 'Having close relatives is fine, but officers check it does not signal intent to immigrate.',
+    strong_answer_pattern: 'Yes, my brother lives in Houston, but I am visiting briefly and returning to my job and family at home.',
+    weak_answer_pattern: 'My whole family is there and I want to be with them.',
+    pro_tip: 'Acknowledge relatives honestly, then immediately reaffirm your intent to return.',
+    keywords_to_use: ['visiting briefly', 'returning', 'job at home'],
+    keywords_to_avoid: ['join them', 'be with them permanently', 'whole family there'],
+    difficulty: 2,
+  },
+  {
+    id: 'us-b1b2-redflag-02', country_iso: 'US', visa_types: ['B1B2'], category: 'red_flag',
+    question: 'Have you ever overstayed a visa anywhere?',
+    why_asked: 'Prior immigration violations strongly predict future risk; honesty is essential.',
+    strong_answer_pattern: 'No, I have always returned within my authorized stay. I visited the UK in 2023 and left on time.',
+    weak_answer_pattern: 'Just once, a few extra days, but it was no big deal.',
+    pro_tip: 'A clean record is a major asset — state it clearly. Never minimise a past violation.',
+    keywords_to_use: ['always returned on time', 'clean record', 'left on time'],
+    keywords_to_avoid: ['a few extra days', 'no big deal', 'overstayed but'],
+    difficulty: 2,
+  },
+
+  // ═══════════════ UNITED STATES — F1 (Student) ═══════════════
+  {
+    id: 'us-f1-purpose-01', country_iso: 'US', visa_types: ['F1'], category: 'purpose',
+    question: 'Why do you want to study in the United States?',
+    why_asked: 'Officers test genuine academic intent and that the US program fits your goals.',
+    strong_answer_pattern: 'My program at Purdue is ranked top-10 for chemical engineering and has research labs my home universities lack. It directly supports my plan to work in petrochemicals back home.',
+    weak_answer_pattern: 'Education back home is bad. / It is easier to get a job there.',
+    pro_tip: 'Frame it around the US program’s strengths and your career plan at home.',
+    keywords_to_use: ['specific program', 'ranking', 'research', 'career plan at home'],
+    keywords_to_avoid: ['bad back home', 'stay and work', 'green card'],
+    difficulty: 2,
+  },
+  {
+    id: 'us-f1-financial-01', country_iso: 'US', visa_types: ['F1'], category: 'financial',
+    question: 'How will you fund your studies?',
+    why_asked: 'You must prove full funding for tuition and living costs without unauthorized work.',
+    strong_answer_pattern: 'My father is sponsoring me. We have a dedicated education fund of $60,000 plus his annual income, shown on the I-20 and bank statements.',
+    weak_answer_pattern: 'I will work part-time to pay tuition.',
+    pro_tip: 'Show clear, sufficient funding. Relying on US work is a red flag for F-1.',
+    keywords_to_use: ['sponsor', 'education fund', 'I-20 amount', 'scholarship'],
+    keywords_to_avoid: ['work to pay tuition', 'find a job there'],
+    difficulty: 2,
+  },
+  {
+    id: 'us-f1-posttravel-01', country_iso: 'US', visa_types: ['F1'], category: 'post_travel',
+    question: 'What are your plans after graduation?',
+    why_asked: 'F-1 requires non-immigrant intent — a credible plan to return home.',
+    strong_answer_pattern: 'I plan to return to Pakistan and join my family’s manufacturing business, where this degree is directly needed.',
+    weak_answer_pattern: 'I hope to find a job and settle in the US.',
+    pro_tip: 'Emphasise returning home; mention OPT only as short, optional training if at all.',
+    keywords_to_use: ['return home', 'family business', 'skills needed at home'],
+    keywords_to_avoid: ['settle', 'stay permanently', 'green card'],
+    difficulty: 3,
+  },
+
+  // ═══════════════ UNITED KINGDOM — Standard Visitor ═══════════════
+  {
+    id: 'gb-visitor-purpose-01', country_iso: 'GB', visa_types: ['VISITOR'], category: 'purpose',
+    question: 'Why do you want to visit the UK?',
+    why_asked: 'UK officers assess the "genuine visitor" requirement — a real, temporary purpose.',
+    strong_answer_pattern: 'I am visiting for 10 days to see the British Museum and the Scottish Highlands. I have a day-by-day itinerary and booked accommodation.',
+    weak_answer_pattern: 'I heard there are good job opportunities there.',
+    pro_tip: 'Name specific attractions and show a planned, time-limited itinerary.',
+    keywords_to_use: ['specific attractions', 'itinerary', 'booked accommodation', '10 days'],
+    keywords_to_avoid: ['job', 'work', 'settle'],
+    difficulty: 1,
+    source_url: 'https://www.gov.uk/standard-visitor',
+  },
+  {
+    id: 'gb-visitor-financial-01', country_iso: 'GB', visa_types: ['VISITOR'], category: 'financial',
+    question: 'How will you fund your trip to the UK?',
+    why_asked: 'You must show you can cover the trip without recourse to public funds or illegal work.',
+    strong_answer_pattern: 'I have £4,000 saved for this trip plus my monthly salary. My six-month bank statements show a consistent balance.',
+    weak_answer_pattern: 'My friend in the UK will cover most things.',
+    pro_tip: 'Show six months of consistent statements; avoid unexplained large deposits.',
+    keywords_to_use: ['savings', 'bank statements', 'consistent balance', 'self-funded'],
+    keywords_to_avoid: ['friend pays', 'borrowed', 'public funds'],
+    difficulty: 2,
+  },
+  {
+    id: 'gb-visitor-ties-01', country_iso: 'GB', visa_types: ['VISITOR'], category: 'ties',
+    question: 'What will make you return to your home country?',
+    why_asked: 'Central to the genuine-visitor test: officers need evidence you will leave the UK.',
+    strong_answer_pattern: 'My permanent job, my home, and my children’s school are all here. My return flight is booked and I resume work on the 18th.',
+    weak_answer_pattern: 'Nothing really, I am flexible about where I live.',
+    pro_tip: 'List concrete ties and a booked return; flexibility about living abroad is a red flag.',
+    keywords_to_use: ['permanent job', 'home', 'children school', 'return flight'],
+    keywords_to_avoid: ['flexible', 'might stay', 'nothing keeping me'],
+    difficulty: 2,
+  },
+
+  // ═══════════════ CANADA — Visitor (TRV) ═══════════════
+  {
+    id: 'ca-trv-purpose-01', country_iso: 'CA', visa_types: ['TRV'], category: 'purpose',
+    question: 'What is the main purpose of your visit to Canada?',
+    why_asked: 'Officers verify a genuine, temporary visit consistent with your stated plans.',
+    strong_answer_pattern: 'Tourism for 14 days — Niagara Falls, Toronto, and Vancouver. I have an itinerary and return flight booked.',
+    weak_answer_pattern: 'I want to explore opportunities there.',
+    pro_tip: 'Mention specific Canadian landmarks and a bounded itinerary.',
+    keywords_to_use: ['tourism', 'specific landmarks', 'itinerary', 'return flight'],
+    keywords_to_avoid: ['opportunities', 'work', 'settle'],
+    difficulty: 1,
+    source_url: 'https://www.canada.ca/en/immigration-refugees-citizenship.html',
+  },
+  {
+    id: 'ca-trv-ties-01', country_iso: 'CA', visa_types: ['TRV'], category: 'ties',
+    question: 'What ties do you have to your home country?',
+    why_asked: 'Weak ties are the most common TRV refusal reason; officers need strong evidence you will return.',
+    strong_answer_pattern: 'I have a permanent job, I own property, and my immediate family lives here. I must return to work after two weeks.',
+    weak_answer_pattern: 'I do not have many ties, I am quite free.',
+    pro_tip: 'Property ownership and stable employment are the strongest ties to cite.',
+    keywords_to_use: ['permanent job', 'own property', 'family', 'must return'],
+    keywords_to_avoid: ['no ties', 'free', 'prefer Canada'],
+    difficulty: 2,
+  },
+  {
+    id: 'ca-trv-financial-01', country_iso: 'CA', visa_types: ['TRV'], category: 'financial',
+    question: 'How much money are you bringing for the trip?',
+    why_asked: 'Officers confirm you can support yourself for the visit.',
+    strong_answer_pattern: 'I have budgeted about CAD 3,000 for two weeks, covering flights, hotels, and activities, shown in my bank statements.',
+    weak_answer_pattern: 'Not sure, just enough to get by.',
+    pro_tip: 'Give a concrete budget aligned to your trip length; Canada suggests ~CAD 100/day.',
+    keywords_to_use: ['specific budget', 'bank statements', 'covers trip'],
+    keywords_to_avoid: ['not sure', 'get by', 'minimal'],
+    difficulty: 2,
+  },
+]
+
+// ── Accessors ────────────────────────────────────────────────────────────────
+export function getCountryBySlug(slug: string): InterviewCountry | undefined {
+  return INTERVIEW_COUNTRIES.find((c) => c.slug === slug.toLowerCase())
+}
+
+export function getVisaLabel(country: InterviewCountry, code: string): string | undefined {
+  return country.visa_types.find((v) => v.code.toLowerCase() === code.toLowerCase())?.label
+}
+
+/** Questions for a country ISO, optionally filtered by visa-type code. */
+export function getQuestions(countryIso: string, visaTypeCode?: string): InterviewQuestion[] {
+  return QUESTION_BANK.filter((q) => {
+    if (q.country_iso !== countryIso) return false
+    if (visaTypeCode && !q.visa_types.includes(visaTypeCode)) return false
+    return true
+  })
+}
+
+/** Count of questions per category for a given country/visa-type. */
+export function countByCategory(
+  countryIso: string,
+  visaTypeCode?: string
+): Record<QuestionCategory, number> {
+  const counts = {
+    personal: 0, purpose: 0, financial: 0, ties: 0,
+    trip_details: 0, post_travel: 0, red_flag: 0,
+  } as Record<QuestionCategory, number>
+  for (const q of getQuestions(countryIso, visaTypeCode)) counts[q.category]++
+  return counts
+}
+
+export function getQuestionById(id: string): InterviewQuestion | undefined {
+  return QUESTION_BANK.find((q) => q.id === id)
+}
+
+/** Balanced selection for a mock interview: spread across categories. */
+export function buildMockSet(
+  countryIso: string,
+  visaTypeCode: string | undefined,
+  size = 7
+): InterviewQuestion[] {
+  const pool = getQuestions(countryIso, visaTypeCode)
+  const byCat = new Map<QuestionCategory, InterviewQuestion[]>()
+  for (const q of pool) {
+    const arr = byCat.get(q.category) ?? []
+    arr.push(q)
+    byCat.set(q.category, arr)
+  }
+  const order: QuestionCategory[] = ['purpose', 'personal', 'ties', 'financial', 'trip_details', 'post_travel', 'red_flag']
+  const picked: InterviewQuestion[] = []
+  // Round-robin across categories until we hit `size` or run out
+  let progressed = true
+  while (picked.length < size && progressed) {
+    progressed = false
+    for (const cat of order) {
+      const arr = byCat.get(cat)
+      if (arr && arr.length) {
+        picked.push(arr.shift()!)
+        progressed = true
+        if (picked.length >= size) break
+      }
+    }
+  }
+  return picked
+}
