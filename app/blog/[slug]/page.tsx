@@ -159,10 +159,8 @@ export default async function BlogPostPage({
 
   const heroImg = getBlogHeroImage(slug)
   const inlineImg = getArticleInlineImage(slug)
-  // A second, destination-neutral travel image to break up the article.
-  const SECONDARY_IMG_IDS = [1559825, 1308940, 1486222]
-  const secHash = slug.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
-  const secondaryImg = `https://images.pexels.com/photos/${SECONDARY_IMG_IDS[secHash % SECONDARY_IMG_IDS.length]}/pexels-photo-${SECONDARY_IMG_IDS[secHash % SECONDARY_IMG_IDS.length]}.jpeg?auto=compress&cs=tinysrgb&w=1200`
+  // Second image to break up the article (real photo when key set, else cover).
+  const secondaryImg = `/api/photo?slug=${encodeURIComponent(slug)}&v=alt`
   const caption = getDestinationCaption(slug)
   const catColor = CATEGORY_COLORS[post.category] ?? { bg: '#0d9488', text: '#fff' }
 
@@ -530,6 +528,38 @@ export default async function BlogPostPage({
 
             {/* Social share (mobile — inline below FAQ) */}
             <SocialShare title={post.title} slug={slug} />
+
+            {/* ── ABOUT VISITPLANE — brand + internal links ─────────────────── */}
+            <div className="mt-12 rounded-2xl border border-gray-100 bg-[#F9FAFB] p-6">
+              <div className="flex items-start gap-4">
+                <div className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#10B981] to-[#059669] text-2xl text-white shadow-sm">
+                  ✈️
+                </div>
+                <div className="min-w-0">
+                  <p className="text-base font-bold text-[#0f1419]">About VisitPlane</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-gray-600">
+                    <strong className="text-[#0f1419]">VisitPlane</strong> is a free visa-requirements
+                    platform covering 197 countries. The VisitPlane Editorial team verifies every
+                    route against official embassy and government sources, so you get accurate,
+                    up-to-date guidance — no signup required. Explore more VisitPlane tools below.
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Link href={post.visaLink} className="rounded-full bg-[#10B981] px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#059669]">
+                      {post.passportCountry} → {post.destinationCountry} requirements →
+                    </Link>
+                    <Link href="/wizard" className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-600 transition hover:border-[#10B981]/40">
+                      VisitPlane Visa Wizard
+                    </Link>
+                    <Link href="/passport-strength" className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-600 transition hover:border-[#10B981]/40">
+                      Passport Strength
+                    </Link>
+                    <Link href="/destinations" className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-600 transition hover:border-[#10B981]/40">
+                      All destinations
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* ── BRAND TAGLINE ────────────────────────────────────────────── */}
             <p className="mt-12 border-t border-gray-100 pt-8 text-center text-sm text-gray-400">

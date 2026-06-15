@@ -50,19 +50,28 @@ function pexelsUrl(id: number, width: number): string {
   return `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`
 }
 
-/** Full-width hero image — use for CSS background-image (1200 px) */
+// NOTE: External photo hotlinks (Pexels) proved unreliable (broken images), so
+// blog imagery is now generated on-brand and same-origin via /api/cover, which
+// never 404s. The pexelsUrl helper + PHOTO_IDS map are retained for reference.
+void pexelsUrl
+
+// Images resolve via /api/photo, which returns a real destination photo when a
+// Pexels/Unsplash key is configured, and falls back to the branded /api/cover
+// image otherwise — so blog images always render.
+
+/** Full-width hero image. */
 export function getBlogHeroImage(slug: string): string {
-  return pexelsUrl(PHOTO_IDS[slug] ?? DEFAULT_ID, 1200)
+  return `/api/photo?slug=${encodeURIComponent(slug)}&v=hero`
 }
 
-/** Card thumbnail — use for CSS background-image (800 px) */
+/** Card thumbnail. */
 export function getBlogCardImage(slug: string): string {
-  return pexelsUrl(PHOTO_IDS[slug] ?? DEFAULT_ID, 800)
+  return `/api/photo?slug=${encodeURIComponent(slug)}&v=card`
 }
 
-/** Inline article photo (1200 px) */
+/** Inline article image. */
 export function getArticleInlineImage(slug: string): string {
-  return pexelsUrl(PHOTO_IDS[slug] ?? DEFAULT_ID, 1200)
+  return `/api/photo?slug=${encodeURIComponent(slug)}&v=inline`
 }
 
 /** Human-readable photo caption for inline images */
