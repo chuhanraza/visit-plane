@@ -28,7 +28,7 @@ const VARIANT_OFFSET: Record<string, number> = { hero: 0, card: 1, inline: 2, al
  * variety. Keyed by lowercased destinationCountry.
  */
 const LANDMARKS: Record<string, number[]> = {
-  'france':                 [532826, 699466],                 // Paris / Eiffel Tower
+  'france':                 [338515, 705764, 532826],         // Paris / Eiffel Tower
   'germany':                [109629, 1128408, 2570063],       // Berlin / Brandenburg Gate
   'united arab emirates':   [2044434, 1467300],               // Dubai / Burj Khalifa skyline
   'thailand':               [2070033, 1031659, 460376],       // Bangkok temples
