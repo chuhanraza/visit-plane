@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { blogPosts } from '@/src/lib/posts'
+import { blogPosts, getAllCategories, getAllTags, toSlug as postTaxonomySlug } from '@/src/lib/posts'
 import { COUNTRIES, TOP_50_ROUTES, BY_ISO3 } from '@/lib/seo/countries'
 import { getSitemapPriority } from '@/lib/seo/internalLinks'
 
@@ -135,6 +135,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // ── Blog category + tag landing pages ────────────────────────────────────────
+  const blogTaxonomyPages: MetadataRoute.Sitemap = [
+    ...getAllCategories().map((c) => ({
+      url: `${base}/blog/category/${postTaxonomySlug(c)}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    })),
+    ...getAllTags().map((t) => ({
+      url: `${base}/blog/tag/${t.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.5,
+    })),
+  ]
+
   // ── Dynamic visa + programmatic SEO pages ───────────────────────────────────
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
@@ -144,7 +160,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .select('passport_country, country_name')
       .order('passport_country')
 
-    if (error || !data) return [...staticPages, ...blogPages]
+    if (error || !data) return [...staticPages, ...blogPages, ...blogTaxonomyPages]
 
     // Legacy visa pages: /visa/{passport}/{destination}
     const visaPages: MetadataRoute.Sitemap = data.map((row) => ({
@@ -261,6 +277,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const allPages = [
       ...staticPages,
       ...blogPages,
+      ...blogTaxonomyPages,
       ...template1Pages,
       ...template1Full,
       ...template2Pages,
@@ -282,6 +299,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return deduped
   } catch {
-    return [...staticPages, ...blogPages]
+    return [...staticPages, ...blogPages, ...blogTaxonomyPages]
   }
 }

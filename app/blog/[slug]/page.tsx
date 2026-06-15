@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { blogPosts, getPostBySlug, getRelatedPosts } from '@/src/lib/posts'
+import { blogPosts, getPostBySlug, getRelatedPosts, getPostTags, toSlug } from '@/src/lib/posts'
 import type { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
@@ -18,6 +17,8 @@ import {
 } from '@/utils/blogPhotos'
 import BlogTripBox from '@/components/affiliate/BlogTripBox'
 import AffiliateDisclosure from '@/components/affiliate/AffiliateDisclosure'
+import BlogEmailCapture from '@/components/blog/BlogEmailCapture'
+import BlogBreadcrumb from '@/components/blog/BlogBreadcrumb'
 import { isInsuranceRequired, affiliateTrackingUrl } from '@/src/lib/affiliates'
 
 // ── Static params ─────────────────────────────────────────────────────────────
@@ -35,22 +36,31 @@ export async function generateMetadata({
   const post = getPostBySlug(slug)
   if (!post) return { title: 'Post Not Found' }
 
-  const ogUrl = `https://visitplane.com/api/og?title=${encodeURIComponent(post.title)}&category=${encodeURIComponent(post.category)}&emoji=${encodeURIComponent(post.coverEmoji)}`
+  const ogUrl = `https://www.visitplane.com/api/og?title=${encodeURIComponent(post.title)}&category=${encodeURIComponent(post.category)}&emoji=${encodeURIComponent(post.coverEmoji)}`
+  const canonical = `https://www.visitplane.com/blog/${post.slug}`
+  const tags = getPostTags(post)
 
   return {
     title: `${post.title} — VisitPlane Visa Blog`,
-    description: post.excerpt,
+    description: post.excerpt.slice(0, 155),
+    alternates: { canonical },
     openGraph: {
       title: post.title,
       description: post.excerpt,
       type: 'article',
-      url: `https://visitplane.com/blog/${post.slug}`,
+      url: canonical,
+      siteName: 'VisitPlane',
       publishedTime: post.date,
-      authors: ['VisitPlane Visa Team'],
+      modifiedTime: post.date,
+      authors: ['VisitPlane Editorial'],
+      section: post.category,
+      tags,
       images: [{ url: ogUrl, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@visitplane',
+      creator: '@visitplane',
       title: post.title,
       description: post.excerpt,
       images: [ogUrl],
@@ -142,18 +152,29 @@ export default async function BlogPostPage({
     })),
   } : null
 
-  // Article JSON-LD schema
+  // BlogPosting JSON-LD schema
+  const wordCount = contentHtml.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length
+  const canonicalUrl = `https://www.visitplane.com/blog/${post.slug}`
   const articleSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: post.title,
     description: post.excerpt,
     datePublished: post.date,
     dateModified: post.date,
-    image: `https://visitplane.com/api/og?title=${encodeURIComponent(post.title)}&category=${encodeURIComponent(post.category)}&emoji=${encodeURIComponent(post.coverEmoji)}`,
-    url: `https://visitplane.com/blog/${post.slug}`,
-    author: { '@type': 'Organization', name: 'VisitPlane', url: 'https://visitplane.com' },
-    publisher: { '@type': 'Organization', name: 'VisitPlane', url: 'https://visitplane.com' },
+    image: `https://www.visitplane.com/api/og?title=${encodeURIComponent(post.title)}&category=${encodeURIComponent(post.category)}&emoji=${encodeURIComponent(post.coverEmoji)}`,
+    url: canonicalUrl,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+    articleSection: post.category,
+    keywords: getPostTags(post).join(', '),
+    wordCount,
+    author: { '@type': 'Organization', name: 'VisitPlane Editorial', url: 'https://www.visitplane.com' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'VisitPlane',
+      url: 'https://www.visitplane.com',
+      logo: { '@type': 'ImageObject', url: 'https://www.visitplane.com/logo-v2.png' },
+    },
   }
 
   return (
@@ -174,7 +195,6 @@ export default async function BlogPostPage({
       )}
 
       {/* Preload hero image — critical for LCP score */}
-      {/* eslint-disable-next-line @next/next/no-head-element */}
       <link rel="preload" as="image" href={heroImg} fetchPriority="high" />
 
       {/* Reading progress bar — teal, fixed at very top */}
@@ -237,15 +257,27 @@ export default async function BlogPostPage({
               {new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </time>
             <span>·</span>
-            <span>VisitPlane Visa Team</span>
+            <span>VisitPlane Editorial</span>
           </div>
           {/* Scroll indicator */}
           <div className="mt-5 animate-bounce text-lg text-white/50">↓</div>
         </div>
       </div>
 
+      {/* ── BREADCRUMB ───────────────────────────────────────────────────── */}
+      <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+        <BlogBreadcrumb
+          items={[
+            { name: 'Home', href: '/' },
+            { name: 'Blog', href: '/blog' },
+            { name: post.category, href: `/blog/category/${toSlug(post.category)}` },
+            { name: post.title },
+          ]}
+        />
+      </div>
+
       {/* ── TWO-COLUMN LAYOUT: article + TOC sidebar ─────────────────────── */}
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex gap-12 xl:gap-16">
 
           {/* ── Main article ────────────────────────────────────────────── */}
@@ -257,7 +289,7 @@ export default async function BlogPostPage({
                 ✈️
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-[#1A1A1A]">VisitPlane Visa Team</p>
+                <p className="text-sm font-semibold text-[#1A1A1A]">VisitPlane Editorial</p>
                 <p className="text-xs text-gray-500">Verified by Official Embassy Sources</p>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-400">
                   <span className="flex items-center gap-1">
@@ -310,6 +342,18 @@ export default async function BlogPostPage({
                   />
                 </div>
                 <p className="mt-3 text-center text-sm italic text-gray-400">{caption}</p>
+              </div>
+            )}
+
+            {/* ── MID-ARTICLE EMAIL CTA ──────────────────────────────────── */}
+            {part2 && (
+              <div className="my-12">
+                <BlogEmailCapture
+                  variant="inline"
+                  capturedFrom="blog_post"
+                  passport={post.passportCountry}
+                  destination={post.destinationCountry}
+                />
               </div>
             )}
 
@@ -404,6 +448,20 @@ export default async function BlogPostPage({
               </div>
             )}
 
+            {/* ── TAGS ──────────────────────────────────────────────────────── */}
+            <div className="mt-12 flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Tags:</span>
+              {getPostTags(post).map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/blog/tag/${toSlug(tag)}`}
+                  className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-[#10B981]/10 hover:text-[#10B981]"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+
             {/* ── AFFILIATE: Recommended for this trip ────────────────────── */}
             <BlogTripBox
               destinationName={post.destinationCountry}
@@ -440,6 +498,15 @@ export default async function BlogPostPage({
 
             {/* Social share (mobile — inline below FAQ) */}
             <SocialShare title={post.title} slug={slug} />
+
+            {/* ── BRAND TAGLINE ────────────────────────────────────────────── */}
+            <p className="mt-12 border-t border-gray-100 pt-8 text-center text-sm text-gray-400">
+              <strong className="text-[#10B981]">VisitPlane</strong> — visa requirements, decoded
+              in seconds. Free, accurate, always updated.{' '}
+              <Link href="/destinations" className="font-semibold text-[#10B981] hover:underline">
+                Check your visa requirements →
+              </Link>
+            </p>
 
           </article>
 

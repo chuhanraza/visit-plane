@@ -1,8 +1,9 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import { Suspense } from 'react'
 import { blogPosts } from '@/src/lib/posts'
 import type { Metadata } from 'next'
 import BlogClientPage from './BlogClientPage'
+import BlogBreadcrumb from '@/components/blog/BlogBreadcrumb'
 
 export const metadata: Metadata = {
   title: 'Visa Blog — Expert Guides for Every Route | VisitPlane',
@@ -113,8 +114,13 @@ export default function BlogPage() {
 
       {/* ── POSTS: search + filter + featured + grid ───────────────────────── */}
       <main className="bg-[#FAFAFA]">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <BlogClientPage posts={sorted} />
+        <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
+          <BlogBreadcrumb items={[{ name: 'Home', href: '/' }, { name: 'Blog' }]} />
+        </div>
+        <div className="mx-auto max-w-7xl px-4 pb-14 pt-8 sm:px-6 lg:px-8">
+          <Suspense fallback={<div className="py-24 text-center text-gray-400">Loading guides…</div>}>
+            <BlogClientPage posts={sorted} />
+          </Suspense>
         </div>
       </main>
 

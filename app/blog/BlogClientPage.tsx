@@ -1,9 +1,11 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback, useRef } from 'react'
 import Link from 'next/link'
-import { type BlogPost, type BlogCategory } from '@/src/lib/posts'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { type BlogPost, type BlogCategory, toSlug } from '@/src/lib/posts'
 import { getBlogCardImage, CATEGORY_COLORS } from '@/utils/blogPhotos'
+import BlogEmailCapture from '@/components/blog/BlogEmailCapture'
 
 const ALL_CATEGORIES: Array<BlogCategory | 'All Posts'> = [
   'All Posts',
@@ -13,6 +15,8 @@ const ALL_CATEGORIES: Array<BlogCategory | 'All Posts'> = [
   'Document Help',
   'Travel Tips',
 ]
+
+const PAGE_SIZE = 20
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -49,15 +53,12 @@ function FeaturedCard({ post }: { post: BlogPost }) {
       href={`/blog/${post.slug}`}
       className="group relative mb-10 block overflow-hidden rounded-3xl shadow-2xl"
     >
-      {/* Background photo */}
       <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
         style={{ backgroundImage: `url(${imgUrl})` }}
       />
-      {/* Dark gradient — heavier at the bottom where text sits */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/35 to-black/10" />
 
-      {/* Category badge (top-left) */}
       <div className="absolute left-5 top-5 z-10">
         <span
           className="rounded-full px-3 py-1 text-xs font-bold text-white shadow-lg"
@@ -66,16 +67,13 @@ function FeaturedCard({ post }: { post: BlogPost }) {
           {post.category}
         </span>
       </div>
-      {/* FEATURED badge (top-right) */}
       <div className="absolute right-5 top-5 z-10">
         <span className="rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-amber-900 shadow-lg">
           ★ FEATURED
         </span>
       </div>
 
-      {/* Content — sits at the bottom */}
       <div className="relative z-10 px-6 pb-8 pt-56 sm:px-8 sm:pb-10 sm:pt-72">
-        {/* Route indicator */}
         <p className="mb-2 text-xs font-medium uppercase tracking-wider text-white/50">
           {post.coverEmoji} {post.passportCountry} → {post.destinationCountry}
         </p>
@@ -117,15 +115,12 @@ function PostCard({ post }: { post: BlogPost }) {
       href={`/blog/${post.slug}`}
       className="group flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-gray-200 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:ring-[#10B981]/30"
     >
-      {/* Photo section */}
       <div className="relative h-52 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.06]"
           style={{ backgroundImage: `url(${imgUrl})` }}
         />
-        {/* Subtle bottom gradient on photo */}
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/50 to-transparent" />
-        {/* Category badge */}
         <div className="absolute left-3 top-3">
           <span
             className="rounded-full px-2.5 py-1 text-xs font-bold text-white shadow"
@@ -136,24 +131,19 @@ function PostCard({ post }: { post: BlogPost }) {
         </div>
       </div>
 
-      {/* Card body */}
       <div className="flex flex-1 flex-col gap-3 p-5">
-        {/* Route */}
         <p className="text-xs text-gray-400">
           {post.coverEmoji} {post.passportCountry} → {post.destinationCountry}
         </p>
 
-        {/* Title */}
         <h2 className="text-base font-bold leading-snug text-[#1A1A1A] transition group-hover:text-[#10B981] line-clamp-2">
           {post.title}
         </h2>
 
-        {/* Excerpt */}
         <p className="flex-1 text-sm leading-relaxed text-gray-500 line-clamp-3">
           {post.excerpt}
         </p>
 
-        {/* Footer row */}
         <div className="flex items-center justify-between border-t border-gray-100 pt-3">
           <div className="flex items-center gap-1.5 text-xs text-gray-400">
             <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -167,6 +157,78 @@ function PostCard({ post }: { post: BlogPost }) {
         </div>
       </div>
     </Link>
+  )
+}
+
+// ── Compact card for horizontal carousels ───────────────────────────────────
+function CarouselCard({ post }: { post: BlogPost }) {
+  const imgUrl = getBlogCardImage(post.slug)
+  const catColor = CATEGORY_COLORS[post.category] ?? { bg: '#0d9488', text: '#fff' }
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group flex w-64 flex-shrink-0 flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-gray-200 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:ring-[#10B981]/30"
+    >
+      <div className="relative h-36 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+          style={{ backgroundImage: `url(${imgUrl})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+        <span
+          className="absolute left-2.5 top-2.5 rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow"
+          style={{ backgroundColor: catColor.bg }}
+        >
+          {post.category}
+        </span>
+        <p className="absolute bottom-2.5 left-2.5 right-2.5 text-sm font-bold leading-snug text-white line-clamp-2 drop-shadow">
+          {post.title}
+        </p>
+      </div>
+      <div className="flex items-center justify-between px-4 py-3">
+        <span className="text-xs text-gray-400">{post.readTime}</span>
+        <span className="text-xs font-semibold text-[#10B981] group-hover:text-[#059669]">Read →</span>
+      </div>
+    </Link>
+  )
+}
+
+function Carousel({ title, posts }: { title: string; posts: BlogPost[] }) {
+  const scroller = useRef<HTMLDivElement>(null)
+  if (posts.length === 0) return null
+  const scrollBy = (dir: number) => {
+    scroller.current?.scrollBy({ left: dir * 300, behavior: 'smooth' })
+  }
+  return (
+    <section className="mt-14">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-lg font-bold text-[#1A1A1A]">{title}</h3>
+        <div className="hidden gap-2 sm:flex">
+          <button
+            onClick={() => scrollBy(-1)}
+            aria-label="Scroll left"
+            className="grid h-8 w-8 place-items-center rounded-full bg-white text-gray-500 ring-1 ring-gray-200 transition hover:text-[#10B981]"
+          >
+            ‹
+          </button>
+          <button
+            onClick={() => scrollBy(1)}
+            aria-label="Scroll right"
+            className="grid h-8 w-8 place-items-center rounded-full bg-white text-gray-500 ring-1 ring-gray-200 transition hover:text-[#10B981]"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+      <div
+        ref={scroller}
+        className="flex gap-4 overflow-x-auto pb-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {posts.map((post) => (
+          <CarouselCard key={post.slug} post={post} />
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -187,8 +249,39 @@ function EmptyState({ query }: { query: string }) {
 
 // ── Main export ─────────────────────────────────────────────────────────────
 export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
-  const [activeCategory, setActiveCategory] = useState<BlogCategory | 'All Posts'>('All Posts')
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  // Active category is derived from the ?category= slug in the URL.
+  const categoryParam = searchParams.get('category')
+  const activeCategory: BlogCategory | 'All Posts' = useMemo(() => {
+    if (!categoryParam) return 'All Posts'
+    const match = ALL_CATEGORIES.find(
+      (c) => c !== 'All Posts' && toSlug(c) === categoryParam,
+    )
+    return (match as BlogCategory) ?? 'All Posts'
+  }, [categoryParam])
+
   const [searchQuery, setSearchQuery] = useState('')
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+
+  const setCategory = useCallback(
+    (cat: BlogCategory | 'All Posts') => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (cat === 'All Posts') params.delete('category')
+      else params.set('category', toSlug(cat))
+      const qs = params.toString()
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
+      setVisibleCount(PAGE_SIZE) // reset pagination on filter change
+    },
+    [router, pathname, searchParams],
+  )
+
+  const onSearchChange = useCallback((value: string) => {
+    setSearchQuery(value)
+    setVisibleCount(PAGE_SIZE) // reset pagination on new search
+  }, [])
 
   const filtered = useMemo(() => {
     return posts.filter((post) => {
@@ -204,24 +297,37 @@ export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
   }, [posts, activeCategory, searchQuery])
 
   const [featured, ...rest] = filtered
+  const visibleRest = rest.slice(0, visibleCount)
+  const hasMore = rest.length > visibleCount
+
+  // Carousels only on the default, unfiltered view.
+  const showCarousels = activeCategory === 'All Posts' && !searchQuery.trim()
+  const byDestination = useMemo(
+    () => posts.filter((p) => p.category === 'Visa Guides' || p.category === 'Country Guides').slice(0, 8),
+    [posts],
+  )
+  const tipsAndKnowledge = useMemo(
+    () => posts.filter((p) => p.category === 'Travel Tips' || p.category === 'Document Help').slice(0, 8),
+    [posts],
+  )
+  const mostRead = useMemo(() => posts.slice(0, 8), [posts])
 
   return (
     <div>
       {/* ── Search + Filter bar ───────────────────────────────────────────── */}
       <div className="mb-12 space-y-5">
-        {/* Search */}
         <div className="relative mx-auto max-w-xl">
           <SearchIcon />
           <input
             type="text"
             placeholder="Search visa guides, countries, routes..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
             className="w-full rounded-2xl border border-gray-200 bg-white py-3.5 pl-11 pr-4 text-sm shadow-sm transition focus:border-[#10B981] focus:outline-none focus:ring-2 focus:ring-[#10B981]/20"
           />
           {searchQuery && (
             <button
-              onClick={() => setSearchQuery('')}
+              onClick={() => onSearchChange('')}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 transition hover:text-gray-600"
               aria-label="Clear search"
             >
@@ -230,13 +336,13 @@ export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
           )}
         </div>
 
-        {/* Category pills */}
-        <div className="flex flex-wrap justify-center gap-2">
+        {/* Category pills — horizontally scrollable on mobile */}
+        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {ALL_CATEGORIES.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+              onClick={() => setCategory(cat)}
+              className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
                 activeCategory === cat
                   ? 'bg-[#10B981] text-white shadow-md'
                   : 'bg-white text-gray-500 ring-1 ring-gray-200 shadow-sm hover:bg-gray-50 hover:text-gray-700'
@@ -247,7 +353,6 @@ export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
           ))}
         </div>
 
-        {/* Results count */}
         {searchQuery.trim() && (
           <p className="text-center text-sm text-gray-500">
             <span className="font-semibold text-[#1A1A1A]">{filtered.length}</span>{' '}
@@ -261,19 +366,43 @@ export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
         <EmptyState query={searchQuery} />
       ) : (
         <>
-          {/* Featured (first result — large immersive card) */}
           {featured && <FeaturedCard post={featured} />}
 
-          {/* Remaining posts in 3-column grid */}
-          {rest.length > 0 && (
+          {visibleRest.length > 0 && (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {rest.map((post) => (
+              {visibleRest.map((post) => (
                 <PostCard key={post.slug} post={post} />
               ))}
             </div>
           )}
+
+          {hasMore && (
+            <div className="mt-10 text-center">
+              <button
+                onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                className="inline-flex items-center gap-2 rounded-full bg-[#10B981] px-7 py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#059669]"
+              >
+                Load more guides
+                <span className="text-white/70">({rest.length - visibleCount} left)</span>
+              </button>
+            </div>
+          )}
         </>
       )}
+
+      {/* ── Featured carousels (default view only) ─────────────────────────── */}
+      {showCarousels && (
+        <>
+          <Carousel title="📚 Most Read This Month" posts={mostRead} />
+          <Carousel title="✈️ Visa Guides by Destination" posts={byDestination} />
+          <Carousel title="💡 Visa Tips & Insider Knowledge" posts={tipsAndKnowledge} />
+        </>
+      )}
+
+      {/* ── Email capture strip ───────────────────────────────────────────── */}
+      <div className="mt-16">
+        <BlogEmailCapture capturedFrom="blog_index" variant="strip" />
+      </div>
     </div>
   )
 }

@@ -22,6 +22,7 @@ export default function robots(): MetadataRoute.Robots {
     ],
     sitemap: [
       'https://www.visitplane.com/sitemap.xml',
+      'https://www.visitplane.com/sitemap-blog.xml',
     ],
     host: 'https://www.visitplane.com',
   }

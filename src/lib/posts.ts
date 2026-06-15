@@ -1048,6 +1048,97 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug)
 }
 
+// ── Taxonomy helpers ────────────────────────────────────────────────────────
+
+/** URL-safe slug for a category or tag (e.g. "Visa Guides" → "visa-guides"). */
+export function toSlug(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+/** All categories that currently have at least one post, in display order. */
+export function getAllCategories(): BlogCategory[] {
+  const order: BlogCategory[] = [
+    'Visa Guides',
+    'Country Guides',
+    'Document Help',
+    'Travel Tips',
+    'Interview Prep',
+  ]
+  const present = new Set(blogPosts.map((p) => p.category))
+  return order.filter((c) => present.has(c))
+}
+
+/** Display label for a category slug, or undefined if no posts use it. */
+export function categoryFromSlug(slug: string): BlogCategory | undefined {
+  return getAllCategories().find((c) => toSlug(c) === slug)
+}
+
+/** Posts in a category, newest first. */
+export function getPostsByCategory(category: BlogCategory): BlogPost[] {
+  return [...blogPosts]
+    .filter((p) => p.category === category)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}
+
+const TOPIC_KEYWORDS: Array<[RegExp, string]> = [
+  [/student|f1|f-1/i, 'Student Visa'],
+  [/work|skilled worker|job[- ]?seeker|h1b|h-1b/i, 'Work Visa'],
+  [/tourist|visit|tourism/i, 'Tourist Visa'],
+  [/schengen/i, 'Schengen'],
+  [/e-?visa/i, 'eVisa'],
+  [/on arrival/i, 'Visa on Arrival'],
+  [/rejection|rejected|refusal/i, 'Rejection'],
+  [/interview/i, 'Interview'],
+  [/document|cover letter|proof of funds|dummy ticket/i, 'Documents'],
+  [/cost|fee|cheapest|price/i, 'Costs'],
+  [/family/i, 'Family Visa'],
+  [/residence|residency/i, 'Residence'],
+  [/passport|strongest/i, 'Passport'],
+]
+
+/** Derive tags for a post from its route + title (no per-post data edits needed). */
+export function getPostTags(post: BlogPost): string[] {
+  const tags = new Set<string>()
+  if (post.passportCountry) tags.add(post.passportCountry)
+  if (post.destinationCountry && post.destinationCountry !== post.passportCountry) {
+    tags.add(post.destinationCountry)
+  }
+  for (const [re, tag] of TOPIC_KEYWORDS) {
+    if (re.test(post.title) || re.test(post.excerpt)) tags.add(tag)
+  }
+  return [...tags]
+}
+
+/** All distinct tags across all posts, sorted by frequency (desc) then name. */
+export function getAllTags(): Array<{ tag: string; slug: string; count: number }> {
+  const counts = new Map<string, number>()
+  for (const post of blogPosts) {
+    for (const tag of getPostTags(post)) {
+      counts.set(tag, (counts.get(tag) ?? 0) + 1)
+    }
+  }
+  return [...counts.entries()]
+    .map(([tag, count]) => ({ tag, slug: toSlug(tag), count }))
+    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag))
+}
+
+/** Resolve a tag slug back to its display label (first match). */
+export function tagFromSlug(slug: string): string | undefined {
+  return getAllTags().find((t) => t.slug === slug)?.tag
+}
+
+/** Posts carrying a given tag slug, newest first. */
+export function getPostsByTag(slug: string): BlogPost[] {
+  return [...blogPosts]
+    .filter((p) => getPostTags(p).some((t) => toSlug(t) === slug))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}
+
 /** Returns up to 3 related posts scored by passport/destination/category overlap */
 export function getRelatedPosts(slug: string, limit = 3): BlogPost[] {
   const current = getPostBySlug(slug)
