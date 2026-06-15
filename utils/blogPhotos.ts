@@ -32,6 +32,16 @@ const PHOTO_IDS: Record<string, number> = {
   'india-to-australia-visa-requirements-2026':     1878293,  // Sydney Opera House
   'india-to-malaysia-visa-requirements-2026':      1994407,  // Petronas Twin Towers
   'india-to-singapore-visa-requirements-2026':     2045103,  // Marina Bay Sands
+  'india-to-france-schengen-visa-requirements-2026': 161853, // Paris / Eiffel Tower
+  'india-to-qatar-visa-requirements-2026':         1308940,  // Modern skyline (Doha)
+  'india-to-china-visa-requirements-2026':         208701,   // Great Wall of China
+  'india-to-indonesia-visa-requirements-2026':     2048968,  // SE Asia temple (Bali)
+  'india-to-japan-visa-requirements-2026':         1559825,  // Travel destination (Japan)
+  'pakistan-to-thailand-visa-requirements-2026':   2048968,  // Thailand temple
+  'pakistan-to-qatar-visa-requirements-2026':      1308940,  // Modern skyline (Doha)
+  'pakistan-to-italy-schengen-visa-requirements-2026': 1559825, // Europe travel (Italy)
+  'pakistan-to-china-visa-requirements-2026':      208701,   // Great Wall of China
+  'pakistan-to-indonesia-visa-requirements-2026':  2048968,  // SE Asia temple (Bali)
 }
 
 const DEFAULT_ID = 1486222 // New York City — beautiful fallback
@@ -81,6 +91,16 @@ export function getDestinationCaption(slug: string): string {
     'india-to-australia-visa-requirements-2026':     '📍 Sydney, Australia — Opera House & Harbour',
     'india-to-malaysia-visa-requirements-2026':      '📍 Kuala Lumpur, Malaysia — Petronas Twin Towers',
     'india-to-singapore-visa-requirements-2026':     '📍 Singapore — Marina Bay Skyline',
+    'india-to-france-schengen-visa-requirements-2026': '📍 Paris, France — Gateway to Schengen Europe',
+    'india-to-qatar-visa-requirements-2026':         '📍 Doha, Qatar — Modern Gulf Skyline',
+    'india-to-china-visa-requirements-2026':         '📍 China — The Great Wall',
+    'india-to-indonesia-visa-requirements-2026':     '📍 Bali, Indonesia — Temples & Beaches',
+    'india-to-japan-visa-requirements-2026':         '📍 Japan — Tradition Meets Modernity',
+    'pakistan-to-thailand-visa-requirements-2026':   '📍 Thailand — Temples & Tropical Beaches',
+    'pakistan-to-qatar-visa-requirements-2026':      '📍 Doha, Qatar — Modern Gulf Skyline',
+    'pakistan-to-italy-schengen-visa-requirements-2026': '📍 Italy — Heart of Schengen Europe',
+    'pakistan-to-china-visa-requirements-2026':      '📍 China — The Great Wall',
+    'pakistan-to-indonesia-visa-requirements-2026':  '📍 Bali, Indonesia — Temples & Beaches',
   }
   return captions[slug] ?? '📍 Your destination awaits'
 }
