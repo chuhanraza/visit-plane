@@ -160,7 +160,7 @@ export default async function BlogPostPage({
   const heroImg = getBlogHeroImage(slug)
   const inlineImg = getArticleInlineImage(slug)
   // Second image to break up the article (real photo when key set, else cover).
-  const secondaryImg = `/api/photo?slug=${encodeURIComponent(slug)}&v=alt&cb=5`
+  const secondaryImg = `/api/photo?slug=${encodeURIComponent(slug)}&v=alt&cb=6`
   const caption = getDestinationCaption(slug)
   const catColor = CATEGORY_COLORS[post.category] ?? { bg: '#0d9488', text: '#fff' }
 
