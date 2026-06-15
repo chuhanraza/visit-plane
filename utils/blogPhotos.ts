@@ -29,6 +29,9 @@ const PHOTO_IDS: Record<string, number> = {
   'schengen-visa-bangladeshis':                    1604950,  // Amsterdam canals
   'south-korea-visa-indians':                      1416829,  // Seoul / Korean architecture
   'singapore-visa-pakistanis':                     2045103,  // Marina Bay Sands
+  'india-to-australia-visa-requirements-2026':     1878293,  // Sydney Opera House
+  'india-to-malaysia-visa-requirements-2026':      1994407,  // Petronas Twin Towers
+  'india-to-singapore-visa-requirements-2026':     2045103,  // Marina Bay Sands
 }
 
 const DEFAULT_ID = 1486222 // New York City — beautiful fallback
@@ -75,6 +78,9 @@ export function getDestinationCaption(slug: string): string {
     'schengen-visa-bangladeshis':                    '📍 Amsterdam, Netherlands — Heart of Schengen Zone',
     'south-korea-visa-indians':                      '📍 Seoul, South Korea — Where Tradition Meets Modernity',
     'singapore-visa-pakistanis':                     '📍 Singapore — The Lion City Skyline',
+    'india-to-australia-visa-requirements-2026':     '📍 Sydney, Australia — Opera House & Harbour',
+    'india-to-malaysia-visa-requirements-2026':      '📍 Kuala Lumpur, Malaysia — Petronas Twin Towers',
+    'india-to-singapore-visa-requirements-2026':     '📍 Singapore — Marina Bay Skyline',
   }
   return captions[slug] ?? '📍 Your destination awaits'
 }

@@ -1042,6 +1042,66 @@ export const blogPosts: BlogPost[] = [
       { q: 'What documents do Pakistanis need for a Singapore visa?', a: 'Required documents include: valid Pakistani passport (6+ months validity), completed visa form, passport-size photographs, return flight ticket, hotel booking, last 3 months bank statements, employment letter or business proof, and visa fee payment. A local Singapore contact or authorised agent must submit the application.' },
     ],
   },
+  {
+    slug: 'india-to-australia-visa-requirements-2026',
+    title: 'India to Australia Visa: Requirements & How to Apply (2026)',
+    date: '2026-06-15',
+    excerpt:
+      'Indian travellers cannot use Australia’s ETA — you must apply for the Visitor visa (subclass 600) online. This 2026 guide covers eligibility, documents, fees, processing times, and how to maximise approval.',
+    category: 'Visa Guides',
+    readTime: '11 min read',
+    coverEmoji: '🇦🇺',
+    passportCountry: 'India',
+    destinationCountry: 'Australia',
+    visaLink: '/visa/India/Australia',
+    ctaTitle: 'Check India to Australia Visa Requirements',
+    faqs: [
+      { q: 'Can Indian citizens use the Australia ETA?', a: 'No. Indian passport holders are not eligible for the ETA (subclass 601) or eVisitor (subclass 651). Indians must apply for the full Visitor visa (subclass 600), which is submitted online through ImmiAccount and requires more documentation.' },
+      { q: 'How much does an Australia tourist visa cost from India in 2026?', a: 'The base Visitor visa (subclass 600) Tourist stream charge is around AUD 190 (~₹10,400). With biometrics and VFS service charges, the all-in cost per applicant is typically ₹12,000–₹13,500.' },
+      { q: 'How long does the Australia subclass 600 visa take for Indians?', a: 'Most complete applications are decided within about 18–33 days after biometrics. During peak season (September–December) it can take 4–6 weeks, and complex cases up to 60 days. Apply 6–8 weeks before travel.' },
+      { q: 'Can I work in Australia on a Visitor visa?', a: 'No. The subclass 600 Visitor visa does not allow work. Study is limited to a maximum of 3 months, and some visas carry a “No Further Stay” (8503) condition.' },
+    ],
+  },
+  {
+    slug: 'india-to-malaysia-visa-requirements-2026',
+    title: 'India to Malaysia Visa: Requirements & How to Apply (2026)',
+    date: '2026-06-15',
+    excerpt:
+      'Indian citizens enjoy visa-free entry to Malaysia for tourism through 31 December 2026 — but you still must complete the Malaysia Digital Arrival Card (MDAC) and meet entry rules. Here’s the complete 2026 guide.',
+    category: 'Visa Guides',
+    readTime: '10 min read',
+    coverEmoji: '🇲🇾',
+    passportCountry: 'India',
+    destinationCountry: 'Malaysia',
+    visaLink: '/visa/India/Malaysia',
+    ctaTitle: 'Check India to Malaysia Visa Requirements',
+    faqs: [
+      { q: 'Do Indians need a visa for Malaysia in 2026?', a: 'For short tourist visits, no. Malaysia grants Indian citizens visa-free entry for social/tourism stays of up to 30 days until 31 December 2026. You still must submit the Malaysia Digital Arrival Card (MDAC) before arrival.' },
+      { q: 'What is the MDAC and when do I submit it?', a: 'The Malaysia Digital Arrival Card is a free, compulsory online form for all visitors. Submit it within 3 days before your arrival date via the official Malaysian Immigration MDAC portal, and carry the confirmation.' },
+      { q: 'How much money do I need to show for Malaysia?', a: 'Indian travellers should be ready to show proof of funds of at least around USD 500 (or equivalent), plus a confirmed return/onward ticket within 30 days and accommodation details.' },
+      { q: 'How long can Indians stay in Malaysia visa-free?', a: 'Up to 30 days per visit under the social visit pass. You cannot work on this pass, and overstaying carries fines and possible bans. For longer or non-tourist stays, apply for a Malaysia eVisa.' },
+    ],
+  },
+  {
+    slug: 'india-to-singapore-visa-requirements-2026',
+    title: 'India to Singapore Visa: Requirements & How to Apply (2026)',
+    date: '2026-06-15',
+    excerpt:
+      'Indian citizens need a visa for Singapore — issued as an e-Visa through Singapore’s ICA. This 2026 guide covers who can sponsor your application, the documents, fees, processing time, and approval tips.',
+    category: 'Visa Guides',
+    readTime: '10 min read',
+    coverEmoji: '🇸🇬',
+    passportCountry: 'India',
+    destinationCountry: 'Singapore',
+    visaLink: '/visa/India/Singapore',
+    ctaTitle: 'Check India to Singapore Visa Requirements',
+    faqs: [
+      { q: 'Do Indians need a visa for Singapore?', a: 'Yes. Indian passport holders need a visa before travelling to Singapore. It is issued as an e-Visa (no interview, no biometrics) and must be submitted through an authorised agent or a local sponsor via the ICA e-Service.' },
+      { q: 'Can I apply for a Singapore visa directly myself?', a: 'No. Overseas Indian applicants cannot submit directly to ICA. Your application must be lodged by an authorised visa agent/Strategic Partner, a Singapore citizen or PR sponsor, or a registered Singapore company.' },
+      { q: 'How much does a Singapore visa cost for Indians in 2026?', a: 'The government fee is about SGD 30 (~₹1,900–₹2,100). Through an authorised agent the all-in cost is typically ₹2,500–₹4,500; with a local sponsor via ICA you pay only the SGD 30 fee.' },
+      { q: 'How long does a Singapore e-Visa take?', a: 'Processing is usually 3–5 working days. The visa may be valid from a few weeks up to 2 years, but the actual length of stay (commonly up to 30 days) is granted by the immigration officer on arrival.' },
+    ],
+  },
 ]
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
