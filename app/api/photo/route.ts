@@ -25,7 +25,10 @@ function hash(s: string): number {
 async function pexelsPhotos(query: string, key: string): Promise<string[]> {
   const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=12&orientation=landscape`
   const res = await fetch(url, { headers: { Authorization: key }, cache: 'no-store' })
-  if (!res.ok) return []
+  if (!res.ok) {
+    console.error(`[photo] pexels HTTP ${res.status} for "${query}"`)
+    return []
+  }
   const data = (await res.json()) as { photos?: Array<{ src?: { landscape?: string; large2x?: string; large?: string } }> }
   return (data.photos ?? [])
     .map((p) => p.src?.large2x ?? p.src?.landscape ?? p.src?.large ?? '')
@@ -52,7 +55,10 @@ export async function GET(request: Request) {
   const pexelsKey = process.env.PEXELS_API_KEY
   const unsplashKey = process.env.UNSPLASH_ACCESS_KEY
 
-  if (!pexelsKey && !unsplashKey) return Response.redirect(fallback, 307)
+  if (!pexelsKey && !unsplashKey) {
+    console.error('[photo] no PEXELS_API_KEY / UNSPLASH_ACCESS_KEY in env')
+    return Response.redirect(fallback, 307)
+  }
 
   try {
     let photos = cache.get(query)
@@ -61,11 +67,15 @@ export async function GET(request: Request) {
       if (photos.length === 0 && unsplashKey) photos = await unsplashPhotos(query, unsplashKey)
       if (photos.length > 0) cache.set(query, photos)
     }
+    console.log(`[photo] key=${pexelsKey ? 'pexels' : unsplashKey ? 'unsplash' : 'none'} query="${query}" photos=${photos?.length ?? 0}`)
     if (!photos || photos.length === 0) return Response.redirect(fallback, 307)
 
     const idx = (hash(slug || query) + (VARIANT_OFFSET[v] ?? 0)) % photos.length
     const imgRes = await fetch(photos[idx], { cache: 'no-store' })
-    if (!imgRes.ok || !imgRes.body) return Response.redirect(fallback, 307)
+    if (!imgRes.ok || !imgRes.body) {
+      console.error(`[photo] image fetch HTTP ${imgRes.status}`)
+      return Response.redirect(fallback, 307)
+    }
 
     const buf = await imgRes.arrayBuffer()
     return new Response(buf, {
