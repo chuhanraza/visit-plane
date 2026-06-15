@@ -11,6 +11,7 @@
 import { getPostBySlug } from '@/src/lib/posts'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 const PALETTES: Record<string, { from: string; via: string; to: string; accent: string }> = {
   hero:   { from: '#0f0c29', via: '#302b63', to: '#0d9488', accent: '#2dd4bf' },

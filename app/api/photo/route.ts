@@ -12,9 +12,15 @@
 import { getPostBySlug } from '@/src/lib/posts'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'   // never statically cache the route itself
 
 const cache = new Map<string, string[]>()
 const VARIANT_OFFSET: Record<string, number> = { hero: 0, card: 1, inline: 2, alt: 3 }
+
+// Redirect that is NOT cached, so a failed lookup never sticks in the CDN.
+function redirectNoStore(url: string): Response {
+  return new Response(null, { status: 307, headers: { Location: url, 'Cache-Control': 'no-store' } })
+}
 
 function hash(s: string): number {
   let h = 0
@@ -57,7 +63,7 @@ export async function GET(request: Request) {
 
   if (!pexelsKey && !unsplashKey) {
     console.error('[photo] no PEXELS_API_KEY / UNSPLASH_ACCESS_KEY in env')
-    return Response.redirect(fallback, 307)
+    return redirectNoStore(fallback)
   }
 
   try {
@@ -68,13 +74,13 @@ export async function GET(request: Request) {
       if (photos.length > 0) cache.set(query, photos)
     }
     console.log(`[photo] key=${pexelsKey ? 'pexels' : unsplashKey ? 'unsplash' : 'none'} query="${query}" photos=${photos?.length ?? 0}`)
-    if (!photos || photos.length === 0) return Response.redirect(fallback, 307)
+    if (!photos || photos.length === 0) return redirectNoStore(fallback)
 
     const idx = (hash(slug || query) + (VARIANT_OFFSET[v] ?? 0)) % photos.length
     const imgRes = await fetch(photos[idx], { cache: 'no-store' })
     if (!imgRes.ok || !imgRes.body) {
       console.error(`[photo] image fetch HTTP ${imgRes.status}`)
-      return Response.redirect(fallback, 307)
+      return redirectNoStore(fallback)
     }
 
     const buf = await imgRes.arrayBuffer()
@@ -85,6 +91,6 @@ export async function GET(request: Request) {
       },
     })
   } catch {
-    return Response.redirect(fallback, 307)
+    return redirectNoStore(fallback)
   }
 }

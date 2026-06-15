@@ -59,19 +59,22 @@ void pexelsUrl
 // Pexels/Unsplash key is configured, and falls back to the branded /api/cover
 // image otherwise — so blog images always render.
 
+// Bump CB to bust CDN/browser caches of previously-cached image responses.
+const CB = '5'
+
 /** Full-width hero image. */
 export function getBlogHeroImage(slug: string): string {
-  return `/api/photo?slug=${encodeURIComponent(slug)}&v=hero`
+  return `/api/photo?slug=${encodeURIComponent(slug)}&v=hero&cb=${CB}`
 }
 
 /** Card thumbnail. */
 export function getBlogCardImage(slug: string): string {
-  return `/api/photo?slug=${encodeURIComponent(slug)}&v=card`
+  return `/api/photo?slug=${encodeURIComponent(slug)}&v=card&cb=${CB}`
 }
 
 /** Inline article image. */
 export function getArticleInlineImage(slug: string): string {
-  return `/api/photo?slug=${encodeURIComponent(slug)}&v=inline`
+  return `/api/photo?slug=${encodeURIComponent(slug)}&v=inline&cb=${CB}`
 }
 
 /** Human-readable photo caption for inline images */
