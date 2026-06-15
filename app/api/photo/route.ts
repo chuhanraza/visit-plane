@@ -47,6 +47,10 @@ const LANDMARKS: Record<string, number[]> = {
   'portugal':               [1534560, 2549018, 1837601],      // Lisbon
   'maldives':               [1483053, 1287460, 3601425, 1322183], // Maldives
   'italy':                  [2676642, 1797158, 532263],       // Rome / Colosseum
+  'spain':                  [1388030, 819764, 2225442],       // Barcelona / Spain
+  'netherlands':            [1796706, 967292, 2031706],       // Amsterdam canals
+  'switzerland':            [290452, 350748, 1586298],        // Swiss Alps
+  'greece':                 [1010657, 2087391, 1285625],      // Santorini / Greece
   'saudi arabia':           [4631059, 11195155, 30844810, 2233416], // Saudi / Mecca
   'qatar':                  [3573382, 2956376],               // Doha skyline
   'azerbaijan':             [14751708, 9482140, 17861470, 6271625], // Baku
