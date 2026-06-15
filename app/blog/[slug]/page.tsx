@@ -86,21 +86,42 @@ async function getPostContent(slug: string): Promise<string> {
   }
 }
 
-// ── Split HTML for inline photo injection ─────────────────────────────────────
-// Finds the </h2> boundary closest to the 40 % mark and splits there.
-function splitAtMidHeading(html: string): [string, string] {
+// ── Split HTML at </h2> boundaries near the given fractions ───────────────────
+// Returns up to (fractions.length + 1) parts so we can inject inline photos
+// between major sections. Falls back gracefully for short posts.
+function splitAtHeadings(html: string, fractions: number[]): string[] {
   const positions: number[] = []
   const re = /<\/h2>/gi
   let m
-  while ((m = re.exec(html)) !== null) {
-    positions.push(m.index + m[0].length)
+  while ((m = re.exec(html)) !== null) positions.push(m.index + m[0].length)
+  if (positions.length < fractions.length + 1) {
+    // Not enough sections — split once near the middle if possible.
+    if (positions.length >= 2) {
+      const target = Math.floor(html.length * 0.45)
+      const best = positions.reduce((p, c) =>
+        Math.abs(c - target) < Math.abs(p - target) ? c : p)
+      return [html.slice(0, best), html.slice(best)]
+    }
+    return [html]
   }
-  if (positions.length < 2) return [html, '']
-  const target = Math.floor(html.length * 0.4)
-  const best = positions.reduce((prev, curr) =>
-    Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev,
-  )
-  return [html.substring(0, best), html.substring(best)]
+  const cuts: number[] = []
+  for (const f of fractions) {
+    const target = Math.floor(html.length * f)
+    let best = positions.reduce((p, c) =>
+      Math.abs(c - target) < Math.abs(p - target) ? c : p)
+    // Avoid duplicate cut points
+    if (cuts.includes(best)) {
+      const alt = positions.find((p) => p > best && !cuts.includes(p))
+      if (alt) best = alt
+    }
+    cuts.push(best)
+  }
+  cuts.sort((a, b) => a - b)
+  const parts: string[] = []
+  let prev = 0
+  for (const c of cuts) { parts.push(html.slice(prev, c)); prev = c }
+  parts.push(html.slice(prev))
+  return parts
 }
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
@@ -134,10 +155,14 @@ export default async function BlogPostPage({
 
   const contentHtml = await getPostContent(slug)
   const relatedPosts = getRelatedPosts(slug, 3)
-  const [part1, part2] = splitAtMidHeading(contentHtml)
+  const parts = splitAtHeadings(contentHtml, [0.33, 0.66])
 
   const heroImg = getBlogHeroImage(slug)
   const inlineImg = getArticleInlineImage(slug)
+  // A second, destination-neutral travel image to break up the article.
+  const SECONDARY_IMG_IDS = [1559825, 1308940, 1486222]
+  const secHash = slug.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
+  const secondaryImg = `https://images.pexels.com/photos/${SECONDARY_IMG_IDS[secHash % SECONDARY_IMG_IDS.length]}/pexels-photo-${SECONDARY_IMG_IDS[secHash % SECONDARY_IMG_IDS.length]}.jpeg?auto=compress&cs=tinysrgb&w=1200`
   const caption = getDestinationCaption(slug)
   const catColor = CATEGORY_COLORS[post.category] ?? { bg: '#0d9488', text: '#fff' }
 
@@ -314,64 +339,71 @@ export default async function BlogPostPage({
               </div>
             </div>
 
-            {/* ── Article part 1 ─────────────────────────────────────────── */}
-            <div
-              className="prose prose-gray max-w-none
-                prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-[#111827]
-                prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-2xl prose-h2:text-[#111827]
-                prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-xl
-                prose-p:text-[#374151] prose-p:leading-[1.85] prose-p:text-lg
-                prose-li:text-[#374151] prose-li:leading-relaxed
-                prose-strong:text-[#111827] prose-strong:font-semibold
-                prose-a:text-[#0d9488] prose-a:no-underline hover:prose-a:underline
-                prose-ul:my-4 prose-ol:my-4
-                prose-hr:border-gray-200"
-              dangerouslySetInnerHTML={{ __html: part1 }}
-            />
+            {/* ── AT A GLANCE — quick-facts card ─────────────────────────── */}
+            <div className="mb-10 rounded-2xl border border-[#10B981]/20 bg-gradient-to-br from-[#F0FDF9] to-white p-5 shadow-sm">
+              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#059669]">✈️ At a glance</p>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Route</p>
+                  <p className="text-sm font-bold text-[#0f1419]">{post.coverEmoji} {post.passportCountry} → {post.destinationCountry}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Guide type</p>
+                  <p className="text-sm font-bold text-[#0f1419]">{post.category}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Read time</p>
+                  <p className="text-sm font-bold text-[#0f1419]">{post.readTime}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Updated</p>
+                  <p className="text-sm font-bold text-[#0f1419]">{new Date(post.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
+                </div>
+              </div>
+              <Link href={post.visaLink} className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#059669] hover:underline">
+                Check full {post.passportCountry} → {post.destinationCountry} requirements →
+              </Link>
+            </div>
 
-            {/* ── INLINE COUNTRY PHOTO ───────────────────────────────────── */}
-            {part2 && (
-              <div className="my-12">
+            {/* ── Article body — rich prose, with inline photos between sections ── */}
+            <div className="blog-prose max-w-none" dangerouslySetInnerHTML={{ __html: parts[0] }} />
+
+            {parts.length > 1 && (
+              <figure className="my-12">
                 <div className="aspect-video w-full overflow-hidden rounded-2xl shadow-xl">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={inlineImg}
-                    alt={caption}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
+                  <img src={inlineImg} alt={caption} className="h-full w-full object-cover" loading="lazy" />
                 </div>
-                <p className="mt-3 text-center text-sm italic text-gray-400">{caption}</p>
-              </div>
+                <figcaption className="mt-3 text-center text-sm italic text-gray-400">{caption}</figcaption>
+              </figure>
+            )}
+
+            {parts.length > 1 && (
+              <div className="blog-prose max-w-none" dangerouslySetInnerHTML={{ __html: parts[1] }} />
             )}
 
             {/* ── MID-ARTICLE EMAIL CTA ──────────────────────────────────── */}
-            {part2 && (
-              <div className="my-12">
-                <BlogEmailCapture
-                  variant="inline"
-                  capturedFrom="blog_post"
-                  passport={post.passportCountry}
-                  destination={post.destinationCountry}
-                />
-              </div>
+            <div className="my-12">
+              <BlogEmailCapture
+                variant="inline"
+                capturedFrom="blog_post"
+                passport={post.passportCountry}
+                destination={post.destinationCountry}
+              />
+            </div>
+
+            {parts.length > 2 && (
+              <figure className="my-12">
+                <div className="aspect-[16/9] w-full overflow-hidden rounded-2xl shadow-xl">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={secondaryImg} alt={`Travel and visa planning for ${post.destinationCountry}`} className="h-full w-full object-cover" loading="lazy" />
+                </div>
+                <figcaption className="mt-3 text-center text-sm italic text-gray-400">Plan your {post.destinationCountry} trip with confidence</figcaption>
+              </figure>
             )}
 
-            {/* ── Article part 2 ─────────────────────────────────────────── */}
-            {part2 && (
-              <div
-                className="prose prose-gray max-w-none
-                  prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-[#111827]
-                  prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-2xl
-                  prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-xl
-                  prose-p:text-[#374151] prose-p:leading-[1.85] prose-p:text-lg
-                  prose-li:text-[#374151] prose-li:leading-relaxed
-                  prose-strong:text-[#111827] prose-strong:font-semibold
-                  prose-a:text-[#0d9488] prose-a:no-underline hover:prose-a:underline
-                  prose-ul:my-4 prose-ol:my-4
-                  prose-hr:border-gray-200"
-                dangerouslySetInnerHTML={{ __html: part2 }}
-              />
+            {parts.length > 2 && (
+              <div className="blog-prose max-w-none" dangerouslySetInnerHTML={{ __html: parts[2] }} />
             )}
 
             {/* ── MID-ARTICLE CTA CARD ──────────────────────────────────── */}
