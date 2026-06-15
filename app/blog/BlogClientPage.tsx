@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { type BlogPost, type BlogCategory, toSlug } from '@/src/lib/posts'
-import { getBlogCardImage, CATEGORY_COLORS } from '@/utils/blogPhotos'
+import { getBlogCardImage, getBlogHeroImage, CATEGORY_COLORS } from '@/utils/blogPhotos'
 import BlogEmailCapture from '@/components/blog/BlogEmailCapture'
 
 const ALL_CATEGORIES: Array<BlogCategory | 'All Posts'> = [
@@ -45,7 +45,7 @@ function SearchIcon() {
 
 // ── Featured "hero" card (first visible post) ───────────────────────────────
 function FeaturedCard({ post }: { post: BlogPost }) {
-  const imgUrl = getBlogCardImage(post.slug)
+  const imgUrl = getBlogHeroImage(post.slug)
   const catColor = CATEGORY_COLORS[post.category] ?? { bg: '#0d9488', text: '#fff' }
 
   return (
@@ -150,6 +150,8 @@ function PostCard({ post }: { post: BlogPost }) {
               <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
             </svg>
             {post.readTime}
+            <span aria-hidden="true">·</span>
+            <time dateTime={post.date}>{formatDate(post.date)}</time>
           </div>
           <span className="text-xs font-semibold text-[#10B981] transition group-hover:text-[#059669]">
             Read Guide →
@@ -300,17 +302,40 @@ export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
   const visibleRest = rest.slice(0, visibleCount)
   const hasMore = rest.length > visibleCount
 
-  // Carousels only on the default, unfiltered view.
+  // Curated rails — default, unfiltered view only. Exclude the featured post so
+  // the rails surface different content than the hero + grid (no duplicate cards).
   const showCarousels = activeCategory === 'All Posts' && !searchQuery.trim()
+  const featuredSlug = featured?.slug
+  const pool = useMemo(() => posts.filter((p) => p.slug !== featuredSlug), [posts, featuredSlug])
+
+  // Editor's Picks: interleave one post per category for variety (not just newest).
+  const editorsPicks = useMemo(() => {
+    const queues = new Map<string, BlogPost[]>()
+    for (const p of pool) {
+      const q = queues.get(p.category) ?? []
+      q.push(p)
+      queues.set(p.category, q)
+    }
+    const lists = [...queues.values()]
+    const out: BlogPost[] = []
+    let i = 0
+    while (out.length < 8 && lists.some((l) => l.length > 0)) {
+      const list = lists[i % lists.length]
+      const next = list.shift()
+      if (next) out.push(next)
+      i++
+    }
+    return out
+  }, [pool])
+
   const byDestination = useMemo(
-    () => posts.filter((p) => p.category === 'Visa Guides' || p.category === 'Country Guides').slice(0, 8),
-    [posts],
+    () => pool.filter((p) => p.category === 'Visa Guides' || p.category === 'Country Guides').slice(0, 8),
+    [pool],
   )
   const tipsAndKnowledge = useMemo(
-    () => posts.filter((p) => p.category === 'Travel Tips' || p.category === 'Document Help').slice(0, 8),
-    [posts],
+    () => pool.filter((p) => p.category === 'Travel Tips' || p.category === 'Document Help').slice(0, 8),
+    [pool],
   )
-  const mostRead = useMemo(() => posts.slice(0, 8), [posts])
 
   return (
     <div>
@@ -368,11 +393,26 @@ export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
         <>
           {featured && <FeaturedCard post={featured} />}
 
+          {/* Curated rails — early discovery, distinct from the archive grid */}
+          {showCarousels && (
+            <>
+              <Carousel title="⭐ Editor's Picks" posts={editorsPicks} />
+              <Carousel title="✈️ Visa Guides by Destination" posts={byDestination} />
+              <Carousel title="💡 Visa Tips & Insider Knowledge" posts={tipsAndKnowledge} />
+            </>
+          )}
+
+          {/* Full archive */}
           {visibleRest.length > 0 && (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {visibleRest.map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
+            <div className={showCarousels ? 'mt-16' : ''}>
+              {showCarousels && (
+                <h3 className="mb-5 text-lg font-bold text-[#1A1A1A]">📰 All Visa Guides</h3>
+              )}
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {visibleRest.map((post) => (
+                  <PostCard key={post.slug} post={post} />
+                ))}
+              </div>
             </div>
           )}
 
@@ -387,15 +427,6 @@ export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
               </button>
             </div>
           )}
-        </>
-      )}
-
-      {/* ── Featured carousels (default view only) ─────────────────────────── */}
-      {showCarousels && (
-        <>
-          <Carousel title="📚 Most Read This Month" posts={mostRead} />
-          <Carousel title="✈️ Visa Guides by Destination" posts={byDestination} />
-          <Carousel title="💡 Visa Tips & Insider Knowledge" posts={tipsAndKnowledge} />
         </>
       )}
 

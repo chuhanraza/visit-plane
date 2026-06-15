@@ -48,6 +48,19 @@ export async function generateMetadata({
       type: 'website',
       url: canonical,
       siteName: 'VisitPlane',
+      images: [{
+        url: `https://www.visitplane.com/api/og?title=${encodeURIComponent(name)}&category=${encodeURIComponent('Visa Guides')}&emoji=${encodeURIComponent('📚')}`,
+        width: 1200,
+        height: 630,
+        alt: `${name} — VisitPlane`,
+      }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@visitplane',
+      title: `${name} — VisitPlane Visa Blog`,
+      description: CATEGORY_INTRO[name],
+      images: [`https://www.visitplane.com/api/og?title=${encodeURIComponent(name)}&category=${encodeURIComponent('Visa Guides')}&emoji=${encodeURIComponent('📚')}`],
     },
   }
 }
