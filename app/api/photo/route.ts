@@ -56,6 +56,7 @@ const LANDMARKS: Record<string, number[]> = {
   'saudi arabia':           [4631059, 11195155, 30844810, 2233416], // Saudi / Mecca
   'qatar':                  [3573382, 2956376],               // Doha skyline
   'azerbaijan':             [14751708, 9482140, 17861470, 6271625], // Baku
+  'ireland':                [2382681],                        // Cliffs of Moher
 }
 
 const DEFAULT_LANDMARKS = [1008155, 346885, 2356045] // generic travel scenery
