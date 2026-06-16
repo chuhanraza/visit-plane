@@ -51,6 +51,8 @@ const LANDMARKS: Record<string, number[]> = {
   'netherlands':            [1796706, 967292, 2031706],       // Amsterdam canals
   'switzerland':            [290452, 350748, 1586298],        // Swiss Alps
   'greece':                 [1010657, 2087391, 1285625],      // Santorini / Greece
+  'schengen area':          [338515, 705764, 532826],         // Europe / Paris (Schengen-wide topics)
+  'europe':                 [338515, 705764, 532826],         // Europe (generic)
   'saudi arabia':           [4631059, 11195155, 30844810, 2233416], // Saudi / Mecca
   'qatar':                  [3573382, 2956376],               // Doha skyline
   'azerbaijan':             [14751708, 9482140, 17861470, 6271625], // Baku
