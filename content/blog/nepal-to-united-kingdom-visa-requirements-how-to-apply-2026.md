@@ -86,6 +86,14 @@ One of the quietest advantages you can bring to any visa application is a **clea
 
 A practical note that saves money and stress: arrange **refundable or flexible bookings** until your visa is confirmed, then convert them once approved. Travel insurance is wise — and required on some routes — so factor it into your budget early. Keep digital and printed copies of your confirmations together with your visa, since a border officer may ask to see your onward travel and accommodation. Small logistics handled in advance let you focus on the parts of the application that actually decide it: your funds and your ties.
 
+## First-Time Traveller? Start Early
+
+If this is your first international trip, give yourself extra runway. Build your funds history months ahead so your statements look settled rather than rushed, gather your ties evidence carefully, and read the official requirements twice so nothing surprises you. First-time applicants aren't disadvantaged, but they have no travel record to lean on, so a complete, consistent, well-presented file does the reassuring instead. Apply early, double-check every name and date against your passport, and you remove the small errors that cause most avoidable delays.
+
+## A Quick Note on Onward Travel
+
+Carry proof of **onward or return travel** and your **accommodation** details, as immigration officers can ask for them on arrival. Keep a printed and digital copy together with your visa, along with enough accessible funds for your stay. These small habits rarely cause trouble when prepared in advance — and occasionally save a great deal of it at the border in Nepal.
+
 ## The Bottom Line
 
 For Nepali travellers, a United Kingdom visa is very achievable when you approach it methodically: confirm the right route, apply through the official channel, show genuine funds with a clear history, prove strong ties to Nepal, and keep every detail consistent. The paperwork is routine; the judgement calls are about money and intent. Get those right, document them cleanly, and apply early, and you turn a daunting-looking process into a predictable approval.
