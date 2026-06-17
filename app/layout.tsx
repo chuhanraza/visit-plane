@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import SiteHeader from "@/components/layout/SiteHeader";
@@ -234,6 +235,8 @@ export default async function RootLayout({
           </CommandPaletteProvider>
         </NextIntlClientProvider>
         <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
+        {/* Vercel Analytics — privacy-friendly page-view counter */}
+        <Analytics />
         {/* Capture Point 3 — Exit Intent Modal (desktop only) */}
         <ExitIntentModal />
         {/* PWA: registers SW, handles install prompt, bg-sync, transitions */}
