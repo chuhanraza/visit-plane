@@ -46,7 +46,9 @@ async function getDestinations(passportCountry: string): Promise<DestRow[]> {
     .select('country_name, visa_type, processing_time, pricing')
     .ilike('passport_country', passportCountry)
     .order('country_name')
-  return (data ?? []) as DestRow[]
+  // Drop rows with a missing country_name — a null here crashed the build when
+  // downstream code called d.country_name.toLowerCase() during prerender.
+  return ((data ?? []) as DestRow[]).filter(d => !!d.country_name)
 }
 
 async function getSeoIntro(nationality: string): Promise<string | null> {

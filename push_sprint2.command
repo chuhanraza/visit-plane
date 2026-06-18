@@ -21,7 +21,7 @@ git add -A
 # Commit if there is anything to commit (ignore error when nothing pending)
 if ! git diff --cached --quiet; then
   echo "• Committing pending changes..."
-  git commit -m "fix(build): force-dynamic on param-dependent routes to fix Next 16 empty-param prerender crash"
+  git commit -m "fix(build): filter null country_name rows in SEO route pages to fix Next 16 prerender crash"
 else
   echo "• Nothing new to commit (already committed)."
 fi

@@ -132,7 +132,9 @@ async function fetchRelatedRoutes(passportIso: string, destinationSlug: string, 
     .ilike('passport_country', passportCountry.name)
     .neq('country_name', destinationSlug)
     .limit(count)
-  return (data ?? []).map(r => r.country_name as string)
+  // Filter out null names — a null here crashed the build when downstream code
+  // called dest.toLowerCase() during prerender.
+  return (data ?? []).map(r => r.country_name as string).filter(Boolean)
 }
 
 async function fetchSeoContent(passportIso: string, destinationIso: string) {

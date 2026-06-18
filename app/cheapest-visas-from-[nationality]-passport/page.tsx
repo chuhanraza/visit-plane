@@ -55,6 +55,9 @@ async function getCheapestDestinations(passportCountry: string) {
     .order('country_name')
   if (!data) return []
   return (data as DestRow[])
+    // Drop rows with a missing country_name — a null here crashed the build
+    // when downstream code called d.country_name.toLowerCase() during prerender.
+    .filter(d => !!d.country_name)
     .map(d => ({ ...d, parsedPrice: parsePrice(d.pricing) }))
     .sort((a, b) => a.parsedPrice - b.parsedPrice)
 }

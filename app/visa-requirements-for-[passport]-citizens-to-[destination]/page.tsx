@@ -127,8 +127,10 @@ async function fetchRelatedRoutes(passportIso: string, destinationIso: string) {
     .limit(4)
 
   return {
-    samePassport: (samePassport ?? []).map(r => r.country_name as string),
-    sameDestination: (sameDestination ?? []).map(r => r.passport_country as string),
+    // Filter out null names — a null here crashed the build when downstream
+    // code called dest.toLowerCase() during prerender.
+    samePassport: (samePassport ?? []).map(r => r.country_name as string).filter(Boolean),
+    sameDestination: (sameDestination ?? []).map(r => r.passport_country as string).filter(Boolean),
   }
 }
 
