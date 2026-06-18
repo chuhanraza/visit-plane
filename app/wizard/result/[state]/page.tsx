@@ -5,6 +5,9 @@ import type { WizardAnswers } from '../../components/WizardStep'
 import { shortName } from '@/lib/visa-engine'
 import { getVisaData } from '@/lib/visa-engine'
 
+// Param-dependent route — render on demand (avoids Next 16 empty-param prerender crash).
+export const dynamic = 'force-dynamic'
+
 interface Props {
   params: Promise<{ state: string }>
 }

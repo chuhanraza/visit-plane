@@ -3,6 +3,9 @@ import { notFound } from 'next/navigation'
 import { getCountryBySlug } from '@/lib/data/interview-questions'
 import ResultClient from './ResultClient'
 
+// Param-dependent route — render on demand (avoids Next 16 empty-param prerender crash).
+export const dynamic = 'force-dynamic'
+
 interface Props {
   params: Promise<{ id: string }>
 }

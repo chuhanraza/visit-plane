@@ -3,6 +3,9 @@ import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+// DB/param-dependent route — render on demand (avoids Next 16 empty-param prerender crash).
+export const dynamic = 'force-dynamic'
+
 const NATIONALITY_TO_COUNTRY: Record<string, string> = {
   'pakistani': 'Pakistan', 'indian': 'India', 'bangladeshi': 'Bangladesh',
   'nigerian': 'Nigeria', 'ghanaian': 'Ghana', 'kenyan': 'Kenya',

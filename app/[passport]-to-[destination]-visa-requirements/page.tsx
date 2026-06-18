@@ -16,6 +16,10 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import VisaRequirementsBlock, { type VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
 
+// DB/param-dependent route — render on demand. Prevents Next 16 from trying to
+// prerender an empty-param shell (which crashed the build on `params.toLowerCase`).
+export const dynamic = 'force-dynamic'
+
 // ── Slug → country name resolution ───────────────────────────────────────────
 // Converts "pakistan" → "Pakistan", "united-kingdom" → "United Kingdom"
 function slugToCountry(slug: string): string {

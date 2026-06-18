@@ -7,6 +7,9 @@ import {
 } from '@/lib/data/interview-questions'
 import PrepModeClient from './PrepModeClient'
 
+// Param-dependent route — render on demand (avoids Next 16 empty-param prerender crash).
+export const dynamic = 'force-dynamic'
+
 interface Props {
   params: Promise<{ country: string; visaType: string }>
 }
