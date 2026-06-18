@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { VisaRecord } from '@/app/visa/[passport]/[destination]/VisaPageClient'
+import { getCuratedDestinationFee } from '@/lib/data/destinationFees'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface VisaHeroCardProps {
@@ -45,13 +46,21 @@ function resolveApplyUrl(record: VisaRecord, destinationName: string): string {
   return ''
 }
 
-function resolveSmartFee(record: VisaRecord, visaType: string): string {
+// Single source of truth for the displayed fee. Reads the route's own data
+// first, then falls back to the SAME curated value the /destinations grid shows,
+// so the hero, apply steps and destinations card never contradict each other.
+function resolveSmartFee(record: VisaRecord, visaType: string, destinationName: string): string {
   if (/free|no visa/i.test(visaType)) return 'Free'
   const raw = (record.price ?? record.fee ?? record.cost ?? (record as Record<string, unknown>).pricing ?? '').toString().trim()
-  if (!raw || /n\/a|contact|check/i.test(raw)) return 'Check official source'
-  if (/^\$/.test(raw)) return raw
-  if (/^\d/.test(raw)) return `$${raw}`
-  return raw
+  if (raw && !/n\/a|contact|check/i.test(raw)) {
+    if (/^\$/.test(raw)) return raw
+    if (/^\d/.test(raw)) return `$${raw}`
+    return raw
+  }
+  // Fallback to curated destination fee (shared with the destinations grid).
+  const curated = getCuratedDestinationFee(destinationName)
+  if (curated && curated !== '—') return curated
+  return 'Check official source'
 }
 
 function resolveSmartProcessing(record: VisaRecord, visaType: string): string {
@@ -116,7 +125,7 @@ export default function VisaHeroCard({
 
   const visaType       = (visaRecord.visa_type ?? visaRecord.type ?? 'Tourist Visa').toString()
   const badge          = resolveVisaBadge(visaType)
-  const fee            = resolveSmartFee(visaRecord, visaType)
+  const fee            = resolveSmartFee(visaRecord, visaType, destinationName)
   const pkr            = estimatePKR(fee)
   const processing     = resolveSmartProcessing(visaRecord, visaType)
   const validity       = resolveValidity(visaRecord)
@@ -222,16 +231,6 @@ export default function VisaHeroCard({
           </button>
         </div>
       </div>
-
-      {/* Last rule change banner */}
-      {visaRecord.last_verified && (
-        <div className="mt-3 flex items-center gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-800 print:hidden">
-          <span className="text-sm">🔄</span>
-          <span>
-            <strong>Last rule change:</strong> Mar 15, 2026 — Fee increased from $77 to $90
-          </span>
-        </div>
-      )}
     </section>
   )
 }

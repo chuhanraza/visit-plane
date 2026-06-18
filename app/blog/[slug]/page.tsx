@@ -175,6 +175,18 @@ export default async function BlogPostPage({
     })),
   } : null
 
+  // BreadcrumbList JSON-LD schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.visitplane.com' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.visitplane.com/blog' },
+      { '@type': 'ListItem', position: 3, name: post.category, item: `https://www.visitplane.com/blog/category/${toSlug(post.category)}` },
+      { '@type': 'ListItem', position: 4, name: post.title, item: `https://www.visitplane.com/blog/${post.slug}` },
+    ],
+  }
+
   // BlogPosting JSON-LD schema
   const wordCount = contentHtml.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length
   const canonicalUrl = `https://www.visitplane.com/blog/${post.slug}`
@@ -202,6 +214,12 @@ export default async function BlogPostPage({
 
   return (
     <div className="min-h-screen bg-white text-[#1A1A1A] antialiased">
+
+      {/* JSON-LD: BreadcrumbList schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
 
       {/* JSON-LD: Article schema */}
       <script

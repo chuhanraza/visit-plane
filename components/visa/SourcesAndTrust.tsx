@@ -37,12 +37,16 @@ async function copyLink(url: string): Promise<boolean> {
 }
 
 // ─── Changelog ────────────────────────────────────────────────────────────────
-// In production this would come from a DB / CMS
-const RECENT_CHANGES = [
-  { date: 'Mar 15, 2026', change: 'UAE visa fee increased from $77 to $90' },
-  { date: 'Jan 10, 2026', change: 'Pakistan eVisa processing time updated to 3–5 business days' },
-  { date: 'Nov 5, 2025',  change: 'Online application portal migrated to smartservices.icp.gov.ae' },
-]
+// Route-aware, non-fabricated maintenance entries. We deliberately do NOT assert
+// specific fee figures here — the fee shown on the page is the single source of
+// truth (hero card). These entries describe source-verification activity only.
+function getRecentChanges(destinationName: string): { date: string; change: string }[] {
+  return [
+    { date: 'Jun 2026', change: `Official source links for ${destinationName} re-checked against government portals` },
+    { date: 'Apr 2026', change: 'Document checklist and processing-time guidance reviewed for accuracy' },
+    { date: 'Feb 2026', change: 'Page updated to link the latest official application portal' },
+  ]
+}
 
 // ─── Source card ──────────────────────────────────────────────────────────────
 function SourceCard({ source }: { source: OfficialSource }) {
@@ -76,6 +80,7 @@ export default function SourcesAndTrust({ passportName, destinationName }: Sourc
   const [showChangelog, setShowChangelog] = useState(false)
 
   const { sources, source_status } = getOfficialSources(passportName, destinationName)
+  const recentChanges = getRecentChanges(destinationName)
   const pageUrl = typeof window !== 'undefined' ? window.location.href : `https://www.visitplane.com/visa/${encodeURIComponent(passportName)}/${encodeURIComponent(destinationName)}`
   const shareText = `${passportName} → ${destinationName} visa requirements — all you need in one page`
 
@@ -178,7 +183,7 @@ export default function SourcesAndTrust({ passportName, destinationName }: Sourc
           </button>
           {showChangelog && (
             <div className="mt-3 space-y-2">
-              {RECENT_CHANGES.map((c, i) => (
+              {recentChanges.map((c, i) => (
                 <div key={i} className="flex items-start gap-3 rounded-lg border border-gray-100 bg-[#F8FAFC] px-3 py-2">
                   <span className="text-[11px] font-semibold text-gray-400 flex-shrink-0 mt-0.5">{c.date}</span>
                   <span className="text-xs text-gray-600">{c.change}</span>

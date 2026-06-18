@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { VisaRecord } from '@/app/visa/[passport]/[destination]/VisaPageClient'
+import { getCuratedDestinationFee } from '@/lib/data/destinationFees'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Step {
@@ -64,7 +65,9 @@ function resolveSteps(record: VisaRecord, passportName: string, destinationName:
   const visaType = (record.visa_type ?? record.type ?? '').toString().toLowerCase()
   const isFree     = /free|no visa/i.test(visaType)
   const isArrival  = /arrival/i.test(visaType)
-  // Mirror VisaHeroCard.resolveSmartFee exactly — read `pricing` field just as the hero card does
+  // Mirror VisaHeroCard.resolveSmartFee exactly — read `pricing` field just as the
+  // hero card does, then fall back to the SAME curated destination fee so the
+  // hero, these steps and the destinations grid never show contradictory costs.
   const rawFee = (
     record.price ??
     record.fee ??
@@ -72,11 +75,12 @@ function resolveSteps(record: VisaRecord, passportName: string, destinationName:
     (record as Record<string, unknown>).pricing as string ??
     ''
   ).toString().trim()
+  const curatedFee = getCuratedDestinationFee(destinationName)
   const feeResolved: string | null = isFree
     ? 'Free'
     : rawFee && !/n\/a|contact|check/i.test(rawFee)
       ? (/^\$/.test(rawFee) ? rawFee : /^\d/.test(rawFee) ? `$${rawFee}` : rawFee)
-      : null
+      : (curatedFee && curatedFee !== '—' ? curatedFee : null)
   const feeDisplay = feeResolved ?? 'check official portal'
   const processing = (record.processing_time ?? '3–5 business days').toString()
   const applyInfo  = resolveApplyInfo(destinationName, record)

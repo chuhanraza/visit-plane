@@ -87,8 +87,9 @@ async function fetchOtherPassports(destinationName: string, excludePassport: str
   const seen = new Set<string>()
   const unique: string[] = []
   for (const r of (data ?? [])) {
-    const name = r.passport_country
-    if (name && !seen.has(name)) { seen.add(name); unique.push(name) }
+    const name = (r.passport_country ?? '').trim()
+    const key = name.toLowerCase()
+    if (name && !seen.has(key)) { seen.add(key); unique.push(name) }
     if (unique.length >= 5) break
   }
   return unique
@@ -106,8 +107,9 @@ async function fetchRelatedDestinations(passportName: string, excludeDestination
   const seen = new Set<string>()
   const unique: string[] = []
   for (const r of (data ?? [])) {
-    const name = r.country_name
-    if (name && !seen.has(name)) { seen.add(name); unique.push(name) }
+    const name = (r.country_name ?? '').trim()
+    const key = name.toLowerCase()
+    if (name && !seen.has(key)) { seen.add(key); unique.push(name) }
     if (unique.length >= 5) break
   }
   return unique

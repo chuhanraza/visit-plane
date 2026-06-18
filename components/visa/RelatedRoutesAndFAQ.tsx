@@ -3,6 +3,22 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { blogPosts } from '@/src/lib/posts'
+import { getDemonym } from '@/lib/data/demonyms'
+
+// ─── Dedupe a list of country names by normalized slug (case/whitespace safe) ──
+// The destinations table has multiple rows per country (one per visa type), so
+// raw arrays can contain case/whitespace variants of the same name. Dedupe on a
+// normalized key BEFORE render and keep the first-seen display form.
+function dedupeBySlug(names: string[]): string[] {
+  const seen = new Map<string, string>()
+  for (const raw of names) {
+    const name = (raw ?? '').trim()
+    if (!name) continue
+    const key = name.toLowerCase()
+    if (!seen.has(key)) seen.set(key, name)
+  }
+  return Array.from(seen.values())
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface RelatedRoutesAndFAQProps {
@@ -118,6 +134,11 @@ export default function RelatedRoutesAndFAQ({
   const [openFAQ, setOpenFAQ] = useState<number | null>(null)
   const faqItems = resolveFAQ(passportName, destinationName)
 
+  // Dedupe source arrays before render — no route should appear twice (A1).
+  const dedupedDestinations = dedupeBySlug(relatedDestinations).slice(0, 5)
+  const dedupedPassports = dedupeBySlug(otherPassports).slice(0, 5)
+  const passportDemonym = getDemonym(passportName)
+
   // Auto-match blog posts
   const relatedBlogs = blogPosts
     .filter(p =>
@@ -132,18 +153,18 @@ export default function RelatedRoutesAndFAQ({
     <section id="faq" aria-labelledby="faq-heading" className="scroll-mt-20 space-y-6">
 
       {/* ── Related routes row ─────────────────────────────────────────────── */}
-      {(relatedDestinations.length > 0 || otherPassports.length > 0) && (
+      {(dedupedDestinations.length > 0 || dedupedPassports.length > 0) && (
         <div className="grid gap-5 md:grid-cols-2">
 
           {/* Same passport → other destinations */}
-          {relatedDestinations.length > 0 && (
+          {dedupedDestinations.length > 0 && (
             <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-                {passportName}s also check...
+                {passportDemonym} also check...
               </p>
               <ul className="space-y-1.5">
-                {relatedDestinations.slice(0, 5).map(dest => (
-                  <li key={dest}>
+                {dedupedDestinations.map(dest => (
+                  <li key={`dest-${dest.toLowerCase()}`}>
                     <Link
                       href={`/visa/${encodeURIComponent(passportName)}/${encodeURIComponent(dest)}`}
                       className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#1F2937] hover:bg-[#14B8A6]/5 hover:text-[#14B8A6] transition"
@@ -164,14 +185,14 @@ export default function RelatedRoutesAndFAQ({
           )}
 
           {/* Other passports → same destination */}
-          {otherPassports.length > 0 && (
+          {dedupedPassports.length > 0 && (
             <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
                 Visa requirements for {destinationName} by passport
               </p>
               <ul className="space-y-1.5">
-                {otherPassports.slice(0, 5).map(passport => (
-                  <li key={passport}>
+                {dedupedPassports.map(passport => (
+                  <li key={`passport-${passport.toLowerCase()}`}>
                     <Link
                       href={`/visa/${encodeURIComponent(passport)}/${encodeURIComponent(destinationName)}`}
                       className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#1F2937] hover:bg-[#14B8A6]/5 hover:text-[#14B8A6] transition"
