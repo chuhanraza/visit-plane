@@ -7,28 +7,14 @@ const withNextIntl = createNextIntlPlugin('./i18n.ts');
 // Install: npm install @serwist/next
 // TRADEOFF: Serwist is the maintained 2024+ fork of next-pwa. It tracks Workbox 7
 //           and Next.js 14+. The original next-pwa is unmaintained since 2022.
-let withSerwist = (cfg) => cfg; // Passthrough if package not yet installed
-
-try {
-  const { default: serwist } = await import('@serwist/next');
-  withSerwist = serwist({
-    swSrc:           'src/service-worker.js',    // Your Workbox source (Deliverable 2)
-    swDest:          'public/sw.js',             // Output — committed to public/
-    injectionPoint:  'self.__WB_MANIFEST',       // Matches service-worker.js
-    disable:         true, // Turbopack (Next 16 default) breaks Serwist — sw.js served as static file
-    globPatterns: [
-      '_next/static/**/*.{js,css}',
-      '_next/static/media/**/*.{woff,woff2}',
-      'icons/**/*.png',
-      'offline.html',
-      'favicon.ico',
-    ],
-    fallbacks: { document: '/offline.html' },
-  });
-} catch {
-  // @serwist/next not installed yet — run: npm install @serwist/next
-  console.warn('[PWA] @serwist/next not found. Run: npm install @serwist/next');
-}
+// PWA via Serwist is intentionally OFF (it was already `disable: true`, and the
+// SW is served as a static /sw.js file). The webpack builder actually invokes
+// and *validates* the Serwist plugin config (Turbopack silently skipped it),
+// and the legacy options object below is no longer schema-valid in this Serwist
+// version (`globPatterns`/`fallbacks` are not plugin-level keys). Since PWA is
+// disabled anyway, keep `withSerwist` as a passthrough so the build is bundler-
+// agnostic. Re-enable by wiring a schema-correct serwist() call here later.
+const withSerwist = (cfg) => cfg; // passthrough — PWA disabled, no functional change
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
