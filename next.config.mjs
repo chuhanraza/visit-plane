@@ -31,6 +31,29 @@ const nextConfig = {
     ],
   },
 
+  // ── Programmatic-SEO URL rewrites ────────────────────────────────────────────
+  // These pretty URLs use a single flat path segment with literal text around a
+  // dynamic value (e.g. /visa-free-countries-for-pakistani-passport). Next.js App
+  // Router does NOT reliably serve such "partial dynamic segment" folders — they
+  // returned HTTP 500 in production (the route function was never invoked; the
+  // edge served /500). The fix: keep the exact public URLs, but route them to
+  // clean nested [param] segments under /seo/* (which DO work — same shape as
+  // /visa/[passport]/[destination], /blog/[slug], /destinations/[country]).
+  // `beforeFiles` ensures these intercept before the legacy folders are matched.
+  async rewrites() {
+    return {
+      beforeFiles: [
+        { source: '/visa-free-countries-for-:nationality-passport', destination: '/seo/visa-free/:nationality' },
+        { source: '/cheapest-visas-from-:nationality-passport',     destination: '/seo/cheapest/:nationality' },
+        { source: '/cheapest-visa-from-:nationality-passport',      destination: '/seo/cheapest/:nationality' },
+        { source: '/visa-requirements-for-:passport-citizens-to-:destination', destination: '/seo/req/:passport/:destination' },
+        { source: '/visa-requirements-for-:nationality-citizens',   destination: '/seo/req-nat/:nationality' },
+        { source: '/:passport-to-:destination-visa-requirements',   destination: '/seo/route/:passport/:destination' },
+        { source: '/:destination-visa-guide-for-:passport',         destination: '/seo/guide/:destination/:passport' },
+      ],
+    };
+  },
+
   async headers() {
     return [
       {
