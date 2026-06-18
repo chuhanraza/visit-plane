@@ -106,10 +106,16 @@ export default async function CheapestVisasPage({
   const year    = new Date().getFullYear()
   const updated = new Date().toLocaleString('en', { month: 'long', year: 'numeric' })
 
-  const [allDests, seoIntro] = await Promise.all([
-    getCheapestDestinations(country.name),
-    getSeoIntro(country.iso3),
-  ])
+  let allDests: Awaited<ReturnType<typeof getCheapestDestinations>> = []
+  let seoIntro: string | null = null
+  try {
+    ;[allDests, seoIntro] = await Promise.all([
+      getCheapestDestinations(country.name),
+      getSeoIntro(country.iso3),
+    ])
+  } catch (err) {
+    console.error('[CheapestVisasPage] data fetch error for', nationality, err)
+  }
 
   if (allDests.length === 0) notFound()
 

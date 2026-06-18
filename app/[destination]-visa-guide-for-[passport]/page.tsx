@@ -226,12 +226,21 @@ export default async function Template4Page({
   const year         = new Date().getFullYear()
   const updatedMonth = new Date().toLocaleString('en', { month: 'long', year: 'numeric' })
 
-  const [req, legacy, related, seoContent] = await Promise.all([
-    fetchVisaRequirement(passportCountry.iso3, destinationCountry.iso3),
-    fetchLegacy(passName, destName),
-    fetchRelatedRoutes(passportCountry.iso3, destName, 6),
-    fetchSeoContent(passportCountry.iso3, destinationCountry.iso3),
-  ])
+  let req: Awaited<ReturnType<typeof fetchVisaRequirement>> = null
+  let legacy: Awaited<ReturnType<typeof fetchLegacy>> = []
+  let related: Awaited<ReturnType<typeof fetchRelatedRoutes>> = []
+  let seoContent: Awaited<ReturnType<typeof fetchSeoContent>> = null
+  try {
+    ;[req, legacy, related, seoContent] = await Promise.all([
+      fetchVisaRequirement(passportCountry.iso3, destinationCountry.iso3),
+      fetchLegacy(passName, destName),
+      fetchRelatedRoutes(passportCountry.iso3, destName, 6),
+      fetchSeoContent(passportCountry.iso3, destinationCountry.iso3),
+    ])
+  } catch (err) {
+    console.error('[Template4Page] data fetch error for', passName, '→', destName, err)
+    // All vars stay as null/[]. We fall through to notFound below if no data.
+  }
 
   const primary = legacy[0] ?? null
   if (!req && !primary) notFound()

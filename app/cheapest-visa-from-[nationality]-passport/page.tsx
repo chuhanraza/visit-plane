@@ -92,7 +92,12 @@ export default async function CheapestVisaPage({
   const country = NATIONALITY_TO_COUNTRY[nationality.toLowerCase()]
   if (!country) notFound()
 
-  const destinations = await getCheapestDestinations(country)
+  let destinations: Awaited<ReturnType<typeof getCheapestDestinations>> = []
+  try {
+    destinations = await getCheapestDestinations(country)
+  } catch (err) {
+    console.error('[CheapestVisaPage] data fetch error for', nationality, err)
+  }
 
   const free = destinations.filter((d) => d.parsedPrice === 0)
   const paid = destinations.filter((d) => d.parsedPrice > 0 && d.parsedPrice < Infinity)

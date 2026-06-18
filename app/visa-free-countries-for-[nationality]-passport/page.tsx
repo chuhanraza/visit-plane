@@ -139,10 +139,16 @@ export default async function VisaFreeCountriesPage({
   const updated    = new Date().toLocaleString('en', { month: 'long', year: 'numeric' })
   const strength   = PASSPORT_STRENGTH[country.iso3]
 
-  const [allDests, seoIntro] = await Promise.all([
-    getDestinations(country.name),
-    getSeoIntro(nationality),
-  ])
+  let allDests: Awaited<ReturnType<typeof getDestinations>> = []
+  let seoIntro: string | null = null
+  try {
+    ;[allDests, seoIntro] = await Promise.all([
+      getDestinations(country.name),
+      getSeoIntro(nationality),
+    ])
+  } catch (err) {
+    console.error('[VisaFreeCountriesPage] data fetch error for', nationality, err)
+  }
 
   if (allDests.length === 0) notFound()
 

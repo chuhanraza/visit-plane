@@ -137,7 +137,12 @@ export async function generateMetadata({
   const destinationName = decodeURIComponent(destinationSlug)
 
   // Fetch primary record to build dynamic description
-  const data = await fetchAllVisaTypes(passportName, destinationName)
+  let data: Awaited<ReturnType<typeof fetchAllVisaTypes>> = []
+  try {
+    data = await fetchAllVisaTypes(passportName, destinationName)
+  } catch (err) {
+    console.error('[generateMetadata] fetchAllVisaTypes error:', err)
+  }
   const primary = data[0]
   const visaType   = primary?.visa_type ?? primary?.type ?? 'visa'
   const fee        = (primary?.price ?? primary?.fee ?? primary?.cost ?? '').toString().trim()
@@ -178,11 +183,22 @@ export default async function VisaResultPage({
   const passportName    = decodeURIComponent(passportSlug)
   const destinationName = decodeURIComponent(destinationSlug)
 
-  const [allVisaData, relatedDestinations, otherPassports] = await Promise.all([
-    fetchAllVisaTypes(passportName, destinationName),
-    fetchRelatedDestinations(passportName, destinationName),
-    fetchOtherPassports(destinationName, passportName),
-  ])
+  // Defensively wrap all data fetches — any Supabase error must return empty data,
+  // never crash the page with an unhandled rejection (would produce 500).
+  let allVisaData: VisaRecord[] = []
+  let relatedDestinations: string[] = []
+  let otherPassports: string[] = []
+  try {
+    ;[allVisaData, relatedDestinations, otherPassports] = await Promise.all([
+      fetchAllVisaTypes(passportName, destinationName),
+      fetchRelatedDestinations(passportName, destinationName),
+      fetchOtherPassports(destinationName, passportName),
+    ])
+  } catch (err) {
+    console.error('[VisaResultPage] data fetch error for', passportName, '→', destinationName, err)
+    // allVisaData / relatedDestinations / otherPassports stay as empty arrays.
+    // The page renders the "Coming Soon" state via VisaPageClient, HTTP 200.
+  }
 
   const passportFlag    = resolveFlag(passportSlug,    passportName)
   const destinationFlag = resolveFlag(destinationSlug, destinationName)

@@ -222,13 +222,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority:        getSitemapPriority(3, c.iso3),
     }))
 
-    // Template 4: /{destination}-visa-guide-for-{nounPlural}
+    // Template 4: /{destination}-visa-guide-for-{nationality}
+    // NOTE: Use nationality adjective (URL-safe), NOT nounPlural which contains spaces.
+    // The page's resolvePassportFromNounSlug() accepts nationality slugs directly.
     const template4Pages: MetadataRoute.Sitemap = TOP_50_ROUTES.flatMap(([passportIso, destIso]) => {
       const pp   = BY_ISO3[passportIso]
       const dest = BY_ISO3[destIso]
       if (!pp || !dest) return []
       return [{
-        url:             `${base}/${dest.slug}-visa-guide-for-${pp.nounPlural}`,
+        url:             `${base}/${dest.slug}-visa-guide-for-${pp.nationality}`,
         lastModified:    new Date(),
         changeFrequency: 'weekly' as const,
         priority:        getSitemapPriority(4, passportIso, destIso),
@@ -252,19 +254,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
 
     // Legacy old templates (kept for backwards compat)
-    const oldTemplateAPages: MetadataRoute.Sitemap = legacyPassports.map((passport) => ({
-      url: `${base}/visa-requirements-for-${getNationality(passport)}-citizens`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.75,
-    }))
+    // IMPORTANT: Only include passports that are in NATIONALITY_MAP so we produce
+    // a real nationality adjective (e.g. "pakistani"). Countries not in the map fall
+    // back to toSlug(country) which the legacy page components cannot resolve → 404.
+    const oldTemplateAPages: MetadataRoute.Sitemap = legacyPassports
+      .filter((passport) => NATIONALITY_MAP[passport.toLowerCase()] !== undefined)
+      .map((passport) => ({
+        url: `${base}/visa-requirements-for-${getNationality(passport)}-citizens`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.75,
+      }))
 
-    const oldTemplateDPages: MetadataRoute.Sitemap = legacyPassports.map((passport) => ({
-      url: `${base}/cheapest-visa-from-${getNationality(passport)}-passport`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    }))
+    const oldTemplateDPages: MetadataRoute.Sitemap = legacyPassports
+      .filter((passport) => NATIONALITY_MAP[passport.toLowerCase()] !== undefined)
+      .map((passport) => ({
+        url: `${base}/cheapest-visa-from-${getNationality(passport)}-passport`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+      }))
 
     const destinationHubPages: MetadataRoute.Sitemap = legacyDests.map((dest) => ({
       url: `${base}/destinations/${encodeURIComponent(dest)}`,

@@ -245,12 +245,21 @@ export default async function Template1Page({
   const year            = new Date().getFullYear()
   const updatedMonth    = new Date().toLocaleString('en', { month: 'long', year: 'numeric' })
 
-  const [verifiedReq, legacyData, relatedRoutes, seoContent] = await Promise.all([
-    fetchVisaRequirement(passportCountry.iso3, destinationCountry.iso3),
-    fetchLegacyVisaData(passportName, destinationName),
-    fetchRelatedRoutes(passportCountry.iso3, destinationCountry.iso3),
-    fetchSeoContent(passportCountry.iso3, destinationCountry.iso3),
-  ])
+  let verifiedReq: Awaited<ReturnType<typeof fetchVisaRequirement>> = null
+  let legacyData: Awaited<ReturnType<typeof fetchLegacyVisaData>> = []
+  let relatedRoutes: Awaited<ReturnType<typeof fetchRelatedRoutes>> = { samePassport: [], sameDestination: [] }
+  let seoContent: Awaited<ReturnType<typeof fetchSeoContent>> = null
+  try {
+    ;[verifiedReq, legacyData, relatedRoutes, seoContent] = await Promise.all([
+      fetchVisaRequirement(passportCountry.iso3, destinationCountry.iso3),
+      fetchLegacyVisaData(passportName, destinationName),
+      fetchRelatedRoutes(passportCountry.iso3, destinationCountry.iso3),
+      fetchSeoContent(passportCountry.iso3, destinationCountry.iso3),
+    ])
+  } catch (err) {
+    console.error('[Template1Page] data fetch error for', passportName, '→', destinationName, err)
+    // All vars stay as null/[]. We fall through to notFound below if no data.
+  }
 
   const primary = legacyData[0]
   if (!verifiedReq && !primary) notFound()

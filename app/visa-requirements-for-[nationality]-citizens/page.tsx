@@ -96,7 +96,12 @@ export default async function VisaRequirementsForNationalityPage({
   const country = NATIONALITY_TO_COUNTRY[nationality.toLowerCase()]
   if (!country) notFound()
 
-  const destinations = await getAllRequirements(country)
+  let destinations: Awaited<ReturnType<typeof getAllRequirements>> = []
+  try {
+    destinations = await getAllRequirements(country)
+  } catch (err) {
+    console.error('[VisaRequirementsForNationalityPage] data fetch error for', nationality, err)
+  }
 
   const grouped: Record<string, typeof destinations> = {}
   for (const d of destinations) {
