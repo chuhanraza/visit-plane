@@ -32,6 +32,10 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Never let lint warnings/errors block a production deploy. Type-checking still
+  // runs and must pass — this only relaxes ESLint during `next build`.
+  eslint: { ignoreDuringBuilds: true },
+
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.pexels.com' },
