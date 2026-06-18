@@ -4,9 +4,18 @@ import { cookies } from 'next/headers';
 const SUPPORTED_LOCALES = ['en', 'ar', 'ur', 'hi', 'zh', 'es', 'fr', 'de', 'pt', 'bn'];
 
 export default getRequestConfig(async () => {
-  const cookieStore = await cookies();
-  const rawLocale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
-  const locale = SUPPORTED_LOCALES.includes(rawLocale) ? rawLocale : 'en';
+  // cookies() throws "Dynamic server usage" during ISR static prerendering.
+  // Wrap in try/catch so ISR pages (revalidate=X) render successfully.
+  let locale = 'en';
+  try {
+    const cookieStore = await cookies();
+    const rawLocale = cookieStore.get('NEXT_LOCALE')?.value;
+    if (rawLocale && SUPPORTED_LOCALES.includes(rawLocale)) {
+      locale = rawLocale;
+    }
+  } catch {
+    // Static rendering context — no cookie access, default to 'en'
+  }
 
   return {
     locale,
