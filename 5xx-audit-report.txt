@@ -1,0 +1,95 @@
+VISITPLANE — SPRINT 3 — LIVE 5xx AUDIT REPORT
+Generated: 2026-06-18 (live crawl of https://www.visitplane.com against prod commit e9c6cbb)
+
+========================================================================
+SITEMAP INVENTORY
+========================================================================
+sitemap.xml: single file, no child sitemaps. Total URLs: 2381
+Breakdown:
+  /blog/*                              1225  (blog posts)
+  /visa/<passport>/<destination>        555  (visa result pages)
+  /destinations/*                       197  (destination pages)
+  flat SEO + tool/static pages          404  (see below)
+  homepage                                1
+
+========================================================================
+LIVE CRAWL RESULTS (every sitemap URL, GET, prod domain)
+========================================================================
+200 : 2001
+3xx :    1   (/visa-requirements -> 307 redirect, intentional)
+404 :    0
+5xx :  379   <-- ALL genuine, reproducible on every request
+ERR :    0
+
+NOTE: Google Search Console previously flagged ~228 "Not found (404)".
+The CURRENT sitemap produces ZERO 404s — those were old/removed URLs
+or were already resolved in Sprint 2. No 404 action needed this sprint.
+
+========================================================================
+THE 379 GENUINE 5xx — BY ROUTE FAMILY
+========================================================================
+139  /visa-free-countries-for-<nationality>-passport
+139  /cheapest-visas-from-<nationality>-passport
+ 50  /<destination>-visa-guide-for-<passport>
+ 49  /visa-requirements-for-<passport>-citizens-to-<destination>
+  1  /visa-requirements-for-<nationality>-citizens          (legacy oddball)
+  1  /cheapest-visa-from-<nationality>-passport             (legacy oddball, singular "visa")
+
+100% of every URL in each family returns 500 — regardless of which
+passport/country and regardless of whether DB data exists.
+
+========================================================================
+ROOT CAUSE (diagnosed with live evidence)
+========================================================================
+These six route families are the ONLY routes in the app that use a
+PARTIAL dynamic segment — literal text mixed with a [param] inside a
+single path segment, e.g. folder "visa-free-countries-for-[nationality]-passport".
+
+Every route that uses a CLEAN full-segment param works perfectly:
+  app/blog/[slug]                      -> 200 / clean 404 on bad slug
+  app/visa/[passport]/[destination]    -> 200
+  app/destinations/[country]           -> 200
+
+Evidence the page handler NEVER runs for the broken families:
+  - Response header x-matched-path: /500  (matched the error page, not the route)
+  - x-vercel-id shows EDGE region only (bom1), no function region (iad1).
+    A working dynamic page shows bom1::iad1 (function executed).
+  - Zero serverless runtime logs for these requests.
+  - A brand-new INVALID param still returns 500 (a running handler would
+    return a clean 404 via notFound()).  blog[slug] correctly 404s.
+  - Deploy lambdaRuntimeStats = only 3 node lambdas total.
+
+Ruled OUT (verified, not assumed):
+  - Supabase data: healthy. 372 rows for Pakistan, zero null country_name,
+    seo_page_content table present, no query errors.
+  - Page code logic: sound; identical safe pattern to the working /visa route.
+  - force-dynamic: already present on these files (committed in e9c6cbb).
+  - generateStaticParams: NOT the cause — blog/[slug] also uses it and works.
+  - Build: succeeds with NO prerender errors (checked full build log, 38k lines).
+
+Conclusion: Next.js 16.2.6 + Turbopack produces broken route output for
+partial-dynamic-segment folders (the function/prerender is never wired up,
+so Vercel serves the static /500 for any matching path). This matches the
+documented class of Turbopack-only build/output bugs in Next 16
+(see vercel/next.js#94456 "fails on turbopack, works on webpack").
+
+========================================================================
+FIX APPLIED (minimal, reversible, preserves all URLs + route code)
+========================================================================
+package.json build script:
+   "build": "next build"   ->   "build": "next build --webpack"
+
+- No route files changed. No URLs changed. force-dynamic and the eslint
+  relaxation in next.config.mjs are preserved.
+- Builds the partial-segment routes with webpack (mature, handles this
+  pattern) instead of Turbopack.
+- If the webpack build had failed on Vercel, live production would have
+  stayed on e9c6cbb (no regression) — safe to attempt.
+
+========================================================================
+VERIFICATION PLAN
+========================================================================
+1. Vercel deployment of the new commit reaches state READY.
+2. Re-crawl the previously-failing URLs live -> expect 0 / sharply reduced 5xx.
+3. If any residual 5xx remain, fall back to restructuring the partial
+   segments into a clean [slug] dispatcher route (also Turbopack-safe).
