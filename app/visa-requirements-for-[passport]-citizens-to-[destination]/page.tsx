@@ -17,7 +17,9 @@ import { COUNTRIES, BY_NATIONALITY, BY_SLUG, resolveCountry, OFFICIAL_VISA_PORTA
 import type { VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
 
 // ── ISR ────────────────────────────────────────────────────────────────────────
-export const revalidate = 604800 // 7 days
+// Render on demand instead of prerendering at build (avoids Next 16 prerender
+// crashes on occasional null/dirty Supabase rows).
+export const dynamic = 'force-dynamic'
 
 // ── Static params for top 50 routes (build-time) ─────────────────────────────
 export async function generateStaticParams() {

@@ -12,7 +12,9 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BY_NATIONALITY, BY_SLUG, COUNTRIES } from '@/lib/seo/countries'
 
-export const revalidate = 604800 // 7 days
+// Render on demand instead of prerendering at build. These DB-backed SEO pages
+// crashed Next 16's build-time prerender on occasional null/dirty Supabase rows.
+export const dynamic = 'force-dynamic'
 
 export async function generateStaticParams() {
   return [

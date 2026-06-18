@@ -18,7 +18,9 @@ import {
 } from '@/lib/seo/countries'
 import type { VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
 
-export const revalidate = 604800 // 7 days
+// Render on demand instead of prerendering at build (avoids Next 16 prerender
+// crashes on occasional null/dirty Supabase rows).
+export const dynamic = 'force-dynamic'
 
 // ── Static params (top 50 routes at build time) ───────────────────────────────
 export async function generateStaticParams() {

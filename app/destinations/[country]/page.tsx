@@ -21,7 +21,9 @@ export async function generateStaticParams() {
   return ALL_COUNTRIES.map((c) => ({ country: c.name }))
 }
 
-export const revalidate = 86400 // ISR: re-render at most once per day
+// Render on demand instead of prerendering at build (avoids Next 16 prerender
+// crashes on occasional null/dirty Supabase rows).
+export const dynamic = 'force-dynamic'
 
 // ─── SEO metadata ─────────────────────────────────────────────────────────────
 

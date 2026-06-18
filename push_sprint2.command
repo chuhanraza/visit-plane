@@ -21,7 +21,7 @@ git add -A
 # Commit if there is anything to commit (ignore error when nothing pending)
 if ! git diff --cached --quiet; then
   echo "• Committing pending changes..."
-  git commit -m "fix(build): filter null country_name rows in SEO route pages to fix Next 16 prerender crash"
+  git commit -m "fix(build): force-dynamic on DB-backed SEO routes so Next 16 stops crashing on build-time prerender"
 else
   echo "• Nothing new to commit (already committed)."
 fi
