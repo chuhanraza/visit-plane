@@ -74,22 +74,59 @@ documented class of Turbopack-only build/output bugs in Next 16
 (see vercel/next.js#94456 "fails on turbopack, works on webpack").
 
 ========================================================================
-FIX APPLIED (minimal, reversible, preserves all URLs + route code)
+WHAT WE TRIED (evidence-driven)
 ========================================================================
-package.json build script:
-   "build": "next build"   ->   "build": "next build --webpack"
+Attempt 1 — build with webpack instead of Turbopack (commit 35c411a):
+  Hypothesis: Turbopack-only regression. Build FAILED (unrelated: the
+  disabled @serwist PWA config is invalid; Turbopack skipped it, webpack
+  validates it). Production stayed on e9c6cbb (no harm).
+Attempt 2 — neutralize the disabled Serwist config (commit e034ba2):
+  webpack build went GREEN and deployed (READY). BUT the partial-segment
+  routes STILL returned 500. This PROVED the bug is NOT bundler-specific —
+  it is a Next.js App Router limitation with partial dynamic segments,
+  independent of Turbopack vs webpack.
 
-- No route files changed. No URLs changed. force-dynamic and the eslint
-  relaxation in next.config.mjs are preserved.
-- Builds the partial-segment routes with webpack (mature, handles this
-  pattern) instead of Turbopack.
-- If the webpack build had failed on Vercel, live production would have
-  stayed on e9c6cbb (no regression) — safe to attempt.
+========================================================================
+FINAL FIX (commit 5e12007) — preserves every public URL
+========================================================================
+Root-caused as: Next.js App Router does not reliably serve route folders
+whose name mixes literal text with a [param] in ONE path segment.
+
+Fix: keep the exact public URLs, but serve them from CLEAN nested [param]
+routes (the shape that already works for /visa/[passport]/[destination],
+/blog/[slug], /destinations/[country]):
+  - Added 6 clean routes under app/seo/* (visa-free, cheapest, guide, req,
+    req-nat, route) — verbatim copies of the page code, just relocated.
+  - Added next.config.mjs `beforeFiles` rewrites mapping each pretty URL
+    to its /seo/* route. Public URLs are UNCHANGED (Google still sees
+    /visa-free-countries-for-pakistani-passport, etc.).
+  - All 7 rewrite patterns validated against Next's bundled path-to-regexp
+    (correct capture for multi-hyphen values; no cross-matching).
+  - Also fixed the internally-linked /[passport]-to-[destination]-visa-
+    requirements route (Template B), same bug.
+  - The old partial folders remain on disk (the mount blocks deletion) but
+    are dead — beforeFiles intercepts before the filesystem. Safe to delete
+    later.
+NOTE: build remains on `next build --webpack` (green; unchanged from e034ba2).
 
 ========================================================================
-VERIFICATION PLAN
+POST-FIX LIVE RE-CRAWL (all 2381 sitemap URLs, prod commit 5e12007)
 ========================================================================
-1. Vercel deployment of the new commit reaches state READY.
-2. Re-crawl the previously-failing URLs live -> expect 0 / sharply reduced 5xx.
-3. If any residual 5xx remain, fall back to restructuring the partial
-   segments into a clean [slug] dispatcher route (also Turbopack-safe).
+200 : 2378
+3xx :    1   (/visa-requirements -> 307, intentional)
+404 :    2   (see below)
+5xx :    0   <-- ALL 379 FIXED
+ERR :    0
+
+Build:  GREEN (Vercel deploy dpl_9B62VdPnEuUi9pUWBBpAXkB3JHp2 = READY)
+Deploy: commit 5e12007, state READY
+Content verified: pretty URLs return real pages (correct <title>s), served
+  dynamically (x-matched-path: /seo/...), no regressions on existing routes.
+
+Residual 404s (NOT 5xx — a pre-existing DATA gap, improvement over 500):
+  /visa-free-countries-for-czech-passport
+  /cheapest-visas-from-czechia-passport
+  Cause: the `destinations` table has no rows for Czechia (likely stored as
+  "Czech Republic"), so the page correctly returns a clean notFound() 404
+  instead of a 500. Fix later by adding Czechia data OR mapping the slug to
+  the existing DB name — out of scope (do not invent data).
