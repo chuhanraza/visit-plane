@@ -20,6 +20,7 @@ import AffiliateDisclosure from '@/components/affiliate/AffiliateDisclosure'
 import BlogEmailCapture from '@/components/blog/BlogEmailCapture'
 import BlogBreadcrumb from '@/components/blog/BlogBreadcrumb'
 import { isInsuranceRequired, affiliateTrackingUrl } from '@/src/lib/affiliates'
+import { noindexedPostSet } from '@/lib/data/noindexedPosts'
 
 // ── Static params ─────────────────────────────────────────────────────────────
 export function generateStaticParams() {
@@ -44,6 +45,12 @@ export async function generateMetadata({
     title: `${post.title} — VisitPlane Visa Blog`,
     description: post.excerpt.slice(0, 155),
     alternates: { canonical },
+    // Sprint 5 content prune: dead doorway clones are de-indexed (reversible —
+    // removing the slug from noindexedPosts.ts restores indexing). follow:true so
+    // link equity still flows to surviving pages.
+    ...(noindexedPostSet.has(post.slug)
+      ? { robots: { index: false, follow: true } }
+      : {}),
     openGraph: {
       title: post.title,
       description: post.excerpt,

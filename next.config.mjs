@@ -1,5 +1,6 @@
 // @ts-check
 import createNextIntlPlugin from 'next-intl/plugin';
+import { blogRedirects } from './lib/data/blogRedirects.mjs';
 
 const withNextIntl = createNextIntlPlugin('./i18n.ts');
 
@@ -40,6 +41,20 @@ const nextConfig = {
   // clean nested [param] segments under /seo/* (which DO work — same shape as
   // /visa/[passport]/[destination], /blog/[slug], /destinations/[country]).
   // `beforeFiles` ensures these intercept before the legacy folders are matched.
+  // ── Sprint 5 content prune: 301 merge-cluster duplicates → survivor ──────────
+  // Permanent redirects from de-duplicated doorway clones to their best cluster
+  // member. Sourced from lib/data/blogRedirects.mjs (generated). Reversible: drop
+  // an entry to restore the page. No content deleted.
+  async redirects() {
+    // statusCode 301 (not `permanent: true`, which emits 308) to match the SEO
+    // recovery spec — classic Moved Permanently that consolidates link equity.
+    return blogRedirects.map(({ source, destination }) => ({
+      source,
+      destination,
+      statusCode: 301,
+    }));
+  },
+
   async rewrites() {
     return {
       beforeFiles: [

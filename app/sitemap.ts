@@ -3,6 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 import { blogPosts, getAllCategories, getAllTags, toSlug as postTaxonomySlug } from '@/src/lib/posts'
 import { COUNTRIES, TOP_50_ROUTES, BY_ISO3 } from '@/lib/seo/countries'
 import { getSitemapPriority } from '@/lib/seo/internalLinks'
+import { noindexedPostSet } from '@/lib/data/noindexedPosts'
+import { redirectedSlugSet } from '@/lib/data/blogRedirectSlugs'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -128,12 +130,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   // ── Blog post pages ─────────────────────────────────────────────────────────
-  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${base}/blog/${post.slug}`,
-    lastModified: new Date(post.date),
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }))
+  // Sprint 5 content prune: exclude noindexed dead clones and 301-redirected
+  // merge duplicates. Sitemap lists only LIVE + LIVE_DEEPEN_QUEUE pages.
+  const blogPages: MetadataRoute.Sitemap = blogPosts
+    .filter((post) => !noindexedPostSet.has(post.slug) && !redirectedSlugSet.has(post.slug))
+    .map((post) => ({
+      url: `${base}/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }))
 
   // ── Blog category + tag landing pages ────────────────────────────────────────
   const blogTaxonomyPages: MetadataRoute.Sitemap = [

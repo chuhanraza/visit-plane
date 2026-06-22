@@ -4,6 +4,8 @@ import {
   getAllTags,
   toSlug,
 } from '@/src/lib/posts'
+import { noindexedPostSet } from '@/lib/data/noindexedPosts'
+import { redirectedSlugSet } from '@/lib/data/blogRedirectSlugs'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -31,9 +33,12 @@ function urlEntry(
 export async function GET() {
   const now = new Date().toISOString()
 
-  const posts = blogPosts.map((p) =>
-    urlEntry(`${BASE}/blog/${p.slug}`, new Date(p.date).toISOString(), 'monthly', '0.7'),
-  )
+  // Sprint 5 content prune: omit noindexed clones and 301-redirected duplicates.
+  const posts = blogPosts
+    .filter((p) => !noindexedPostSet.has(p.slug) && !redirectedSlugSet.has(p.slug))
+    .map((p) =>
+      urlEntry(`${BASE}/blog/${p.slug}`, new Date(p.date).toISOString(), 'monthly', '0.7'),
+    )
   const categories = getAllCategories().map((c) =>
     urlEntry(`${BASE}/blog/category/${toSlug(c)}`, now, 'weekly', '0.6'),
   )

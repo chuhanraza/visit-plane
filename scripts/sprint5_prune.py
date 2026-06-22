@@ -1,0 +1,204 @@
+#!/usr/bin/env python3
+"""Sprint 5 content prune: join audit CSV + GSC JSON, apply decision rules,
+emit noindex list, redirect map, manifest, and summary."""
+import csv, json, os, sys
+from collections import defaultdict
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+PROTECTED_NEVER_NOINDEX = {
+    "best-travel-insurance-schengen-visa",
+    "germany-job-seeker-visa-complete-requirements",
+}
+
+# ── PHASE 1: load ──────────────────────────────────────────────────────────────
+with open(os.path.join(ROOT, "gsc-blog-impressions.json")) as f:
+    gsc = json.load(f)
+
+def gsc_imp(slug):
+    return int(gsc.get(slug, {}).get("impressions", 0) or 0)
+def gsc_clk(slug):
+    return int(gsc.get(slug, {}).get("clicks", 0) or 0)
+def gsc_pos(slug):
+    return float(gsc.get(slug, {}).get("position", 0) or 0)
+
+posts = []
+with open(os.path.join(ROOT, "content-audit.csv")) as f:
+    for row in csv.DictReader(f):
+        slug = row["slug"].strip()
+        if not slug:
+            continue
+        posts.append({
+            "slug": slug,
+            "title": row["title"],
+            "label": row["label"].strip().upper(),
+            "cluster_id": (row["duplicate_cluster_id"] or "").strip(),
+            "word_count": int(row["word_count"] or 0),
+            "imp": gsc_imp(slug),
+            "clk": gsc_clk(slug),
+            "pos": gsc_pos(slug),
+        })
+
+total = len(posts)
+with_imp = sum(1 for p in posts if p["imp"] >= 1)
+cut_rescued = sum(1 for p in posts if p["label"] == "CUT" and p["imp"] >= 3)
+
+# ── PHASE 2: decision rules ────────────────────────────────────────────────────
+# First pass: non-MERGE labels
+for p in posts:
+    lbl = p["label"]
+    if lbl == "KEEP":
+        p["final_action"] = "LIVE"
+        p["redirect_target"] = ""
+    elif lbl == "DEEPEN":
+        p["final_action"] = "LIVE_DEEPEN_QUEUE"
+        p["redirect_target"] = ""
+    elif lbl == "CUT":
+        if p["imp"] >= 3:
+            p["final_action"] = "LIVE_DEEPEN_QUEUE"  # PROTECT override
+        else:
+            p["final_action"] = "NOINDEX"
+        p["redirect_target"] = ""
+    elif lbl == "MERGE":
+        p["final_action"] = None  # resolved below
+        p["redirect_target"] = ""
+    else:
+        p["final_action"] = "LIVE"  # unknown label → safe default
+        p["redirect_target"] = ""
+
+# MERGE clusters: pick survivor per duplicate_cluster_id
+clusters = defaultdict(list)
+for p in posts:
+    if p["label"] == "MERGE":
+        cid = p["cluster_id"] or f"__nocluster__{p['slug']}"
+        clusters[cid].append(p)
+
+merge_survivors = 0
+merge_independent_kept = 0
+for cid, members in clusters.items():
+    # survivor = highest impressions, tie → highest word_count
+    survivor = max(members, key=lambda m: (m["imp"], m["word_count"]))
+    survivor["final_action"] = "LIVE"
+    survivor["redirect_target"] = ""
+    merge_survivors += 1
+    for m in members:
+        if m is survivor:
+            continue
+        if m["imp"] >= 10:  # independent demand → keep LIVE
+            m["final_action"] = "LIVE"
+            m["redirect_target"] = ""
+            merge_independent_kept += 1
+        else:
+            m["final_action"] = "REDIRECT_301"
+            m["redirect_target"] = f"/blog/{survivor['slug']}"
+
+# Safety: never noindex protected pages or any page with imp>=3
+for p in posts:
+    if p["slug"] in PROTECTED_NEVER_NOINDEX and p["final_action"] in ("NOINDEX", "REDIRECT_301"):
+        p["final_action"] = "LIVE_DEEPEN_QUEUE"
+        p["redirect_target"] = ""
+    if p["final_action"] == "NOINDEX" and p["imp"] >= 3:
+        p["final_action"] = "LIVE_DEEPEN_QUEUE"
+        p["redirect_target"] = ""
+
+# ── SAFETY CAP ─────────────────────────────────────────────────────────────────
+noindex = [p for p in posts if p["final_action"] == "NOINDEX"]
+redirect = [p for p in posts if p["final_action"] == "REDIRECT_301"]
+cap_total = len(noindex) + len(redirect)
+CAP = 750
+
+counts = defaultdict(int)
+for p in posts:
+    counts[p["final_action"]] += 1
+
+print("=== PHASE 1 JOIN ===")
+print(f"total posts: {total}")
+print(f"posts with GSC impressions>=1: {with_imp}")
+print(f"CUT posts rescued (imp>=3): {cut_rescued}")
+print("=== PHASE 2 ACTIONS ===")
+for k in ("LIVE", "LIVE_DEEPEN_QUEUE", "NOINDEX", "REDIRECT_301"):
+    print(f"{k}: {counts[k]}")
+print(f"merge clusters: {len(clusters)} -> survivors {merge_survivors}; independent kept {merge_independent_kept}")
+print(f"NOINDEX+REDIRECT total: {cap_total} (cap {CAP})")
+if cap_total > CAP:
+    print("!!! SAFETY CAP EXCEEDED — STOPPING, no files written !!!")
+    sys.exit(2)
+
+indexable = counts["LIVE"] + counts["LIVE_DEEPEN_QUEUE"]
+print(f"final indexable count: {indexable}")
+
+# ── PHASE 3: emit data files ───────────────────────────────────────────────────
+noindex_slugs = sorted(p["slug"] for p in noindex)
+redirect_pairs = sorted(((p["slug"], p["redirect_target"]) for p in redirect))
+
+with open(os.path.join(ROOT, "lib/data/noindexedPosts.ts"), "w") as f:
+    f.write("// AUTO-GENERATED by scripts/sprint5_prune.py — Sprint 5 content prune.\n")
+    f.write("// Slugs whose /blog/[slug] page must emit robots { index:false, follow:true }.\n")
+    f.write("// Reversible: removing a slug here restores indexing. No content deleted.\n")
+    f.write(f"export const noindexedPosts: string[] = [\n")
+    for s in noindex_slugs:
+        f.write(f"  {json.dumps(s)},\n")
+    f.write("]\n\n")
+    f.write("export const noindexedPostSet = new Set(noindexedPosts)\n")
+
+# .mjs for next.config.mjs (native ESM — avoids TS-in-config loader issues)
+with open(os.path.join(ROOT, "lib/data/blogRedirects.mjs"), "w") as f:
+    f.write("// AUTO-GENERATED by scripts/sprint5_prune.py — Sprint 5 content prune.\n")
+    f.write("// Map of redirected blog path -> survivor blog path (301 permanent).\n")
+    f.write("// Consumed by next.config.mjs redirects(). Reversible: no content deleted.\n")
+    f.write("export const blogRedirects = [\n")
+    for s, t in redirect_pairs:
+        f.write(f"  {{ source: {json.dumps('/blog/' + s)}, destination: {json.dumps(t)} }},\n")
+    f.write("]\n")
+
+# .ts for sitemap.ts (typed consumer): redirected source slugs to exclude.
+# NOTE: distinct basename from blogRedirects.mjs so webpack/tsc never resolve the
+# wrong file when an import omits the extension.
+with open(os.path.join(ROOT, "lib/data/blogRedirectSlugs.ts"), "w") as f:
+    f.write("// AUTO-GENERATED by scripts/sprint5_prune.py — Sprint 5 content prune.\n")
+    f.write("// Redirected blog slugs (301'd to a survivor). Used to trim the sitemap.\n")
+    f.write("// Reversible: removing entries restores the page. No content deleted.\n")
+    f.write("export const redirectedSlugs: string[] = [\n")
+    for s, _t in redirect_pairs:
+        f.write(f"  {json.dumps(s)},\n")
+    f.write("]\n\n")
+    f.write("export const redirectedSlugSet = new Set(redirectedSlugs)\n")
+
+# ── PHASE 4: manifest + summary ────────────────────────────────────────────────
+with open(os.path.join(ROOT, "prune-manifest.csv"), "w", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["slug", "audit_label", "gsc_impressions", "final_action", "redirect_target"])
+    for p in sorted(posts, key=lambda x: x["slug"]):
+        w.writerow([p["slug"], p["label"], p["imp"], p["final_action"], p["redirect_target"]])
+
+deepen_queue = sorted(
+    (p for p in posts if p["final_action"] == "LIVE_DEEPEN_QUEUE"),
+    key=lambda x: x["imp"], reverse=True,
+)
+top30 = deepen_queue[:30]
+
+with open(os.path.join(ROOT, "prune-summary.md"), "w") as f:
+    f.write("# Sprint 5 — Content Prune Summary\n\n")
+    f.write(f"- Total posts audited: **{total}**\n")
+    f.write(f"- Posts with GSC impressions (>=1): **{with_imp}**\n")
+    f.write(f"- CUT pages rescued by impressions (imp>=3 -> LIVE_DEEPEN_QUEUE): **{cut_rescued}**\n\n")
+    f.write("## Final actions\n\n")
+    f.write("| final_action | count |\n|---|---|\n")
+    for k in ("LIVE", "LIVE_DEEPEN_QUEUE", "NOINDEX", "REDIRECT_301"):
+        f.write(f"| {k} | {counts[k]} |\n")
+    f.write(f"\n- Merge clusters: **{len(clusters)}** -> survivors **{merge_survivors}**\n")
+    f.write(f"- Merge members kept LIVE for independent demand (imp>=10): **{merge_independent_kept}**\n")
+    f.write(f"- NOINDEX + REDIRECT total: **{cap_total}** (safety cap {CAP}, {'OK' if cap_total<=CAP else 'EXCEEDED'})\n")
+    f.write(f"- **Final indexable page count: {total} -> {indexable}**\n\n")
+    f.write("## Top 30 LIVE_DEEPEN_QUEUE pages by impressions (next sprint priority)\n\n")
+    f.write("| # | slug | impressions | clicks | position |\n|---|---|---|---|---|\n")
+    for i, p in enumerate(top30, 1):
+        f.write(f"| {i} | {p['slug']} | {p['imp']} | {p['clk']} | {p['pos']:.1f} |\n")
+
+print("=== FILES WRITTEN ===")
+print(f"noindexedPosts.ts: {len(noindex_slugs)} slugs")
+print(f"blogRedirects.ts: {len(redirect_pairs)} redirects")
+print("prune-manifest.csv, prune-summary.md")
+print("=== TOP 30 DEEPEN QUEUE ===")
+for i, p in enumerate(top30, 1):
+    print(f"{i:2d}. {p['slug']} ({p['imp']} imp)")
