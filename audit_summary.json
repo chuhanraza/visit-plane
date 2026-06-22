@@ -1,0 +1,344 @@
+{
+  "total": 1149,
+  "wc_bins": {
+    "<300": 0,
+    "300-599": 0,
+    "600-1199": 28,
+    "1200+": 1121
+  },
+  "label_counts": {
+    "CUT": 657,
+    "DEEPEN": 327,
+    "KEEP": 88,
+    "MERGE": 77
+  },
+  "label_pct": {
+    "CUT": 57.2,
+    "DEEPEN": 28.5,
+    "KEEP": 7.7,
+    "MERGE": 6.7
+  },
+  "num_dup_clusters": 41,
+  "posts_in_dup_clusters": 1015,
+  "top_clusters": [
+    {
+      "id": "dup-001",
+      "size": 284,
+      "theme": "Egypt to Oman Visa: Requirements & How to Apply (2026)"
+    },
+    {
+      "id": "dup-002",
+      "size": 125,
+      "theme": "How Much Does a Oman Visa Cost from India? (2026 Fees & Hidden Charges)"
+    },
+    {
+      "id": "dup-003",
+      "size": 97,
+      "theme": "Oman Visa Processing Time from India: How Long It Really Takes (2026)"
+    },
+    {
+      "id": "dup-004",
+      "size": 72,
+      "theme": "Qatar vs UAE Visa for India: Which Is Easier to Get? (2026)"
+    },
+    {
+      "id": "dup-005",
+      "size": 44,
+      "theme": "Oman Travel Guide 2026: Visa, Budget, Best Time & Itinerary"
+    },
+    {
+      "id": "dup-006",
+      "size": 40,
+      "theme": "Visa Photo for a Visa: Format, Sample & Common Mistakes (2026)"
+    },
+    {
+      "id": "dup-007",
+      "size": 38,
+      "theme": "15 Cheapest Countries to Visit from India in 2026"
+    },
+    {
+      "id": "dup-008",
+      "size": 38,
+      "theme": "Oman Visa Rule Changes in 2026: What Travelers Need to Know"
+    },
+    {
+      "id": "dup-009",
+      "size": 34,
+      "theme": "Italy Student Visa for India Students (2026): Complete Step-by-Step Guide"
+    },
+    {
+      "id": "dup-010",
+      "size": 25,
+      "theme": "15 Cheapest Countries to Visit from Egypt in 2026"
+    }
+  ],
+  "cannibal_groups": 64,
+  "orphans": 19,
+  "near_orphans": 21,
+  "median_wc": 1432,
+  "mean_wc": 1426.4,
+  "top_deepen": [
+    {
+      "slug": "united-kingdom-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "United Kingdom Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1620,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "united-states-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "United States Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1620,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "united-arab-emirates-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "United Arab Emirates Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1613,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "australia-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Australia Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1611,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "norway-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Norway Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1610,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "canada-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Canada Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1602,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "france-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "France Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1599,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "saudi-arabia-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Saudi Arabia Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1599,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "germany-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Germany Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1598,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "singapore-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Singapore Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1594,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "ireland-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Ireland Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1593,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "italy-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Italy Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1590,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "malaysia-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Malaysia Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1590,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "spain-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Spain Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1590,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "portugal-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Portugal Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1589,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "turkey-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Turkey Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1589,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "thailand-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Thailand Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1587,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "qatar-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Qatar Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1580,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "sweden-travel-guide-2026-visa-budget-best-time-to-visit-itinerary",
+      "title": "Sweden Travel Guide 2026: Visa, Budget, Best Time & Itinerary",
+      "wc": 1579,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-005 (n=44); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "dubai-travel-guide-top-things-to-do-costs-visa-tips-2026",
+      "title": "Dubai Travel Guide 2026: Top Things to Do, Costs & Visa Tips",
+      "wc": 1532,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-019 (n=10); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "canada-student-visa-financial-requirements-2026-proof-of-funds-explained",
+      "title": "Canada Student Visa Financial Requirements 2026: Proof of Funds Explained",
+      "wc": 1525,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-020 (n=7); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "united-states-student-visa-financial-requirements-2026-proof-of-funds-explained",
+      "title": "United States Student Visa Financial Requirements 2026: Proof of Funds Explained",
+      "wc": 1519,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-020 (n=7); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "united-kingdom-student-visa-financial-requirements-2026-proof-of-funds-explained",
+      "title": "United Kingdom Student Visa Financial Requirements 2026: Proof of Funds Explained",
+      "wc": 1493,
+      "demand": "high",
+      "ilink": 4,
+      "reason": "high-demand route in template family dup-020 (n=7); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "best-time-to-visit-malaysia-weather-seasons-cheapest-months-2026",
+      "title": "Best Time to Visit Malaysia: Weather, Seasons & Cheapest Months (2026)",
+      "wc": 1488,
+      "demand": "high",
+      "ilink": 3,
+      "reason": "high-demand route in template family dup-013 (n=17); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "france-visa-rule-changes-in-2026-what-travelers-need-to-know",
+      "title": "France Visa Rule Changes in 2026: What Travelers Need to Know",
+      "wc": 1484,
+      "demand": "high",
+      "ilink": 9,
+      "reason": "high-demand route in template family dup-008 (n=38); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "germany-visa-rule-changes-in-2026-what-travelers-need-to-know",
+      "title": "Germany Visa Rule Changes in 2026: What Travelers Need to Know",
+      "wc": 1484,
+      "demand": "high",
+      "ilink": 9,
+      "reason": "high-demand route in template family dup-008 (n=38); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "italy-visa-rule-changes-in-2026-what-travelers-need-to-know",
+      "title": "Italy Visa Rule Changes in 2026: What Travelers Need to Know",
+      "wc": 1484,
+      "demand": "high",
+      "ilink": 9,
+      "reason": "high-demand route in template family dup-008 (n=38); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "netherlands-visa-rule-changes-in-2026-what-travelers-need-to-know",
+      "title": "Netherlands Visa Rule Changes in 2026: What Travelers Need to Know",
+      "wc": 1484,
+      "demand": "high",
+      "ilink": 9,
+      "reason": "high-demand route in template family dup-008 (n=38); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "portugal-visa-rule-changes-in-2026-what-travelers-need-to-know",
+      "title": "Portugal Visa Rule Changes in 2026: What Travelers Need to Know",
+      "wc": 1484,
+      "demand": "high",
+      "ilink": 9,
+      "reason": "high-demand route in template family dup-008 (n=38); rebuild as unique page, keep keyword"
+    },
+    {
+      "slug": "spain-visa-rule-changes-in-2026-what-travelers-need-to-know",
+      "title": "Spain Visa Rule Changes in 2026: What Travelers Need to Know",
+      "wc": 1484,
+      "demand": "high",
+      "ilink": 9,
+      "reason": "high-demand route in template family dup-008 (n=38); rebuild as unique page, keep keyword"
+    }
+  ],
+  "category_counts": {
+    "Travel Tips": 94,
+    "Country Guides": 101,
+    "Document Help": 64,
+    "Visa Guides": 871,
+    "Interview Prep": 10,
+    "Australia": 1,
+    "Canada": 1,
+    "UAE": 2,
+    "Japan": 1,
+    "Schengen": 2,
+    "United Kingdom": 1,
+    "United States": 1
+  },
+  "params": {
+    "shingle_k": 8,
+    "minhash_perm": 120,
+    "lsh_bands": 30,
+    "lsh_rows": 4,
+    "near_threshold": 0.55,
+    "boiler_df_cut": 137
+  }
+}
