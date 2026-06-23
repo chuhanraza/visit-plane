@@ -4,6 +4,15 @@ import { useId, useState } from 'react'
 
 type Variant = 'strip' | 'inline'
 
+interface LeadMagnet {
+  /** Public path to the downloadable file, e.g. /lead-magnets/checklist.pdf */
+  url: string
+  /** Short identifier stored in Supabase `lead_magnet` for tracking. */
+  id: string
+  /** Button label shown after a successful capture. */
+  downloadLabel?: string
+}
+
 interface BlogEmailCaptureProps {
   /** Where the capture is rendered — stored in Supabase `captured_from`. */
   capturedFrom: string
@@ -15,6 +24,11 @@ interface BlogEmailCaptureProps {
   /** Headline + supporting copy overrides. */
   title?: string
   subtitle?: string
+  /**
+   * When provided, the component becomes a lead-magnet capture: it offers a
+   * downloadable resource and reveals the download link on successful submit.
+   */
+  leadMagnet?: LeadMagnet
 }
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
@@ -33,6 +47,7 @@ export default function BlogEmailCapture({
   destination,
   title,
   subtitle,
+  leadMagnet,
 }: BlogEmailCaptureProps) {
   const [email, setEmail] = useState('')
   const [consent, setConsent] = useState(false)
@@ -40,13 +55,22 @@ export default function BlogEmailCapture({
   const [message, setMessage] = useState('')
   const consentId = useId()
 
+  const isLeadMagnet = !!leadMagnet
+
   const heading =
-    title ?? (variant === 'inline' ? 'Found this helpful?' : 'Get visa updates straight to your inbox')
+    title ??
+    (isLeadMagnet
+      ? 'Get the free Ultimate Visa Application Checklist'
+      : variant === 'inline'
+        ? 'Found this helpful?'
+        : 'Get visa updates straight to your inbox')
   const sub =
     subtitle ??
-    (variant === 'inline'
-      ? 'Get our weekly visa newsletter — one email, real updates, zero spam.'
-      : 'One email per week. Real visa rule changes, travel tips, and destination guides.')
+    (isLeadMagnet
+      ? 'A free 4-page PDF: every document you need, a week-by-week timeline, and the 10 mistakes that get visas refused. Enter your email and download it instantly.'
+      : variant === 'inline'
+        ? 'Get our weekly visa newsletter — one email, real updates, zero spam.'
+        : 'One email per week. Real visa rule changes, travel tips, and destination guides.')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -73,6 +97,7 @@ export default function BlogEmailCapture({
           consent,
           ...(passport ? { passport } : {}),
           ...(destination ? { destination } : {}),
+          ...(leadMagnet ? { lead_magnet: leadMagnet.id } : {}),
         }),
       })
       if (!res.ok) {
@@ -80,7 +105,11 @@ export default function BlogEmailCapture({
         throw new Error(data?.error ?? 'Something went wrong.')
       }
       setStatus('success')
-      setMessage('Almost there — check your inbox to confirm your subscription.')
+      setMessage(
+        isLeadMagnet
+          ? 'Your checklist is ready below. We’ve also emailed you a confirmation link to get future visa updates.'
+          : 'Almost there — check your inbox to confirm your subscription.',
+      )
       setEmail('')
     } catch (err) {
       setStatus('error')
@@ -127,14 +156,32 @@ export default function BlogEmailCapture({
         </p>
 
         {status === 'success' ? (
-          <p
-            className={`mt-6 rounded-xl px-4 py-3 text-sm font-semibold ${
-              isStrip ? 'bg-white/15 text-white' : 'bg-white text-[#059669] ring-1 ring-[#10B981]/30'
-            }`}
-            role="status"
-          >
-            ✅ {message}
-          </p>
+          <div className="mt-6">
+            <p
+              className={`rounded-xl px-4 py-3 text-sm font-semibold ${
+                isStrip ? 'bg-white/15 text-white' : 'bg-white text-[#059669] ring-1 ring-[#10B981]/30'
+              }`}
+              role="status"
+            >
+              ✅ {message}
+            </p>
+            {isLeadMagnet && (
+              <a
+                href={leadMagnet!.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                className={`mt-4 inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-bold shadow-sm transition hover:scale-[1.02] ${
+                  isStrip ? 'bg-white text-[#0d9488]' : 'bg-[#10B981] text-white hover:bg-[#059669]'
+                }`}
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                {leadMagnet!.downloadLabel ?? 'Download the checklist (PDF)'}
+              </a>
+            )}
+          </div>
         ) : (
           <form
             onSubmit={handleSubmit}
@@ -164,7 +211,9 @@ export default function BlogEmailCapture({
                     : 'bg-[#10B981] text-white hover:bg-[#059669]'
                 }`}
               >
-                {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
+                {status === 'loading'
+                  ? (isLeadMagnet ? 'Sending…' : 'Subscribing…')
+                  : (isLeadMagnet ? 'Get the checklist' : 'Subscribe')}
               </button>
             </div>
 
@@ -182,7 +231,9 @@ export default function BlogEmailCapture({
                 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 accent-[#10B981]"
               />
               <span>
-                Yes, email me VisitPlane visa updates. No spam — unsubscribe anytime.
+                {isLeadMagnet
+                  ? 'Email me the checklist plus occasional VisitPlane visa updates. No spam — unsubscribe anytime.'
+                  : 'Yes, email me VisitPlane visa updates. No spam — unsubscribe anytime.'}
               </span>
             </label>
 

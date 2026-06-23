@@ -22,6 +22,24 @@ import BlogBreadcrumb from '@/components/blog/BlogBreadcrumb'
 import { isInsuranceRequired, affiliateTrackingUrl } from '@/src/lib/affiliates'
 import { noindexedPostSet } from '@/lib/data/noindexedPosts'
 
+// High-intent pages where the mid-article capture offers the visa-checklist
+// lead magnet (download on submit) instead of the generic newsletter signup.
+const LEAD_MAGNET_SLUGS = new Set<string>([
+  'dubai-tourist-visa-complete-guide-indians',
+  'how-much-does-a-saudi-arabia-visa-cost-from-pakistan-2026-fees-hidden-charges',
+  'transit-visa-dubai-requirements',
+  '15-cheapest-countries-to-visit-from-pakistan-in-2026',
+  'how-long-does-schengen-visa-take',
+  'best-travel-insurance-schengen-visa',
+  'germany-job-seeker-visa-complete-requirements',
+])
+
+const VISA_CHECKLIST_MAGNET = {
+  url: '/lead-magnets/ultimate-visa-application-checklist.pdf',
+  id: 'ultimate-visa-application-checklist',
+  downloadLabel: 'Download the checklist (PDF)',
+}
+
 // ── Static params ─────────────────────────────────────────────────────────────
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }))
@@ -163,6 +181,10 @@ export default async function BlogPostPage({
   const contentHtml = await getPostContent(slug)
   const relatedPosts = getRelatedPosts(slug, 3)
   const parts = splitAtHeadings(contentHtml, [0.33, 0.66])
+
+  // High-intent pages get the lead-magnet capture (checklist download) in place
+  // of the generic newsletter — still exactly one capture block per page.
+  const isHighIntent = LEAD_MAGNET_SLUGS.has(slug)
 
   const heroImg = getBlogHeroImage(slug)
   const inlineImg = getArticleInlineImage(slug)
@@ -409,9 +431,10 @@ export default async function BlogPostPage({
             <div className="my-12">
               <BlogEmailCapture
                 variant="inline"
-                capturedFrom="blog_post"
+                capturedFrom={isHighIntent ? `leadmagnet_blog_${slug}` : 'blog_post'}
                 passport={post.passportCountry}
                 destination={post.destinationCountry}
+                leadMagnet={isHighIntent ? VISA_CHECKLIST_MAGNET : undefined}
               />
             </div>
 

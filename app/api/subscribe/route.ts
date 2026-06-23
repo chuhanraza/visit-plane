@@ -119,7 +119,7 @@ async function sendConfirmationEmail(
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}))
-    const { email, passport, destination, captured_from, consent } = body as Record<string, string | boolean>
+    const { email, passport, destination, captured_from, consent, lead_magnet } = body as Record<string, string | boolean>
 
     if (!email || !EMAIL_RE.test(String(email))) {
       return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 })
@@ -127,6 +127,8 @@ export async function POST(req: NextRequest) {
     if (!consent) {
       return NextResponse.json({ error: 'Please check the consent box to continue.' }, { status: 400 })
     }
+
+    const leadMagnet = lead_magnet ? String(lead_magnet) : null
 
     const emailNorm         = String(email).trim().toLowerCase()
     const confirm_token     = randomBytes(32).toString('hex')
@@ -169,6 +171,7 @@ export async function POST(req: NextRequest) {
         route_passport:    passport    ? String(passport)    : null,
         route_destination: destination ? String(destination) : null,
         captured_from:     captured_from ? String(captured_from) : 'unknown',
+        lead_magnet:       leadMagnet,
         captured_at:       now,
         confirm_token,
         unsubscribe_token,
