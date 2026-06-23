@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await supabase
     .from('destinations')
-    .select('country_name, visa_type, processing_time, fee')
+    .select('country_name, visa_type, processing_time, pricing')
     .ilike('passport_country', passport)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
     const item: VisaCountry = {
       name: row.country_name,
       processing_time: row.processing_time,
-      fee: row.fee,
+      fee: row.pricing,
     }
     const bucket = bucketVisa(row.visa_type ?? '')
     if (bucket === 'free') visa_free.push(item)

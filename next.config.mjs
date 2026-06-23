@@ -48,11 +48,16 @@ const nextConfig = {
   async redirects() {
     // statusCode 301 (not `permanent: true`, which emits 308) to match the SEO
     // recovery spec — classic Moved Permanently that consolidates link equity.
-    return blogRedirects.map(({ source, destination }) => ({
-      source,
-      destination,
-      statusCode: 301,
-    }));
+    return [
+      // Orphan URL with no page — was serving a crawlable 500. Document Check
+      // lives inside the visa flow, so send these visitors to the Wizard.
+      { source: '/check-my-documents', destination: '/wizard', statusCode: 301 },
+      ...blogRedirects.map(({ source, destination }) => ({
+        source,
+        destination,
+        statusCode: 301,
+      })),
+    ];
   },
 
   async rewrites() {

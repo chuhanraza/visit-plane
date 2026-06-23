@@ -3,22 +3,21 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+// Only locales whose content is actually translated site-wide are offered here.
+// The non-English message files only cover the homepage shell (not the tools,
+// blog, or visa pages), so advertising them overpromised translations the site
+// can't deliver. Restore a locale here once its content is genuinely localized.
 const LANGUAGES = [
   { code: 'en', name: 'English',    flag: '🇬🇧', native: 'English',    rtl: false },
-  { code: 'ar', name: 'Arabic',     flag: '🇸🇦', native: 'العربية',   rtl: true  },
-  { code: 'ur', name: 'Urdu',       flag: '🇵🇰', native: 'اردو',      rtl: true  },
-  { code: 'hi', name: 'Hindi',      flag: '🇮🇳', native: 'हिन्दी',   rtl: false },
-  { code: 'zh', name: 'Chinese',    flag: '🇨🇳', native: '中文',       rtl: false },
-  { code: 'es', name: 'Spanish',    flag: '🇪🇸', native: 'Español',   rtl: false },
-  { code: 'fr', name: 'French',     flag: '🇫🇷', native: 'Français',  rtl: false },
-  { code: 'de', name: 'German',     flag: '🇩🇪', native: 'Deutsch',   rtl: false },
-  { code: 'pt', name: 'Portuguese', flag: '🇧🇷', native: 'Português', rtl: false },
-  { code: 'bn', name: 'Bengali',    flag: '🇧🇩', native: 'বাংলা',    rtl: false },
 ]
 
 export default function LanguageSwitcher({ currentLocale }: { currentLocale: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
+
+  // With a single supported locale there is no real choice to offer — hide the
+  // control entirely rather than render a dead one-item dropdown.
+  if (LANGUAGES.length < 2) return null
 
   const currentLang = LANGUAGES.find((l) => l.code === currentLocale) || LANGUAGES[0]
 
