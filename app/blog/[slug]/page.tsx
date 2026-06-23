@@ -23,6 +23,8 @@ import BlogBreadcrumb from '@/components/blog/BlogBreadcrumb'
 import { isInsuranceRequired, affiliateTrackingUrl } from '@/src/lib/affiliates'
 import { noindexedPostSet } from '@/lib/data/noindexedPosts'
 import { redirectedSlugSet } from '@/lib/data/blogRedirectSlugs'
+import Byline from '@/components/eeat/Byline'
+import { getAuthor, authorPersonSchema } from '@/lib/data/authors'
 
 // High-intent pages where the mid-article capture offers the visa-checklist
 // lead magnet (download on submit) instead of the generic newsletter signup.
@@ -79,7 +81,7 @@ export async function generateMetadata({
       siteName: 'VisitPlane',
       publishedTime: post.date,
       modifiedTime: post.date,
-      authors: ['VisitPlane Editorial'],
+      authors: [getAuthor().name],
       section: post.category,
       tags,
       images: [{ url: ogUrl, width: 1200, height: 630, alt: post.title }],
@@ -231,6 +233,7 @@ export default async function BlogPostPage({
   // BlogPosting JSON-LD schema
   const wordCount = contentHtml.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length
   const canonicalUrl = `https://www.visitplane.com/blog/${post.slug}`
+  const author = getAuthor()
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -244,7 +247,13 @@ export default async function BlogPostPage({
     articleSection: post.category,
     keywords: getPostTags(post).join(', '),
     wordCount,
-    author: { '@type': 'Organization', name: 'VisitPlane Editorial', url: 'https://www.visitplane.com' },
+    author: {
+      '@type': 'Person',
+      name: author.name,
+      jobTitle: author.role,
+      url: author.url,
+      ...(author.sameAs.length > 0 ? { sameAs: author.sameAs } : {}),
+    },
     publisher: {
       '@type': 'Organization',
       name: 'VisitPlane',
@@ -339,7 +348,7 @@ export default async function BlogPostPage({
               {new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </time>
             <span>·</span>
-            <span>VisitPlane Editorial</span>
+            <span>{author.name}</span>
           </div>
           {/* Scroll indicator */}
           <div className="mt-5 animate-bounce text-lg text-white/50">↓</div>
@@ -365,36 +374,8 @@ export default async function BlogPostPage({
           {/* ── Main article ────────────────────────────────────────────── */}
           <article className="min-w-0 flex-1">
 
-            {/* Author card */}
-            <div className="mb-10 flex items-start gap-4 rounded-2xl border border-gray-100 bg-[#F9FAFB] p-4 shadow-sm">
-              <div className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#10B981] to-[#059669] text-xl text-white shadow-sm">
-                ✈️
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-[#1A1A1A]">VisitPlane Editorial</p>
-                <p className="text-xs text-gray-500">Verified by Official Embassy Sources</p>
-                <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-400">
-                  <span className="flex items-center gap-1">
-                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect width="18" height="18" x="3" y="4" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" />
-                    </svg>
-                    Updated {new Date(post.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
-                    </svg>
-                    {post.readTime}
-                  </span>
-                  <span className="flex items-center gap-1 text-[#10B981]">
-                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                    Embassy-verified
-                  </span>
-                </div>
-              </div>
-            </div>
+            {/* Author byline — real, accountable human (E-E-A-T) */}
+            <Byline updatedISO={post.date} readTime={post.readTime} />
 
             {/* ── AT A GLANCE — quick-facts card ─────────────────────────── */}
             <div className="mb-10 rounded-2xl border border-[#10B981]/20 bg-gradient-to-br from-[#F0FDF9] to-white p-5 shadow-sm">

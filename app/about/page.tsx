@@ -1,8 +1,30 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { getAuthor } from '@/lib/data/authors'
+
+const founder = getAuthor()
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'VisitPlane',
+  url: 'https://www.visitplane.com',
+  logo: 'https://www.visitplane.com/logo-v2.png',
+  description:
+    'Free visa requirements and travel tools for 197 countries — verified against official government and embassy sources.',
+  founder: {
+    '@type': 'Person',
+    name: founder.name,
+    jobTitle: founder.role,
+    url: founder.url,
+  },
+  sameAs: [
+    'https://twitter.com/visitplane',
+    'https://www.facebook.com/visitplane',
+  ],
+}
 
 function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
   return (
@@ -48,6 +70,10 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
       {/* HERO */}
       <section className="relative pt-16 pb-16 overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
@@ -81,12 +107,26 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
             className="rounded-2xl border border-gray-100 bg-white p-8"
           >
-            <h2 className="mb-4 text-xl font-bold text-[#0f0c29]">Who we are</h2>
+            <h2 className="mb-4 text-xl font-bold text-[#0f0c29]">Who runs VisitPlane</h2>
             <p className="text-sm leading-relaxed text-gray-500 mb-4">
-              VisitPlane is a small independent project. We are not a travel agency, a visa processing service, or a funded startup with a large team. We are a few people who travel frequently and got tired of the same problem: figuring out whether you need a visa, what kind, what it costs, and what you need to bring.
+              VisitPlane is built and operated by one person —{' '}
+              <Link href={`/authors/${founder.slug}`} className="font-semibold text-teal-500 hover:text-teal-600 transition">
+                {founder.name}
+              </Link>
+              , its {founder.role.toLowerCase()}. It is not a travel agency, a visa processing
+              service, or a funded startup with a large team. It is an independent, solo-run platform
+              — and that&apos;s deliberate: one operator is accountable for every visa route the site
+              publishes.
             </p>
             <p className="text-sm leading-relaxed text-gray-500">
-              So we built the tool we wished existed — one that gives you a clear answer in seconds, covers 197 countries, and costs nothing to use. No account, no upsell, no agency fees.
+              The goal is the tool he wished existed — one that gives you a clear answer in seconds,
+              covers 197 countries, and costs nothing to use. No account, no upsell, no agency fees.
+              Every route is verified against official government and embassy sources before it goes
+              live. Read exactly how on our{' '}
+              <Link href="/editorial-standards" className="font-semibold text-teal-500 hover:text-teal-600 transition">
+                editorial standards page
+              </Link>
+              .
             </p>
           </motion.div>
         </div>
@@ -134,7 +174,7 @@ export default function AboutPage() {
       </section>
 
       {/* HONEST NOTE */}
-      <section className="pb-16">
+      <section id="methodology" className="pb-16 scroll-mt-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
@@ -142,7 +182,14 @@ export default function AboutPage() {
           >
             <h2 className="mb-4 text-xl font-bold text-[#0f0c29]">A note on data accuracy</h2>
             <p className="text-sm leading-relaxed text-gray-500 mb-4">
-              We do our best to keep everything current and correct. We cross-reference official government sources, embassy portals, and immigration authorities. But we are not infallible — visa rules change, sometimes without much notice, and we are a small team.
+              We do our best to keep everything current and correct, cross-referencing official
+              government sources, embassy portals, and the IATA Travel Centre. But this is not
+              infallible — visa rules change, sometimes without much notice, and VisitPlane is run by
+              one person. Our full process is documented on the{' '}
+              <Link href="/editorial-standards" className="font-semibold text-teal-500 hover:text-teal-600 transition">
+                editorial standards page
+              </Link>
+              .
             </p>
             <p className="text-sm leading-relaxed text-gray-500">
               Always verify your final requirements with the official embassy or consulate of your destination country before you travel — especially for complex trips or if you are close to your travel date. If you spot something wrong on our site, please{' '}

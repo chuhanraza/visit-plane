@@ -10,6 +10,7 @@ import CommandPalette from "@/components/layout/CommandPalette";
 import { CommandPaletteProvider } from "@/components/layout/CommandPaletteContext";
 import ExitIntentModal from "@/components/ExitIntentModal";
 import PWAProvider from "@/components/PWAProvider";
+import { getAuthor } from "@/lib/data/authors";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -124,6 +125,8 @@ export const metadata: Metadata = {
 };
 
 // ─── 2. JSON-LD ───────────────────────────────────────────────────────────────
+const siteFounder = getAuthor();
+
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -132,6 +135,12 @@ const organizationSchema = {
   logo: "https://www.visitplane.com/logo-v2.png",
   description:
     "Free visa requirements and travel tools for 197 countries — passport strength checker, embassy finder, document checklists and more.",
+  founder: {
+    "@type": "Person",
+    name: siteFounder.name,
+    jobTitle: siteFounder.role,
+    url: siteFounder.url,
+  },
   sameAs: [
     "https://twitter.com/visitplane",
     "https://www.facebook.com/visitplane",

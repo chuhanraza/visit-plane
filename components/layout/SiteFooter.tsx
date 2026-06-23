@@ -23,10 +23,11 @@ const PRODUCT_LINKS = [
 ]
 
 const TRUST_LINKS = [
-  { label: 'About',                 href: '/about'            },
-  { label: 'FAQ',                   href: '/faq'              },
-  { label: 'Report Incorrect Data', href: '/contact'          },
-  { label: 'Source Methodology',    href: '/about#methodology'},
+  { label: 'About',                 href: '/about'                         },
+  { label: 'Editorial Standards',   href: '/editorial-standards'           },
+  { label: 'Our Editor',            href: '/authors/muhammad-hamad-ashraf' },
+  { label: 'FAQ',                   href: '/faq'                           },
+  { label: 'Report Incorrect Data', href: '/contact'                       },
 ]
 
 const LEGAL_LINKS = [
