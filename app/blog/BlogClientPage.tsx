@@ -336,6 +336,25 @@ export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
     () => pool.filter((p) => p.category === 'Travel Tips' || p.category === 'Document Help').slice(0, 8),
     [pool],
   )
+  // Sprint 9: flight-itinerary / proof-of-onward-travel hub rail (pillar first).
+  const flightDocHub = useMemo(() => {
+    const hub = new Set([
+      'flight-itinerary-for-visa-complete-guide-2026',
+      'how-to-get-flight-itinerary-without-paying-safely-2026',
+      'flight-reservation-vs-flight-itinerary-vs-dummy-ticket-explained',
+      'proof-of-onward-travel-requirements-by-country-2026',
+      'hotel-booking-for-visa-application-guide',
+      'do-embassies-verify-flight-reservations',
+      'flight-itinerary-for-schengen-visa',
+    ])
+    return pool
+      .filter((p) => hub.has(p.slug))
+      .sort((a, b) =>
+        a.slug === 'flight-itinerary-for-visa-complete-guide-2026' ? -1
+          : b.slug === 'flight-itinerary-for-visa-complete-guide-2026' ? 1
+          : new Date(b.date).getTime() - new Date(a.date).getTime(),
+      )
+  }, [pool])
 
   return (
     <div>
@@ -399,6 +418,9 @@ export default function BlogClientPage({ posts }: { posts: BlogPost[] }) {
               <Carousel title="⭐ Editor's Picks" posts={editorsPicks} />
               <Carousel title="✈️ Visa Guides by Destination" posts={byDestination} />
               <Carousel title="💡 Visa Tips & Insider Knowledge" posts={tipsAndKnowledge} />
+              {flightDocHub.length > 0 && (
+                <Carousel title="🎫 Flight & Document Proof for Visas" posts={flightDocHub} />
+              )}
             </>
           )}
 

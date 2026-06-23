@@ -23314,6 +23314,235 @@ export const blogPosts: BlogPost[] = [
       { q: 'What order should I plan in?', a: 'Decide, verify the visa for your passport, then book — keeping bookings refundable until any visa is secured.' },
     ],
   },
+  // ── Sprint 9: Flight Itinerary / Proof-of-Onward-Travel content hub ─────────
+  {
+    slug: 'flight-itinerary-for-visa-complete-guide-2026',
+    title: 'Flight Itinerary for Visa — The Complete, Honest Guide (2026)',
+    date: '2026-06-20',
+    excerpt:
+      'What a flight itinerary really is, what embassies actually require, the genuine risks of fake "dummy tickets", and the safest legitimate ways to get a verifiable reservation for your visa application.',
+    category: 'Document Help',
+    readTime: '14 min read',
+    coverEmoji: '✈️',
+    passportCountry: 'Pakistan',
+    destinationCountry: 'Germany',
+    visaLink: '/visa/Pakistan/Germany',
+    ctaTitle: 'Check Your Visa Requirements',
+    faqs: [
+      {
+        q: 'Do I need to buy a flight ticket before applying for a visa?',
+        a: 'No. Almost every consulate — Schengen, UK, Canada, and others — asks for a flight reservation or itinerary, not a paid, non-refundable ticket. The US, UK, and Canada explicitly advise not buying tickets until your visa is approved. A genuine reservation satisfies the requirement.',
+      },
+      {
+        q: 'What is the difference between a flight reservation and a dummy ticket?',
+        a: 'A flight reservation is a real booking held in an airline\'s system under a genuine PNR that the airline can verify. A fabricated "dummy ticket" is a PDF with an invented reference that fails verification — that is document fraud and risks refusal and a multi-year ban.',
+      },
+      {
+        q: 'What is the safest free way to get a flight itinerary for a visa?',
+        a: 'Use an airline\'s 24-hour free hold or a fully refundable fare you cancel after the decision. Both create a real, verifiable PNR at little or no cost. Confirm the booking appears on the airline\'s "Manage Booking" page before submitting.',
+      },
+      {
+        q: 'Are dummy tickets legal for visa applications?',
+        a: 'A genuine short-term reservation with a verifiable PNR is legal. A fabricated confirmation with a fake or unverifiable reference is document fraud — illegal and high-risk. The deciding test is whether you can verify the PNR with the airline.',
+      },
+      {
+        q: 'Will the embassy check my flight reservation?',
+        a: 'Many do, at least on a spot-check basis, and some missions (Germany and the Netherlands are often cited) verify aggressively by looking up the PNR. Always submit a reservation that would survive a verification check.',
+      },
+    ],
+  },
+  {
+    slug: 'how-to-get-flight-itinerary-without-paying-safely-2026',
+    title: 'How to Get a Flight Itinerary Without Paying — Safely and Legally (2026)',
+    date: '2026-06-19',
+    excerpt:
+      'The honest answer to the most-searched visa question: how to get a real, embassy-acceptable flight itinerary for free or nearly free — and why fake "dummy tickets" are the wrong shortcut.',
+    category: 'Document Help',
+    readTime: '11 min read',
+    coverEmoji: '🎫',
+    passportCountry: 'India',
+    destinationCountry: 'Germany',
+    visaLink: '/visa/India/Germany',
+    ctaTitle: 'Check Your Visa Requirements',
+    faqs: [
+      {
+        q: 'How can I get a flight itinerary for a visa for free?',
+        a: 'Use an airline 24-hour free hold (which creates a real PNR at no cost) or a fully refundable fare you cancel after the decision. Both are genuine and verifiable. For flexible dates, a legitimate reservation service issues a verifiable PNR for a small fee.',
+      },
+      {
+        q: 'Is it legal to submit a flight reservation I haven\'t paid for?',
+        a: 'Yes — as long as it is a genuine reservation with a verifiable PNR. Embassies ask for a reservation, not a paid ticket. What is not legal is submitting a fabricated PDF with an invented booking reference.',
+      },
+      {
+        q: 'How do I check if a reservation service is legitimate?',
+        a: 'The key test: can you verify the PNR yourself on the airline\'s own "Manage Booking" page? If yes, it\'s genuine. If the vendor markets "fake" or "novelty" tickets, or you can only verify through their site, avoid it.',
+      },
+      {
+        q: 'How long does a flight reservation stay valid?',
+        a: 'Airline holds are typically 24–72 hours; legitimate reservation services often offer one to two weeks. Time the validity to your processing window so the booking is still live when an officer reviews your file — use a refundable fare if processing is slow.',
+      },
+    ],
+  },
+  {
+    slug: 'flight-reservation-vs-flight-itinerary-vs-dummy-ticket-explained',
+    title: 'Flight Reservation vs Flight Itinerary vs Dummy Ticket — Explained (2026)',
+    date: '2026-06-18',
+    excerpt:
+      'Three terms, constantly confused, with very different legal and risk profiles. A clear, honest breakdown of what each one means for your visa application — and which you actually need.',
+    category: 'Document Help',
+    readTime: '10 min read',
+    coverEmoji: '📑',
+    passportCountry: 'Pakistan',
+    destinationCountry: 'Germany',
+    visaLink: '/visa/Pakistan/Germany',
+    ctaTitle: 'Check Your Visa Requirements',
+    faqs: [
+      {
+        q: 'What is the difference between a flight itinerary and a flight reservation?',
+        a: 'A flight itinerary is a document showing your planned route and dates — it proves intent, not a booking. A flight reservation is a real, verifiable hold on a seat under a genuine PNR. Most embassies want a reservation; an itinerary alone is usually too weak.',
+      },
+      {
+        q: 'Is a dummy ticket the same as a flight reservation?',
+        a: '"Dummy ticket" is ambiguous slang. Some use it for a genuine short-term PNR hold (which is fine), others for a fabricated PDF (which is fraud). The deciding question is always whether the PNR can be verified with the airline.',
+      },
+      {
+        q: 'Which document do I actually need for my visa?',
+        a: 'For almost every visa, a genuine flight reservation with a verifiable PNR — paired with a clear itinerary if your destination wants a day-by-day plan. You never need a fabricated document to satisfy a consulate.',
+      },
+      {
+        q: 'Why is the distinction so important?',
+        a: 'Because embassies verify. A real reservation passes; a fabricated one can fail and lead to a misrepresentation refusal plus a multi-year ban in systems like Canada\'s. Knowing which document you\'re submitting protects your application.',
+      },
+    ],
+  },
+  {
+    slug: 'proof-of-onward-travel-requirements-by-country-2026',
+    title: 'Proof of Onward Travel — Requirements by Country (2026)',
+    date: '2026-06-17',
+    excerpt:
+      'What proof of onward travel actually means, who checks it (airlines vs immigration), and the specific expectations for Schengen, the UK, US, Canada, Australia, Japan, and the UAE — with honest, legitimate ways to satisfy it.',
+    category: 'Visa Guides',
+    readTime: '12 min read',
+    coverEmoji: '🛫',
+    passportCountry: 'India',
+    destinationCountry: 'Thailand',
+    visaLink: '/visa/India/Thailand',
+    ctaTitle: 'Check Your Visa Requirements',
+    faqs: [
+      {
+        q: 'What is proof of onward travel?',
+        a: 'Evidence that you intend to leave a country before your permitted stay expires — usually a return or onward flight reservation. It is often enforced by the airline at check-in and by immigration at the border, not only by the embassy.',
+      },
+      {
+        q: 'Who checks proof of onward travel?',
+        a: 'Three parties: the embassy at application, the airline at check-in (to avoid carrier fines), and immigration at the border. Airlines are frequently the strictest, especially for visa-free and visa-on-arrival entries.',
+      },
+      {
+        q: 'Do I need a return ticket for a visa-free country?',
+        a: 'Often yes — for boarding. Airlines commonly require a confirmed or held onward/return ticket before they let you board, even when no visa is needed. A refundable return or a genuine cheap onward ticket satisfies this.',
+      },
+      {
+        q: 'How do I prove onward travel without buying a ticket?',
+        a: 'Use a refundable return fare you cancel after travel is confirmed, an airline 24-hour hold, a legitimate reservation service with a verifiable PNR, or a genuinely cheap onward ticket. Avoid fabricated tickets — airlines and immigration can verify them.',
+      },
+    ],
+  },
+  {
+    slug: 'hotel-booking-for-visa-application-guide',
+    title: 'Hotel Booking for a Visa Application — The Complete Guide (2026)',
+    date: '2026-06-16',
+    excerpt:
+      'How to provide accommodation proof for a Schengen, UK, or other visa without paying for a stay you might not take — using free cancellation and genuine reservations, never fabricated bookings.',
+    category: 'Document Help',
+    readTime: '10 min read',
+    coverEmoji: '🏨',
+    passportCountry: 'Pakistan',
+    destinationCountry: 'Germany',
+    visaLink: '/visa/Pakistan/Germany',
+    ctaTitle: 'Check Your Visa Requirements',
+    faqs: [
+      {
+        q: 'Do I need to pay for a hotel before my visa is approved?',
+        a: 'No. Most consulates accept a genuine hotel reservation, not a paid non-refundable stay. The cleanest method is a free-cancellation booking covering your exact dates, which you cancel for free after the decision.',
+      },
+      {
+        q: 'Is it safe to use a free-cancellation hotel booking for a visa?',
+        a: 'Yes — it is a real, verifiable reservation, which is exactly what embassies ask for. Just diarise the cancellation deadline so you are not charged, and keep the dates consistent with your flight itinerary.',
+      },
+      {
+        q: 'Can I use a letter of invitation instead of a hotel booking?',
+        a: 'Often yes, if you are staying with family or friends. The host typically provides an invitation, ID or residence permit, and sometimes proof of address. Some Schengen countries require an official/notarised form.',
+      },
+      {
+        q: 'Do embassies verify hotel bookings?',
+        a: 'Yes, they can contact the hotel or check the reference. A fabricated confirmation the hotel has no record of fails the check and can sink the application for misrepresentation — so always use a genuine reservation.',
+      },
+    ],
+  },
+  {
+    slug: 'do-embassies-verify-flight-reservations',
+    title: 'Do Embassies Verify Flight Reservations? An Honest Answer (2026)',
+    date: '2026-06-15',
+    excerpt:
+      'Yes — many do, and here is exactly how. What a PNR is, how consulates spot-check bookings, which missions are strictest, and why this is the single strongest argument against fake "dummy tickets".',
+    category: 'Document Help',
+    readTime: '10 min read',
+    coverEmoji: '🔍',
+    passportCountry: 'Pakistan',
+    destinationCountry: 'Germany',
+    visaLink: '/visa/Pakistan/Germany',
+    ctaTitle: 'Check Your Visa Requirements',
+    faqs: [
+      {
+        q: 'Do embassies actually verify flight reservations?',
+        a: 'Yes — many verify on a spot-check basis by looking up the PNR with the airline or in the GDS, and some missions (Germany and the Netherlands are frequently cited) verify aggressively. Assume your reservation will be checked.',
+      },
+      {
+        q: 'How do embassies check if a flight reservation is real?',
+        a: 'They enter the PNR (booking reference) into the airline or GDS system to confirm it exists, matches your name, and is active. They also recognise the templates of known fake-ticket vendors and cross-check against your other documents.',
+      },
+      {
+        q: 'What happens if a fake flight ticket is caught?',
+        a: 'Typically immediate refusal, often recorded as misrepresentation — far more serious than an ordinary refusal. Several systems impose a multi-year ban (Canada\'s is commonly five years), and a Schengen fraud refusal is visible across member states.',
+      },
+      {
+        q: 'How can I check my own reservation before submitting?',
+        a: 'Go to the airline\'s official website, open "Manage Booking", and enter your PNR and last name. If the booking appears with your name, route, and active status, it will pass an embassy check. If nothing appears, do not submit it.',
+      },
+    ],
+  },
+  {
+    slug: 'flight-itinerary-for-schengen-visa',
+    title: 'Flight Itinerary for a Schengen Visa — What\'s Actually Required (2026)',
+    date: '2026-06-14',
+    excerpt:
+      'Exactly what Schengen consulates expect for flight evidence, why a reservation beats a paid ticket, and the safest legitimate way to provide one — plus the insurance requirement applicants forget.',
+    category: 'Document Help',
+    readTime: '10 min read',
+    coverEmoji: '🇪🇺',
+    passportCountry: 'Pakistan',
+    destinationCountry: 'Germany',
+    visaLink: '/visa/Pakistan/Germany',
+    ctaTitle: 'Check Pakistan to Germany Visa Requirements',
+    faqs: [
+      {
+        q: 'Does a Schengen visa require a confirmed flight ticket?',
+        a: 'No. Schengen consulates accept a round-trip flight reservation or itinerary — a confirmed, paid ticket is not required, and missions advise against buying tickets before the visa is granted. A genuine reservation showing entry and exit dates is sufficient.',
+      },
+      {
+        q: 'What is the safest way to provide a flight itinerary for Schengen?',
+        a: 'Use an airline 24-hour free hold, a fully refundable fare you cancel after the decision, or a legitimate reservation service with a verifiable PNR. Confirm the PNR appears on the airline\'s "Manage Booking" page before submitting.',
+      },
+      {
+        q: 'Does Schengen require travel insurance as well as a flight reservation?',
+        a: 'Yes. A Schengen visa requires travel-medical insurance covering at least €30,000, valid across the whole Schengen Area for your entire stay. This is a separate mandatory document many applicants forget.',
+      },
+      {
+        q: 'Will the Schengen embassy verify my flight reservation?',
+        a: 'Yes, many do, and Germany and the Netherlands are often cited as verifying rigorously. A fabricated reservation that fails the check can mean refusal for misrepresentation, recorded in the shared Schengen visa database visible to all member states.',
+      },
+    ],
+  },
 ]
 
 export function getPostBySlug(slug: string): BlogPost | undefined {

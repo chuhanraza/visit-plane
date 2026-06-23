@@ -28,6 +28,8 @@ export const PRIORITY_SLUGS: readonly string[] = [
   'transit-visa-dubai-requirements',
   '15-cheapest-countries-to-visit-from-pakistan-in-2026',
   'how-long-does-schengen-visa-take',
+  // Sprint 9: flight-itinerary hub cornerstone — bias inbound links to the pillar.
+  'flight-itinerary-for-visa-complete-guide-2026',
 ]
 const PRIORITY_SET = new Set(PRIORITY_SLUGS)
 
