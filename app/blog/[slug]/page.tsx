@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { blogPosts, getPostBySlug, getRelatedPosts, getPostTags, toSlug } from '@/src/lib/posts'
+import { blogPosts, getPostBySlug, getPostTags, toSlug } from '@/src/lib/posts'
+import { getRelatedGuides } from '@/src/lib/relatedGuides'
 import type { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
@@ -21,6 +22,7 @@ import BlogEmailCapture from '@/components/blog/BlogEmailCapture'
 import BlogBreadcrumb from '@/components/blog/BlogBreadcrumb'
 import { isInsuranceRequired, affiliateTrackingUrl } from '@/src/lib/affiliates'
 import { noindexedPostSet } from '@/lib/data/noindexedPosts'
+import { redirectedSlugSet } from '@/lib/data/blogRedirectSlugs'
 
 // High-intent pages where the mid-article capture offers the visa-checklist
 // lead magnet (download on submit) instead of the generic newsletter signup.
@@ -179,7 +181,17 @@ export default async function BlogPostPage({
   if (!post) notFound()
 
   const contentHtml = await getPostContent(slug)
-  const relatedPosts = getRelatedPosts(slug, 3)
+  // Sprint 8 internal-linking: 3–6 topically-related LIVE guides (never links to
+  // noindexed/redirected slugs), biased toward proven-earner priority pages, with
+  // category date-neighbours force-included so no LIVE post is left an orphan.
+  const relatedPosts = getRelatedGuides({
+    currentSlug: slug,
+    allPosts: blogPosts,
+    tagsOf: getPostTags,
+    isExcluded: (s) => noindexedPostSet.has(s) || redirectedSlugSet.has(s),
+    limit: 6,
+    min: 3,
+  })
   const parts = splitAtHeadings(contentHtml, [0.33, 0.66])
 
   // High-intent pages get the lead-magnet capture (checklist download) in place
@@ -633,9 +645,9 @@ export default async function BlogPostPage({
       {/* ── RELATED POSTS ──────────────────────────────────────────────────── */}
       <section className="border-t border-gray-100 bg-[#F9FAFB]">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <h2 className="mb-1 text-2xl font-bold text-[#1A1A1A]">Related Visa Guides</h2>
+          <h2 className="mb-1 text-2xl font-bold text-[#1A1A1A]">Related Guides</h2>
           <p className="mb-8 text-sm text-gray-500">
-            More guides for {post.passportCountry} passport holders and {post.destinationCountry} travelers
+            Hand-picked guides related to {post.passportCountry} passport holders and {post.destinationCountry} travel
           </p>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
