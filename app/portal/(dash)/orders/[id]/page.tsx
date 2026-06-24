@@ -6,6 +6,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { STATUS_LABELS, STATUS_BADGE, INVOICE_STATUS_BADGE } from '@/lib/orders/lifecycle'
 import type { RequiredDoc } from '@/lib/orders/types'
 import DocumentUploader from './DocumentUploader'
+import PayButton from './PayButton'
 
 export const metadata: Metadata = { title: 'Order — VisitPlane Portal', robots: { index: false } }
 export const dynamic = 'force-dynamic'
@@ -87,6 +88,11 @@ export default async function CustomerOrderDetail(
               <a href={`/api/invoices/${order.id}/pdf`} className="text-sm text-blue-600 hover:underline">Download PDF</a>
             </div>
           </div>
+          {invoice.status !== 'paid' && (
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <PayButton orderId={order.id} />
+            </div>
+          )}
         </section>
       )}
 
