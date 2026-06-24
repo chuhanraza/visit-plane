@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { PASSPORT_LIST } from '@/components/PassportSwitcher'
+import OfficialSourceLink from '@/components/visa/OfficialSourceLink'
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -137,6 +138,11 @@ export default function DestinationCountryClient({
             </button>
           </p>
         </div>
+      </section>
+
+      {/* ── Official source ─────────────────────────────────────────────── */}
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pt-8">
+        <OfficialSourceLink destinationName={countryName} />
       </section>
 
       {/* ── Passport grid ───────────────────────────────────────────────── */}

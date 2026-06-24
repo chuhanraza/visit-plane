@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { getOfficialSources, type OfficialSource } from '@/data/officialSources'
+import OfficialSourceLink from '@/components/visa/OfficialSourceLink'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface SourcesAndTrustProps {
@@ -134,6 +135,9 @@ export default function SourcesAndTrust({ passportName, destinationName }: Sourc
             {sources.map((src, i) => <SourceCard key={i} source={src} />)}
           </div>
         )}
+
+        {/* Always-present official-source CTA (per-destination portal fallback) */}
+        <OfficialSourceLink destinationName={destinationName} homeCountry={passportName} className="mb-5" />
 
         {/* Share row */}
         <div className="flex items-center flex-wrap gap-2 border-t border-gray-100 pt-4 mb-4 print:hidden">
