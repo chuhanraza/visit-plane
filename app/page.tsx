@@ -11,6 +11,7 @@ import { useTranslations } from 'next-intl'
 import CountrySelect from '@/components/CountrySelect'
 import InstallButton from '@/components/InstallButton'
 import DestinationImage from '@/components/DestinationImage'
+import VisaFreeSection from '@/components/home/VisaFreeSection'
 import { getAuthor } from '@/lib/data/authors'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
@@ -36,17 +37,6 @@ const POPULAR_DESTINATIONS = [
   { slug: 'United Kingdom', name: 'United Kingdom', flag: '🇬🇧', visa: 'Visa Required', tagline: 'Historic & Iconic' },
   { slug: 'Singapore',      name: 'Singapore',      flag: '🇸🇬', visa: 'Visa Required', tagline: 'The Lion City' },
   { slug: 'France',         name: 'France',         flag: '🇫🇷', visa: 'Visa Required', tagline: 'Art, Culture & Romance' },
-]
-
-// ── Verified 2026-05-28 for Pakistani passport holders ──
-// Free visa-on-arrival or visa-free entry only.
-const NO_VISA_DESTINATIONS = [
-  { name: 'Maldives', flag: '🇲🇻', days: '30 days' },
-  { name: 'Nepal',    flag: '🇳🇵', days: '30 days' },
-  { name: 'China',    flag: '🇨🇳', days: '30 days' },
-  { name: 'Cambodia', flag: '🇰🇭', days: '30 days' },
-  { name: 'Senegal',  flag: '🇸🇳', days: '90 days' },
-  { name: 'Rwanda',   flag: '🇷🇼', days: '30 days' },
 ]
 
 const CONTINENT_DESTINATIONS: Record<string, { name: string; flag: string; visa: string }[]> = {
@@ -631,37 +621,9 @@ export default function HomePage() {
       </section>
 
       {/* ────────────────────── 5. NO VISA REQUIRED ──────────────── */}
-      <section className="bg-gray-50 py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <AnimatedSection>
-            <motion.div variants={fadeUp} className="mb-12 text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-600">
-                <span>✈️</span> Visa-Free Travel
-              </div>
-              <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">No Visa Required</h2>
-              <p className="mx-auto mt-3 max-w-md text-sm text-gray-500">Destinations a Pakistani passport enters visa-free or with free visa-on-arrival. Verified May 2026 — always reconfirm before you fly.</p>
-            </motion.div>
-
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-              {NO_VISA_DESTINATIONS.map((d, i) => (
-                <motion.div key={d.name} variants={fadeUp} transition={{ delay: i * 0.07 }}>
-                  <Link href={`/visa/${nameToSlug('Pakistan')}/${nameToSlug(d.name)}`} className="group relative block overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-lg">
-                    <div className="relative h-32 overflow-hidden">
-                      <DestinationImage name={d.name} flag={d.flag} className="transition duration-500 group-hover:scale-110" />
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                    </div>
-                    <div className="p-3 text-center">
-                      <div className="text-xl">{d.flag}</div>
-                      <div className="mt-1 text-xs font-bold text-gray-900">{d.name}</div>
-                      <div className="mt-0.5 text-[10px] font-semibold text-emerald-600">{d.days} free</div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
+      {/* Self-contained: IP-default passport + manual switcher + accuracy-guarded
+          reliable visa-free list + auto/manual cinematic carousel. */}
+      <VisaFreeSection />
 
       {/* ────────────────────── 6. PROVEN ROUTES / GUIDES ────────── */}
       <section className="bg-white py-20 sm:py-24">

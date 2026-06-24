@@ -266,3 +266,11 @@ body {
 .speaking-dot-1 { animation: speaking-dot 1.4s ease-in-out 0s infinite; }
 .speaking-dot-2 { animation: speaking-dot 1.4s ease-in-out 0.2s infinite; }
 .speaking-dot-3 { animation: speaking-dot 1.4s ease-in-out 0.4s infinite; }
+
+/* ── Visa-free marquee: hidden scrollbar, GPU-smooth horizontal scroll ──── */
+.vp-marquee-scroll {
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* legacy Edge */
+  -webkit-overflow-scrolling: touch;
+}
+.vp-marquee-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
