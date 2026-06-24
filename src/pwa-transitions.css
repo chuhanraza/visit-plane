@@ -3,9 +3,15 @@
  * Import in app/globals.css:  @import '../src/pwa-transitions.css';
  */
 
-/* ── Splash / FOUC prevention ────────────────────────────────────────────── */
-html.vp-loading body { opacity: 0; }
-html.vp-ready    body { opacity: 1; transition: opacity 0.2s ease-in; }
+/* ── Content visibility ──────────────────────────────────────────────────── */
+/* Content is ALWAYS visible immediately — there is no opacity gate on initial
+   render. A prior `html.vp-loading body { opacity: 0 }` rule left every page
+   blank/faded for ~2–5s until the window `load` event fired (the controller
+   adds `vp-loading` post-hydration), which read as "broken / unfinished".
+   Removed in Sprint 18. (No #vp-splash element is rendered, so nothing else
+   depends on this gate.) */
+html.vp-loading body,
+html.vp-ready    body { opacity: 1 !important; }
 
 #vp-splash {
   position: fixed; inset: 0;

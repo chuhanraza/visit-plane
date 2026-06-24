@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { VisaRecord } from '@/app/visa/[passport]/[destination]/VisaPageClient'
 import { getCuratedDestinationFee } from '@/lib/data/destinationFees'
+import { getOfficialPortal } from '@/lib/data/officialPortals'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Step {
@@ -58,7 +59,10 @@ function resolveApplyInfo(destinationName: string, record: VisaRecord): {
     url: 'https://www.gov.uk/browse/visas-immigration',
     label: 'Apply at gov.uk/visas-immigration',
   }
-  return { url: '', label: 'Apply at official embassy portal' }
+  // Per-destination official portal fallback (never another country's link).
+  const portal = getOfficialPortal(destinationName)
+  if (portal) return { url: portal.url, label: `Apply via ${portal.label}` }
+  return { url: '', label: 'Apply at the official embassy or immigration portal' }
 }
 
 function resolveSteps(record: VisaRecord, passportName: string, destinationName: string): Step[] {

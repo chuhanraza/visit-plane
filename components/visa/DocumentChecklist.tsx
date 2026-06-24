@@ -120,7 +120,7 @@ function resolveDocumentGroups(record: VisaRecord, destinationName: string): Doc
         borderColor: 'border-amber-200',
         items: [
           { name: 'Police clearance certificate', description: 'From your home country', why: 'Required for most long-term work permits', conditional: 'For permits longer than 90 days' },
-          { name: 'Medical examination certificate', description: 'From an approved clinic', why: 'Required by certain countries', conditional: 'For UAE, Saudi, and some GCC countries' },
+          { name: 'Medical examination certificate', description: 'From an approved clinic', why: 'Required by certain countries', conditional: 'Required by some countries for long-term work permits' },
           { name: 'Bank statements', description: 'Last 3–6 months', why: 'Shows financial stability', conditional: "If employer doesn't provide a salary guarantee" },
         ],
       },
@@ -170,21 +170,21 @@ function resolveDocumentGroups(record: VisaRecord, destinationName: string): Doc
     ]
   }
 
-  // eVisa / Tourist — use DB docs if present, otherwise smart defaults
-  const destLower = destinationName.toLowerCase()
-  const isUAE = destLower.includes('uae') || destLower.includes('united arab')
-
+  // eVisa / Tourist — use DB docs if present, otherwise COUNTRY-NEUTRAL defaults.
+  // (These fallbacks must never name a specific country's portal or rules, or that
+  // content bleeds across destinations. The exact official portal/fee live in the
+  // "Official Source" link and "How to Apply" section, which are per-destination.)
   const mandatoryItems: DocumentItem[] = dbDocs.length > 0
     ? dbDocs.slice(0, 4).map(d => ({ name: d, description: '', why: '' }))
     : [
-        { name: 'Valid passport', description: '6+ months validity beyond travel dates', why: 'UAE immigration requires at least 6 months passport validity on arrival' },
-        { name: 'Completed eVisa application', description: 'Via smartservices.icp.gov.ae or airline portal', why: 'You must have the approved eVisa before boarding your flight' },
-        { name: 'Passport-sized photo', description: 'White background, recent (taken within 6 months)', why: 'Uploaded digitally during the eVisa application' },
-        ...(isUAE ? [{ name: 'Confirmed return ticket', description: 'Round-trip or onward flight booking', why: 'UAE immigration verifies you have a departure plan' }] : []),
+        { name: 'Valid passport', description: '6+ months validity beyond travel dates', why: 'Most countries require at least 6 months of passport validity on arrival' },
+        { name: 'Completed visa application', description: 'Submitted via the official government portal (see Official Source below)', why: 'Your application must be approved before you travel' },
+        { name: 'Passport-sized photo', description: 'White background, recent (taken within 6 months)', why: 'Submitted with your application as part of identity verification' },
+        { name: 'Confirmed return ticket', description: 'Round-trip or onward flight booking', why: 'Immigration officers commonly verify you have a plan to depart' },
       ]
 
   const conditionalItems: DocumentItem[] = [
-    { name: 'Business invitation letter', description: 'From UAE company on company letterhead', why: 'Required if your visit purpose includes business meetings', conditional: 'If travelling for business' },
+    { name: 'Invitation / sponsor letter', description: 'On company or host letterhead', why: 'Required if your visit purpose includes business or visiting a host', conditional: 'If travelling for business or visiting someone' },
     { name: 'Bank statements (last 3 months)', description: 'Showing sufficient funds for your stay', why: 'Demonstrates financial capability to cover expenses', conditional: 'If self-employed or freelance' },
     { name: 'Employment letter', description: 'From your employer confirming your job and salary', why: 'Strengthens your application', conditional: 'If employed' },
   ]
@@ -192,7 +192,7 @@ function resolveDocumentGroups(record: VisaRecord, destinationName: string): Doc
   const recommendedItems: DocumentItem[] = [
     { name: 'Hotel booking confirmation', description: 'Printout or digital copy of reservation', why: 'Speeds up immigration and strengthens your application' },
     { name: 'Travel insurance', description: 'Medical coverage for the duration of stay', why: 'Strongly advised — healthcare costs abroad can be very high' },
-    ...(isUAE ? [{ name: 'Sufficient funds proof', description: 'Credit card or cash equivalent to ≈$50/day', why: 'UAE immigration may ask about your budget for the trip' }] : []),
+    { name: 'Proof of sufficient funds', description: 'Bank card or statement covering your stay', why: 'Officers may ask how you will support yourself during the visit' },
   ]
 
   return [

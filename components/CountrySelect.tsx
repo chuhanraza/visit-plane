@@ -203,6 +203,93 @@ const ALL_COUNTRIES = [
 
 export { ALL_COUNTRIES }
 
+// ── Synonyms / alias → canonical name in ALL_COUNTRIES ────────────────────────
+// Lets short DB names ("UAE") and common variants ("United States of America",
+// "Türkiye", "Holland") resolve to the right flag AND be found by search. Keys
+// are lowercased.
+const COUNTRY_SYNONYMS: Record<string, string> = {
+  'uae': 'United Arab Emirates',
+  'u.a.e.': 'United Arab Emirates',
+  'emirates': 'United Arab Emirates',
+  'usa': 'United States',
+  'u.s.a.': 'United States',
+  'us': 'United States',
+  'u.s.': 'United States',
+  'united states of america': 'United States',
+  'america': 'United States',
+  'uk': 'United Kingdom',
+  'u.k.': 'United Kingdom',
+  'britain': 'United Kingdom',
+  'great britain': 'United Kingdom',
+  'england': 'United Kingdom',
+  'czechia': 'Czech Republic',
+  'holland': 'Netherlands',
+  'burma': 'Myanmar',
+  "cote d'ivoire": 'Ivory Coast',
+  "côte d'ivoire": 'Ivory Coast',
+  'cabo verde': 'Cape Verde',
+  'swaziland': 'Eswatini',
+  'turkiye': 'Turkey',
+  'türkiye': 'Turkey',
+  'macedonia': 'North Macedonia',
+  'vatican': 'Vatican City',
+  'holy see': 'Vatican City',
+  'korea': 'South Korea',
+  'republic of korea': 'South Korea',
+  's. korea': 'South Korea',
+  'russian federation': 'Russia',
+}
+
+// Reverse map: canonical name → list of alias search terms.
+const REVERSE_ALIASES: Record<string, string[]> = (() => {
+  const out: Record<string, string[]> = {}
+  for (const [alias, canon] of Object.entries(COUNTRY_SYNONYMS)) {
+    ;(out[canon] ??= []).push(alias)
+  }
+  return out
+})()
+
+type PoolItem = { name: string; code: string; flag: string; terms: string[] }
+
+/** Resolve a (possibly short/aliased) country name to its canonical record. */
+function resolveCountryRecord(name: string) {
+  const key = name.trim().toLowerCase()
+  const exact = ALL_COUNTRIES.find(c => c.name.toLowerCase() === key)
+  if (exact) return exact
+  const canon = COUNTRY_SYNONYMS[key]
+  if (canon) {
+    const c = ALL_COUNTRIES.find(x => x.name === canon)
+    if (c) return c
+  }
+  return null
+}
+
+/** Build a searchable, flag-resolved, de-duplicated pool from raw names. */
+function buildCountryPool(names: string[]): PoolItem[] {
+  const seen = new Set<string>()
+  const pool: PoolItem[] = []
+  for (const name of names) {
+    const k = name.trim().toLowerCase()
+    if (!k || seen.has(k)) continue
+    seen.add(k)
+    const rec = resolveCountryRecord(name)
+    const canonical = rec?.name ?? name
+    const terms = Array.from(
+      new Set(
+        [name, canonical, ...(REVERSE_ALIASES[canonical] ?? [])]
+          .map(t => t.toLowerCase()),
+      ),
+    )
+    pool.push({
+      name,
+      code: rec?.code ?? name.slice(0, 2).toUpperCase(),
+      flag: rec?.flag ?? '🌍',
+      terms,
+    })
+  }
+  return pool
+}
+
 interface CountrySelectProps {
   value: string
   onChange: (country: string) => void
@@ -234,26 +321,25 @@ export default function CountrySelect({
 
   const isDark = variant === 'dark'
 
-  // Build the working country list: use `options` prop if provided (with flag lookup), else full list
-  const countryPool = options
-    ? options.map(name => {
-        const found = ALL_COUNTRIES.find(c => c.name.toLowerCase() === name.toLowerCase())
-        return found ?? { name, code: name.slice(0, 2).toUpperCase(), flag: '🌍' }
-      })
-    : ALL_COUNTRIES
+  // Build the working country list: use `options` prop if provided, else full
+  // list. Either way names are flag-resolved (so "UAE" → 🇦🇪), de-duplicated, and
+  // carry alias search terms (so "United Arab" matches "UAE").
+  const countryPool = buildCountryPool(options ?? ALL_COUNTRIES.map(c => c.name))
 
-  // Filter + sort: starts-with first, then includes
+  // Filter + sort: match against name OR any alias term; starts-with first.
+  const q = search.toLowerCase().trim()
   const filtered = countryPool.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+    q === '' || c.terms.some(t => t.includes(q))
   ).sort((a, b) => {
-    const aStarts = a.name.toLowerCase().startsWith(search.toLowerCase())
-    const bStarts = b.name.toLowerCase().startsWith(search.toLowerCase())
+    const aStarts = a.terms.some(t => t.startsWith(q))
+    const bStarts = b.terms.some(t => t.startsWith(q))
     if (aStarts && !bStarts) return -1
     if (!aStarts && bStarts) return 1
     return a.name.localeCompare(b.name)
   })
 
-  const selectedCountry = ALL_COUNTRIES.find(c => c.name === value)
+  // Resolve the selected value's flag even when it's a short/aliased DB name.
+  const selectedCountry = resolveCountryRecord(value)
 
   // Reset highlight when filtered list changes
   useEffect(() => {
@@ -441,7 +527,9 @@ export default function CountrySelect({
               )}
             </div>
             <p className={`text-xs mt-2 px-1 ${countText}`}>
-              {search ? `${filtered.length} countries found` : `${countryPool.length} countries`}
+              {search
+                ? `${filtered.length} ${filtered.length === 1 ? 'country' : 'countries'} found`
+                : `${countryPool.length} countries`}
             </p>
           </div>
 

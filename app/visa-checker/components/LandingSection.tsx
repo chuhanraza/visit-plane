@@ -1,12 +1,12 @@
 'use client'
 
 const STATS = [
-  { value: '94%',   label: 'Accuracy Rate',          icon: '🎯' },
-  { value: '200+',  label: 'Countries Covered',       icon: '🌍' },
+  { value: '197',   label: 'Countries Covered',       icon: '🌍' },
+  { value: 'Free',  label: 'No Signup',               icon: '✓'  },
   { value: '60s',   label: 'to Complete',             icon: '⚡' },
 ]
 
-const PILLS = ['✓ Free', '✓ Instant Results', '✓ Personalized', '✓ 200+ Countries']
+const PILLS = ['✓ Free', '✓ Instant Results', '✓ Personalized', '✓ 197 Countries']
 
 export default function LandingSection({ onStart }: { onStart: () => void }) {
   return (
@@ -48,7 +48,7 @@ export default function LandingSection({ onStart }: { onStart: () => void }) {
 
         {/* Trust text */}
         <p className="mt-4 text-sm text-gray-400">
-          Trusted by 100,000+ travelers worldwide
+          Free · No signup · Estimates checked against official-source requirements
         </p>
       </div>
 

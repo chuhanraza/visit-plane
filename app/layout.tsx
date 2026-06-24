@@ -33,7 +33,10 @@ export const metadata: Metadata = {
 
   title: {
     default: "VisitPlane - Visa Requirements for 197 Countries",
-    template: "%s | VisitPlane",
+    // Page titles across the site already end in "| VisitPlane", so the template
+    // must NOT append a second suffix. Using "%s" renders each page title verbatim
+    // (single suffix), while the `default` above keeps branding on untitled pages.
+    template: "%s",
   },
 
   description:

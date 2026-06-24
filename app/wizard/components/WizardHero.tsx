@@ -96,7 +96,7 @@ export default function WizardHero({ onStart }: Props) {
 
         {/* Stats row */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-slate-500">
-          <span className="inline-flex items-center gap-1.5">⚡ Used by travelers worldwide</span>
+          <span className="inline-flex items-center gap-1.5">⚡ Instant AI visa plan</span>
           <span className="inline-flex items-center gap-1.5">🔒 No signup needed</span>
           <span className="inline-flex items-center gap-1.5">💯 197 countries covered</span>
         </div>

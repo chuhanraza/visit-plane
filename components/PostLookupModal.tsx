@@ -98,7 +98,7 @@ export default function PostLookupModal({ passport, destination }: Props) {
           animate={{ opacity: 1, y: 0 }}
           exit={{   opacity: 0, y: 80 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-gray-200 bg-white p-5 shadow-2xl sm:bottom-6 sm:right-6"
+          className="fixed bottom-24 right-4 z-[60] w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-gray-200 bg-white p-5 shadow-2xl sm:bottom-6 sm:right-6"
         >
           {/* ── Close button ─────────────────────────────────────────────── */}
           <button
