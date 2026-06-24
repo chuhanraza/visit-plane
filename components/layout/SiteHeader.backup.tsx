@@ -4,9 +4,6 @@
  * This is the canonical site header for VisitPlane — used on every surface.
  * Do not create alternative header or navbar components.
  *
- * Theme: light/white top bar (iVisa-style) — white background, dark nav text,
- * green brand accent + green CTA. Used globally via app/layout.tsx.
- *
  * Features:
  *   - Sticky with shadow-on-scroll (no layout shift — height fixed at 64px)
  *   - Desktop: Destinations | Tools ▼ (mega-menu) | Blog | 🌐 Lang | ⚡ Search | [Check My Visa →]
@@ -119,8 +116,8 @@ export default function SiteHeader() {
   const isToolsActive = TOOL_PATHS.some((p) => pathname === p)
 
   const linkCls = (href: string) =>
-    `rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-[#0F1419] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-      isActive(href) ? 'text-emerald-600 underline underline-offset-4' : 'text-gray-600'
+    `rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
+      isActive(href) ? 'text-teal-400 underline underline-offset-4' : 'text-white/55'
     }`
 
   // Tools hover — 200 ms closing delay
@@ -141,8 +138,8 @@ export default function SiteHeader() {
       style={{ height: '64px' }}
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         scrolled
-          ? 'bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-sm'
-          : 'bg-white border-b border-gray-100'
+          ? 'bg-[#0f0c29]/95 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/30'
+          : 'bg-[#0f0c29]'
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -150,11 +147,11 @@ export default function SiteHeader() {
         {/* ── Logo ── */}
         <Link
           href="/"
-          className="group flex items-center gap-2.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg"
+          className="group flex items-center gap-2.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 rounded-lg"
           aria-label="VisitPlane home"
         >
           <div className="relative">
-            <div className="absolute inset-0 rounded-xl bg-emerald-500/10 blur-md group-hover:bg-emerald-500/20 transition" />
+            <div className="absolute inset-0 rounded-xl bg-emerald-500/20 blur-md group-hover:bg-emerald-500/30 transition" />
             <Image
               src="/logo-v2.png"
               alt=""
@@ -165,8 +162,8 @@ export default function SiteHeader() {
             />
           </div>
           <span className="text-lg font-bold tracking-tight">
-            <span className="text-[#0F1419]">Visit</span>
-            <span className="text-emerald-600">Plane</span>
+            <span className="text-white">Visit</span>
+            <span className="text-emerald-400">Plane</span>
           </span>
         </Link>
 
@@ -191,8 +188,8 @@ export default function SiteHeader() {
               aria-haspopup="true"
               aria-expanded={toolsOpen}
               aria-controls="tools-menu"
-              className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-[#0F1419] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-                isToolsActive || toolsOpen ? 'text-emerald-600 bg-gray-100' : 'text-gray-600'
+              className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
+                isToolsActive || toolsOpen ? 'text-teal-400 bg-white/5' : 'text-white/55'
               }`}
             >
               Tools
@@ -213,14 +210,14 @@ export default function SiteHeader() {
               <div
                 id="tools-menu"
                 role="menu"
-                className="absolute left-1/2 top-full z-50 mt-1 w-[560px] -translate-x-1/2 rounded-2xl border border-gray-200 bg-white p-5 shadow-[0_25px_50px_rgba(0,0,0,0.12)]"
+                className="absolute left-1/2 top-full z-50 mt-1 w-[560px] -translate-x-1/2 rounded-2xl border border-white/10 bg-[#0f0c29] p-5 shadow-[0_25px_50px_rgba(0,0,0,0.5)]"
                 onMouseEnter={handleToolsEnter}
                 onMouseLeave={handleToolsLeave}
               >
                 <div className="grid grid-cols-2 gap-2">
                   {/* Left column */}
                   <div>
-                    <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-emerald-600">
+                    <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-teal-400">
                       ⚡ Quick Tools
                     </p>
                     {leftTools.map((tool) => (
@@ -229,13 +226,13 @@ export default function SiteHeader() {
                         href={tool.href}
                         role="menuitem"
                         onClick={() => setToolsOpen(false)}
-                        className="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                        className="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-white/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
                       >
                         <span className="text-xl transition-transform group-hover:scale-110" aria-hidden="true">
                           {tool.emoji}
                         </span>
                         <div>
-                          <p className="text-sm font-medium leading-tight text-gray-900 transition-colors group-hover:text-emerald-600">
+                          <p className="text-sm font-medium leading-tight text-white transition-colors group-hover:text-teal-300">
                             {tool.name}
                           </p>
                           <p className="mt-0.5 text-xs leading-tight text-gray-500">{tool.desc}</p>
@@ -246,7 +243,7 @@ export default function SiteHeader() {
 
                   {/* Right column */}
                   <div>
-                    <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-teal-600">
+                    <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-purple-400">
                       🔧 More Tools
                     </p>
                     {rightTools.map((tool) => (
@@ -255,13 +252,13 @@ export default function SiteHeader() {
                         href={tool.href}
                         role="menuitem"
                         onClick={() => setToolsOpen(false)}
-                        className="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                        className="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-white/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
                       >
                         <span className="text-xl transition-transform group-hover:scale-110" aria-hidden="true">
                           {tool.emoji}
                         </span>
                         <div>
-                          <p className="text-sm font-medium leading-tight text-gray-900 transition-colors group-hover:text-emerald-600">
+                          <p className="text-sm font-medium leading-tight text-white transition-colors group-hover:text-teal-300">
                             {tool.name}
                           </p>
                           <p className="mt-0.5 text-xs leading-tight text-gray-500">{tool.desc}</p>
@@ -272,13 +269,13 @@ export default function SiteHeader() {
                 </div>
 
                 {/* Mega-menu footer */}
-                <div className="mt-4 flex items-center justify-between border-t border-gray-200 pt-4">
-                  <p className="text-xs text-gray-500">🌍 Not sure which tool to use?</p>
+                <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-4">
+                  <p className="text-xs text-gray-400">🌍 Not sure which tool to use?</p>
                   <Link
                     href="/wizard"
                     role="menuitem"
                     onClick={() => setToolsOpen(false)}
-                    className="rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-600"
+                    className="rounded-lg bg-teal-500 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-teal-600"
                   >
                     Try AI Wizard →
                   </Link>
@@ -302,7 +299,7 @@ export default function SiteHeader() {
             onClick={openPalette}
             aria-label="Open search (Cmd+K)"
             title="Search (⌘K)"
-            className="hidden md:flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="hidden md:flex items-center justify-center rounded-lg p-2 text-white/50 hover:bg-white/5 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
               <circle cx="11" cy="11" r="8" />
@@ -313,7 +310,7 @@ export default function SiteHeader() {
           {/* Smart CTA — desktop only (md+). Mobile CTA lives inside the mobile menu. */}
           <button
             onClick={handleCta}
-            className="hidden md:inline-flex items-center gap-2 rounded-full bg-[#16C95C] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-[#16C95C]/30 transition hover:bg-[#12B350] hover:shadow-[#16C95C]/40 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            className="hidden md:inline-flex items-center gap-2 rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600 hover:shadow-teal-500/40 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0c29]"
           >
             Check My Visa →
           </button>
@@ -324,7 +321,7 @@ export default function SiteHeader() {
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
-            className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 md:hidden transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="rounded-lg p-2 text-white/55 hover:bg-white/5 hover:text-white md:hidden transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
           >
             {mobileOpen ? (
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -345,7 +342,7 @@ export default function SiteHeader() {
       {mobileOpen && (
       <div
         id="mobile-menu"
-        className="border-t border-gray-200 bg-white md:hidden"
+        className="border-t border-white/5 bg-[#060C18]/98 backdrop-blur-xl md:hidden"
         role="navigation"
         aria-label="Mobile navigation"
       >
@@ -354,8 +351,8 @@ export default function SiteHeader() {
           <Link
             href="/destinations"
             onClick={() => setMobileOpen(false)}
-            className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition hover:bg-gray-100 hover:text-[#0F1419] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-              isActive('/destinations') ? 'text-emerald-600' : 'text-gray-700'
+            className={`block rounded-lg px-3 py-2.5 text-sm transition hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
+              isActive('/destinations') ? 'text-teal-400' : 'text-white/60'
             }`}
           >
             🌍 Destinations
@@ -364,19 +361,19 @@ export default function SiteHeader() {
           <Link
             href="/blog"
             onClick={() => setMobileOpen(false)}
-            className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition hover:bg-gray-100 hover:text-[#0F1419] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-              isActive('/blog') ? 'text-emerald-600' : 'text-gray-700'
+            className={`block rounded-lg px-3 py-2.5 text-sm transition hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
+              isActive('/blog') ? 'text-teal-400' : 'text-white/60'
             }`}
           >
             📝 Blog
           </Link>
 
           {/* Mobile Tools accordion */}
-          <div className="border-t border-gray-200 pt-3">
+          <div className="border-t border-white/10 pt-3">
             <button
               onClick={() => setMobileToolsOpen((v) => !v)}
               aria-expanded={mobileToolsOpen}
-              className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-gray-900 hover:bg-gray-100 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-white hover:bg-white/5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
             >
               <span className="font-semibold">🛠️ All Tools ({TOOLS.length})</span>
               <svg
@@ -398,10 +395,10 @@ export default function SiteHeader() {
                     key={tool.href}
                     href={tool.href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex flex-col items-center gap-1 rounded-xl bg-gray-50 p-2 text-center transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                    className="flex flex-col items-center gap-1 rounded-xl bg-white/5 p-2 text-center transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
                   >
                     <span className="text-2xl" aria-hidden="true">{tool.emoji}</span>
-                    <span className="text-[10px] leading-tight text-gray-600">
+                    <span className="text-[10px] leading-tight text-gray-300">
                       {tool.name.split(' ')[0]}
                     </span>
                   </Link>
@@ -413,7 +410,7 @@ export default function SiteHeader() {
           {/* Mobile search */}
           <button
             onClick={() => { setMobileOpen(false); openPalette() }}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm text-white/60 hover:bg-white/5 hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
               <circle cx="11" cy="11" r="8" />
@@ -423,10 +420,10 @@ export default function SiteHeader() {
           </button>
 
           {/* Mobile CTA */}
-          <div className="border-t border-gray-200 pt-4">
+          <div className="border-t border-white/5 pt-4">
             <button
               onClick={() => { setMobileOpen(false); handleCta() }}
-              className="block w-full rounded-xl bg-[#16C95C] py-3 text-center text-sm font-semibold text-white transition hover:bg-[#12B350] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="block w-full rounded-xl bg-teal-500 py-3 text-center text-sm font-semibold text-white transition hover:bg-teal-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
             >
               Check My Visa →
             </button>

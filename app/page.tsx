@@ -386,9 +386,12 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#FAFAF7] text-[#0F1419] antialiased overflow-x-hidden">
 
       {/* ────────────────────── 1. HERO ──────────────────────────── */}
-      <section className="relative overflow-hidden pb-0" style={{ paddingTop: '40px', background: '#FAFAF7' }}>
+      <section className="relative overflow-hidden pb-0" style={{ paddingTop: '40px', background: '#FFFFFF' }}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          <div className="absolute" style={{ right: 0, top: 0, width: '70%', height: '100%', background: 'radial-gradient(circle at 80% 0%, #ECFDF5 0%, transparent 60%)' }} />
+          {/* iVisa-style soft green glow weighted to the right */}
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 95% at 100% 35%, #CFF5DD 0%, #E8FBF0 30%, transparent 62%)' }} />
+          {/* faint cool tint in the lower-left */}
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(80% 75% at 0% 100%, #E7F3FB 0%, transparent 55%)' }} />
         </div>
 
         <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
@@ -401,11 +404,13 @@ export default function HomePage() {
           </motion.div>
 
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.08 }} className="font-extrabold leading-[1.06]" style={{ fontSize: 'clamp(40px, 5vw, 64px)', color: '#0F1419', letterSpacing: '-0.02em' }}>
-            Check Visa Requirements for Any Country
+            The{' '}
+            <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #16C95C 0%, #0EA94A 100%)' }}>
+              easiest
+            </span>{' '}
+            way
             <br />
-            <span style={{ background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              — Free, Accurate, No Signup.
-            </span>
+            to check your travel visa
           </motion.h1>
 
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.16 }} className="mx-auto max-w-xl text-base sm:text-lg" style={{ color: '#4A5568', marginTop: '24px' }}>
@@ -413,36 +418,26 @@ export default function HomePage() {
           </motion.p>
 
           {/* Search card */}
-          <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.24 }} className="mx-auto max-w-2xl" style={{ marginTop: '40px' }}>
+          <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.24 }} className="mx-auto max-w-3xl" style={{ marginTop: '40px' }}>
             <div aria-live="polite" className="sr-only">
               {redirecting && 'Loading visa information, redirecting now.'}
               {noPassportError && 'Please select your passport country first.'}
             </div>
 
             <div className="rounded-2xl p-3" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', boxShadow: '0 4px 24px rgba(15, 20, 25, 0.06)' }}>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <CountrySelect
-                    variant="light"
-                    value={passport}
-                    onChange={(v) => {
-                      setPassport(v)
-                      setGeoBadgeDismissed(true)
-                      setNoPassportError(false)
-                      try { if (v) localStorage.setItem('visitplane_passport', v) } catch {}
-                    }}
-                    placeholder={geoLoading ? '🌍 Detecting...' : t('hero.selectPassport')}
-                    label={t('hero.passportLabel')}
-                  />
-                  {passport && !geoBadgeDismissed && !geoLoading && (
-                    <div className="mt-1.5 flex items-center justify-between px-1">
-                      <span className="text-[10px] text-emerald-600">📍 {t('hero.autoDetected')}</span>
-                      <button onClick={() => setGeoBadgeDismissed(true)} className="text-[10px] text-gray-400 hover:text-gray-600 transition">
-                        {t('hero.notYou')} →
-                      </button>
-                    </div>
-                  )}
-                </div>
+              <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                <CountrySelect
+                  variant="light"
+                  value={passport}
+                  onChange={(v) => {
+                    setPassport(v)
+                    setGeoBadgeDismissed(true)
+                    setNoPassportError(false)
+                    try { if (v) localStorage.setItem('visitplane_passport', v) } catch {}
+                  }}
+                  placeholder={geoLoading ? '🌍 Detecting...' : t('hero.selectPassport')}
+                  label={t('hero.passportLabel')}
+                />
 
                 <CountrySelect
                   variant="light"
@@ -458,7 +453,26 @@ export default function HomePage() {
                   options={destinations.length > 0 ? destinations : undefined}
                   disabled={!passport || loadingDests}
                 />
+
+                <button
+                  type="button"
+                  onClick={handleCheck}
+                  disabled={!canSubmit}
+                  className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#16C95C] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#12B350] disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <PlaneIcon className="h-4 w-4" />
+                  {t('hero.checkButton')}
+                </button>
               </div>
+
+              {passport && !geoBadgeDismissed && !geoLoading && (
+                <div className="mt-2 flex items-center gap-3 px-1">
+                  <span className="text-[10px] text-emerald-600">📍 {t('hero.autoDetected')}</span>
+                  <button onClick={() => setGeoBadgeDismissed(true)} className="text-[10px] text-gray-400 hover:text-gray-600 transition">
+                    {t('hero.notYou')} →
+                  </button>
+                </div>
+              )}
 
               {noPassportError && (
                 <p className="mt-2 text-center text-xs font-semibold text-amber-600">Please select your passport first.</p>
@@ -469,17 +483,6 @@ export default function HomePage() {
               {passport && destination && passport === destination && (
                 <p className="mt-2 text-center text-xs text-amber-600">Please choose a different destination from your passport country.</p>
               )}
-
-              <button
-                type="button"
-                onClick={handleCheck}
-                disabled={!canSubmit}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)' }}
-              >
-                <PlaneIcon className="h-4 w-4" />
-                {t('hero.checkButton')}
-              </button>
             </div>
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
@@ -506,7 +509,7 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        <div className="mt-12 h-10" style={{ background: 'linear-gradient(to bottom, transparent, #FAFAF7)' }} />
+        <div className="mt-12 h-10" style={{ background: 'linear-gradient(to bottom, transparent, #FFFFFF)' }} />
       </section>
 
       {/* ────────────────────── 2. PROBLEM vs SOLUTION ───────────── */}
