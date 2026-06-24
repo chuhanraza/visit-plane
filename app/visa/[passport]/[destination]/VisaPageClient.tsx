@@ -10,6 +10,7 @@ import TravelReadinessGrid from '@/components/visa/TravelReadinessGrid'
 import SourcesAndTrust from '@/components/visa/SourcesAndTrust'
 import RelatedRoutesAndFAQ from '@/components/visa/RelatedRoutesAndFAQ'
 import PostLookupModal from '@/components/PostLookupModal'
+import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
 
 const DocumentChecker = dynamic(
   () => import('@/app/components/DocumentChecker'),
@@ -66,6 +67,7 @@ interface Props {
   destinationFlag: string
   relatedDestinations?: string[]
   otherPassports?: string[]
+  conflictingStatus?: boolean
 }
 
 // ─── Sticky CTA bar (mobile, appears after hero scroll) ────────────────────
@@ -124,6 +126,7 @@ export default function VisaPageClient({
   destinationFlag,
   relatedDestinations = [],
   otherPassports = [],
+  conflictingStatus = false,
 }: Props) {
   const [showChecker, setShowChecker] = useState(false)
   const [stickyVisible, setStickyVisible] = useState(false)
@@ -205,6 +208,13 @@ export default function VisaPageClient({
 
       {/* ── Main content ─────────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-4xl px-4 sm:px-6 space-y-6 mt-6">
+
+        {/* ── YMYL honesty band — guidance not guarantee + official source + flag ─ */}
+        <VisaDataDisclaimer
+          destinationName={destinationName}
+          homeCountry={passportName}
+          conflicting={conflictingStatus}
+        />
 
         {/* ── Section 2: REQUIREMENTS ───────────────────────────────────────── */}
         <DocumentChecklist

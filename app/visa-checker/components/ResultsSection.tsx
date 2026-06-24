@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { calculateScore, getScoreInfo, getPassportStrengthLabel, getRecommendations, FLAGS } from '../data'
 import type { QuizAnswers } from '../data'
+import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
 
 // ─── Animated count-up ────────────────────────────────────────────────────────
 function useCountUp(target: number, duration = 1600) {
@@ -92,6 +93,9 @@ export default function ResultsSection({ answers, onRetake }: { answers: QuizAns
   return (
     <div className="min-h-screen bg-[#FAFAFA] py-10 px-4">
       <div className="mx-auto max-w-2xl space-y-6">
+
+        {/* ── YMYL honesty band — guidance not guarantee + official source ── */}
+        <VisaDataDisclaimer destinationName={answers.destination} homeCountry={answers.passport} />
 
         {/* ── Score card ─────────────────────────────────────────── */}
         <div className="rounded-3xl bg-white shadow-2xl shadow-gray-200/80 border border-gray-100 overflow-hidden">

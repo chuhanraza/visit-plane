@@ -11,6 +11,7 @@ import { ALL_COUNTRIES } from '@/components/CountrySelect'
 import dynamic from 'next/dynamic'
 import StatsCards from './components/StatsCards'
 import CountryLists from './components/CountryLists'
+import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
 import ShareCard from './components/ShareCard'
 import PassportRankCard from './components/PassportRankCard'
 import TipsCard from './components/TipsCard'
@@ -278,6 +279,10 @@ export default function VisaFreeMapClient() {
                 total={data.stats.total}
                 rank={rankInfo.rank}
               />
+              {/* Guidance-not-guarantee band */}
+              <div className="mt-6">
+                <VisaDataDisclaimer variant="compact" homeCountry={passport} />
+              </div>
             </div>
           </section>
         )}

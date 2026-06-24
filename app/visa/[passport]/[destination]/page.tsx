@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import DisclaimerBanner from '../../../components/DisclaimerBanner'
+import { hasConflictingStatus } from '@/lib/visa/detectConflict'
 import VisaPageClient, { type VisaRecord } from './VisaPageClient'
 
 // Force dynamic rendering — always fetch fresh data from Supabase
@@ -206,6 +207,11 @@ export default async function VisaResultPage({
   const destinationFlag = resolveFlag(destinationSlug, destinationName)
   const primaryVisa     = allVisaData[0]
 
+  // Render-time, read-only check: do this route's own rows disagree about the
+  // visa status? (Sprint 16 flagged ~5,319 such routes.) Used only to surface an
+  // honest "confirm with the official source" note — never changes any value.
+  const conflictingStatus = hasConflictingStatus(allVisaData)
+
   // ── JSON-LD schemas ──────────────────────────────────────────────────────────
 
   // BreadcrumbList
@@ -340,6 +346,7 @@ export default async function VisaResultPage({
         destinationFlag={destinationFlag}
         relatedDestinations={relatedDestinations}
         otherPassports={otherPassports}
+        conflictingStatus={conflictingStatus}
       />
 
     </div>

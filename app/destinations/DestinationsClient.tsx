@@ -5,6 +5,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { useUserCountry } from '@/hooks/useUserCountry'
 import { getPassportFlag } from '@/components/PassportSwitcher'
+import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
 import { ALL_COUNTRIES, type Country, type VisaCategory } from './data'
 
 export type { Country, VisaCategory }
@@ -188,6 +189,11 @@ export default function DestinationsClient() {
             </div>
           </div>
         </section>
+
+        {/* ── Guidance-not-guarantee band ─────────────────────────────── */}
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pb-2">
+          <VisaDataDisclaimer variant="compact" />
+        </div>
 
         {/* ── Sticky filter bar ───────────────────────────────────────── */}
         <div className="sticky top-16 z-30 border-b border-gray-200/70 bg-[#FAFAFA]/95 backdrop-blur-xl">

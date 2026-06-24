@@ -7,6 +7,7 @@ import type { VisaData } from '@/lib/visa-engine'
 import { shortName } from '@/lib/visa-engine'
 import { ALL_COUNTRIES } from '@/components/CountrySelect'
 import TravelReadinessGrid from '@/components/visa/TravelReadinessGrid'
+import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
 
 interface Props {
   answers: WizardAnswers
@@ -105,6 +106,13 @@ export default function WizardResults({ answers, visaData, aiInsight, aiLoading,
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 mb-16">
+
+      {/* ── YMYL honesty band — guidance not guarantee + official source ─────── */}
+      <VisaDataDisclaimer
+        destinationName={answers.destination}
+        homeCountry={answers.passport}
+        className="mb-5"
+      />
 
       {/* ── Result card ─────────────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-slate-200 bg-white shadow-lg overflow-hidden">

@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { PASSPORT_LIST } from '@/components/PassportSwitcher'
 import OfficialSourceLink from '@/components/visa/OfficialSourceLink'
+import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -140,8 +141,9 @@ export default function DestinationCountryClient({
         </div>
       </section>
 
-      {/* ── Official source ─────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pt-8">
+      {/* ── Guidance-not-guarantee band + Official source ───────────────── */}
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pt-8 space-y-4">
+        <VisaDataDisclaimer destinationName={countryName} />
         <OfficialSourceLink destinationName={countryName} />
       </section>
 
