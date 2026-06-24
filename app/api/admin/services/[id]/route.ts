@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAdminApi } from '@/lib/admin/guard'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { writeAudit } from '@/lib/audit'
-import { parseServiceBody } from '../route'
+import { parseServiceBody } from '@/lib/admin/services'
 
 export const dynamic = 'force-dynamic'
 
