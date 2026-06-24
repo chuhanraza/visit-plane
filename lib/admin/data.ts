@@ -119,13 +119,20 @@ export async function dashboardStats() {
   }
 }
 
-export async function listAudit(params: { page?: number; pageSize?: number; entityType?: string }) {
+export async function listAudit(params: {
+  page?: number; pageSize?: number; entityType?: string
+  actor?: string; action?: string; dateFrom?: string; dateTo?: string
+}) {
   const svc = getServiceClient()
   const page = Math.max(1, params.page ?? 1)
   const pageSize = Math.min(100, params.pageSize ?? 40)
   const from = (page - 1) * pageSize
   let query = svc.from('audit_log').select('*', { count: 'exact' })
   if (params.entityType) query = query.eq('entity_type', params.entityType)
+  if (params.actor) query = query.ilike('actor', `%${params.actor.replace(/[%,]/g, '')}%`)
+  if (params.action) query = query.ilike('action', `%${params.action.replace(/[%,]/g, '')}%`)
+  if (params.dateFrom) query = query.gte('created_at', params.dateFrom)
+  if (params.dateTo) query = query.lte('created_at', `${params.dateTo}T23:59:59.999Z`)
   query = query.order('created_at', { ascending: false }).range(from, from + pageSize - 1)
   const { data, count } = await query
   return { rows: data ?? [], total: count ?? 0, page, pageSize }
