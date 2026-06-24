@@ -93,3 +93,30 @@ export function sendInvoiceEmail(to: string, o: {
     <p style="margin:16px 0 0">${btn(`${siteUrl()}/api/invoices/${o.orderId}/pdf`, 'Download invoice (PDF)')}</p>`
   return send(to, `Invoice ${o.invoiceNumber} — ${o.orderRef}`, shell('Your invoice', body))
 }
+
+// ── Marketing broadcast (operator email campaigns) ───────────────────────────
+
+function broadcastShell(title: string, bodyHtml: string, unsubscribeUrl: string) {
+  return `<!doctype html><html><body style="margin:0;background:#f3f4f6;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#111827">
+  <div style="max-width:560px;margin:0 auto;padding:24px">
+    <div style="font-weight:700;font-size:18px;margin-bottom:16px">Visit<span style="color:#2563eb">Plane</span></div>
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:24px">
+      <h1 style="font-size:18px;margin:0 0 12px">${title}</h1>
+      <div style="font-size:14px;line-height:1.6;color:#374151">${bodyHtml}</div>
+    </div>
+    <p style="color:#9ca3af;font-size:12px;margin-top:16px;line-height:1.5">
+      You're receiving this because you subscribed to VisitPlane updates.
+      <a href="${unsubscribeUrl}" style="color:#6b7280">Unsubscribe</a>.<br/>
+      VisitPlane provides visa guidance and is not a government body; verify requirements with the official authority.
+    </p>
+  </div></body></html>`
+}
+
+/**
+ * Send one marketing/broadcast email with a per-recipient unsubscribe link.
+ * Degrades safely (no RESEND_API_KEY ⇒ logs, returns {sent:false}). The body is
+ * trusted HTML supplied by an authenticated admin.
+ */
+export function sendBroadcastEmail(to: string, subject: string, bodyHtml: string, unsubscribeUrl: string) {
+  return send(to, subject, broadcastShell(subject, bodyHtml, unsubscribeUrl))
+}
