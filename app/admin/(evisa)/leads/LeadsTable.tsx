@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import type { LeadRow, OptInStatus } from '@/lib/admin/leads'
+
+interface TimelineItem { ts: string; kind: string; title: string; stored: boolean }
 
 function statusOf(r: LeadRow): OptInStatus {
   if (r.unsubscribed_at) return 'unsubscribed'
@@ -119,7 +121,14 @@ function LeadDrawer({ lead, onClose, onSaved }: { lead: LeadRow; onClose: () => 
   const [note, setNote] = useState(lead.admin_note ?? '')
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
+  const [timeline, setTimeline] = useState<TimelineItem[] | null>(null)
   const st = statusOf(lead)
+
+  useEffect(() => {
+    let alive = true
+    fetch(`/api/admin/leads/${lead.id}/timeline`).then(r => r.json()).then(j => { if (alive) setTimeline(j.timeline ?? []) }).catch(() => { if (alive) setTimeline([]) })
+    return () => { alive = false }
+  }, [lead.id])
 
   async function save() {
     setSaving(true); setErr('')
@@ -166,6 +175,25 @@ function LeadDrawer({ lead, onClose, onSaved }: { lead: LeadRow; onClose: () => 
           <Row k="Unsubscribed" v={fmt(lead.unsubscribed_at)} />
           <Row k="IP" v={lead.ip_address} />
           <Row k="User agent" v={lead.user_agent ? <span className="text-xs">{lead.user_agent}</span> : null} />
+        </div>
+
+        <div>
+          <h3 className="text-xs uppercase tracking-wide text-gray-500 mb-1">Activity timeline</h3>
+          {timeline === null ? (
+            <p className="text-gray-600 text-sm py-2">Loading…</p>
+          ) : timeline.length === 0 ? (
+            <p className="text-gray-600 text-sm py-2">No activity recorded.</p>
+          ) : (
+            <ul className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+              {timeline.map((t, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm">
+                  <span className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${t.stored ? 'bg-blue-400' : 'bg-gray-600'}`} />
+                  <span className="text-gray-300 leading-snug">{t.title}</span>
+                  <span className="text-gray-600 text-[11px] ml-auto whitespace-nowrap">{new Date(t.ts).toLocaleDateString()}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="space-y-2">

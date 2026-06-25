@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { randomBytes } from 'crypto'
+import { recordEvent } from '@/lib/admin/events'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -191,6 +192,12 @@ export async function POST(req: NextRequest) {
 
     const topic = buildTopic(passport as string, destination as string)
     await sendConfirmationEmail(emailNorm, confirm_token, unsubscribe_token, topic)
+
+    // Marketing event spine (best-effort; never blocks/breaks signup).
+    await recordEvent({
+      email: emailNorm, metric: 'lead.captured',
+      properties: { source: captured_from ?? 'unknown', passport: passport ?? null, destination: destination ?? null, lead_magnet: leadMagnet ?? null },
+    })
 
     return NextResponse.json({ success: true })
   } catch (err) {
