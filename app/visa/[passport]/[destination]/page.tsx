@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
-import DisclaimerBanner from '../../../components/DisclaimerBanner'
 import { hasConflictingStatus } from '@/lib/visa/detectConflict'
 import VisaPageClient, { type VisaRecord } from './VisaPageClient'
 
@@ -332,8 +331,6 @@ export default async function VisaResultPage({
           </ol>
         </div>
       </nav>
-
-      <DisclaimerBanner />
 
       {/* Client component — all 6 sections */}
       <VisaPageClient
