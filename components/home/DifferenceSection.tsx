@@ -84,9 +84,6 @@ export default function DifferenceSection() {
               <span className="absolute inset-x-0 bottom-1 z-0 hidden h-3 -rotate-[0.5deg] bg-emerald-300/40 sm:block" aria-hidden="true" />
             </span>
           </motion.h2>
-          <motion.p variants={rowV} className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-gray-500">
-            Doing it alone means hours of conflicting tabs. Here&apos;s what changes with VisitPlane.
-          </motion.p>
         </motion.div>
 
         {/* Brand illustrated lead banner */}
