@@ -120,3 +120,8 @@ function broadcastShell(title: string, bodyHtml: string, unsubscribeUrl: string)
 export function sendBroadcastEmail(to: string, subject: string, bodyHtml: string, unsubscribeUrl: string) {
   return send(to, subject, broadcastShell(subject, bodyHtml, unsubscribeUrl))
 }
+
+/** Internal operator email (no unsubscribe footer) — e.g. report digests. */
+export function sendInternalEmail(to: string, subject: string, bodyHtml: string) {
+  return send(to, subject, shell(subject, bodyHtml))
+}

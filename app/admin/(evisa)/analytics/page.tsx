@@ -2,7 +2,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin/guard'
 import { getAnalytics, listSavedReports, type Metric } from '@/lib/admin/analytics'
-import { SaveViewButton, DeleteReportButton } from './AnalyticsControls'
+import { getDigestConfig } from '@/lib/admin/digest'
+import { SaveViewButton, DeleteReportButton, DigestControl } from './AnalyticsControls'
 
 export const metadata: Metadata = { title: 'Analytics — VisitPlane Admin', robots: { index: false } }
 export const dynamic = 'force-dynamic'
@@ -23,7 +24,7 @@ export default async function AdminAnalytics({ searchParams }: { searchParams: P
   const fromISO = `${from}T00:00:00.000Z`
   const toISO = `${to}T23:59:59.999Z`
 
-  const [a, saved] = await Promise.all([getAnalytics(fromISO, toISO), listSavedReports()])
+  const [a, saved, digest] = await Promise.all([getAnalytics(fromISO, toISO), listSavedReports(), getDigestConfig()])
 
   const presets = [
     { label: '7d', from: isoDaysAgo(6) }, { label: '30d', from: isoDaysAgo(29) },
@@ -82,6 +83,8 @@ export default async function AdminAnalytics({ searchParams }: { searchParams: P
           })}
         </div>
       )}
+
+      <DigestControl config={digest} />
 
       {/* KPI grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
