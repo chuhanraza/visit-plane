@@ -15,6 +15,7 @@ const NAV: { href: string; label: string; mod: Module }[] = [
   { href: '/admin/leads', label: 'Leads / CRM', mod: 'leads' },
   { href: '/admin/orders', label: 'e-Visa orders', mod: 'orders' },
   { href: '/admin/revenue', label: 'Revenue', mod: 'revenue' },
+  { href: '/admin/promos', label: 'Discounts', mod: 'revenue' },
   { href: '/admin/affiliate-mgmt', label: 'Affiliates', mod: 'affiliates' },
   { href: '/admin/content', label: 'Content', mod: 'content' },
   { href: '/admin/email', label: 'Email', mod: 'email' },
