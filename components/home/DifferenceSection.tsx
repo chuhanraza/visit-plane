@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView, type Variants } from 'framer-motion'
+import EagleTraveler from '@/components/home/EagleTraveler'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // "The difference" — a transformation comparison. Each painful DIY step (left,
@@ -78,6 +79,9 @@ export default function DifferenceSection() {
             Doing it alone means hours of conflicting tabs. Here&apos;s what each headache turns into with VisitPlane.
           </motion.p>
         </motion.div>
+
+        {/* Brand mascot lead visual (hides gracefully until the asset is added) */}
+        <EagleTraveler />
 
         {/* Comparison panel */}
         <motion.div
