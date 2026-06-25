@@ -59,3 +59,36 @@ access only via `is_app_admin()`; all server reads use the service-role client b
 5. **For real payments later (deferred):** a legal entity + payment processor, then the e-Visa
    Stripe activation (`docs/evisa-payments-activation.md`) and flip `payments_enabled`. Flipping
    the flag alone does not charge cards.
+
+---
+
+## Operator Backend v2 (pro-grade tracks)
+
+_Research-driven (Shopify/Magento/BigCommerce/Woo + Stripe/HubSpot/Klaviyo/Intercom/Linear/
+Metabase) — see `docs/backend-v2-roadmap.md`. Additive; RLS on every new table; payments still OFF._
+
+| Track | What's live |
+|---|---|
+| **Analytics 2.0** (`/admin/analytics`) | Date-range + period-over-period comparison; conversion funnel (leads→confirmed→customer); lead-source attribution; revenue-by-source; daily trend; saved report views (`saved_reports`). |
+| **Command palette + search + notifications** (shell-wide) | ⌘K palette + global search across leads/orders/content/partners; notification bell with merged real-time activity feed + unread marker. |
+| **Developer platform** (`/admin/developers`) | Scoped, sha256-hashed API keys (shown once, revocable); outbound webhooks (HMAC-signed + delivery log); **public affiliate conversion postback** (`/api/affiliate/postback`, key-auth, idempotent). |
+| **Marketing automation** (`/admin/marketing`) | Klaviyo-style event spine (`marketing_events`) + per-lead activity timeline; dynamic **segments** (condition tree) usable as email audiences; **flows** (lead-confirm → delay+email steps) run by a daily Vercel cron + manual trigger, gated behind broadcasts flag. |
+| **Staff accounts & RBAC** (`/admin/settings`) | Roles (owner/admin/analyst/support/viewer) + per-module View/Edit/Delete matrix on `app_admins`; nav + sensitive pages enforce permissions; staff management owner-gated. Secret-login = full owner (nothing breaks). |
+
+New tables (all RLS-locked, anon denied; confirmed in `get_advisors`): `saved_reports`,
+`api_keys`, `webhook_endpoints`, `webhook_deliveries`, `marketing_metrics`,
+`marketing_events`, `marketing_segments`, `flows`, `flow_steps`, `flow_runs`
+(+ `app_settings`, `app_admins.role/permissions/email`).
+
+### NEEDS HAMAD (v2)
+6. **Set `CRON_SECRET`** in Vercel so the flows cron (`/api/cron/flows`) is authenticated
+   (Vercel sends `Authorization: Bearer $CRON_SECRET`). Without it the cron still runs via the
+   `x-vercel-cron` header, but setting it is recommended.
+7. **Flows + broadcasts** only send when `email_broadcasts_enabled` is ON (Settings). On the
+   **Hobby** Vercel plan the flows cron runs **once daily** — upgrade to Pro for finer cadence.
+8. **RBAC staff:** roles apply to Supabase-Auth users in `app_admins`. The `ADMIN_SECRET`
+   login is always full **owner**. Add staff under Settings → Admin allowlist (they sign in once first).
+9. **Affiliate postback:** create an API key (scope `affiliate:write`) under Developers and give
+   partners the postback URL to auto-log real conversions.
+10. **Optional:** embed **Metabase** (connects to Supabase Postgres natively) for ad-hoc BI rather
+    than building a report builder — recommended in the research.
