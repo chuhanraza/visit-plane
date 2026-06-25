@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { performTransition } from '@/lib/orders/transition'
 import { ORDER_STATUSES, type OrderStatus } from '@/lib/orders/lifecycle'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
-  const actor = await requireAdminApi()
+  const actor = await requirePermissionApi('orders', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await ctx.params

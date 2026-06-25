@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { writeAudit } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
  * any cached output so the next crawl/fetch rebuilds from current data.
  */
 export async function POST(req: NextRequest) {
-  const actor = await requireAdminApi()
+  const actor = await requirePermissionApi('content', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const paths = ['/sitemap.xml', '/sitemap-blog.xml']

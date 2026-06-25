@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { leadTimeline } from '@/lib/admin/events'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
-  const actor = await requireAdminApi()
+  const actor = await requirePermissionApi('leads', 'view')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await ctx.params
   const leadId = Number(id)

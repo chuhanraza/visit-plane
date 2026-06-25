@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { writeAudit } from '@/lib/audit'
 
@@ -14,7 +14,7 @@ const BodySchema = z.object({
 })
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
-  const actor = await requireAdminApi()
+  const actor = await requirePermissionApi('leads', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await ctx.params

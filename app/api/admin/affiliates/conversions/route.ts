@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { writeAudit } from '@/lib/audit'
 import { fireWebhooks } from '@/lib/admin/webhooks'
@@ -21,7 +21,7 @@ const Schema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  const actor = await requireAdminApi()
+  const actor = await requirePermissionApi('affiliates', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const parsed = Schema.safeParse(await req.json().catch(() => ({})))

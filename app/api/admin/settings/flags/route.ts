@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { setSetting } from '@/lib/admin/settings'
 import { writeAudit } from '@/lib/audit'
 
@@ -10,7 +10,7 @@ const FLAGS = ['payments_enabled', 'email_broadcasts_enabled'] as const
 const Schema = z.object({ key: z.enum(FLAGS), value: z.coerce.boolean() })
 
 export async function POST(req: NextRequest) {
-  const actor = await requireAdminApi()
+  const actor = await requirePermissionApi('settings', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const parsed = Schema.safeParse(await req.json().catch(() => ({})))

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomBytes } from 'crypto'
 import { z } from 'zod'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { writeAudit } from '@/lib/audit'
 import { WEBHOOK_EVENTS } from '@/lib/admin/webhooks'
@@ -16,7 +16,7 @@ const CreateSchema = z.object({
 const DeleteSchema = z.object({ op: z.literal('delete'), id: z.string().uuid() })
 
 export async function POST(req: NextRequest) {
-  const actor = await requireAdminApi()
+  const actor = await requirePermissionApi('developers', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const body = await req.json().catch(() => ({}))
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? null

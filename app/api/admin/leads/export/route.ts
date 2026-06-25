@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { leadsForExport, optInStatus, type OptInStatus } from '@/lib/admin/leads'
 import { writeAudit } from '@/lib/audit'
 
@@ -11,7 +11,7 @@ function csvCell(v: unknown): string {
 }
 
 export async function GET(req: NextRequest) {
-  const actor = await requireAdminApi()
+  const actor = await requirePermissionApi('leads', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const sp = req.nextUrl.searchParams

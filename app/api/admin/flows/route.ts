@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { writeAudit } from '@/lib/audit'
 import { createFlow, setFlowActive, deleteFlow, runFlowWorker } from '@/lib/admin/flows'
 
@@ -14,7 +14,7 @@ const StepSchema = z.object({
 const CreateSchema = z.object({ name: z.string().trim().min(1).max(80), steps: z.array(StepSchema).min(1).max(10) })
 
 export async function POST(req: NextRequest) {
-  const actor = await requireAdminApi()
+  const actor = await requirePermissionApi('marketing', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const body = await req.json().catch(() => ({}))
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? null
