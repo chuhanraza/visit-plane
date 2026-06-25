@@ -4,20 +4,12 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
-import PassportSwitcher, { getPassportFlag } from '@/components/PassportSwitcher'
+import PassportDropdown from '@/components/home/PassportDropdown'
 import VisaFreeMarquee, { VisaFreeCard } from '@/components/VisaFreeMarquee'
 import { useUserCountry } from '@/hooks/useUserCountry'
 import type { ReliableDestination } from '@/app/api/visa-free-reliable/route'
 
 type Status = 'detecting' | 'loading' | 'ready' | 'empty' | 'error'
-
-function Chevron({ className = 'h-4 w-4' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  )
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Homepage "No Visa Required" section.
@@ -39,7 +31,6 @@ export default function VisaFreeSection() {
   const [applied, setApplied] = useState(false)
   const [dests, setDests] = useState<ReliableDestination[]>([])
   const [status, setStatus] = useState<Status>('detecting')
-  const [switcherOpen, setSwitcherOpen] = useState(false)
 
   // Default the passport from IP geo once the hook resolves (it never sticks on
   // "detecting": it self-resolves within 2s to last-used or a neutral default).
@@ -74,7 +65,6 @@ export default function VisaFreeSection() {
     return () => { cancelled = true }
   }, [passport])
 
-  const flag = passport ? getPassportFlag(passport) : '🌍'
   // 4+ → seamless marquee makes sense; 1–3 → static centered row (no repeats).
   const useMarquee = dests.length >= 4
 
@@ -98,21 +88,11 @@ export default function VisaFreeSection() {
           </p>
         </div>
 
-        {/* Passport switcher */}
+        {/* Passport selector — inline dropdown (auto-set from IP, change anytime) */}
         <div className="mb-8 flex flex-col items-center justify-center gap-2">
           <span className="text-[11px] font-semibold uppercase tracking-widest text-gray-400">Showing for</span>
-          <button
-            type="button"
-            onClick={() => setSwitcherOpen(true)}
-            aria-haspopup="dialog"
-            aria-expanded={switcherOpen}
-            className="group inline-flex items-center gap-2.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-900 shadow-sm transition hover:border-emerald-500/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-          >
-            <span className="text-lg leading-none">{flag}</span>
-            <span>{passport || (geoLoading ? 'Detecting…' : 'Choose passport')}</span>
-            <Chevron className="h-3.5 w-3.5 text-gray-400 transition group-hover:text-emerald-500" />
-          </button>
-          <span className="text-[11px] text-gray-400">Not your passport? Tap to change.</span>
+          <PassportDropdown current={passport} onSelect={changePassport} geoLoading={geoLoading} />
+          <span className="text-[11px] text-gray-400">Auto-detected from your location — change it anytime.</span>
         </div>
       </div>
 
@@ -186,14 +166,6 @@ export default function VisaFreeSection() {
         )}
         <VisaDataDisclaimer variant="compact" />
       </div>
-
-      {switcherOpen && (
-        <PassportSwitcher
-          current={passport}
-          onSelect={changePassport}
-          onClose={() => setSwitcherOpen(false)}
-        />
-      )}
     </section>
   )
 }
