@@ -59,7 +59,7 @@ registerRoute(
 registerRoute(
   new NavigationRoute(
     new NetworkFirst({
-      cacheName: 'visitplane-pages-v1',
+      cacheName: 'visitplane-pages-v2',
       networkTimeoutSeconds: 3,
       plugins: [
         new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 7 * 24 * 60 * 60 }),
@@ -75,7 +75,7 @@ self.addEventListener('fetch', (event) => {
   if (event.request.mode !== 'navigate') return;
   event.respondWith(
     fetch(event.request).catch(async () => {
-      const cache = await caches.open('visitplane-pages-v1');
+      const cache = await caches.open('visitplane-pages-v2');
       const cached = await cache.match(event.request);
       if (cached) return cached;
       return new Response('<h1>You are offline</h1>', { headers: { 'Content-Type': 'text/html' } });
@@ -159,7 +159,7 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 // ── Cache cleanup ─────────────────────────────────────────────────────────────
-const KEEP = ['visitplane-static-v1', 'visitplane-visa-data-v1', 'visitplane-pages-v1', 'visitplane-gfonts-sheets', 'visitplane-gfonts-files'];
+const KEEP = ['visitplane-static-v1', 'visitplane-visa-data-v1', 'visitplane-pages-v2', 'visitplane-gfonts-sheets', 'visitplane-gfonts-files'];
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(keys =>
