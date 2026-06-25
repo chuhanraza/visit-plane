@@ -10,7 +10,7 @@ import { useUserCountry } from '@/hooks/useUserCountry'
 import type { ReliableDestination, ReliableVisaFreeResponse } from '@/app/api/visa-free-reliable/route'
 
 type Status = 'detecting' | 'loading' | 'ready' | 'empty' | 'error'
-type Meta = Pick<ReliableVisaFreeResponse, 'source' | 'verified'>
+type Meta = Pick<ReliableVisaFreeResponse, 'source' | 'verified' | 'total'>
 
 const MONTHS = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 function prettyMonth(ym: string): string {
@@ -68,7 +68,7 @@ export default function VisaFreeSection() {
         if (cancelled) return
         const list: ReliableDestination[] = Array.isArray(data?.destinations) ? data.destinations : []
         setDests(list)
-        setMeta({ source: data?.source ?? 'guarded-db', verified: data?.verified ?? null })
+        setMeta({ source: data?.source ?? 'guarded-db', verified: data?.verified ?? null, total: data?.total ?? list.length })
         setStatus(list.length === 0 ? 'empty' : 'ready')
       })
       .catch(() => { if (!cancelled) { setDests([]); setMeta(null); setStatus('error') } })
@@ -90,7 +90,11 @@ export default function VisaFreeSection() {
           <p className="mx-auto mt-3 max-w-xl text-sm text-gray-500">
             Where{' '}
             <span className="font-semibold text-gray-700">{passport ? `a ${passport}` : 'your'}</span>{' '}
-            passport can travel visa-free or get a visa on arrival.{' '}
+            passport can travel visa-free or get a visa on arrival
+            {status === 'ready' && meta && meta.total > 0 && (
+              <> — <span className="font-semibold text-emerald-600">{meta.total} destinations</span></>
+            )}
+            .{' '}
             <span className="font-semibold text-gray-700">
               Always reconfirm with the official source before you fly.
             </span>

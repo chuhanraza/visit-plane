@@ -33,13 +33,19 @@ export interface ReliableDestination {
 
 export interface ReliableVisaFreeResponse {
   passport: string
+  /** Number of destinations returned (capped for the homepage teaser). */
   count: number
+  /** Total reliable destinations available for this passport (may exceed count). */
+  total: number
   destinations: ReliableDestination[]
-  /** 'official-curated' when served from the verified dataset, else 'guarded-db'. */
+  /** 'official-curated' when served from the sourced dataset, else 'guarded-db'. */
   source: 'official-curated' | 'guarded-db'
-  /** Provenance, present only for the verified tier. */
+  /** Provenance, present only for the sourced tier. */
   verified: { lastVerified: string; sourceLabel: string; sourceUrl: string } | null
 }
+
+// Homepage teaser cap — the full list lives on /visa-free-map.
+const TEASER_CAP = 30
 
 const norm = (s: string | null | undefined) => (s || '').toLowerCase().trim()
 
@@ -83,8 +89,9 @@ export async function GET(req: NextRequest) {
   if (verified) {
     const response: ReliableVisaFreeResponse = {
       passport,
-      count: verified.destinations.length,
-      destinations: verified.destinations,
+      count: Math.min(verified.destinations.length, TEASER_CAP),
+      total: verified.destinations.length,
+      destinations: verified.destinations.slice(0, TEASER_CAP),
       source: 'official-curated',
       verified: {
         lastVerified: verified.lastVerified,
@@ -108,7 +115,7 @@ export async function GET(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  const empty: ReliableVisaFreeResponse = { passport, count: 0, destinations: [], source: 'guarded-db', verified: null }
+  const empty: ReliableVisaFreeResponse = { passport, count: 0, total: 0, destinations: [], source: 'guarded-db', verified: null }
   if (!data?.length) return NextResponse.json(empty)
 
   // Group every row by distinct destination country (case-insensitive).
@@ -141,8 +148,9 @@ export async function GET(req: NextRequest) {
 
   const response: ReliableVisaFreeResponse = {
     passport,
-    count: destinations.length,
-    destinations: destinations.slice(0, 24),
+    count: Math.min(destinations.length, TEASER_CAP),
+    total: destinations.length,
+    destinations: destinations.slice(0, TEASER_CAP),
     source: 'guarded-db',
     verified: null,
   }
