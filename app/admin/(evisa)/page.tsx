@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin/guard'
 import { dashboardStats } from '@/lib/admin/data'
 import { operatorDashboard } from '@/lib/admin/dashboard'
+import { setupChecklist } from '@/lib/admin/setup'
 import { STATUS_LABELS, STATUS_BADGE, ORDER_STATUSES } from '@/lib/orders/lifecycle'
 
 export const metadata: Metadata = { title: 'Dashboard — VisitPlane Admin', robots: { index: false } }
@@ -10,7 +11,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function AdminOverview() {
   await requireAdmin()
-  const [s, d] = await Promise.all([dashboardStats(), operatorDashboard()])
+  const [s, d, setup] = await Promise.all([dashboardStats(), operatorDashboard(), setupChecklist()])
   const maxCount = Math.max(1, ...ORDER_STATUSES.map(k => s.byStatus[k] ?? 0))
   const maxSource = Math.max(1, ...d.leads.bySource.map(x => x.count))
   const maxGrowth = Math.max(1, ...d.leads.growth.map(x => x.count))
@@ -31,6 +32,27 @@ export default async function AdminOverview() {
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-bold text-white">Dashboard</h1>
+
+      {/* ── Setup checklist (hidden once complete) ──────────────────────── */}
+      {setup.done < setup.total && (
+        <details className="bg-gray-900 border border-gray-800 rounded-2xl p-5" open>
+          <summary className="cursor-pointer flex items-center justify-between">
+            <span className="font-semibold text-white">Get set up <span className="text-gray-500 text-sm font-normal">— {setup.done}/{setup.total} done</span></span>
+            <div className="w-40 h-2 bg-gray-800 rounded-full overflow-hidden"><div className="h-full bg-emerald-500" style={{ width: `${(setup.done / setup.total) * 100}%` }} /></div>
+          </summary>
+          <ul className="mt-4 space-y-2">
+            {setup.items.map(i => (
+              <li key={i.key} className="flex items-start gap-2.5 text-sm">
+                <span className={`mt-0.5 ${i.done ? 'text-emerald-400' : 'text-gray-600'}`}>{i.done ? '✓' : '○'}</span>
+                <div>
+                  <Link href={i.href} className={`${i.done ? 'text-gray-400 line-through' : 'text-gray-200 hover:text-white'}`}>{i.label}</Link>
+                  {!i.done && <div className="text-xs text-gray-600">{i.hint}</div>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
 
       {/* ── Leads & growth (real lead data) ─────────────────────────────── */}
       <div>
