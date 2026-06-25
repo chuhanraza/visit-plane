@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin/guard'
-import { emailSegments, listPendingOptIn, recentBroadcasts } from '@/lib/admin/email'
+import { emailSegments, listPendingOptIn, recentBroadcasts, emailEngagement } from '@/lib/admin/email'
 import { listSegments } from '@/lib/admin/segments'
 import { getFlag } from '@/lib/admin/settings'
 import EmailComposer from './EmailComposer'
@@ -11,12 +11,13 @@ export const dynamic = 'force-dynamic'
 
 export default async function AdminEmail() {
   await requireAdmin()
-  const [segments, pending, broadcasts, broadcastsEnabled, savedSegments] = await Promise.all([
+  const [segments, pending, broadcasts, broadcastsEnabled, savedSegments, engagement] = await Promise.all([
     emailSegments(),
     listPendingOptIn({ page: 1, pageSize: 20 }),
     recentBroadcasts(8),
     getFlag('email_broadcasts_enabled'),
     listSegments(),
+    emailEngagement(30),
   ])
 
   const Stat = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
@@ -85,7 +86,19 @@ export default async function AdminEmail() {
               })}
             </ul>
           )}
-          <p className="text-xs text-gray-600 mt-3">Open/click tracking is not wired — those metrics show no data yet rather than estimates.</p>
+          <div className="mt-3 pt-3 border-t border-gray-800">
+            <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Engagement (30d)</div>
+            {engagement.tracked ? (
+              <div className="flex gap-4 text-sm text-gray-300">
+                <span>{engagement.delivered} delivered</span>
+                <span>{engagement.opened} opened</span>
+                <span>{engagement.clicked} clicked</span>
+                {engagement.bounced > 0 && <span className="text-red-400">{engagement.bounced} bounced</span>}
+              </div>
+            ) : (
+              <p className="text-xs text-gray-600">No data yet — connect the Resend webhook (<code>/api/webhooks/resend</code>) to record opens/clicks.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

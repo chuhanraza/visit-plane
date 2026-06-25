@@ -71,6 +71,18 @@ export async function recipientsFor(filter: { source?: string; leadMagnet?: stri
   return (data ?? []) as { email: string; unsubscribe_token: string }[]
 }
 
+/** Email engagement counts from the event spine (Resend webhook), last N days. */
+export async function emailEngagement(days = 30): Promise<{ delivered: number; opened: number; clicked: number; bounced: number; tracked: boolean }> {
+  const svc = getServiceClient()
+  const since = new Date(Date.now() - days * 86400000).toISOString()
+  const { data } = await svc.from('marketing_events')
+    .select('metric').gte('occurred_at', since)
+    .in('metric', ['email.delivered', 'email.opened', 'email.clicked', 'email.bounced']).limit(100000)
+  const rows = (data ?? []) as { metric: string }[]
+  const c = (m: string) => rows.filter(r => r.metric === m).length
+  return { delivered: c('email.delivered'), opened: c('email.opened'), clicked: c('email.clicked'), bounced: c('email.bounced'), tracked: rows.length > 0 }
+}
+
 /** Sendable recipients within a saved segment (confirmed, not unsubscribed). */
 export async function recipientsForSegment(segmentId: string): Promise<{ email: string; unsubscribe_token: string }[]> {
   const { getSegment, resolveSegment } = await import('@/lib/admin/segments')

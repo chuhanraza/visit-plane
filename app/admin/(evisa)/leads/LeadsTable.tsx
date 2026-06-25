@@ -144,6 +144,15 @@ function LeadDrawer({ lead, onClose, onSaved }: { lead: LeadRow; onClose: () => 
     else { const j = await res.json().catch(() => ({})); setErr(j.error || 'Save failed'); setSaving(false) }
   }
 
+  async function eraseGdpr() {
+    if (!confirm(`GDPR-erase ${lead.email}? This deletes their marketing data and anonymizes the email on orders. Cannot be undone.`)) return
+    const res = await fetch(`/api/admin/leads/${lead.id}/gdpr`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirm: true }),
+    })
+    if (res.ok) { const j = await res.json(); alert(`Erased: ${j.subscribersDeleted} lead, ${j.eventsDeleted} events; ${j.ordersAnonymized + j.conversionsAnonymized} records anonymized.`); onSaved() }
+    else alert((await res.json().catch(() => ({}))).error || 'Erase failed')
+  }
+
   const Row = ({ k, v }: { k: string; v: React.ReactNode }) => (
     <div className="flex justify-between gap-4 py-1.5 border-b border-gray-800/60 text-sm">
       <span className="text-gray-500">{k}</span>
@@ -210,6 +219,15 @@ function LeadDrawer({ lead, onClose, onSaved }: { lead: LeadRow; onClose: () => 
           <button onClick={save} disabled={saving} className="w-full px-3 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 rounded-lg text-white text-sm">
             {saving ? 'Saving…' : 'Save'}
           </button>
+        </div>
+
+        <div className="pt-2 border-t border-gray-800 space-y-2">
+          <h3 className="text-xs uppercase tracking-wide text-gray-500">GDPR</h3>
+          <div className="flex gap-2">
+            <a href={`/api/admin/leads/${lead.id}/gdpr`} className="flex-1 text-center px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-200 text-sm">Export data</a>
+            <button onClick={eraseGdpr} className="flex-1 px-3 py-1.5 bg-red-900/40 hover:bg-red-900/60 border border-red-800 rounded-lg text-red-300 text-sm">Erase (GDPR)</button>
+          </div>
+          <p className="text-[11px] text-gray-600">Erase deletes the marketing footprint and anonymizes the email on financial records (retained for legal obligation). Audited by hash.</p>
         </div>
       </div>
     </div>
