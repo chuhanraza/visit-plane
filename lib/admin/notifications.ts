@@ -8,18 +8,19 @@ import { getSettings, setSetting } from '@/lib/admin/settings'
  * app_settings. Service-role, behind requireAdmin().
  */
 
-export interface Activity { ts: string; kind: 'lead' | 'correction' | 'revenue' | 'order' | 'conversion'; title: string; href: string }
+export interface Activity { ts: string; kind: 'lead' | 'correction' | 'revenue' | 'order' | 'conversion' | 'alert'; title: string; href: string }
 
 const LAST_SEEN_KEY = 'notif_last_seen'
 
 export async function recentActivity(limit = 40): Promise<Activity[]> {
   const svc = getServiceClient()
-  const [leads, corrections, manual, evisa, convs] = await Promise.all([
+  const [leads, corrections, manual, evisa, convs, alerts] = await Promise.all([
     svc.from('email_subscribers').select('email, captured_from, captured_at').order('captured_at', { ascending: false }).limit(15),
     svc.from('data_corrections').select('what_is_wrong, status, created_at').order('created_at', { ascending: false }).limit(10),
     svc.from('manual_orders').select('order_ref, status, created_at').order('created_at', { ascending: false }).limit(10),
     svc.from('orders').select('id, order_ref, created_at').order('created_at', { ascending: false }).limit(10),
     svc.from('affiliate_conversions').select('partner_slug, amount, occurred_at').order('occurred_at', { ascending: false }).limit(10),
+    svc.from('audit_log').select('metadata, created_at').eq('action', 'alert.triggered').order('created_at', { ascending: false }).limit(10),
   ])
 
   const out: Activity[] = []
@@ -33,6 +34,8 @@ export async function recentActivity(limit = 40): Promise<Activity[]> {
     out.push({ ts: o.created_at, kind: 'order', title: `e-Visa order ${o.order_ref}`, href: `/admin/orders/${o.id}` })
   for (const c of (convs.data ?? []) as { partner_slug: string; amount: number; occurred_at: string }[])
     out.push({ ts: c.occurred_at, kind: 'conversion', title: `Affiliate conversion: ${c.partner_slug} ($${Number(c.amount).toFixed(2)})`, href: '/admin/affiliate-mgmt' })
+  for (const a of (alerts.data ?? []) as { metadata: { name?: string; metric?: string; value?: number }; created_at: string }[])
+    out.push({ ts: a.created_at, kind: 'alert', title: `⚠ Alert: ${a.metadata?.name ?? a.metadata?.metric ?? 'threshold'} (${a.metadata?.value})`, href: '/admin/ops' })
 
   return out.filter(a => a.ts).sort((a, b) => (a.ts < b.ts ? 1 : -1)).slice(0, limit)
 }

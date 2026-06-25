@@ -9,7 +9,7 @@ export type Role = (typeof ROLES)[number]
 
 export const MODULES = [
   'dashboard', 'analytics', 'leads', 'revenue', 'orders', 'affiliates',
-  'content', 'email', 'marketing', 'developers', 'audit', 'settings', 'admins',
+  'content', 'email', 'marketing', 'developers', 'audit', 'ops', 'settings', 'admins',
 ] as const
 export type Module = (typeof MODULES)[number]
 
@@ -23,19 +23,19 @@ export const ROLE_PERMISSIONS: Record<Role, Partial<Record<Module, Level>>> = {
   owner: Object.fromEntries(MODULES.map(m => [m, E])) as Record<Module, Level>,
   admin: {
     dashboard: E, analytics: E, leads: E, revenue: E, orders: E, affiliates: E,
-    content: E, email: E, marketing: E, developers: E, audit: V, settings: E, admins: V,
+    content: E, email: E, marketing: E, developers: E, audit: V, ops: E, settings: E, admins: V,
   },
   analyst: {
     dashboard: V, analytics: E, leads: E, revenue: E, orders: V, affiliates: E,
-    content: E, email: E, marketing: E, developers: N, audit: V, settings: N, admins: N,
+    content: E, email: E, marketing: E, developers: N, audit: V, ops: V, settings: N, admins: N,
   },
   support: {
     dashboard: V, analytics: V, leads: E, revenue: V, orders: E, affiliates: V,
-    content: N, email: N, marketing: N, developers: N, audit: N, settings: N, admins: N,
+    content: N, email: N, marketing: N, developers: N, audit: N, ops: V, settings: N, admins: N,
   },
   viewer: {
     dashboard: V, analytics: V, leads: V, revenue: V, orders: V, affiliates: V,
-    content: V, email: V, marketing: V, developers: N, audit: V, settings: N, admins: N,
+    content: V, email: V, marketing: V, developers: N, audit: V, ops: V, settings: N, admins: N,
   },
 }
 

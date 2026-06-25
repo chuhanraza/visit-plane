@@ -7,7 +7,7 @@ interface Activity { ts: string; kind: string; title: string; href: string }
 
 const KIND_DOT: Record<string, string> = {
   lead: 'bg-emerald-400', correction: 'bg-amber-400', revenue: 'bg-blue-400',
-  order: 'bg-blue-400', conversion: 'bg-purple-400',
+  order: 'bg-blue-400', conversion: 'bg-purple-400', alert: 'bg-red-400',
 }
 
 function ago(ts: string) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdminApi } from '@/lib/admin/guard'
 import { runFlowWorker } from '@/lib/admin/flows'
+import { evaluateAlerts } from '@/lib/admin/ops'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -22,6 +23,6 @@ async function authorized(req: NextRequest): Promise<boolean> {
 
 export async function GET(req: NextRequest) {
   if (!(await authorized(req))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const result = await runFlowWorker()
-  return NextResponse.json({ ok: true, ...result })
+  const [flows, alerts] = await Promise.all([runFlowWorker(), evaluateAlerts()])
+  return NextResponse.json({ ok: true, flows, alerts })
 }

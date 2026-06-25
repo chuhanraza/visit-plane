@@ -23,6 +23,7 @@ const NAV: { href: string; label: string; mod: Module }[] = [
   { href: '/admin/invoices', label: 'Invoices', mod: 'revenue' },
   { href: '/admin/services', label: 'Services', mod: 'orders' },
   { href: '/admin/audit', label: 'Audit', mod: 'audit' },
+  { href: '/admin/ops', label: 'Ops', mod: 'ops' },
   { href: '/admin/developers', label: 'Developers', mod: 'developers' },
   { href: '/admin/settings', label: 'Settings', mod: 'settings' },
 ]
