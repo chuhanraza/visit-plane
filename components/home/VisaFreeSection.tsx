@@ -136,8 +136,7 @@ export default function VisaFreeSection() {
         useMarquee ? (
           <motion.div
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: '-80px' }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
             <VisaFreeMarquee destinations={dests} passport={passport} />
@@ -145,8 +144,7 @@ export default function VisaFreeSection() {
         ) : (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="flex flex-wrap items-stretch justify-center gap-4 px-4 sm:gap-5"
           >

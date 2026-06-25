@@ -4,6 +4,7 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import DestinationImage from '@/components/DestinationImage'
 import { getPassportFlag } from '@/components/PassportSwitcher'
+import { getCountryImage } from '@/lib/data/countryImages'
 import type { ReliableDestination } from '@/app/api/visa-free-reliable/route'
 
 function nameToSlug(name: string) {
@@ -33,6 +34,10 @@ export function VisaFreeCard({
   onClick?: (e: React.MouseEvent) => void
 }) {
   const flag = getPassportFlag(dest.name)
+  // Photo cards label the country in the bottom bar; branded-fallback cards
+  // already render a large flag + name centred, so the bottom label is omitted
+  // there to avoid showing the country twice.
+  const hasPhoto = !!getCountryImage(dest.name)
   return (
     <Link
       href={`/visa/${nameToSlug(passport)}/${nameToSlug(dest.name)}`}
@@ -62,10 +67,14 @@ export function VisaFreeCard({
       {/* bottom content block */}
       <div className="absolute inset-x-0 bottom-0 p-4">
         <div className="flex items-end justify-between gap-2">
-          <div className="min-w-0">
-            <div className="mb-1 text-2xl leading-none drop-shadow">{flag}</div>
-            <h3 className="truncate text-lg font-extrabold leading-tight text-white drop-shadow-sm">{dest.name}</h3>
-          </div>
+          {hasPhoto ? (
+            <div className="min-w-0">
+              <div className="mb-1 text-2xl leading-none drop-shadow">{flag}</div>
+              <h3 className="truncate text-lg font-extrabold leading-tight text-white drop-shadow-sm">{dest.name}</h3>
+            </div>
+          ) : (
+            <span aria-hidden="true" />
+          )}
           <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-white/30 bg-white/20 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md">
             {stayLabel(dest)}
           </span>
