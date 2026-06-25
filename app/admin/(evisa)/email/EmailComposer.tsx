@@ -4,16 +4,18 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { EmailSegments } from '@/lib/admin/email'
 
-export default function EmailComposer({ segments, broadcastsEnabled }: { segments: EmailSegments; broadcastsEnabled: boolean }) {
+export default function EmailComposer({ segments, broadcastsEnabled, savedSegments }: { segments: EmailSegments; broadcastsEnabled: boolean; savedSegments: { id: string; name: string }[] }) {
   const router = useRouter()
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
-  const [source, setSource] = useState('')
+  const [audience, setAudience] = useState('')   // '' = all, 'src:<source>', or 'seg:<id>'
   const [testEmail, setTestEmail] = useState('')
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState('')
 
-  const segMatch = source ? (segments.bySource.find(s => s.source === source)?.sendable ?? 0) : segments.sendable
+  const isSeg = audience.startsWith('seg:')
+  const source = audience.startsWith('src:') ? audience.slice(4) : ''
+  const segMatch = source ? (segments.bySource.find(s => s.source === source)?.sendable ?? 0) : isSeg ? null : segments.sendable
 
   async function post(payload: Record<string, unknown>) {
     setBusy(true); setResult('')
@@ -36,8 +38,9 @@ export default function EmailComposer({ segments, broadcastsEnabled }: { segment
 
   function sendReal() {
     if (!subject || !body) { setResult('Add a subject and body first.'); return }
-    if (!confirm(`Send "${subject}" to ${segMatch} confirmed subscriber(s)${source ? ` in "${source}"` : ''}? This cannot be undone.`)) return
-    post({ subject, body, ...(source ? { source } : {}) })
+    const who = segMatch === null ? 'the selected segment (confirmed only)' : `${segMatch} confirmed subscriber(s)${source ? ` in "${source}"` : ''}`
+    if (!confirm(`Send "${subject}" to ${who}? This cannot be undone.`)) return
+    post({ subject, body, ...(source ? { source } : {}), ...(isSeg ? { segmentId: audience.slice(4) } : {}) })
   }
 
   const inp = 'w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200'
@@ -46,14 +49,21 @@ export default function EmailComposer({ segments, broadcastsEnabled }: { segment
       <h2 className="font-semibold text-white">Compose broadcast</h2>
 
       <div className="grid sm:grid-cols-2 gap-3">
-        <label className="text-xs text-gray-400 space-y-1"><span>Segment</span>
-          <select value={source} onChange={e => setSource(e.target.value)} className={inp}>
+        <label className="text-xs text-gray-400 space-y-1"><span>Audience</span>
+          <select value={audience} onChange={e => setAudience(e.target.value)} className={inp}>
             <option value="">All confirmed ({segments.sendable})</option>
-            {segments.bySource.map(s => <option key={s.source} value={s.source}>{s.source} ({s.sendable})</option>)}
+            <optgroup label="By source">
+              {segments.bySource.map(s => <option key={s.source} value={`src:${s.source}`}>{s.source} ({s.sendable})</option>)}
+            </optgroup>
+            {savedSegments.length > 0 && (
+              <optgroup label="Saved segments">
+                {savedSegments.map(s => <option key={s.id} value={`seg:${s.id}`}>{s.name}</option>)}
+              </optgroup>
+            )}
           </select>
         </label>
         <label className="text-xs text-gray-400 space-y-1"><span>Recipients</span>
-          <div className={`${inp} flex items-center text-gray-300`}>{segMatch} confirmed, subscribed</div>
+          <div className={`${inp} flex items-center text-gray-300`}>{segMatch === null ? 'segment (confirmed only, computed on send)' : `${segMatch} confirmed, subscribed`}</div>
         </label>
       </div>
 
@@ -71,7 +81,7 @@ export default function EmailComposer({ segments, broadcastsEnabled }: { segment
         <input value={testEmail} onChange={e => setTestEmail(e.target.value)} placeholder="you@example.com" className="bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 text-sm text-gray-200 w-52" />
         <button onClick={sendTest} disabled={busy} className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 rounded-lg text-gray-200 text-sm">Send test</button>
         <button onClick={sendReal} disabled={busy || !broadcastsEnabled} title={broadcastsEnabled ? '' : 'Enable email_broadcasts_enabled in Settings'} className="ml-auto px-4 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 rounded-lg text-white text-sm">
-          {broadcastsEnabled ? `Send to ${segMatch}` : 'Broadcasts disabled'}
+          {broadcastsEnabled ? (segMatch === null ? 'Send to segment' : `Send to ${segMatch}`) : 'Broadcasts disabled'}
         </button>
       </div>
       {result && <p className="text-sm text-gray-300">{result}</p>}

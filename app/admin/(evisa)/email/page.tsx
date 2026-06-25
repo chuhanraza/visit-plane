@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin/guard'
 import { emailSegments, listPendingOptIn, recentBroadcasts } from '@/lib/admin/email'
+import { listSegments } from '@/lib/admin/segments'
 import { getFlag } from '@/lib/admin/settings'
 import EmailComposer from './EmailComposer'
 
@@ -10,11 +11,12 @@ export const dynamic = 'force-dynamic'
 
 export default async function AdminEmail() {
   await requireAdmin()
-  const [segments, pending, broadcasts, broadcastsEnabled] = await Promise.all([
+  const [segments, pending, broadcasts, broadcastsEnabled, savedSegments] = await Promise.all([
     emailSegments(),
     listPendingOptIn({ page: 1, pageSize: 20 }),
     recentBroadcasts(8),
     getFlag('email_broadcasts_enabled'),
+    listSegments(),
   ])
 
   const Stat = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
@@ -45,7 +47,7 @@ export default async function AdminEmail() {
         <Stat label="Unsubscribed" value={String(segments.unsubscribed)} />
       </div>
 
-      <EmailComposer segments={segments} broadcastsEnabled={broadcastsEnabled} />
+      <EmailComposer segments={segments} broadcastsEnabled={broadcastsEnabled} savedSegments={savedSegments.map(s => ({ id: s.id, name: s.name }))} />
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Double opt-in queue */}

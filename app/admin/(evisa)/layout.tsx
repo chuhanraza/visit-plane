@@ -18,6 +18,7 @@ const NAV: { href: string; label: string }[] = [
   { href: '/admin/affiliate-mgmt', label: 'Affiliates' },
   { href: '/admin/content', label: 'Content' },
   { href: '/admin/email', label: 'Email' },
+  { href: '/admin/marketing', label: 'Marketing' },
   { href: '/admin/customers', label: 'Customers' },
   { href: '/admin/invoices', label: 'Invoices' },
   { href: '/admin/services', label: 'Services' },

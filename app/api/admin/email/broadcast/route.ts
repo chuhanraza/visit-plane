@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { requireAdminApi } from '@/lib/admin/guard'
 import { getFlag } from '@/lib/admin/settings'
-import { recipientsFor } from '@/lib/admin/email'
+import { recipientsFor, recipientsForSegment } from '@/lib/admin/email'
 import { sendBroadcastEmail } from '@/lib/email'
 import { writeAudit } from '@/lib/audit'
 
@@ -13,6 +13,7 @@ const Schema = z.object({
   body: z.string().trim().min(1).max(50000),
   source: z.string().trim().max(120).optional(),
   leadMagnet: z.string().trim().max(120).optional(),
+  segmentId: z.string().uuid().optional(),
   test: z.coerce.boolean().default(false),
   testEmail: z.string().trim().email().max(200).optional(),
 })
@@ -44,8 +45,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Broadcasts are disabled. Enable "email_broadcasts_enabled" in Settings first.' }, { status: 403 })
   }
 
-  const recipients = await recipientsFor({ source: d.source, leadMagnet: d.leadMagnet })
-  if (recipients.length === 0) return NextResponse.json({ error: 'No confirmed, subscribed recipients match this segment.' }, { status: 400 })
+  const recipients = d.segmentId
+    ? await recipientsForSegment(d.segmentId)
+    : await recipientsFor({ source: d.source, leadMagnet: d.leadMagnet })
+  if (recipients.length === 0) return NextResponse.json({ error: 'No confirmed, subscribed recipients match this audience.' }, { status: 400 })
 
   let sent = 0, failed = 0
   for (const r of recipients) {
@@ -56,7 +59,7 @@ export async function POST(req: NextRequest) {
 
   await writeAudit({
     actor, actorType: 'admin', action: 'email.broadcast', entityType: 'email',
-    metadata: { subject: d.subject, segment: { source: d.source ?? null, leadMagnet: d.leadMagnet ?? null }, recipientCount: recipients.length, sent, failed },
+    metadata: { subject: d.subject, segment: { source: d.source ?? null, leadMagnet: d.leadMagnet ?? null, segmentId: d.segmentId ?? null }, recipientCount: recipients.length, sent, failed },
     ip,
   })
   return NextResponse.json({ ok: true, recipientCount: recipients.length, sent, failed })

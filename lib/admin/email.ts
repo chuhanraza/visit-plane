@@ -71,6 +71,21 @@ export async function recipientsFor(filter: { source?: string; leadMagnet?: stri
   return (data ?? []) as { email: string; unsubscribe_token: string }[]
 }
 
+/** Sendable recipients within a saved segment (confirmed, not unsubscribed). */
+export async function recipientsForSegment(segmentId: string): Promise<{ email: string; unsubscribe_token: string }[]> {
+  const { getSegment, resolveSegment } = await import('@/lib/admin/segments')
+  const seg = await getSegment(segmentId)
+  if (!seg) return []
+  const { emails } = await resolveSegment(seg.definition)
+  if (emails.length === 0) return []
+  const svc = getServiceClient()
+  const lower = new Set(emails.map(e => e.toLowerCase()))
+  const { data } = await svc.from('email_subscribers')
+    .select('email, unsubscribe_token')
+    .not('confirmed_at', 'is', null).is('unsubscribed_at', null).limit(50000)
+  return ((data ?? []) as { email: string; unsubscribe_token: string }[]).filter(r => lower.has(r.email.toLowerCase()))
+}
+
 /** Recent broadcasts, reconstructed from the audit log (no separate table). */
 export async function recentBroadcasts(limit = 10) {
   const svc = getServiceClient()
