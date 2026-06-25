@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin/guard'
 import { getAnalytics, listSavedReports, type Metric } from '@/lib/admin/analytics'
 import { getDigestConfig } from '@/lib/admin/digest'
+import { cohortReport } from '@/lib/admin/cohorts'
 import { SaveViewButton, DeleteReportButton, DigestControl } from './AnalyticsControls'
 
 export const metadata: Metadata = { title: 'Analytics — VisitPlane Admin', robots: { index: false } }
@@ -24,7 +25,7 @@ export default async function AdminAnalytics({ searchParams }: { searchParams: P
   const fromISO = `${from}T00:00:00.000Z`
   const toISO = `${to}T23:59:59.999Z`
 
-  const [a, saved, digest] = await Promise.all([getAnalytics(fromISO, toISO), listSavedReports(), getDigestConfig()])
+  const [a, saved, digest, cohorts] = await Promise.all([getAnalytics(fromISO, toISO), listSavedReports(), getDigestConfig(), cohortReport(12)])
 
   const presets = [
     { label: '7d', from: isoDaysAgo(6) }, { label: '30d', from: isoDaysAgo(29) },
@@ -171,6 +172,30 @@ export default async function AdminAnalytics({ searchParams }: { searchParams: P
           </ul>
         </div>
       )}
+
+      {/* Cohort / retention */}
+      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+        <h2 className="font-semibold text-white mb-3">Lead cohorts <span className="text-gray-500 text-xs font-normal">— by signup week, last 12</span></h2>
+        {cohorts.length === 0 ? <p className="text-gray-500 text-sm">No cohorts yet.</p> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[480px]">
+              <thead className="text-gray-400 text-xs uppercase">
+                <tr><th className="text-left font-medium py-2">Cohort</th><th className="text-right font-medium py-2">Leads</th><th className="text-right font-medium py-2">Confirmed</th><th className="text-right font-medium py-2">Customers</th></tr>
+              </thead>
+              <tbody className="divide-y divide-gray-800">
+                {cohorts.map(c => (
+                  <tr key={c.week}>
+                    <td className="py-2 text-gray-300">{c.week}</td>
+                    <td className="py-2 text-right text-gray-200">{c.size}</td>
+                    <td className="py-2 text-right text-gray-400">{c.confirmed} <span className="text-gray-600">({c.confirmRate}%)</span></td>
+                    <td className="py-2 text-right text-emerald-300">{c.converted} <span className="text-gray-600">({c.convRate}%)</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
