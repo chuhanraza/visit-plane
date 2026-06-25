@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { requireAdmin } from '@/lib/admin/guard'
+import { requirePermission } from '@/lib/admin/guard'
 import { listApiKeys } from '@/lib/admin/apikeys'
 import { listEndpoints, listDeliveries } from '@/lib/admin/webhooks'
 import DevConsole from './DevConsole'
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.visitplane.com').replace(/\/$/, '')
 
 export default async function AdminDevelopers() {
-  await requireAdmin()
+  await requirePermission('developers', 'view')
   const [keys, endpoints, deliveries] = await Promise.all([listApiKeys(), listEndpoints(), listDeliveries(50)])
 
   return (

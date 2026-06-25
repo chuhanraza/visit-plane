@@ -6,10 +6,13 @@ import { getServiceClient } from '@/lib/supabase/admin'
  * Service-role, behind requireAdmin().
  */
 
+import type { Role } from '@/lib/admin/rbac'
+
 export interface AdminRow {
   user_id: string
   email: string | null
   note: string | null
+  role: Role
   created_at: string
 }
 
@@ -26,10 +29,10 @@ async function emailMap(): Promise<Map<string, string>> {
 export async function listAdmins(): Promise<AdminRow[]> {
   const svc = getServiceClient()
   const [{ data: admins }, emails] = await Promise.all([
-    svc.from('app_admins').select('user_id, note, created_at').order('created_at'),
+    svc.from('app_admins').select('user_id, note, role, created_at').order('created_at'),
     emailMap(),
   ])
-  return ((admins ?? []) as { user_id: string; note: string | null; created_at: string }[])
+  return ((admins ?? []) as { user_id: string; note: string | null; role: Role; created_at: string }[])
     .map(a => ({ ...a, email: emails.get(a.user_id) ?? null }))
 }
 
@@ -46,11 +49,11 @@ async function findUserIdByEmail(email: string): Promise<string | null> {
   }
 }
 
-export async function addAdminByEmail(email: string, note: string | null): Promise<{ ok: boolean; error?: string; userId?: string }> {
+export async function addAdminByEmail(email: string, note: string | null, role: Role = 'admin'): Promise<{ ok: boolean; error?: string; userId?: string }> {
   const userId = await findUserIdByEmail(email)
   if (!userId) return { ok: false, error: 'No Supabase Auth user with that email. They must sign up / log in once first.' }
   const svc = getServiceClient()
-  const { error } = await svc.from('app_admins').upsert({ user_id: userId, note }, { onConflict: 'user_id' })
+  const { error } = await svc.from('app_admins').upsert({ user_id: userId, note, role, email: email.toLowerCase() }, { onConflict: 'user_id' })
   if (error) return { ok: false, error: error.message }
   return { ok: true, userId }
 }

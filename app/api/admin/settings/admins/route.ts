@@ -1,17 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { requireAdminApi } from '@/lib/admin/guard'
+import { requirePermissionApi } from '@/lib/admin/guard'
 import { addAdminByEmail, removeAdmin } from '@/lib/admin/admins'
+import { ROLES } from '@/lib/admin/rbac'
 import { writeAudit } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
 
-const AddSchema = z.object({ email: z.string().trim().email().max(200), note: z.string().trim().max(200).nullish() })
+const AddSchema = z.object({ email: z.string().trim().email().max(200), note: z.string().trim().max(200).nullish(), role: z.enum(ROLES).default('admin') })
 const RemoveSchema = z.object({ user_id: z.string().uuid() })
 
 export async function POST(req: NextRequest) {
-  const actor = await requireAdminApi()
-  if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // Managing staff is owner-gated (only 'owner' / secret-login has admins:edit).
+  const actor = await requirePermissionApi('admins', 'edit')
+  if (!actor) return NextResponse.json({ error: 'Forbidden — only the owner can manage staff' }, { status: 403 })
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? null
 
   const body = await req.json().catch(() => ({}))
@@ -28,8 +30,8 @@ export async function POST(req: NextRequest) {
 
   const parsed = AddSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? 'Invalid body' }, { status: 400 })
-  const r = await addAdminByEmail(parsed.data.email, parsed.data.note ?? null)
+  const r = await addAdminByEmail(parsed.data.email, parsed.data.note ?? null, parsed.data.role)
   if (!r.ok) return NextResponse.json({ error: r.error }, { status: 400 })
-  await writeAudit({ actor, actorType: 'admin', action: 'admin.add', entityType: 'app_admin', entityId: r.userId, metadata: { email: parsed.data.email }, ip })
+  await writeAudit({ actor, actorType: 'admin', action: 'admin.add', entityType: 'app_admin', entityId: r.userId, metadata: { email: parsed.data.email, role: parsed.data.role }, ip })
   return NextResponse.json({ ok: true, userId: r.userId })
 }

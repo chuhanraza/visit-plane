@@ -1,35 +1,37 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { requireAdmin } from '@/lib/admin/guard'
+import { requireAdmin, getAdminContext } from '@/lib/admin/guard'
+import { can, type Module } from '@/lib/admin/rbac'
 import CommandPalette from './CommandPalette'
 import NotificationBell from './NotificationBell'
 
 export const dynamic = 'force-dynamic'
 
-// Grouped operator navigation. New operator modules live alongside the existing
-// e-Visa order back-office. Legacy flat pages (/admin/affiliates, /admin/subscribers,
-// /admin/data-quality, /admin/seo) remain reachable via Settings + the SEO link.
-const NAV: { href: string; label: string }[] = [
-  { href: '/admin', label: 'Dashboard' },
-  { href: '/admin/analytics', label: 'Analytics' },
-  { href: '/admin/leads', label: 'Leads / CRM' },
-  { href: '/admin/orders', label: 'e-Visa orders' },
-  { href: '/admin/revenue', label: 'Revenue' },
-  { href: '/admin/affiliate-mgmt', label: 'Affiliates' },
-  { href: '/admin/content', label: 'Content' },
-  { href: '/admin/email', label: 'Email' },
-  { href: '/admin/marketing', label: 'Marketing' },
-  { href: '/admin/customers', label: 'Customers' },
-  { href: '/admin/invoices', label: 'Invoices' },
-  { href: '/admin/services', label: 'Services' },
-  { href: '/admin/audit', label: 'Audit' },
-  { href: '/admin/developers', label: 'Developers' },
-  { href: '/admin/settings', label: 'Settings' },
+// Grouped operator navigation. Each entry maps to an RBAC module so the nav
+// hides what a staff role cannot view. Owner / secret-login sees everything.
+const NAV: { href: string; label: string; mod: Module }[] = [
+  { href: '/admin', label: 'Dashboard', mod: 'dashboard' },
+  { href: '/admin/analytics', label: 'Analytics', mod: 'analytics' },
+  { href: '/admin/leads', label: 'Leads / CRM', mod: 'leads' },
+  { href: '/admin/orders', label: 'e-Visa orders', mod: 'orders' },
+  { href: '/admin/revenue', label: 'Revenue', mod: 'revenue' },
+  { href: '/admin/affiliate-mgmt', label: 'Affiliates', mod: 'affiliates' },
+  { href: '/admin/content', label: 'Content', mod: 'content' },
+  { href: '/admin/email', label: 'Email', mod: 'email' },
+  { href: '/admin/marketing', label: 'Marketing', mod: 'marketing' },
+  { href: '/admin/customers', label: 'Customers', mod: 'orders' },
+  { href: '/admin/invoices', label: 'Invoices', mod: 'revenue' },
+  { href: '/admin/services', label: 'Services', mod: 'orders' },
+  { href: '/admin/audit', label: 'Audit', mod: 'audit' },
+  { href: '/admin/developers', label: 'Developers', mod: 'developers' },
+  { href: '/admin/settings', label: 'Settings', mod: 'settings' },
 ]
 
 export default async function AdminEvisaLayout({ children }: { children: ReactNode }) {
   // Hard gate the whole back-office shell. Each page re-checks too.
   await requireAdmin()
+  const ctx = await getAdminContext()
+  const nav = NAV.filter(n => can(ctx, n.mod, 'view'))
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -38,7 +40,7 @@ export default async function AdminEvisaLayout({ children }: { children: ReactNo
           <div className="flex items-center gap-6 min-w-0">
             <Link href="/admin" className="font-bold text-white whitespace-nowrap">VisitPlane <span className="text-blue-400">Admin</span></Link>
             <nav className="hidden xl:flex items-center gap-0.5 text-sm">
-              {NAV.map(n => (
+              {nav.map(n => (
                 <Link key={n.href} href={n.href} className="px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white whitespace-nowrap">{n.label}</Link>
               ))}
             </nav>
@@ -50,7 +52,7 @@ export default async function AdminEvisaLayout({ children }: { children: ReactNo
           </div>
         </div>
         <nav className="xl:hidden flex items-center gap-1 text-sm px-4 pb-2 overflow-x-auto">
-          {NAV.map(n => (
+          {nav.map(n => (
             <Link key={n.href} href={n.href} className="px-3 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white whitespace-nowrap">{n.label}</Link>
           ))}
         </nav>

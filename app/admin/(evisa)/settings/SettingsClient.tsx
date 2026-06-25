@@ -3,11 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { AdminRow } from '@/lib/admin/admins'
+import { ROLES } from '@/lib/admin/rbac'
 
 export function AdminAllowlist({ admins }: { admins: AdminRow[] }) {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [note, setNote] = useState('')
+  const [role, setRole] = useState('admin')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState('')
 
@@ -15,7 +17,7 @@ export function AdminAllowlist({ admins }: { admins: AdminRow[] }) {
     e.preventDefault(); setBusy(true); setMsg('')
     const res = await fetch('/api/admin/settings/admins', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ op: 'add', email, note: note || null }),
+      body: JSON.stringify({ op: 'add', email, note: note || null, role }),
     })
     const j = await res.json().catch(() => ({}))
     setBusy(false)
@@ -45,7 +47,7 @@ export function AdminAllowlist({ admins }: { admins: AdminRow[] }) {
           {admins.map(a => (
             <li key={a.user_id} className="flex items-center justify-between py-2">
               <div>
-                <div className="text-gray-200">{a.email ?? <span className="text-gray-500">unknown ({a.user_id.slice(0, 8)})</span>}</div>
+                <div className="text-gray-200">{a.email ?? <span className="text-gray-500">unknown ({a.user_id.slice(0, 8)})</span>} <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-400">{a.role}</span></div>
                 {a.note && <div className="text-xs text-gray-500">{a.note}</div>}
               </div>
               <button onClick={() => remove(a.user_id, a.email ?? a.user_id)} className="text-red-400 hover:text-red-300 text-xs">Remove</button>
@@ -56,6 +58,9 @@ export function AdminAllowlist({ admins }: { admins: AdminRow[] }) {
 
       <form onSubmit={add} className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-800">
         <input value={email} onChange={e => setEmail(e.target.value)} type="email" required placeholder="admin@email.com" className="bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 text-sm text-gray-200 w-56" />
+        <select value={role} onChange={e => setRole(e.target.value)} className="bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 text-sm text-gray-200">
+          {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+        </select>
         <input value={note} onChange={e => setNote(e.target.value)} placeholder="note (optional)" className="bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 text-sm text-gray-200 w-40" />
         <button type="submit" disabled={busy} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 rounded-lg text-white text-sm">Add admin</button>
         {msg && <span className="text-sm text-gray-400">{msg}</span>}

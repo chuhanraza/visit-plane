@@ -2,6 +2,7 @@ import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/admin'
+import { can, type AdminContext, type Module, type Level, type Role } from '@/lib/admin/rbac'
 
 /**
  * Admin authentication, server-side only. An admin is anyone who presents EITHER:
@@ -28,16 +29,18 @@ async function hasAdminSecret(): Promise<boolean> {
   return cookieStore.get('admin_secret')?.value === secret
 }
 
-/** True if the signed-in Supabase user is in app_admins. */
-async function isSupabaseAdmin(): Promise<{ ok: boolean; userId?: string; email?: string }> {
+/** True if the signed-in Supabase user is in app_admins; resolves role + perms. */
+async function isSupabaseAdmin(): Promise<{ ok: boolean; userId?: string; email?: string; role?: Role; permissions?: Record<string, Level> }> {
   try {
     const supabase = await getSupabaseServerClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { ok: false }
     // service-role read (app_admins is RLS-locked to admins; we check by id)
     const svc = getServiceClient()
-    const { data } = await svc.from('app_admins').select('user_id').eq('user_id', user.id).maybeSingle()
-    return { ok: !!data, userId: user.id, email: user.email ?? undefined }
+    const { data } = await svc.from('app_admins').select('user_id, role, permissions').eq('user_id', user.id).maybeSingle()
+    if (!data) return { ok: false }
+    const row = data as { role?: Role; permissions?: Record<string, Level> }
+    return { ok: true, userId: user.id, email: user.email ?? undefined, role: row.role ?? 'admin', permissions: row.permissions ?? {} }
   } catch {
     return { ok: false }
   }
@@ -49,6 +52,29 @@ export async function getAdminIdentity(): Promise<{ isAdmin: boolean; actor: str
   const sb = await isSupabaseAdmin()
   if (sb.ok) return { isAdmin: true, actor: `admin:${sb.email ?? sb.userId}` }
   return { isAdmin: false, actor: 'anonymous' }
+}
+
+/** Full admin context incl. role + permissions. Secret login = full owner. */
+export async function getAdminContext(): Promise<AdminContext> {
+  if (await hasAdminSecret()) return { isAdmin: true, actor: 'admin:secret', role: 'owner', permissions: {} }
+  const sb = await isSupabaseAdmin()
+  if (sb.ok) return { isAdmin: true, actor: `admin:${sb.email ?? sb.userId}`, role: sb.role ?? 'admin', permissions: sb.permissions ?? {} }
+  return { isAdmin: false, actor: 'anonymous', role: 'viewer', permissions: {} }
+}
+
+/** Page guard: must be admin AND have `level` on `module`, else redirect. */
+export async function requirePermission(module: Module, level: Level = 'view', redirectTo = '/admin/login'): Promise<AdminContext> {
+  const ctx = await getAdminContext()
+  if (!ctx.isAdmin) redirect(redirectTo)
+  if (!can(ctx, module, level)) redirect('/admin')
+  return ctx
+}
+
+/** Route guard: returns actor if admin AND permitted, else null (caller 401/403s). */
+export async function requirePermissionApi(module: Module, level: Level = 'view'): Promise<string | null> {
+  const ctx = await getAdminContext()
+  if (!ctx.isAdmin || !can(ctx, module, level)) return null
+  return ctx.actor
 }
 
 /** For Server Components / pages: redirect to login if not admin. Returns actor label. */

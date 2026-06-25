@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { requireAdmin } from '@/lib/admin/guard'
+import { requirePermission } from '@/lib/admin/guard'
 import { listAdmins, keyStatus } from '@/lib/admin/admins'
 import { getSettings } from '@/lib/admin/settings'
 import { AdminAllowlist, FeatureFlags } from './SettingsClient'
@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: 'Settings — VisitPlane Admin', robo
 export const dynamic = 'force-dynamic'
 
 export default async function AdminSettings() {
-  await requireAdmin()
+  await requirePermission('settings', 'view')
   const [admins, settings] = await Promise.all([listAdmins(), getSettings()])
   const keys = keyStatus()
 
