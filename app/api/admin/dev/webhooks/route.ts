@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { requirePermissionApi } from '@/lib/admin/guard'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { writeAudit } from '@/lib/audit'
-import { WEBHOOK_EVENTS } from '@/lib/admin/webhooks'
+import { WEBHOOK_EVENTS, testWebhook, redeliver } from '@/lib/admin/webhooks'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,6 +28,20 @@ export async function POST(req: NextRequest) {
     await svc.from('webhook_endpoints').delete().eq('id', parsed.data.id)
     await writeAudit({ actor, actorType: 'admin', action: 'webhook.delete', entityType: 'webhook_endpoint', entityId: parsed.data.id, metadata: {}, ip })
     return NextResponse.json({ ok: true })
+  }
+  if (body?.op === 'test') {
+    const p = z.object({ id: z.string().uuid() }).safeParse(body)
+    if (!p.success) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    const r = await testWebhook(p.data.id)
+    await writeAudit({ actor, actorType: 'admin', action: 'webhook.test', entityType: 'webhook_endpoint', entityId: p.data.id, metadata: { ok: r.ok }, ip })
+    return NextResponse.json(r.ok ? { ok: true } : { error: r.error || 'delivery failed' }, { status: r.ok ? 200 : 400 })
+  }
+  if (body?.op === 'redeliver') {
+    const p = z.object({ deliveryId: z.string().uuid() }).safeParse(body)
+    if (!p.success) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    const r = await redeliver(p.data.deliveryId)
+    await writeAudit({ actor, actorType: 'admin', action: 'webhook.redeliver', entityType: 'webhook_delivery', entityId: p.data.deliveryId, metadata: { ok: r.ok }, ip })
+    return NextResponse.json(r.ok ? { ok: true } : { error: r.error || 'redelivery failed' }, { status: r.ok ? 200 : 400 })
   }
 
   const parsed = CreateSchema.safeParse(body)

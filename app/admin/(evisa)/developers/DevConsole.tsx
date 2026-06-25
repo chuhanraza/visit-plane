@@ -56,6 +56,19 @@ export default function DevConsole({ keys, endpoints, deliveries }: {
     if (res.ok) router.refresh()
   }
 
+  async function testHook(id: string) {
+    const res = await fetch('/api/admin/dev/webhooks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'test', id }) })
+    const j = await res.json().catch(() => ({}))
+    alert(res.ok ? 'Test event delivered ✓' : `Test failed: ${j.error || 'error'}`)
+    router.refresh()
+  }
+  async function redeliver(deliveryId: string) {
+    const res = await fetch('/api/admin/dev/webhooks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'redeliver', deliveryId }) })
+    const j = await res.json().catch(() => ({}))
+    alert(res.ok ? 'Redelivered ✓' : `Redelivery failed: ${j.error || 'error'}`)
+    router.refresh()
+  }
+
   return (
     <div className="space-y-8">
       {/* API KEYS */}
@@ -115,7 +128,7 @@ export default function DevConsole({ keys, endpoints, deliveries }: {
                 <tr key={ep.id} className={ep.active ? '' : 'opacity-50'}>
                   <td className="px-4 py-2.5 text-gray-200 text-xs break-all">{ep.url}</td>
                   <td className="px-4 py-2.5 text-gray-400 text-xs">{ep.events.join(', ')}</td>
-                  <td className="px-4 py-2.5 text-right"><button onClick={() => delHook(ep.id)} className="text-red-400 hover:text-red-300 text-xs">Delete</button></td>
+                  <td className="px-4 py-2.5 text-right whitespace-nowrap"><button onClick={() => testHook(ep.id)} className="text-blue-400 hover:text-blue-300 text-xs mr-3">Test</button><button onClick={() => delHook(ep.id)} className="text-red-400 hover:text-red-300 text-xs">Delete</button></td>
                 </tr>
               ))}
             </tbody>
@@ -134,16 +147,17 @@ export default function DevConsole({ keys, endpoints, deliveries }: {
         <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-800/50 text-gray-400 text-xs uppercase">
-              <tr><th className="text-left font-medium px-4 py-3">When</th><th className="text-left font-medium px-4 py-3">Event</th><th className="text-left font-medium px-4 py-3">Status</th><th className="text-left font-medium px-4 py-3">Code</th></tr>
+              <tr><th className="text-left font-medium px-4 py-3">When</th><th className="text-left font-medium px-4 py-3">Event</th><th className="text-left font-medium px-4 py-3">Status</th><th className="text-left font-medium px-4 py-3">Code</th><th className="px-4 py-3"></th></tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-              {deliveries.length === 0 && <tr><td colSpan={4} className="px-4 py-8 text-center text-gray-500">No deliveries yet.</td></tr>}
+              {deliveries.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-500">No deliveries yet.</td></tr>}
               {deliveries.map(d => (
                 <tr key={d.id}>
                   <td className="px-4 py-2 text-gray-500 text-xs whitespace-nowrap">{new Date(d.created_at).toLocaleString()}</td>
                   <td className="px-4 py-2 text-gray-300 font-mono text-xs">{d.event}</td>
                   <td className="px-4 py-2"><span className={`text-[11px] px-2 py-0.5 rounded-full ${d.status === 'success' ? 'bg-emerald-500/15 text-emerald-300' : d.status === 'failed' ? 'bg-red-500/15 text-red-300' : 'bg-amber-500/15 text-amber-300'}`}>{d.status}</span></td>
                   <td className="px-4 py-2 text-gray-500 text-xs">{d.response_code ?? '—'}</td>
+                  <td className="px-4 py-2 text-right">{d.status === 'failed' && <button onClick={() => redeliver(d.id)} className="text-blue-400 hover:text-blue-300 text-xs">Redeliver</button>}</td>
                 </tr>
               ))}
             </tbody>
