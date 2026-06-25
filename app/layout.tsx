@@ -7,6 +7,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
 import CommandPalette from "@/components/layout/CommandPalette";
+import ChromeGate from "@/components/layout/ChromeGate";
 import { CommandPaletteProvider } from "@/components/layout/CommandPaletteContext";
 import ExitIntentModal from "@/components/ExitIntentModal";
 import PWAProvider from "@/components/PWAProvider";
@@ -240,10 +241,10 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col bg-[#FAFAFA]">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CommandPaletteProvider>
-            <SiteHeader />
-            <CommandPalette />
+            <ChromeGate><SiteHeader /></ChromeGate>
+            <ChromeGate><CommandPalette /></ChromeGate>
             <main className="flex-1">{children}</main>
-            <SiteFooter />
+            <ChromeGate><SiteFooter /></ChromeGate>
           </CommandPaletteProvider>
         </NextIntlClientProvider>
         <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
