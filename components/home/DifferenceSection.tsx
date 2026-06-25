@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView, type Variants } from 'framer-motion'
-import TravelerBird from '@/components/home/TravelerBird'
+import BirdHeroBanner from '@/components/home/BirdHeroBanner'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // "The difference" — a transformation comparison. Each painful DIY step (left,
@@ -80,8 +80,8 @@ export default function DifferenceSection() {
           </motion.p>
         </motion.div>
 
-        {/* Brand mascot lead visual */}
-        <TravelerBird />
+        {/* Brand illustrated lead banner */}
+        <BirdHeroBanner />
 
         {/* Comparison panel */}
         <motion.div
