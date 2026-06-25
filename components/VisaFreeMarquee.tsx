@@ -10,10 +10,13 @@ function nameToSlug(name: string) {
   return encodeURIComponent(name)
 }
 
-// Human label for the free-stay length / entry kind.
+// Human label for the allowed-stay length / entry kind.
 function stayLabel(d: ReliableDestination): string {
-  if (d.days != null) return `${d.days} days${d.kind === 'arrival' ? ' on arrival' : ''}`
-  return d.kind === 'arrival' ? 'Free on arrival' : 'Visa-free'
+  if (d.days != null) return `${d.days} days`
+  return d.kind === 'visa-on-arrival' ? 'On arrival' : 'Visa-free'
+}
+function kindLabel(d: ReliableDestination): string {
+  return d.kind === 'visa-on-arrival' ? 'Visa on arrival' : 'Visa-free'
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -35,7 +38,7 @@ export function VisaFreeCard({
       href={`/visa/${nameToSlug(passport)}/${nameToSlug(dest.name)}`}
       onClick={onClick}
       draggable={false}
-      aria-label={`${dest.name} — ${dest.kind === 'arrival' ? 'free visa on arrival' : 'visa-free'}, ${stayLabel(dest)}`}
+      aria-label={`${dest.name} — ${kindLabel(dest).toLowerCase()}, up to ${stayLabel(dest)}`}
       className="group/card relative block h-[300px] w-[220px] shrink-0 overflow-hidden rounded-[1.75rem] bg-gray-900 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)] ring-1 ring-emerald-400/20 transition-all duration-300 will-change-transform hover:-translate-y-2 hover:shadow-[0_28px_55px_-15px_rgba(16,185,129,0.45)] hover:ring-emerald-400/60 focus-visible:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 sm:h-[340px] sm:w-[244px] lg:h-[360px] lg:w-[260px]"
     >
       {/* full-bleed photo (or branded fallback) */}
@@ -53,7 +56,7 @@ export function VisaFreeCard({
       {/* top-left status tag */}
       <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur-md">
         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_1px_rgba(52,211,153,0.9)]" />
-        {dest.kind === 'arrival' ? 'Free on arrival' : 'Visa-free'}
+        {kindLabel(dest)}
       </div>
 
       {/* bottom content block */}

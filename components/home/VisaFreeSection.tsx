@@ -7,9 +7,17 @@ import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
 import PassportDropdown from '@/components/home/PassportDropdown'
 import VisaFreeMarquee, { VisaFreeCard } from '@/components/VisaFreeMarquee'
 import { useUserCountry } from '@/hooks/useUserCountry'
-import type { ReliableDestination } from '@/app/api/visa-free-reliable/route'
+import type { ReliableDestination, ReliableVisaFreeResponse } from '@/app/api/visa-free-reliable/route'
 
 type Status = 'detecting' | 'loading' | 'ready' | 'empty' | 'error'
+type Meta = Pick<ReliableVisaFreeResponse, 'source' | 'verified'>
+
+const MONTHS = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+function prettyMonth(ym: string): string {
+  const [y, m] = ym.split('-')
+  const name = MONTHS[parseInt(m, 10)]
+  return name ? `${name} ${y}` : ym
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Homepage "No Visa Required" section.
@@ -30,6 +38,7 @@ export default function VisaFreeSection() {
   const [passport, setPassport] = useState('')
   const [applied, setApplied] = useState(false)
   const [dests, setDests] = useState<ReliableDestination[]>([])
+  const [meta, setMeta] = useState<Meta | null>(null)
   const [status, setStatus] = useState<Status>('detecting')
 
   // Default the passport from IP geo once the hook resolves (it never sticks on
@@ -59,9 +68,10 @@ export default function VisaFreeSection() {
         if (cancelled) return
         const list: ReliableDestination[] = Array.isArray(data?.destinations) ? data.destinations : []
         setDests(list)
+        setMeta({ source: data?.source ?? 'guarded-db', verified: data?.verified ?? null })
         setStatus(list.length === 0 ? 'empty' : 'ready')
       })
-      .catch(() => { if (!cancelled) { setDests([]); setStatus('error') } })
+      .catch(() => { if (!cancelled) { setDests([]); setMeta(null); setStatus('error') } })
     return () => { cancelled = true }
   }, [passport])
 
@@ -78,14 +88,31 @@ export default function VisaFreeSection() {
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">No Visa Required</h2>
           <p className="mx-auto mt-3 max-w-xl text-sm text-gray-500">
-            Destinations{' '}
-            <span className="font-semibold text-gray-700">{passport ? `your ${passport}` : 'your'}</span>{' '}
-            passport may enter visa-free or with a free visa-on-arrival — shown only where our
-            guide data is clean and unambiguous.{' '}
+            Where{' '}
+            <span className="font-semibold text-gray-700">{passport ? `a ${passport}` : 'your'}</span>{' '}
+            passport can travel visa-free or get a visa on arrival.{' '}
             <span className="font-semibold text-gray-700">
-              This is a guide — always reconfirm with the official source before you fly.
+              Always reconfirm with the official source before you fly.
             </span>
           </p>
+
+          {/* Provenance: honest about how each list is sourced */}
+          {status === 'ready' && meta?.source === 'official-curated' && meta.verified ? (
+            <a
+              href={meta.verified.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold text-emerald-700 transition hover:bg-emerald-500/15"
+            >
+              <span aria-hidden="true">✓</span>
+              {meta.verified.sourceLabel} · {prettyMonth(meta.verified.lastVerified)}
+              <span aria-hidden="true">↗</span>
+            </a>
+          ) : status === 'ready' ? (
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-medium text-gray-500">
+              Guide — shown only where our data is clean &amp; unambiguous
+            </span>
+          ) : null}
         </div>
 
         {/* Passport selector — inline dropdown (auto-set from IP, change anytime) */}

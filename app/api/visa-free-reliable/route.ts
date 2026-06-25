@@ -1,42 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { getVerifiedVisaFree, type VisaFreeKind } from '@/lib/data/visaFreeVerified'
 
 export const dynamic = 'force-dynamic'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// RELIABLE visa-free list for the homepage "No Visa Required" section.
+// RELIABLE visa-free / visa-on-arrival list for the homepage "No Visa Required"
+// section. Two tiers, accuracy first (this is YMYL content):
 //
-// This is a YMYL accuracy guardrail, NOT a styling helper. The destinations
-// table is flagged unverified end-to-end (every row data_confidence='unverified')
-// and ~26k passport→country pairs carry duplicate rows, ~5.3k of which disagree
-// on visa_type (see visa-data-review.md). Showing that raw data as a confident
-// "visa-free" list produces real, harmful errors — e.g. China rendered as
-// "visa-free" for a Pakistani passport, which is false.
+//   1) VERIFIED (preferred) — if the passport has an official-source-curated
+//      block in lib/data/visaFreeVerified.ts, we serve that, with provenance
+//      (what it was checked against + when). This is how Pakistan shows its real
+//      ~20+ destinations rather than 1.
 //
-// So we surface a destination ONLY when ALL of the following hold for the
-// selected passport. We never invent, change, or "correct" a stored value — we
-// only DECIDE WHAT TO SHOW, and exclude anything we cannot stand behind:
+//   2) GUARDED FALLBACK — otherwise we derive a conservative list from the live
+//      `destinations` table (every row is flagged unverified and many duplicate /
+//      contradict). A destination is included ONLY if, for that passport, it has
+//      EXACTLY ONE row (any duplicate → conflicting/duplicate set → excluded —
+//      this is what removes the false China-for-Pakistan entry), the visa_type
+//      clearly means no advance visa, and the cost doesn't contradict that. We
+//      never invent or change a stored value — we only decide what to show.
 //
-//   1) EXACTLY ONE row exists for that (passport → country) pair. Any duplicate
-//      makes the route part of the conflicting/duplicate set from sprint16 /
-//      visa-data-review — excluded, even if the duplicates happen to agree
-//      (this is precisely what removes the wrong China-for-Pakistan entry).
-//   2) That single row's visa_type CLEARLY means no visa is required — plain
-//      "Visa Free" or an explicit "Free Visa on Arrival". eVisa, ETA, plain
-//      visa-on-arrival, embassy/tourist/business/etc. are all excluded: an eVisa
-//      is still a visa, and a plain VoA is not guaranteed free.
-//   3) The cost is not self-contradictory — pricing is Free / $0 / absent. A row
-//      typed "Visa Free" but priced "$135" is internally inconsistent, so we
-//      treat it as ambiguous and leave it out.
-//
-// Result: FEWER but trustworthy entries. Strong passports keep a healthy list;
-// weak passports legitimately show very few (or none), which is the honest
-// outcome — the section's empty/thin states handle that gracefully.
+// "visa-on-arrival" is reported as its own kind (never relabelled "free"): a VoA
+// can carry a fee. Only "visa-free" asserts no-visa entry.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface ReliableDestination {
   name: string
-  kind: 'free' | 'arrival'
+  kind: VisaFreeKind // 'visa-free' | 'visa-on-arrival'
   days: number | null
 }
 
@@ -44,15 +35,17 @@ export interface ReliableVisaFreeResponse {
   passport: string
   count: number
   destinations: ReliableDestination[]
+  /** 'official-curated' when served from the verified dataset, else 'guarded-db'. */
+  source: 'official-curated' | 'guarded-db'
+  /** Provenance, present only for the verified tier. */
+  verified: { lastVerified: string; sourceLabel: string; sourceUrl: string } | null
 }
 
 const norm = (s: string | null | undefined) => (s || '').toLowerCase().trim()
 
-// Returns the "no visa required" kind for a CLEARLY visa-free type, else null.
-function clearKind(visaType: string | null): 'free' | 'arrival' | null {
+// Returns the no-advance-visa kind for a CLEARLY visa-free type, else null.
+function clearKind(visaType: string | null): VisaFreeKind | null {
   const v = norm(visaType)
-  // Hard-exclude anything that is actually a visa (electronic or otherwise),
-  // a required entry, or an online/transit/category-specific permit.
   if (
     v.includes('evisa') || v.includes('e-visa') || v.includes('electronic') ||
     v.includes('eta') || v.includes('required') || v.includes('embassy') ||
@@ -61,12 +54,11 @@ function clearKind(visaType: string | null): 'free' | 'arrival' | null {
     v.includes('residence') || v.includes('online')
   ) return null
 
-  if (v === 'free visa on arrival') return 'arrival'
-  if (v === 'visa free' || v === 'visa-free' || v === 'no visa' || v.startsWith('visa free')) return 'free'
+  if (v === 'free visa on arrival') return 'visa-on-arrival'
+  if (v === 'visa free' || v === 'visa-free' || v === 'no visa' || v.startsWith('visa free')) return 'visa-free'
   return null
 }
 
-// Cost must not contradict a "free entry" claim.
 function costIsFree(pricing: string | null): boolean {
   const v = norm(pricing)
   return v === '' || v === 'free' || v === '$0' || v === '0' || v === 'n/a' || v === 'none'
@@ -86,6 +78,24 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing passport query param' }, { status: 400 })
   }
 
+  // ── Tier 1: official-source-curated verified data ──────────────────────────
+  const verified = getVerifiedVisaFree(passport)
+  if (verified) {
+    const response: ReliableVisaFreeResponse = {
+      passport,
+      count: verified.destinations.length,
+      destinations: verified.destinations,
+      source: 'official-curated',
+      verified: {
+        lastVerified: verified.lastVerified,
+        sourceLabel: verified.sourceLabel,
+        sourceUrl: verified.sourceUrl,
+      },
+    }
+    return NextResponse.json(response)
+  }
+
+  // ── Tier 2: conservative guardrail over the live (unverified) table ────────
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -98,7 +108,7 @@ export async function GET(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  const empty: ReliableVisaFreeResponse = { passport, count: 0, destinations: [] }
+  const empty: ReliableVisaFreeResponse = { passport, count: 0, destinations: [], source: 'guarded-db', verified: null }
   if (!data?.length) return NextResponse.json(empty)
 
   // Group every row by distinct destination country (case-insensitive).
@@ -114,19 +124,14 @@ export async function GET(req: NextRequest) {
 
   const destinations: ReliableDestination[] = []
   for (const { name, rows } of byCountry.values()) {
-    // Guardrail 1: any duplicate → part of the conflicting/duplicate set → exclude.
-    if (rows.length !== 1) continue
+    if (rows.length !== 1) continue // duplicate/conflicting → exclude
     const row = rows[0]
-    // Guardrail 2: visa_type must clearly mean "no visa required".
     const kind = clearKind(row.visa_type)
     if (!kind) continue
-    // Guardrail 3: cost must not contradict the free-entry claim.
     if (!costIsFree(row.pricing)) continue
-
     destinations.push({ name, kind, days: parseDays(row.validity) })
   }
 
-  // Longest free stay first (where known), then alphabetical. Cap for the carousel.
   destinations.sort((a, b) => {
     const da = a.days ?? -1
     const db = b.days ?? -1
@@ -138,6 +143,8 @@ export async function GET(req: NextRequest) {
     passport,
     count: destinations.length,
     destinations: destinations.slice(0, 24),
+    source: 'guarded-db',
+    verified: null,
   }
   return NextResponse.json(response)
 }
