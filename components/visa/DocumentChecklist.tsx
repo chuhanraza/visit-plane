@@ -30,7 +30,8 @@ interface DocumentChecklistProps {
 }
 
 // ─── Document data resolver (unchanged content) ─────────────────────────────────
-function resolveDocumentGroups(record: VisaRecord, destinationName: string): DocumentGroup[] {
+export type { DocumentGroup, DocumentItem }
+export function resolveDocumentGroups(record: VisaRecord, destinationName: string): DocumentGroup[] {
   const visaType = (record.visa_type ?? record.type ?? '').toString().toLowerCase()
   const isFree      = /free|no visa/i.test(visaType)
   const isArrival   = /arrival/i.test(visaType)

@@ -10,6 +10,7 @@ import TravelReadinessGrid from '@/components/visa/TravelReadinessGrid'
 import SourcesAndTrust from '@/components/visa/SourcesAndTrust'
 import RelatedRoutesAndFAQ from '@/components/visa/RelatedRoutesAndFAQ'
 import PostLookupModal from '@/components/PostLookupModal'
+import PrintableChecklist from '@/components/visa/PrintableChecklist'
 import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
 
 const DocumentChecker = dynamic(
@@ -191,7 +192,17 @@ export default function VisaPageClient({
   }
 
   return (
-    <div className="bg-[#F8FAFC] pb-24 sm:pb-12">
+    <>
+    {/* ── Print-only: compact 1–2 page checklist with official source ─────── */}
+    <PrintableChecklist
+      visaRecord={primaryVisa}
+      passportName={passportName}
+      destinationName={destinationName}
+      passportFlag={passportFlag}
+      destinationFlag={destinationFlag}
+    />
+
+    <div className="bg-[#F8FAFC] pb-24 sm:pb-12 print:hidden">
 
       {/* ── Section 1: ANSWER (above fold) ──────────────────────────────────── */}
       <div ref={heroRef}>
@@ -278,5 +289,6 @@ export default function VisaPageClient({
         />
       )}
     </div>
+    </>
   )
 }

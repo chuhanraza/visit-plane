@@ -274,3 +274,13 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 .vp-marquee-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* ── Print: visa "Download checklist" prints only the compact checklist ──── */
+@media print {
+  /* Hide site chrome (header, footer, breadcrumb) so the printout is clean */
+  header, footer, nav { display: none !important; }
+  body { background: #ffffff !important; }
+  /* #print-checklist (hidden print:block) is the only printed content; the rest
+     of the visa page is print:hidden in VisaPageClient. */
+  @page { margin: 14mm; }
+}
