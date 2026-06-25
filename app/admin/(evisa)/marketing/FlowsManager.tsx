@@ -4,13 +4,15 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface Step { delay_minutes: number; subject: string; body: string }
-interface Flow { id: string; name: string; active: boolean; steps: { delay_minutes: number; subject: string; body: string }[]; stats: { active: number; completed: number } }
+interface Flow { id: string; name: string; active: boolean; trigger_type?: string; steps: { delay_minutes: number; subject: string; body: string }[]; stats: { active: number; completed: number } }
+const TRIGGER_LABEL: Record<string, string> = { 'lead.created': 'on lead confirm', 'wizard.completed': 'on wizard completed' }
 
 const inp = 'bg-gray-900 border border-gray-800 rounded-lg px-2.5 py-1.5 text-sm text-gray-200'
 
 export default function FlowsManager({ flows, broadcastsEnabled }: { flows: Flow[]; broadcastsEnabled: boolean }) {
   const router = useRouter()
   const [name, setName] = useState('')
+  const [trigger, setTrigger] = useState('lead.created')
   const [steps, setSteps] = useState<Step[]>([{ delay_minutes: 0, subject: '', body: '' }])
   const [busy, setBusy] = useState(false)
   const [adding, setAdding] = useState(false)
@@ -20,9 +22,9 @@ export default function FlowsManager({ flows, broadcastsEnabled }: { flows: Flow
   async function create() {
     if (!name.trim() || steps.some(s => !s.subject.trim() || !s.body.trim())) { alert('Name + every step needs a subject and body'); return }
     setBusy(true)
-    const res = await fetch('/api/admin/flows', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, steps }) })
+    const res = await fetch('/api/admin/flows', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, steps, triggerType: trigger }) })
     setBusy(false)
-    if (res.ok) { setName(''); setSteps([{ delay_minutes: 0, subject: '', body: '' }]); setAdding(false); router.refresh() }
+    if (res.ok) { setName(''); setTrigger('lead.created'); setSteps([{ delay_minutes: 0, subject: '', body: '' }]); setAdding(false); router.refresh() }
     else alert((await res.json().catch(() => ({}))).error || 'Failed')
   }
 
@@ -47,8 +49,14 @@ export default function FlowsManager({ flows, broadcastsEnabled }: { flows: Flow
 
       {adding && (
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 space-y-3">
-          <input value={name} onChange={e => setName(e.target.value)} placeholder="Flow name (e.g. Welcome series)" className={`${inp} w-64`} />
-          <p className="text-xs text-gray-500">Trigger: a lead confirms double opt-in → these emails send in order, each after its delay.</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Flow name (e.g. Welcome series)" className={`${inp} w-64`} />
+            <select value={trigger} onChange={e => setTrigger(e.target.value)} className={inp}>
+              <option value="lead.created">Trigger: lead confirms opt-in</option>
+              <option value="wizard.completed">Trigger: wizard completed (recovery)</option>
+            </select>
+          </div>
+          <p className="text-xs text-gray-500">These emails send in order, each after its delay, to confirmed + subscribed recipients matching the trigger.</p>
           {steps.map((s, i) => (
             <div key={i} className="border border-gray-800 rounded-xl p-3 space-y-2">
               <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -76,7 +84,7 @@ export default function FlowsManager({ flows, broadcastsEnabled }: { flows: Flow
             <div key={f.id} className="flex items-center justify-between px-4 py-3">
               <div>
                 <div className="text-white text-sm">{f.name} <span className="text-gray-500">· {f.steps.length} step{f.steps.length === 1 ? '' : 's'} · {f.stats.active} active / {f.stats.completed} done</span></div>
-                <div className="text-xs text-gray-600">on lead confirm → {f.steps.map(s => `+${s.delay_minutes}m: ${s.subject || '(no subject)'}`).join(' → ')}</div>
+                <div className="text-xs text-gray-600">{TRIGGER_LABEL[f.trigger_type ?? 'lead.created'] ?? 'trigger'} → {f.steps.map(s => `+${s.delay_minutes}m: ${s.subject || '(no subject)'}`).join(' → ')}</div>
               </div>
               <div className="flex items-center gap-3">
                 <button onClick={() => act('toggle', { id: f.id, active: !f.active })} className={`text-xs px-2 py-0.5 rounded-full ${f.active ? 'bg-emerald-500/15 text-emerald-300' : 'bg-gray-700 text-gray-400'}`}>{f.active ? 'active' : 'inactive'}</button>

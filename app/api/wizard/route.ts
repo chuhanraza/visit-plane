@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { recordEvent } from '@/lib/admin/events'
 
 // ── In-memory cache for Gemini results (24h TTL per state hash) ───────────────
 const cache = new Map<string, { insight: string; ts: number }>()
@@ -117,6 +118,9 @@ export async function POST(req: NextRequest) {
   if (!passport || !destination) {
     return NextResponse.json({ error: 'passport and destination required' }, { status: 400 })
   }
+
+  // Funnel-top capture (anonymous; best-effort, never blocks the wizard).
+  void recordEvent({ metric: 'wizard.started', properties: { passport, destination, purpose } })
 
   // Check cache
   const hash = stateHash(passport, destination, purpose, duration)

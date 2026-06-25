@@ -35,9 +35,12 @@ export async function listFlows() {
   return ((flows ?? []) as FlowRow[]).map(f => ({ ...f, steps: stepsByFlow.get(f.id) ?? [], stats: runStats.get(f.id) ?? { active: 0, completed: 0 } }))
 }
 
-export async function createFlow(name: string, steps: { delay_minutes: number; subject: string; body: string }[]): Promise<string> {
+export const FLOW_TRIGGERS = ['lead.created', 'wizard.completed'] as const
+export type FlowTrigger = (typeof FLOW_TRIGGERS)[number]
+
+export async function createFlow(name: string, steps: { delay_minutes: number; subject: string; body: string }[], triggerType: FlowTrigger = 'lead.created'): Promise<string> {
   const svc = getServiceClient()
-  const { data, error } = await svc.from('flows').insert({ name, trigger_type: 'lead.created', active: false }).select('id').maybeSingle()
+  const { data, error } = await svc.from('flows').insert({ name, trigger_type: triggerType, active: false }).select('id').maybeSingle()
   if (error) throw new Error(error.message)
   const flowId = (data as { id: string }).id
   if (steps.length) {
@@ -65,21 +68,33 @@ export async function runFlowWorker(): Promise<{ enabled: boolean; enrolled: num
   const now = Date.now()
   let enrolled = 0, sent = 0, completed = 0
 
-  const { data: flows } = await svc.from('flows').select('id, created_at').eq('active', true)
-  for (const f of (flows ?? []) as { id: string; created_at: string }[]) {
+  const { data: flows } = await svc.from('flows').select('id, created_at, trigger_type').eq('active', true)
+  for (const f of (flows ?? []) as { id: string; created_at: string; trigger_type: string }[]) {
     const { data: steps } = await svc.from('flow_steps').select('position, delay_minutes, subject, body').eq('flow_id', f.id).order('position')
     const flowSteps = (steps ?? []) as { position: number; delay_minutes: number; subject: string; body: string }[]
     if (flowSteps.length === 0) continue
 
-    // ── Enroll: confirmed+subscribed leads since the flow was created, not yet enrolled.
     const { data: existing } = await svc.from('flow_runs').select('email').eq('flow_id', f.id).limit(50000)
     const enrolledSet = new Set((existing ?? []).map((r: { email: string }) => r.email.toLowerCase()))
-    const { data: leads } = await svc.from('email_subscribers')
-      .select('email, confirmed_at').not('confirmed_at', 'is', null).is('unsubscribed_at', null)
-      .gte('confirmed_at', f.created_at).limit(500)
-    const toEnroll = ((leads ?? []) as { email: string; confirmed_at: string }[])
-      .filter(l => !enrolledSet.has(l.email.toLowerCase()))
-      .map(l => ({ flow_id: f.id, email: l.email, current_step: 0, next_action_at: new Date(now + flowSteps[0].delay_minutes * 60000).toISOString() }))
+
+    // Candidate emails differ by trigger; both require confirmed + subscribed to email.
+    let candidates: string[] = []
+    if (f.trigger_type === 'wizard.completed') {
+      const { data: ev } = await svc.from('marketing_events').select('email').eq('metric', 'wizard.completed').gte('occurred_at', f.created_at).not('email', 'is', null).limit(2000)
+      const emails = [...new Set((ev ?? []).map((e: { email: string | null }) => (e.email || '').toLowerCase()).filter(Boolean))]
+      if (emails.length) {
+        const { data: subs } = await svc.from('email_subscribers').select('email').not('confirmed_at', 'is', null).is('unsubscribed_at', null).in('email', emails)
+        candidates = ((subs ?? []) as { email: string }[]).map(s => s.email)
+      }
+    } else {
+      const { data: leads } = await svc.from('email_subscribers')
+        .select('email').not('confirmed_at', 'is', null).is('unsubscribed_at', null).gte('confirmed_at', f.created_at).limit(500)
+      candidates = ((leads ?? []) as { email: string }[]).map(l => l.email)
+    }
+
+    const toEnroll = candidates
+      .filter(e => !enrolledSet.has(e.toLowerCase()))
+      .map(email => ({ flow_id: f.id, email, current_step: 0, next_action_at: new Date(now + flowSteps[0].delay_minutes * 60000).toISOString() }))
     if (toEnroll.length) { await svc.from('flow_runs').upsert(toEnroll, { onConflict: 'flow_id,email', ignoreDuplicates: true }); enrolled += toEnroll.length }
   }
 

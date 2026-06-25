@@ -102,21 +102,31 @@ export default async function AdminAnalytics({ searchParams }: { searchParams: P
         {/* Conversion funnel */}
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
           <h2 className="font-semibold text-white mb-4">Conversion funnel</h2>
-          {a.funnel.leads === 0 ? <p className="text-gray-500 text-sm">No leads in this range.</p> : (
-            <div className="space-y-3">
-              {[
-                { label: 'Leads captured', val: a.funnel.leads, pct: 100 },
-                { label: 'Opt-in confirmed', val: a.funnel.confirmed, pct: a.funnel.leadToConfirm },
-                { label: 'Became customer', val: a.funnel.customers, pct: a.funnel.leadToCustomer },
-              ].map((s, i) => (
-                <div key={i}>
-                  <div className="flex justify-between text-sm mb-1"><span className="text-gray-300">{s.label}</span><span className="text-gray-400">{s.val} · {s.pct}%</span></div>
-                  <div className="h-6 bg-gray-800 rounded overflow-hidden"><div className="h-full bg-blue-600/70" style={{ width: `${Math.max(2, s.pct)}%` }} /></div>
-                </div>
-              ))}
-              <p className="text-xs text-gray-600 pt-1">“Visits” and “wizard starts” aren’t tracked yet — added in the marketing track.</p>
-            </div>
-          )}
+          {(() => {
+            const f = a.funnel
+            const stages = [
+              ...(f.wizardStarted ? [{ label: 'Wizard started', val: f.wizardStarted }] : []),
+              ...(f.wizardCompleted ? [{ label: 'Wizard completed', val: f.wizardCompleted }] : []),
+              { label: 'Leads captured', val: f.leads },
+              { label: 'Opt-in confirmed', val: f.confirmed },
+              { label: 'Became customer', val: f.customers },
+            ]
+            const top = Math.max(1, stages[0].val)
+            return stages.every(s => s.val === 0) ? <p className="text-gray-500 text-sm">No funnel activity in this range.</p> : (
+              <div className="space-y-3">
+                {stages.map((s, i) => {
+                  const pct = Math.round((s.val / top) * 100)
+                  return (
+                    <div key={i}>
+                      <div className="flex justify-between text-sm mb-1"><span className="text-gray-300">{s.label}</span><span className="text-gray-400">{s.val} · {pct}%</span></div>
+                      <div className="h-6 bg-gray-800 rounded overflow-hidden"><div className="h-full bg-blue-600/70" style={{ width: `${Math.max(2, pct)}%` }} /></div>
+                    </div>
+                  )
+                })}
+                {!f.wizardStarted && <p className="text-xs text-gray-600 pt-1">Wizard-start tracking is now live — stages appear here once the wizard is used.</p>}
+              </div>
+            )
+          })()}
         </div>
 
         {/* Attribution */}

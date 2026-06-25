@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { requirePermissionApi } from '@/lib/admin/guard'
 import { writeAudit } from '@/lib/audit'
-import { createFlow, setFlowActive, deleteFlow, runFlowWorker } from '@/lib/admin/flows'
+import { createFlow, setFlowActive, deleteFlow, runFlowWorker, FLOW_TRIGGERS } from '@/lib/admin/flows'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,7 +11,7 @@ const StepSchema = z.object({
   subject: z.string().trim().min(1).max(200),
   body: z.string().trim().min(1).max(50000),
 })
-const CreateSchema = z.object({ name: z.string().trim().min(1).max(80), steps: z.array(StepSchema).min(1).max(10) })
+const CreateSchema = z.object({ name: z.string().trim().min(1).max(80), steps: z.array(StepSchema).min(1).max(10), triggerType: z.enum(FLOW_TRIGGERS).default('lead.created') })
 
 export async function POST(req: NextRequest) {
   const actor = await requirePermissionApi('marketing', 'edit')
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
   const parsed = CreateSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? 'Invalid body' }, { status: 400 })
-  const id = await createFlow(parsed.data.name, parsed.data.steps)
-  await writeAudit({ actor, actorType: 'admin', action: 'flow.create', entityType: 'flow', entityId: id, metadata: { name: parsed.data.name, steps: parsed.data.steps.length }, ip })
+  const id = await createFlow(parsed.data.name, parsed.data.steps, parsed.data.triggerType)
+  await writeAudit({ actor, actorType: 'admin', action: 'flow.create', entityType: 'flow', entityId: id, metadata: { name: parsed.data.name, steps: parsed.data.steps.length, trigger: parsed.data.triggerType }, ip })
   return NextResponse.json({ ok: true, id })
 }

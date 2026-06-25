@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { recordEvent } from '@/lib/admin/events'
 import type { VisaData } from '@/lib/visa-engine'
 import { shortName } from '@/lib/visa-engine'
 
@@ -138,6 +139,9 @@ export async function POST(req: NextRequest) {
         { onConflict: 'email', ignoreDuplicates: true }
       )
     }
+
+    // Funnel event: wizard completed with an email (recovery-flow trigger).
+    void recordEvent({ email: email.toLowerCase().trim(), metric: 'wizard.completed', properties: { passport: answers.passport, destination: answers.destination } })
 
     // 2. Send email via Resend
     const resendKey = process.env.RESEND_API_KEY

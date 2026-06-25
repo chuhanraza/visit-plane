@@ -18,6 +18,8 @@ export interface WindowAgg {
   leads: number
   confirmed: number
   unsubscribed: number
+  wizardStarted: number
+  wizardCompleted: number
   affiliateClicks: number
   affiliateConversions: number
   affiliateValue: number
@@ -39,7 +41,7 @@ export interface AnalyticsResult {
     'affiliateValue' | 'affiliateCommission' | 'manualRevenue' | 'manualOrders' |
     'evisaOrders' | 'evisaRevenue' | 'customers', Metric
   >
-  funnel: { leads: number; confirmed: number; customers: number; leadToConfirm: number; leadToCustomer: number }
+  funnel: { wizardStarted: number; wizardCompleted: number; leads: number; confirmed: number; customers: number; leadToConfirm: number; leadToCustomer: number }
   attribution: { source: string; count: number; pct: number }[]
   revenueBySource: { source: string; amount: number }[]
   daily: { date: string; leads: number; revenue: number }[]
@@ -49,7 +51,7 @@ const dayStr = (iso: string) => iso.slice(0, 10)
 
 async function aggregate(fromISO: string, toISO: string): Promise<WindowAgg> {
   const svc = getServiceClient()
-  const [subs, confirmedRes, unsubRes, manual, clicks, convs, evisaOrders, evisaInv, custMan, custEvisa] = await Promise.all([
+  const [subs, confirmedRes, unsubRes, manual, clicks, convs, evisaOrders, evisaInv, custMan, custEvisa, wizStartedRes, wizCompletedRes] = await Promise.all([
     // Only rows captured IN the window (bounded by window size, not whole table).
     svc.from('email_subscribers').select('captured_at, captured_from').gte('captured_at', fromISO).lte('captured_at', toISO).limit(50000),
     svc.from('email_subscribers').select('id', { count: 'exact', head: true }).gte('confirmed_at', fromISO).lte('confirmed_at', toISO),
@@ -61,16 +63,21 @@ async function aggregate(fromISO: string, toISO: string): Promise<WindowAgg> {
     svc.from('invoices').select('total, paid_at').eq('status', 'paid').gte('paid_at', fromISO).lte('paid_at', toISO).limit(50000),
     svc.from('manual_orders').select('customer_email').gte('created_at', fromISO).lte('created_at', toISO).limit(50000),
     svc.from('orders').select('contact_email').gte('created_at', fromISO).lte('created_at', toISO).limit(50000),
+    svc.from('marketing_events').select('id', { count: 'exact', head: true }).eq('metric', 'wizard.started').gte('occurred_at', fromISO).lte('occurred_at', toISO),
+    svc.from('marketing_events').select('id', { count: 'exact', head: true }).eq('metric', 'wizard.completed').gte('occurred_at', fromISO).lte('occurred_at', toISO),
   ])
 
   const agg: WindowAgg = {
-    leads: 0, confirmed: 0, unsubscribed: 0, affiliateClicks: 0, affiliateConversions: 0,
+    leads: 0, confirmed: 0, unsubscribed: 0, wizardStarted: 0, wizardCompleted: 0,
+    affiliateClicks: 0, affiliateConversions: 0,
     affiliateValue: 0, affiliateCommission: 0, manualRevenue: 0, manualOrders: 0,
     evisaOrders: evisaOrders.count ?? 0, evisaRevenue: 0, customers: 0,
     bySource: new Map(), revenueBySource: new Map(), daily: new Map(),
   }
   agg.confirmed = confirmedRes.count ?? 0
   agg.unsubscribed = unsubRes.count ?? 0
+  agg.wizardStarted = wizStartedRes.count ?? 0
+  agg.wizardCompleted = wizCompletedRes.count ?? 0
 
   const bump = (d: string, key: 'leads' | 'revenue', n: number) => {
     const cur = agg.daily.get(d) ?? { leads: 0, revenue: 0 }
@@ -152,6 +159,7 @@ export async function getAnalytics(fromISO: string, toISO: string): Promise<Anal
       evisaOrders: m('evisaOrders'), evisaRevenue: m('evisaRevenue'), customers: m('customers'),
     },
     funnel: {
+      wizardStarted: cur.wizardStarted, wizardCompleted: cur.wizardCompleted,
       leads: cur.leads, confirmed: cur.confirmed, customers: cur.customers,
       leadToConfirm: cur.leads ? Math.round((cur.confirmed / cur.leads) * 100) : 0,
       leadToCustomer: cur.leads ? Math.round((cur.customers / cur.leads) * 100) : 0,

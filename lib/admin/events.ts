@@ -8,7 +8,7 @@ import { getServiceClient } from '@/lib/supabase/admin'
  */
 
 export interface RecordEventInput {
-  email: string
+  email?: string | null
   metric: string
   properties?: Record<string, unknown>
   value?: number | null
@@ -20,8 +20,9 @@ export interface RecordEventInput {
 export async function recordEvent(input: RecordEventInput): Promise<void> {
   try {
     const svc = getServiceClient()
-    const email = input.email.trim().toLowerCase()
-    if (!email || !input.metric) return
+    // email may be null for anonymous funnel-top events (e.g. wizard.started).
+    const email = (input.email || '').trim().toLowerCase() || null
+    if (!input.metric) return
     // auto-register the metric name (ignore duplicates)
     await svc.from('marketing_metrics').upsert({ name: input.metric }, { onConflict: 'name', ignoreDuplicates: true })
     const { error } = await svc.from('marketing_events').insert({
