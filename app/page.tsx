@@ -103,12 +103,6 @@ const CONTINENT_DESTINATIONS: Record<string, { name: string; flag: string; visa:
   ],
 }
 
-const STEPS = [
-  { n: '01', title: 'Select passport & destination', desc: 'Tell us where you’re from and where you’re going. We detect your passport automatically to save you a step.' },
-  { n: '02', title: 'Get exact requirements', desc: 'See the visa type, required documents, fees and processing timelines for your route — in plain language.' },
-  { n: '03', title: 'Apply with confidence', desc: 'Use the official government links and our free tools to prepare a complete, accurate application.' },
-]
-
 // Proven, in-depth guides — all indexed, canonical blog routes.
 const PROVEN_ROUTES = [
   { emoji: '✈️', title: 'Flight Itinerary for a Visa', desc: 'How to get a verifiable flight reservation for your application — safely and cheaply.', href: '/blog/flight-itinerary-for-visa-complete-guide-2026', tag: 'Most read' },
@@ -490,32 +484,7 @@ export default function HomePage() {
       {/* ────────────────────── 2. THE DIFFERENCE (problem → solution) ───────────── */}
       <DifferenceSection />
 
-      {/* ────────────────────── 3. 3-STEP PROCESS ────────────────── */}
-      <section className="bg-[#FAFAFA] py-20 sm:py-24 border-y border-gray-100">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <AnimatedSection>
-            <motion.div variants={fadeUp} className="mb-14 text-center">
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-500">How it works</p>
-              <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Clear answers in three steps</h2>
-            </motion.div>
-
-            <div className="grid gap-6 md:grid-cols-3">
-              {STEPS.map((s, i) => (
-                <motion.div key={s.n} variants={fadeUp} transition={{ delay: i * 0.1 }} className="relative rounded-2xl border border-gray-200 bg-white p-7">
-                  <div className="mb-4 text-3xl font-black text-emerald-500/20">{s.n}</div>
-                  <h3 className="mb-2 text-base font-bold text-gray-900">{s.title}</h3>
-                  <p className="text-sm leading-relaxed text-gray-500">{s.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-            <motion.p variants={fadeUp} className="mt-8 text-center text-xs text-gray-400">
-              VisitPlane is a free information service — we don&apos;t process or submit visas. We help you apply correctly through official channels.
-            </motion.p>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ────────────────────── 4. POPULAR DESTINATIONS ──────────── */}
+      {/* ────────────────────── 3. POPULAR DESTINATIONS ──────────── */}
       <section className="bg-white py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
