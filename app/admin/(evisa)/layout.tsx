@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { requireAdmin } from '@/lib/admin/guard'
+import CommandPalette from './CommandPalette'
+import NotificationBell from './NotificationBell'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,6 +42,7 @@ export default async function AdminEvisaLayout({ children }: { children: ReactNo
             </nav>
           </div>
           <div className="flex items-center gap-3 text-sm">
+            <NotificationBell />
             <Link href="/admin/seo" className="hidden sm:inline text-gray-400 hover:text-white">SEO</Link>
             <Link href="/" className="text-gray-400 hover:text-white whitespace-nowrap">Site ↗</Link>
           </div>
@@ -51,6 +54,7 @@ export default async function AdminEvisaLayout({ children }: { children: ReactNo
         </nav>
       </header>
       <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
+      <CommandPalette />
     </div>
   )
 }
