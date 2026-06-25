@@ -92,3 +92,49 @@ New tables (all RLS-locked, anon denied; confirmed in `get_advisors`): `saved_re
    partners the postback URL to auto-log real conversions.
 10. **Optional:** embed **Metabase** (connects to Supabase Postgres natively) for ad-hoc BI rather
     than building a report builder — recommended in the research.
+
+---
+
+## v3 — verification + hardening
+- **Smoke-tested end-to-end** as owner against production (manual orders, conversions, segments,
+  **affiliate postback incl. idempotent dedup**, **flow worker enroll→advance→complete**). Zero
+  bugs; all test data purged.
+- **RBAC enforced at the API layer:** every mutation route requires its module's permission
+  (`requirePermissionApi`), not just hidden in the nav. Owner/secret passes everything.
+- **Engagement:** Resend webhook (`/api/webhooks/resend`, Svix-signature verified) records
+  delivered/opened/clicked/bounced into the event spine; the Email module shows real 30-day stats.
+- **Compliance:** GDPR **export** + **erase** per lead from the drawer (erase deletes the marketing
+  footprint, anonymizes the email on retained financial records; audited by hash).
+- **Scale:** analytics is window-scoped (no full-table scans); broadcasts send with bounded
+  concurrency, capped at 500/request + `maxDuration=60`; webhooks retry 3× with backoff; the
+  affiliate postback is rate-limited to 120/min.
+
+## v4 — productivity + ops
+- **Leads bulk actions** (multi-select → add/remove tag, export selected) + **saved views**.
+- **Setup checklist** on the dashboard ("0→100", real signals, auto-hides when complete).
+- **Ops** (`/admin/ops`): live metrics, SEO-job / flow-run / webhook-delivery health, and
+  **threshold alert rules** (evaluated on the daily cron + manually) that fire into the audit log
+  and the notification bell. New `ops` RBAC module.
+
+New v3/v4 tables (RLS-locked, mirrored in `supabase/migrations/20260625_backend_v2_v4.sql`):
+`alert_rules` (+ `webhook_deliveries.attempts`, `app_admins.role/permissions/email`).
+
+### NEEDS HAMAD (v3/v4)
+11. **Rotate `ADMIN_SECRET`** — it appeared in smoke-test commands during this build.
+12. Set **`RESEND_WEBHOOK_SECRET`** + point Resend's webhook at `/api/webhooks/resend` to turn on
+    open/click tracking; set **`CRON_SECRET`** for the flows+alerts cron.
+13. Add **alert rules** in Ops (e.g. "failed_webhooks_24h > 0", "pending_corrections > 0").
+14. Replace the **placeholder affiliate IDs** in `src/lib/affiliates.ts` with your approved IDs.
+
+## Intentionally deferred (with reasons)
+- **Metabase embed for BI** — needs a Metabase instance + (for row/column security) a Pro plan;
+  it's a connect-an-external-tool step, not app code. Recommended over building a report builder.
+- **Login-as-customer** — would touch the existing e-Visa auth/customer system, which is
+  out-of-scope to modify; deferred to avoid risk.
+- **A/B testing, cohort/retention, send-time optimization** — higher-complexity marketing polish;
+  the event spine + flows already in place are the foundation to add them later.
+- **Custom e-Visa order statuses** — the existing `order_status` enum
+  (draft→submitted→awaiting_documents→in_review→processing→approved/rejected→completed/refunded/
+  cancelled) is already visa-workflow-shaped, so this was unnecessary.
+- **Per-staff notification read-state + queued (vs capped) bulk email** — fine for a solo operator
+  now; revisit when multi-staff / large lists arrive.
