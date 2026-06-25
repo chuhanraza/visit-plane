@@ -13,6 +13,7 @@ import InstallButton from '@/components/InstallButton'
 import DestinationImage from '@/components/DestinationImage'
 import VisaFreeSection from '@/components/home/VisaFreeSection'
 import DifferenceSection from '@/components/home/DifferenceSection'
+import RotatingWord from '@/components/home/RotatingWord'
 import { getAuthor } from '@/lib/data/authors'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
@@ -374,9 +375,7 @@ export default function HomePage() {
 
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.08 }} className="font-extrabold leading-[1.06]" style={{ fontSize: 'clamp(40px, 5vw, 64px)', color: '#0F1419', letterSpacing: '-0.02em' }}>
             The{' '}
-            <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #16C95C 0%, #0EA94A 100%)' }}>
-              easiest
-            </span>{' '}
+            <RotatingWord />{' '}
             way
             <br />
             to check your travel visa
