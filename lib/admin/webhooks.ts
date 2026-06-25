@@ -1,5 +1,6 @@
 import { createHmac } from 'crypto'
 import { getServiceClient } from '@/lib/supabase/admin'
+import { sleep } from '@/lib/admin/concurrency'
 
 /**
  * Outbound webhooks. Operators register endpoints subscribed to events; when an
@@ -46,20 +47,25 @@ export async function fireWebhooks(event: WebhookEvent, payload: Record<string, 
       const { data: row } = await svc.from('webhook_deliveries')
         .insert({ endpoint_id: ep.id, event, payload, status: 'pending' }).select('id').maybeSingle()
       const deliveryId = (row as { id: string } | null)?.id
-      try {
-        const res = await fetch(ep.url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-VisitPlane-Signature': sig, 'X-VisitPlane-Event': event },
-          body, signal: AbortSignal.timeout(8000),
-        })
-        if (deliveryId) await svc.from('webhook_deliveries').update({
-          status: res.ok ? 'success' : 'failed', response_code: res.status, delivered_at: new Date().toISOString(),
-        }).eq('id', deliveryId)
-      } catch (e) {
-        if (deliveryId) await svc.from('webhook_deliveries').update({
-          status: 'failed', error: (e as Error).message, delivered_at: new Date().toISOString(),
-        }).eq('id', deliveryId)
+
+      // Up to 3 attempts with backoff (0 / 0.5s / 1.5s). Best-effort, inline.
+      const backoff = [0, 500, 1500]
+      let attempts = 0, code: number | null = null, err: string | null = null, ok = false
+      for (let a = 0; a < backoff.length && !ok; a++) {
+        if (backoff[a]) await sleep(backoff[a])
+        attempts++
+        try {
+          const res = await fetch(ep.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-VisitPlane-Signature': sig, 'X-VisitPlane-Event': event },
+            body, signal: AbortSignal.timeout(8000),
+          })
+          code = res.status; ok = res.ok; err = ok ? null : `HTTP ${res.status}`
+        } catch (e) { err = (e as Error).message }
       }
+      if (deliveryId) await svc.from('webhook_deliveries').update({
+        status: ok ? 'success' : 'failed', response_code: code, error: err, attempts, delivered_at: new Date().toISOString(),
+      }).eq('id', deliveryId)
     }))
   } catch (e) {
     console.error('[webhooks] fire failed:', (e as Error).message)

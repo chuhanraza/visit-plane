@@ -25,7 +25,9 @@ export default function EmailComposer({ segments, broadcastsEnabled, savedSegmen
     const j = await res.json().catch(() => ({}))
     setBusy(false)
     if (res.ok) {
-      setResult(j.test ? `Test ${j.sent ? 'sent' : 'attempted (Resend not configured)'} to ${testEmail}.` : `Broadcast: ${j.sent}/${j.recipientCount} sent${j.failed ? `, ${j.failed} failed` : ''}.`)
+      setResult(j.test
+        ? `Test ${j.sent ? 'sent' : 'attempted (Resend not configured)'} to ${testEmail}.`
+        : `Broadcast: ${j.sent}/${j.attempted ?? j.recipientCount} sent${j.failed ? `, ${j.failed} failed` : ''}.${j.capped ? ` Capped at ${j.attempted} of ${j.recipientCount} — run again for the rest.` : ''}`)
       if (!j.test) router.refresh()
     } else setResult(`Error: ${j.error || 'failed'}`)
   }

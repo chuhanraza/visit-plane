@@ -49,8 +49,11 @@ const dayStr = (iso: string) => iso.slice(0, 10)
 
 async function aggregate(fromISO: string, toISO: string): Promise<WindowAgg> {
   const svc = getServiceClient()
-  const [subs, manual, clicks, convs, evisaOrders, evisaInv, custMan, custEvisa] = await Promise.all([
-    svc.from('email_subscribers').select('captured_at, captured_from, confirmed_at, unsubscribed_at').limit(50000),
+  const [subs, confirmedRes, unsubRes, manual, clicks, convs, evisaOrders, evisaInv, custMan, custEvisa] = await Promise.all([
+    // Only rows captured IN the window (bounded by window size, not whole table).
+    svc.from('email_subscribers').select('captured_at, captured_from').gte('captured_at', fromISO).lte('captured_at', toISO).limit(50000),
+    svc.from('email_subscribers').select('id', { count: 'exact', head: true }).gte('confirmed_at', fromISO).lte('confirmed_at', toISO),
+    svc.from('email_subscribers').select('id', { count: 'exact', head: true }).gte('unsubscribed_at', fromISO).lte('unsubscribed_at', toISO),
     svc.from('manual_orders').select('created_at, amount, status, source').gte('created_at', fromISO).lte('created_at', toISO).limit(50000),
     svc.from('affiliate_clicks').select('clicked_at').gte('clicked_at', fromISO).lte('clicked_at', toISO).limit(100000),
     svc.from('affiliate_conversions').select('amount, commission_amount, occurred_at').gte('occurred_at', fromISO).lte('occurred_at', toISO).limit(50000),
@@ -66,6 +69,8 @@ async function aggregate(fromISO: string, toISO: string): Promise<WindowAgg> {
     evisaOrders: evisaOrders.count ?? 0, evisaRevenue: 0, customers: 0,
     bySource: new Map(), revenueBySource: new Map(), daily: new Map(),
   }
+  agg.confirmed = confirmedRes.count ?? 0
+  agg.unsubscribed = unsubRes.count ?? 0
 
   const bump = (d: string, key: 'leads' | 'revenue', n: number) => {
     const cur = agg.daily.get(d) ?? { leads: 0, revenue: 0 }
@@ -73,15 +78,12 @@ async function aggregate(fromISO: string, toISO: string): Promise<WindowAgg> {
     agg.daily.set(d, cur)
   }
 
-  for (const s of (subs.data ?? []) as { captured_at: string | null; captured_from: string | null; confirmed_at: string | null; unsubscribed_at: string | null }[]) {
-    if (s.captured_at && s.captured_at >= fromISO && s.captured_at <= toISO) {
-      agg.leads++
-      const src = (s.captured_from || 'unknown').trim()
-      agg.bySource.set(src, (agg.bySource.get(src) ?? 0) + 1)
-      bump(dayStr(s.captured_at), 'leads', 1)
-    }
-    if (s.confirmed_at && s.confirmed_at >= fromISO && s.confirmed_at <= toISO) agg.confirmed++
-    if (s.unsubscribed_at && s.unsubscribed_at >= fromISO && s.unsubscribed_at <= toISO) agg.unsubscribed++
+  for (const s of (subs.data ?? []) as { captured_at: string | null; captured_from: string | null }[]) {
+    if (!s.captured_at) continue
+    agg.leads++
+    const src = (s.captured_from || 'unknown').trim()
+    agg.bySource.set(src, (agg.bySource.get(src) ?? 0) + 1)
+    bump(dayStr(s.captured_at), 'leads', 1)
   }
 
   for (const m of (manual.data ?? []) as { created_at: string; amount: number; status: string; source: string | null }[]) {

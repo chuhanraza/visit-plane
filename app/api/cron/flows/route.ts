@@ -3,6 +3,7 @@ import { requireAdminApi } from '@/lib/admin/guard'
 import { runFlowWorker } from '@/lib/admin/flows'
 
 export const dynamic = 'force-dynamic'
+export const maxDuration = 60
 
 /**
  * Flow worker tick. Authorized if EITHER: a Vercel cron invocation

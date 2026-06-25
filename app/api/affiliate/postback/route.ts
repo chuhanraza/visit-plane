@@ -36,6 +36,13 @@ async function handle(req: NextRequest, raw: Record<string, unknown>) {
   const auth = await verifyApiKey(extractKey(req), 'affiliate:write')
   if (!auth.ok) return NextResponse.json({ error: 'Invalid or unauthorized API key' }, { status: 401 })
 
+  // Basic per-key rate limit: 120 accepted postbacks / minute (counts audit log).
+  const rl = getServiceClient()
+  const { count } = await rl.from('audit_log').select('id', { count: 'exact', head: true })
+    .eq('actor', `apikey:${auth.name}`).eq('action', 'affiliate_conversion.postback')
+    .gte('created_at', new Date(Date.now() - 60000).toISOString())
+  if ((count ?? 0) >= 120) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429, headers: { 'Retry-After': '60' } })
+
   const parsed = Schema.safeParse({
     partner_slug: raw.partner_slug ?? raw.partner,
     amount: raw.amount,

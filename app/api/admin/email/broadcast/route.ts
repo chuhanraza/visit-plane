@@ -4,9 +4,11 @@ import { requirePermissionApi } from '@/lib/admin/guard'
 import { getFlag } from '@/lib/admin/settings'
 import { recipientsFor, recipientsForSegment } from '@/lib/admin/email'
 import { sendBroadcastEmail } from '@/lib/email'
+import { runPooled } from '@/lib/admin/concurrency'
 import { writeAudit } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
+export const maxDuration = 60
 
 const Schema = z.object({
   subject: z.string().trim().min(1).max(200),
@@ -50,17 +52,20 @@ export async function POST(req: NextRequest) {
     : await recipientsFor({ source: d.source, leadMagnet: d.leadMagnet })
   if (recipients.length === 0) return NextResponse.json({ error: 'No confirmed, subscribed recipients match this audience.' }, { status: 400 })
 
-  let sent = 0, failed = 0
-  for (const r of recipients) {
-    const unsubscribeUrl = `${siteUrl()}/unsubscribe?token=${r.unsubscribe_token}`
-    const res = await sendBroadcastEmail(r.email, d.subject, d.body, unsubscribeUrl)
-    if (res.sent) sent++; else failed++
-  }
+  // Cap per request so the send completes within the function budget; bounded
+  // concurrency for throughput. Larger lists: run again or use an automated flow.
+  const CAP = 500
+  const batch = recipients.slice(0, CAP)
+  const capped = recipients.length > CAP
+  const results = await runPooled(batch, 8, async r =>
+    (await sendBroadcastEmail(r.email, d.subject, d.body, `${siteUrl()}/unsubscribe?token=${r.unsubscribe_token}`)).sent)
+  const sent = results.filter(Boolean).length
+  const failed = batch.length - sent
 
   await writeAudit({
     actor, actorType: 'admin', action: 'email.broadcast', entityType: 'email',
-    metadata: { subject: d.subject, segment: { source: d.source ?? null, leadMagnet: d.leadMagnet ?? null, segmentId: d.segmentId ?? null }, recipientCount: recipients.length, sent, failed },
+    metadata: { subject: d.subject, segment: { source: d.source ?? null, leadMagnet: d.leadMagnet ?? null, segmentId: d.segmentId ?? null }, recipientCount: recipients.length, attempted: batch.length, sent, failed, capped },
     ip,
   })
-  return NextResponse.json({ ok: true, recipientCount: recipients.length, sent, failed })
+  return NextResponse.json({ ok: true, recipientCount: recipients.length, attempted: batch.length, sent, failed, capped })
 }
