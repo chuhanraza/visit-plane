@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { EmailSegments } from '@/lib/admin/email'
 
-export default function EmailComposer({ segments, broadcastsEnabled, savedSegments }: { segments: EmailSegments; broadcastsEnabled: boolean; savedSegments: { id: string; name: string }[] }) {
+export default function EmailComposer({ segments, broadcastsEnabled, savedSegments, templates }: { segments: EmailSegments; broadcastsEnabled: boolean; savedSegments: { id: string; name: string }[]; templates: { name: string; subject: string; body: string }[] }) {
   const router = useRouter()
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
@@ -69,6 +69,14 @@ export default function EmailComposer({ segments, broadcastsEnabled, savedSegmen
         </label>
       </div>
 
+      {templates.length > 0 && (
+        <label className="block text-xs text-gray-400 space-y-1"><span>Load template</span>
+          <select defaultValue="" onChange={e => { const t = templates[Number(e.target.value)]; if (t) { setSubject(t.subject); setBody(t.body) } e.target.value = '' }} className={inp}>
+            <option value="">— pick a template to load —</option>
+            {templates.map((t, i) => <option key={i} value={i}>{t.name}</option>)}
+          </select>
+        </label>
+      )}
       <label className="block text-xs text-gray-400 space-y-1"><span>Subject</span><input value={subject} onChange={e => setSubject(e.target.value)} className={inp} /></label>
       <label className="block text-xs text-gray-400 space-y-1"><span>Body (HTML allowed)</span><textarea value={body} onChange={e => setBody(e.target.value)} rows={8} className={`${inp} font-mono`} placeholder="<p>Hi traveller,</p>" /></label>
 

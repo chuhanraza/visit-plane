@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin/guard'
 import { emailSegments, listPendingOptIn, recentBroadcasts, emailEngagement } from '@/lib/admin/email'
 import { listSegments } from '@/lib/admin/segments'
+import { listTemplates } from '@/lib/admin/templates'
 import { getFlag } from '@/lib/admin/settings'
 import EmailComposer from './EmailComposer'
 
@@ -11,13 +12,14 @@ export const dynamic = 'force-dynamic'
 
 export default async function AdminEmail() {
   await requireAdmin()
-  const [segments, pending, broadcasts, broadcastsEnabled, savedSegments, engagement] = await Promise.all([
+  const [segments, pending, broadcasts, broadcastsEnabled, savedSegments, engagement, templates] = await Promise.all([
     emailSegments(),
     listPendingOptIn({ page: 1, pageSize: 20 }),
     recentBroadcasts(8),
     getFlag('email_broadcasts_enabled'),
     listSegments(),
     emailEngagement(30),
+    listTemplates(),
   ])
 
   const Stat = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
@@ -32,7 +34,10 @@ export default async function AdminEmail() {
     <div className="space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-xl font-bold text-white">Email campaigns</h1>
-        <Link href="/admin/subscribers" className="text-sm text-gray-400 hover:text-white">Subscriber analytics →</Link>
+        <div className="flex items-center gap-3">
+          <Link href="/admin/email/templates" className="text-sm text-gray-400 hover:text-white">Templates →</Link>
+          <Link href="/admin/subscribers" className="text-sm text-gray-400 hover:text-white">Subscriber analytics →</Link>
+        </div>
       </div>
 
       <div className={`rounded-xl border px-4 py-2.5 text-sm ${broadcastsEnabled ? 'border-emerald-800 bg-emerald-900/20 text-emerald-200' : 'border-gray-800 bg-gray-900 text-gray-400'}`}>
@@ -48,7 +53,7 @@ export default async function AdminEmail() {
         <Stat label="Unsubscribed" value={String(segments.unsubscribed)} />
       </div>
 
-      <EmailComposer segments={segments} broadcastsEnabled={broadcastsEnabled} savedSegments={savedSegments.map(s => ({ id: s.id, name: s.name }))} />
+      <EmailComposer segments={segments} broadcastsEnabled={broadcastsEnabled} savedSegments={savedSegments.map(s => ({ id: s.id, name: s.name }))} templates={templates.map(t => ({ name: t.name, subject: t.subject, body: t.body_html }))} />
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Double opt-in queue */}
