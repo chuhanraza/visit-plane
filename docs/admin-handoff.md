@@ -138,3 +138,25 @@ New v3/v4 tables (RLS-locked, mirrored in `supabase/migrations/20260625_backend_
   cancelled) is already visa-workflow-shaped, so this was unnecessary.
 - **Per-staff notification read-state + queued (vs capped) bulk email** — fine for a solo operator
   now; revisit when multi-staff / large lists arrive.
+
+---
+
+## v5 — Shopify-parity gaps
+Built to close the *relevant* gaps vs Shopify Admin (the rest — inventory/shipping/tax/POS/themes
+— don't apply to a visa site):
+- **Discounts** (`/admin/discounts`): promo codes (percent/fixed) over the existing `promo_codes`
+  table, with scheduling (valid from/until), usage limits + redemption count, enable/disable.
+- **Email templates** (`/admin/email/templates`): editable subject + HTML templates with live
+  preview; loadable into the broadcast composer.
+- **Scheduled report digests**: operator analytics digest emailed daily/weekly via Resend
+  (configured on the Analytics page; sent by the daily cron + "Send now").
+- **Wizard funnel + recovery**: the wizard now emits `wizard.started` (anon) + `wizard.completed`
+  events; the analytics funnel shows those stages; flows support a **wizard.completed trigger** for
+  an abandoned-wizard recovery sequence.
+
+New v5 tables (mirrored in `supabase/migrations/20260625_backend_v5.sql`): `email_templates`
+(+ flows `wizard.completed` trigger). Discounts reuse `promo_codes`; digests use `app_settings`.
+
+### NEEDS HAMAD (v5)
+15. To send digests + flow/recovery emails for real: set `RESEND_API_KEY`, enable
+    `email_broadcasts_enabled`, and set a digest recipient on the Analytics page.
