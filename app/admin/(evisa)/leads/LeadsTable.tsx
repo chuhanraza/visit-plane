@@ -23,7 +23,7 @@ function fmt(ts: string | null) {
 }
 
 export default function LeadsTable({
-  rows, sources, filters, total, page, pageSize,
+  rows, sources, filters, total, page, pageSize, savedViews,
 }: {
   rows: LeadRow[]
   sources: { source: string; count: number }[]
@@ -31,9 +31,13 @@ export default function LeadsTable({
   total: number
   page: number
   pageSize: number
+  savedViews: { id: string; name: string; config: { q?: string; source?: string; status?: string } }[]
 }) {
   const router = useRouter()
   const [active, setActive] = useState<LeadRow | null>(null)
+  const [sel, setSel] = useState<Set<number>>(new Set())
+  const [tag, setTag] = useState('')
+  const [busy, setBusy] = useState(false)
   const pages = Math.max(1, Math.ceil(total / pageSize))
 
   const exportHref = `/api/admin/leads/export?${new URLSearchParams({
@@ -41,6 +45,37 @@ export default function LeadsTable({
     ...(filters.source ? { source: filters.source } : {}),
     ...(filters.status ? { status: filters.status } : {}),
   })}`
+
+  const allOnPage = rows.length > 0 && rows.every(r => sel.has(r.id))
+  function toggleAll() { setSel(allOnPage ? new Set() : new Set(rows.map(r => r.id))) }
+  function toggle(id: number) { setSel(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n }) }
+
+  async function bulk(action: 'add_tag' | 'remove_tag' | 'export') {
+    const ids = [...sel]
+    if (ids.length === 0) return
+    if ((action === 'add_tag' || action === 'remove_tag') && !tag.trim()) { alert('Enter a tag'); return }
+    setBusy(true)
+    const res = await fetch('/api/admin/leads/bulk', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids, action, tag: tag.trim() || undefined }) })
+    setBusy(false)
+    if (action === 'export') {
+      const blob = await res.blob(); const url = URL.createObjectURL(blob)
+      const a = document.createElement('a'); a.href = url; a.download = 'leads-selected.csv'; a.click(); URL.revokeObjectURL(url)
+      return
+    }
+    if (res.ok) { setSel(new Set()); setTag(''); router.refresh() } else alert((await res.json().catch(() => ({}))).error || 'Bulk action failed')
+  }
+
+  async function saveView() {
+    const name = window.prompt('Name this view:'); if (!name) return
+    const res = await fetch('/api/admin/leads/views', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, config: { q: filters.q || undefined, source: filters.source || undefined, status: filters.status || undefined } }) })
+    if (res.ok) router.refresh(); else alert((await res.json().catch(() => ({}))).error || 'Save failed')
+  }
+  async function delView(id: string) {
+    if (!confirm('Delete this view?')) return
+    const res = await fetch('/api/admin/leads/views', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'delete', id }) })
+    if (res.ok) router.refresh()
+  }
+  const viewHref = (c: { q?: string; source?: string; status?: string }) => `/admin/leads?${new URLSearchParams({ tab: 'leads', ...(c.q ? { q: c.q } : {}), ...(c.source ? { source: c.source } : {}), ...(c.status ? { status: c.status } : {}) })}`
 
   return (
     <div className="space-y-4">
@@ -62,14 +97,41 @@ export default function LeadsTable({
           <option value="unsubscribed">Unsubscribed</option>
         </select>
         <button type="submit" className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-white">Filter</button>
+        <button type="button" onClick={saveView} className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-200">☆ Save view</button>
         <a href={exportHref} className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-200 ml-auto">Export CSV</a>
       </form>
+
+      {/* Saved views */}
+      {savedViews.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap text-sm">
+          <span className="text-gray-500 text-xs uppercase">Views:</span>
+          {savedViews.map(v => (
+            <span key={v.id} className="inline-flex items-center gap-1 bg-gray-900 border border-gray-800 rounded-lg pl-2.5 pr-1.5 py-1">
+              <a href={viewHref(v.config)} className="text-gray-300 hover:text-white">{v.name}</a>
+              <button onClick={() => delView(v.id)} className="text-gray-600 hover:text-red-400 text-xs">✕</button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Bulk action bar */}
+      {sel.size > 0 && (
+        <div className="flex flex-wrap items-center gap-2 bg-blue-950/30 border border-blue-900 rounded-xl px-3 py-2 text-sm">
+          <span className="text-blue-200">{sel.size} selected</span>
+          <input value={tag} onChange={e => setTag(e.target.value)} placeholder="tag" className="bg-gray-900 border border-gray-800 rounded-lg px-2.5 py-1 text-gray-200 w-32" />
+          <button disabled={busy} onClick={() => bulk('add_tag')} className="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-200">Add tag</button>
+          <button disabled={busy} onClick={() => bulk('remove_tag')} className="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-200">Remove tag</button>
+          <button disabled={busy} onClick={() => bulk('export')} className="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-200">Export selected</button>
+          <button onClick={() => setSel(new Set())} className="ml-auto text-gray-500 hover:text-white">Clear</button>
+        </div>
+      )}
 
       {/* Table */}
       <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-gray-800/50 text-gray-400 text-xs uppercase">
             <tr>
+              <th className="px-3 py-3 w-8"><input type="checkbox" checked={allOnPage} onChange={toggleAll} aria-label="Select all" /></th>
               <th className="text-left font-medium px-4 py-3">Email</th>
               <th className="text-left font-medium px-4 py-3 hidden md:table-cell">Source</th>
               <th className="text-left font-medium px-4 py-3 hidden lg:table-cell">Interest</th>
@@ -79,17 +141,20 @@ export default function LeadsTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-800">
-            {rows.length === 0 && <tr><td colSpan={6} className="px-4 py-10 text-center text-gray-500">No leads match these filters.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-gray-500">No leads match these filters.</td></tr>}
             {rows.map(r => {
               const st = statusOf(r)
               return (
-                <tr key={r.id} onClick={() => setActive(r)} className="hover:bg-gray-800/40 cursor-pointer">
-                  <td className="px-4 py-2.5 text-white">{r.email}</td>
-                  <td className="px-4 py-2.5 text-gray-400 hidden md:table-cell">{r.captured_from || '—'}</td>
-                  <td className="px-4 py-2.5 text-gray-400 hidden lg:table-cell">{[r.route_passport, r.route_destination].filter(Boolean).join(' → ') || '—'}</td>
-                  <td className="px-4 py-2.5"><span className={`text-[11px] px-2 py-0.5 rounded-full ${STATUS_BADGE[st]}`}>{st}</span></td>
-                  <td className="px-4 py-2.5 text-gray-500 hidden sm:table-cell whitespace-nowrap">{fmt(r.captured_at)}</td>
-                  <td className="px-4 py-2.5 hidden xl:table-cell">
+                <tr key={r.id} className={`hover:bg-gray-800/40 ${sel.has(r.id) ? 'bg-blue-950/20' : ''}`}>
+                  <td className="px-3 py-2.5" onClick={e => e.stopPropagation()}>
+                    <input type="checkbox" checked={sel.has(r.id)} onChange={() => toggle(r.id)} aria-label={`Select ${r.email}`} />
+                  </td>
+                  <td className="px-4 py-2.5 text-white cursor-pointer" onClick={() => setActive(r)}>{r.email}</td>
+                  <td className="px-4 py-2.5 text-gray-400 hidden md:table-cell cursor-pointer" onClick={() => setActive(r)}>{r.captured_from || '—'}</td>
+                  <td className="px-4 py-2.5 text-gray-400 hidden lg:table-cell cursor-pointer" onClick={() => setActive(r)}>{[r.route_passport, r.route_destination].filter(Boolean).join(' → ') || '—'}</td>
+                  <td className="px-4 py-2.5 cursor-pointer" onClick={() => setActive(r)}><span className={`text-[11px] px-2 py-0.5 rounded-full ${STATUS_BADGE[st]}`}>{st}</span></td>
+                  <td className="px-4 py-2.5 text-gray-500 hidden sm:table-cell whitespace-nowrap cursor-pointer" onClick={() => setActive(r)}>{fmt(r.captured_at)}</td>
+                  <td className="px-4 py-2.5 hidden xl:table-cell cursor-pointer" onClick={() => setActive(r)}>
                     {r.admin_tags?.length ? r.admin_tags.map(t => <span key={t} className="inline-block text-[10px] bg-gray-800 text-gray-300 rounded px-1.5 py-0.5 mr-1">{t}</span>) : <span className="text-gray-600">—</span>}
                   </td>
                 </tr>

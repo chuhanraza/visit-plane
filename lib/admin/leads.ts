@@ -108,6 +108,14 @@ export async function listCorrections(params: { status?: string; page?: number; 
   return { rows: (data ?? []) as CorrectionRow[], total: count ?? 0, page, pageSize }
 }
 
+/** Fetch specific leads by id (for bulk actions / selected export). */
+export async function leadsByIds(ids: number[]): Promise<LeadRow[]> {
+  if (ids.length === 0) return []
+  const svc = getServiceClient()
+  const { data } = await svc.from('email_subscribers').select(LEAD_COLS).in('id', ids.slice(0, 1000))
+  return (data ?? []) as LeadRow[]
+}
+
 /** Full result set for CSV export (capped). Mirrors listLeads filters. */
 export async function leadsForExport(params: Omit<ListLeadsParams, 'page' | 'pageSize'>): Promise<LeadRow[]> {
   const svc = getServiceClient()

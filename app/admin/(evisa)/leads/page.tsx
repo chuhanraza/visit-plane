@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin/guard'
 import { listLeads, leadSources, listCorrections, type OptInStatus } from '@/lib/admin/leads'
+import { listSavedReports } from '@/lib/admin/analytics'
 import LeadsTable from './LeadsTable'
 
 export const metadata: Metadata = { title: 'Leads / CRM — VisitPlane Admin', robots: { index: false } }
@@ -34,15 +35,20 @@ export default async function AdminLeads({ searchParams }: { searchParams: Promi
 
 async function LeadsTab(sp: Record<string, string>, page: number) {
   const filters = { q: sp.q ?? '', source: sp.source ?? '', status: (sp.status ?? '') as OptInStatus | '' }
-  const [{ rows, total, pageSize }, sources] = await Promise.all([
+  const [{ rows, total, pageSize }, sources, reports] = await Promise.all([
     listLeads({ ...filters, page }),
     leadSources(),
+    listSavedReports(),
   ])
+  const savedViews = reports
+    .filter(r => r.kind === 'leads')
+    .map(r => ({ id: r.id, name: r.name, config: r.config as { q?: string; source?: string; status?: string } }))
   return (
     <LeadsTable
       rows={rows} sources={sources}
       filters={{ q: filters.q, source: filters.source, status: filters.status }}
       total={total} page={page} pageSize={pageSize}
+      savedViews={savedViews}
     />
   )
 }
