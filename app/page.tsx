@@ -473,7 +473,7 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        <div className="mt-6 h-4" style={{ background: 'linear-gradient(to bottom, transparent, #FFFFFF)' }} />
+        <div className="mt-3 h-3" style={{ background: 'linear-gradient(to bottom, transparent, #FFFFFF)' }} />
       </section>
 
       {/* ────────────────────── 2. THE DIFFERENCE (problem → solution) ───────────── */}
