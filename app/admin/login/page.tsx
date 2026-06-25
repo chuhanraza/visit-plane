@@ -7,7 +7,7 @@ import { Suspense } from 'react'
 function LoginForm() {
   const router       = useRouter()
   const searchParams = useSearchParams()
-  const redirect     = searchParams.get('from') ?? '/admin/seo'
+  const redirect     = searchParams.get('from') ?? '/admin'
 
   const [password, setPassword] = useState('')
   const [error,    setError]    = useState('')
