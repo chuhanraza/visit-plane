@@ -356,7 +356,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#FAFAF7] text-[#0F1419] antialiased overflow-x-hidden">
 
       {/* ────────────────────── 1. HERO ──────────────────────────── */}
-      <section className="relative overflow-hidden pb-0" style={{ paddingTop: '40px', background: '#FFFFFF' }}>
+      <section className="relative overflow-hidden pb-0" style={{ paddingTop: '24px', background: '#FFFFFF' }}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
           {/* iVisa-style soft green glow weighted to the right */}
           <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 95% at 100% 35%, #CFF5DD 0%, #E8FBF0 30%, transparent 62%)' }} />
@@ -365,11 +365,11 @@ export default function HomePage() {
         </div>
 
         <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="flex justify-center" style={{ marginBottom: '32px' }}>
-            <div className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[13px] font-semibold" style={{ borderColor: 'rgba(16,185,129,0.3)', background: '#F0FDF4', color: '#065f46' }}>
-              <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-              Verified against official government &amp; embassy sources
-              <span className="inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+          {/* Small, smart trust badge — top-right, not centered */}
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex justify-end" style={{ marginBottom: '16px' }}>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+              <CheckIcon className="h-3 w-3 text-emerald-500" />
+              Official-source verified
             </div>
           </motion.div>
 
@@ -381,12 +381,8 @@ export default function HomePage() {
             to check your travel visa
           </motion.h1>
 
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.16 }} className="mx-auto max-w-xl text-base sm:text-lg" style={{ color: '#4A5568', marginTop: '24px' }}>
-            Exact visa rules for 197 countries and every passport — documents, fees and timelines, verified against official government &amp; embassy sources.
-          </motion.p>
-
           {/* Search card */}
-          <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.24 }} className="mx-auto max-w-3xl" style={{ marginTop: '40px' }}>
+          <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.24 }} className="mx-auto max-w-3xl" style={{ marginTop: '28px' }}>
             <div aria-live="polite" className="sr-only">
               {redirecting && 'Loading visa information, redirecting now.'}
               {noPassportError && 'Please select your passport country first.'}
@@ -468,7 +464,7 @@ export default function HomePage() {
           </motion.div>
 
           {/* Honest trust chips */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }} className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold" style={{ color: '#64748B' }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }} className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold" style={{ color: '#64748B' }}>
             {['197 countries covered', 'Official-source verified', '100% free · no signup'].map((x) => (
               <span key={x} className="inline-flex items-center gap-1.5">
                 <CheckIcon className="h-3.5 w-3.5 text-emerald-500" /> {x}
