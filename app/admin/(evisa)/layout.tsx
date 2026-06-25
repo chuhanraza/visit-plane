@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic'
 // /admin/data-quality, /admin/seo) remain reachable via Settings + the SEO link.
 const NAV: { href: string; label: string }[] = [
   { href: '/admin', label: 'Dashboard' },
+  { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/leads', label: 'Leads / CRM' },
   { href: '/admin/orders', label: 'e-Visa orders' },
   { href: '/admin/revenue', label: 'Revenue' },
