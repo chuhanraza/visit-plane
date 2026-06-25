@@ -7,6 +7,7 @@ import type { EmailSegments } from '@/lib/admin/email'
 export default function EmailComposer({ segments, broadcastsEnabled, savedSegments, templates }: { segments: EmailSegments; broadcastsEnabled: boolean; savedSegments: { id: string; name: string }[]; templates: { name: string; subject: string; body: string }[] }) {
   const router = useRouter()
   const [subject, setSubject] = useState('')
+  const [subjectB, setSubjectB] = useState('')
   const [body, setBody] = useState('')
   const [audience, setAudience] = useState('')   // '' = all, 'src:<source>', or 'seg:<id>'
   const [testEmail, setTestEmail] = useState('')
@@ -42,7 +43,7 @@ export default function EmailComposer({ segments, broadcastsEnabled, savedSegmen
     if (!subject || !body) { setResult('Add a subject and body first.'); return }
     const who = segMatch === null ? 'the selected segment (confirmed only)' : `${segMatch} confirmed subscriber(s)${source ? ` in "${source}"` : ''}`
     if (!confirm(`Send "${subject}" to ${who}? This cannot be undone.`)) return
-    post({ subject, body, ...(source ? { source } : {}), ...(isSeg ? { segmentId: audience.slice(4) } : {}) })
+    post({ subject, body, ...(subjectB.trim() ? { subjectB: subjectB.trim() } : {}), ...(source ? { source } : {}), ...(isSeg ? { segmentId: audience.slice(4) } : {}) })
   }
 
   const inp = 'w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200'
@@ -77,7 +78,8 @@ export default function EmailComposer({ segments, broadcastsEnabled, savedSegmen
           </select>
         </label>
       )}
-      <label className="block text-xs text-gray-400 space-y-1"><span>Subject</span><input value={subject} onChange={e => setSubject(e.target.value)} className={inp} /></label>
+      <label className="block text-xs text-gray-400 space-y-1"><span>Subject{subjectB.trim() ? ' (A)' : ''}</span><input value={subject} onChange={e => setSubject(e.target.value)} className={inp} /></label>
+      <label className="block text-xs text-gray-400 space-y-1"><span>Subject B <span className="text-gray-600">— optional, runs a 50/50 A/B test</span></span><input value={subjectB} onChange={e => setSubjectB(e.target.value)} placeholder="leave blank for no test" className={inp} /></label>
       <label className="block text-xs text-gray-400 space-y-1"><span>Body (HTML allowed)</span><textarea value={body} onChange={e => setBody(e.target.value)} rows={8} className={`${inp} font-mono`} placeholder="<p>Hi traveller,</p>" /></label>
 
       {body && (

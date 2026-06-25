@@ -13,6 +13,7 @@ export const maxDuration = 60
 
 const Schema = z.object({
   subject: z.string().trim().min(1).max(200),
+  subjectB: z.string().trim().min(1).max(200).optional(),
   body: z.string().trim().min(1).max(50000),
   source: z.string().trim().max(120).optional(),
   leadMagnet: z.string().trim().max(120).optional(),
@@ -64,9 +65,13 @@ export async function POST(req: NextRequest) {
   const CAP = 500
   const batch = eligible.slice(0, CAP)
   const capped = eligible.length > CAP
-  const results = await runPooled(batch, 8, async r => {
-    const res = await sendBroadcastEmail(r.email, d.subject, d.body, `${siteUrl()}/unsubscribe?token=${r.unsubscribe_token}`)
-    if (res.sent) await recordEvent({ email: r.email, metric: 'broadcast.email_sent', properties: { subject: d.subject } })
+  // A/B: when Subject B is set, alternate variants by index (~50/50) and tag each send.
+  const abTest = d.subjectB ? new Date().toISOString() : null
+  const results = await runPooled(batch, 8, async (r, i) => {
+    const variant = abTest ? (i % 2 === 0 ? 'A' : 'B') : null
+    const subj = variant === 'B' ? d.subjectB! : d.subject
+    const res = await sendBroadcastEmail(r.email, subj, d.body, `${siteUrl()}/unsubscribe?token=${r.unsubscribe_token}`)
+    if (res.sent) await recordEvent({ email: r.email, metric: 'broadcast.email_sent', properties: { subject: subj, ...(variant ? { variant, test_id: abTest, subjectA: d.subject, subjectB: d.subjectB } : {}) } })
     return res.sent
   })
   const sent = results.filter(Boolean).length
@@ -75,8 +80,8 @@ export async function POST(req: NextRequest) {
 
   await writeAudit({
     actor, actorType: 'admin', action: 'email.broadcast', entityType: 'email',
-    metadata: { subject: d.subject, segment: { source: d.source ?? null, leadMagnet: d.leadMagnet ?? null, segmentId: d.segmentId ?? null }, recipientCount: recipients.length, suppressed: suppressedCount, attempted: batch.length, sent, failed, capped },
+    metadata: { subject: d.subject, subjectB: d.subjectB ?? null, abTest, segment: { source: d.source ?? null, leadMagnet: d.leadMagnet ?? null, segmentId: d.segmentId ?? null }, recipientCount: recipients.length, suppressed: suppressedCount, attempted: batch.length, sent, failed, capped },
     ip,
   })
-  return NextResponse.json({ ok: true, recipientCount: recipients.length, suppressed: suppressedCount, attempted: batch.length, sent, failed, capped })
+  return NextResponse.json({ ok: true, recipientCount: recipients.length, suppressed: suppressedCount, attempted: batch.length, sent, failed, capped, abTest: !!abTest })
 }

@@ -4,6 +4,7 @@ import { requireAdmin } from '@/lib/admin/guard'
 import { emailSegments, listPendingOptIn, recentBroadcasts, emailEngagement, suppressionHours } from '@/lib/admin/email'
 import { listSegments } from '@/lib/admin/segments'
 import { listTemplates } from '@/lib/admin/templates'
+import { abTestResults } from '@/lib/admin/abtests'
 import { getFlag } from '@/lib/admin/settings'
 import EmailComposer from './EmailComposer'
 import SuppressionControl from './SuppressionControl'
@@ -22,7 +23,7 @@ export default async function AdminEmail() {
     emailEngagement(30),
     listTemplates(),
   ])
-  const supHours = await suppressionHours()
+  const [supHours, abTests] = await Promise.all([suppressionHours(), abTestResults(8)])
 
   const Stat = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
     <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
@@ -58,6 +59,34 @@ export default async function AdminEmail() {
       <SuppressionControl hours={supHours} />
 
       <EmailComposer segments={segments} broadcastsEnabled={broadcastsEnabled} savedSegments={savedSegments.map(s => ({ id: s.id, name: s.name }))} templates={templates.map(t => ({ name: t.name, subject: t.subject, body: t.body_html }))} />
+
+      {abTests.length > 0 && (
+        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+          <h2 className="font-semibold text-white mb-3">A/B subject tests</h2>
+          <div className="space-y-3">
+            {abTests.map(t => (
+              <div key={t.test_id} className="border border-gray-800 rounded-xl p-3 text-sm">
+                <div className="text-xs text-gray-500 mb-1">{new Date(t.when).toLocaleString()}</div>
+                {(['A', 'B'] as const).map(v => {
+                  const subj = v === 'A' ? t.subjectA : t.subjectB
+                  const sent = v === 'A' ? t.sentA : t.sentB
+                  const opened = v === 'A' ? t.openedA : t.openedB
+                  const rate = v === 'A' ? t.openRateA : t.openRateB
+                  const win = t.winner === v
+                  return (
+                    <div key={v} className="flex items-center justify-between py-0.5">
+                      <span className={`truncate ${win ? 'text-emerald-300' : 'text-gray-300'}`}>{win && '★ '}{v}: {subj || '(no subject)'}</span>
+                      <span className="text-gray-400 text-xs whitespace-nowrap ml-3">{opened}/{sent} opened · {rate}%</span>
+                    </div>
+                  )
+                })}
+                {t.winner && t.winner !== 'tie' && <div className="text-[11px] text-emerald-400 mt-1">Winner: variant {t.winner}</div>}
+                {!t.openedA && !t.openedB && <div className="text-[11px] text-gray-600 mt-1">Open data appears once the Resend webhook is configured.</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Double opt-in queue */}
