@@ -4,6 +4,7 @@ import { requireAdmin, getAdminContext } from '@/lib/admin/guard'
 import { can, type Module } from '@/lib/admin/rbac'
 import CommandPalette from './CommandPalette'
 import NotificationBell from './NotificationBell'
+import KeyboardShortcuts from './KeyboardShortcuts'
 
 export const dynamic = 'force-dynamic'
 
@@ -61,6 +62,7 @@ export default async function AdminEvisaLayout({ children }: { children: ReactNo
       </header>
       <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
       <CommandPalette />
+      <KeyboardShortcuts />
     </div>
   )
 }
