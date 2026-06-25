@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { requireAdminApi } from '@/lib/admin/guard'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { writeAudit } from '@/lib/audit'
+import { fireWebhooks } from '@/lib/admin/webhooks'
 import { CONVERSION_STATUSES } from '@/lib/admin/affiliates'
 
 export const dynamic = 'force-dynamic'
@@ -45,5 +46,6 @@ export async function POST(req: NextRequest) {
     entityType: 'affiliate_conversion', entityId: (data as { id: string }).id,
     metadata: { ...insert }, ip: req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? null,
   })
+  await fireWebhooks('affiliate.conversion', { id: (data as { id: string })?.id, ...insert })
   return NextResponse.json({ ok: true, conversion: data })
 }

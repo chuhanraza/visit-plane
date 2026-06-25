@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { requireAdminApi } from '@/lib/admin/guard'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { writeAudit } from '@/lib/audit'
+import { fireWebhooks } from '@/lib/admin/webhooks'
 import { MANUAL_ORDER_STATUSES, PRODUCT_TYPES } from '@/lib/admin/revenue'
 
 export const dynamic = 'force-dynamic'
@@ -49,5 +50,6 @@ export async function POST(req: NextRequest) {
     metadata: { order_ref: (data as { order_ref: string }).order_ref, ...insert },
     ip: req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? null,
   })
+  await fireWebhooks('manual_order.created', { id: (data as { id: string })?.id, order_ref: (data as { order_ref: string })?.order_ref, ...insert })
   return NextResponse.json({ ok: true, order: data })
 }
