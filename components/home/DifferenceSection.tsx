@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView, type Variants } from 'framer-motion'
-import EagleTraveler from '@/components/home/EagleTraveler'
+import TravelerBird from '@/components/home/TravelerBird'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // "The difference" — a transformation comparison. Each painful DIY step (left,
@@ -80,8 +80,8 @@ export default function DifferenceSection() {
           </motion.p>
         </motion.div>
 
-        {/* Brand mascot lead visual (hides gracefully until the asset is added) */}
-        <EagleTraveler />
+        {/* Brand mascot lead visual */}
+        <TravelerBird />
 
         {/* Comparison panel */}
         <motion.div
