@@ -12,6 +12,7 @@ import CountrySelect from '@/components/CountrySelect'
 import InstallButton from '@/components/InstallButton'
 import DestinationImage from '@/components/DestinationImage'
 import VisaFreeSection from '@/components/home/VisaFreeSection'
+import DifferenceSection from '@/components/home/DifferenceSection'
 import { getAuthor } from '@/lib/data/authors'
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
@@ -101,22 +102,6 @@ const CONTINENT_DESTINATIONS: Record<string, { name: string; flag: string; visa:
     { name: 'Palau', flag: '🇵🇼', visa: 'Visa Free' },
   ],
 }
-
-// Honest comparison: researching alone vs. using VisitPlane.
-const COMPARE_PROBLEM = [
-  'Hop between a dozen government & embassy sites',
-  'Conflicting answers, no idea which is current',
-  'Dense legal language that’s hard to decode',
-  'Easy to miss a required document or fee',
-  'No single place for every passport & destination',
-]
-const COMPARE_SOLUTION = [
-  'One free source for every passport & destination',
-  'Plain-language requirements you can act on',
-  'Checked against official government & embassy sources',
-  'Exact documents, fees & timelines listed upfront',
-  'Free tools: checklist, compare, passport strength & more',
-]
 
 const STEPS = [
   { n: '01', title: 'Select passport & destination', desc: 'Tell us where you’re from and where you’re going. We detect your passport automatically to save you a step.' },
@@ -502,50 +487,8 @@ export default function HomePage() {
         <div className="mt-12 h-10" style={{ background: 'linear-gradient(to bottom, transparent, #FFFFFF)' }} />
       </section>
 
-      {/* ────────────────────── 2. PROBLEM vs SOLUTION ───────────── */}
-      <section className="bg-white py-20 sm:py-24 border-t border-gray-100">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <AnimatedSection>
-            <motion.div variants={fadeUp} className="mb-12 text-center">
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-500">The difference</p>
-              <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Visa research, without the guesswork</h2>
-              <p className="mx-auto mt-3 max-w-lg text-sm text-gray-500">Getting visa info right usually means hours of conflicting sources. Here&apos;s what changes with VisitPlane.</p>
-            </motion.div>
-
-            <div className="grid gap-5 md:grid-cols-2">
-              <motion.div variants={fadeUp} className="rounded-2xl border border-rose-100 bg-rose-50/50 p-7">
-                <h3 className="mb-5 flex items-center gap-2 text-base font-bold text-rose-700">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-rose-100 text-rose-600"><CrossIcon className="h-4 w-4" /></span>
-                  Researching visas yourself
-                </h3>
-                <ul className="space-y-3">
-                  {COMPARE_PROBLEM.map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 text-sm text-gray-600">
-                      <CrossIcon className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-
-              <motion.div variants={fadeUp} className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-7 shadow-sm">
-                <h3 className="mb-5 flex items-center gap-2 text-base font-bold text-emerald-700">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"><CheckIcon className="h-4 w-4" /></span>
-                  With VisitPlane
-                </h3>
-                <ul className="space-y-3">
-                  {COMPARE_SOLUTION.map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 text-sm font-medium text-gray-700">
-                      <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
+      {/* ────────────────────── 2. THE DIFFERENCE (problem → solution) ───────────── */}
+      <DifferenceSection />
 
       {/* ────────────────────── 3. 3-STEP PROCESS ────────────────── */}
       <section className="bg-[#FAFAFA] py-20 sm:py-24 border-y border-gray-100">
