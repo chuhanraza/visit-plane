@@ -3,7 +3,10 @@ import { requireAdmin } from '@/lib/admin/guard'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { leadSources } from '@/lib/admin/leads'
 import { listSegments, resolveSegment } from '@/lib/admin/segments'
+import { listFlows } from '@/lib/admin/flows'
+import { getFlag } from '@/lib/admin/settings'
 import SegmentBuilder, { DeleteSegmentButton } from './SegmentBuilder'
+import FlowsManager from './FlowsManager'
 
 export const metadata: Metadata = { title: 'Marketing — VisitPlane Admin', robots: { index: false } }
 export const dynamic = 'force-dynamic'
@@ -11,10 +14,12 @@ export const dynamic = 'force-dynamic'
 export default async function AdminMarketing() {
   await requireAdmin()
   const svc = getServiceClient()
-  const [sources, segments, metricsRes] = await Promise.all([
+  const [sources, segments, metricsRes, flows, broadcastsEnabled] = await Promise.all([
     leadSources(),
     listSegments(),
     svc.from('marketing_metrics').select('name').order('name'),
+    listFlows(),
+    getFlag('email_broadcasts_enabled'),
   ])
   const metrics = (metricsRes.data ?? []).map((m: { name: string }) => m.name)
 
@@ -49,7 +54,9 @@ export default async function AdminMarketing() {
         )}
       </div>
 
-      <p className="text-xs text-gray-600">Automated flows (triggered email sequences) are wired in the next sub-phase. Segments here already power audience targeting in the Email module.</p>
+      <FlowsManager flows={flows} broadcastsEnabled={broadcastsEnabled} />
+
+      <p className="text-xs text-gray-600">Flows trigger when a lead confirms double opt-in; the worker runs on a daily Vercel cron (Hobby tier) and can be triggered manually above. Segments power audience targeting in the Email module.</p>
     </div>
   )
 }
