@@ -459,12 +459,12 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="mt-6 flex justify-center">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="flex justify-center empty:hidden [&:has(>*)]:mt-4">
             <InstallButton />
           </motion.div>
 
           {/* Honest trust chips */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }} className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold" style={{ color: '#64748B' }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }} className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold" style={{ color: '#64748B' }}>
             {['197 countries covered', 'Official-source verified', '100% free · no signup'].map((x) => (
               <span key={x} className="inline-flex items-center gap-1.5">
                 <CheckIcon className="h-3.5 w-3.5 text-emerald-500" /> {x}
@@ -473,7 +473,7 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        <div className="mt-12 h-10" style={{ background: 'linear-gradient(to bottom, transparent, #FFFFFF)' }} />
+        <div className="mt-6 h-4" style={{ background: 'linear-gradient(to bottom, transparent, #FFFFFF)' }} />
       </section>
 
       {/* ────────────────────── 2. THE DIFFERENCE (problem → solution) ───────────── */}
