@@ -98,6 +98,28 @@ export async function recipientsForSegment(segmentId: string): Promise<{ email: 
   return ((data ?? []) as { email: string; unsubscribe_token: string }[]).filter(r => lower.has(r.email.toLowerCase()))
 }
 
+/** Suppression window (hours) — recipients emailed within it are skipped. */
+export async function suppressionHours(): Promise<number> {
+  const { getSettings } = await import('@/lib/admin/settings')
+  const s = await getSettings()
+  const v = Number(s.send_suppression_hours)
+  return Number.isFinite(v) && v >= 0 ? v : 24
+}
+
+/** Emails that received a flow/broadcast email within the window. */
+export async function suppressedSet(emails: string[], hours: number): Promise<Set<string>> {
+  const out = new Set<string>()
+  if (hours <= 0 || emails.length === 0) return out
+  const svc = getServiceClient()
+  const since = new Date(Date.now() - hours * 3600000).toISOString()
+  const lower = emails.map(e => e.toLowerCase())
+  const { data } = await svc.from('marketing_events')
+    .select('email').in('metric', ['flow.email_sent', 'broadcast.email_sent'])
+    .gte('occurred_at', since).in('email', lower).limit(50000)
+  for (const r of (data ?? []) as { email: string | null }[]) if (r.email) out.add(r.email.toLowerCase())
+  return out
+}
+
 /** Recent broadcasts, reconstructed from the audit log (no separate table). */
 export async function recentBroadcasts(limit = 10) {
   const svc = getServiceClient()

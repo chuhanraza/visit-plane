@@ -1,6 +1,7 @@
 import { getServiceClient } from '@/lib/supabase/admin'
 import { getFlag } from '@/lib/admin/settings'
 import { sendBroadcastEmail } from '@/lib/email'
+import { suppressionHours, suppressedSet } from '@/lib/admin/email'
 import { recordEvent } from '@/lib/admin/events'
 
 /**
@@ -100,7 +101,15 @@ export async function runFlowWorker(): Promise<{ enabled: boolean; enrolled: num
 
   // ── Advance: due active runs.
   const { data: dueRuns } = await svc.from('flow_runs').select('id, flow_id, email, current_step').eq('status', 'active').lte('next_action_at', new Date(now).toISOString()).limit(500)
-  for (const run of (dueRuns ?? []) as { id: string; flow_id: string; email: string; current_step: number }[]) {
+  const dueList = (dueRuns ?? []) as { id: string; flow_id: string; email: string; current_step: number }[]
+  // Smart-send: defer runs whose recipient was emailed within the suppression window.
+  const supHours = await suppressionHours()
+  const suppressed = await suppressedSet(dueList.map(r => r.email), supHours)
+  for (const run of dueList) {
+    if (suppressed.has(run.email.toLowerCase())) {
+      await svc.from('flow_runs').update({ next_action_at: new Date(now + supHours * 3600000).toISOString(), updated_at: new Date().toISOString() }).eq('id', run.id)
+      continue
+    }
     const { data: steps } = await svc.from('flow_steps').select('position, delay_minutes, subject, body').eq('flow_id', run.flow_id).order('position')
     const flowSteps = (steps ?? []) as { delay_minutes: number; subject: string; body: string }[]
     if (run.current_step >= flowSteps.length) { await svc.from('flow_runs').update({ status: 'completed', updated_at: new Date().toISOString() }).eq('id', run.id); completed++; continue }

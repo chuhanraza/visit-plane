@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { requirePermissionApi } from '@/lib/admin/guard'
 import { getFlag } from '@/lib/admin/settings'
-import { recipientsFor, recipientsForSegment } from '@/lib/admin/email'
+import { recipientsFor, recipientsForSegment, suppressionHours, suppressedSet } from '@/lib/admin/email'
 import { sendBroadcastEmail } from '@/lib/email'
+import { recordEvent } from '@/lib/admin/events'
 import { runPooled } from '@/lib/admin/concurrency'
 import { writeAudit } from '@/lib/audit'
 
@@ -52,20 +53,30 @@ export async function POST(req: NextRequest) {
     : await recipientsFor({ source: d.source, leadMagnet: d.leadMagnet })
   if (recipients.length === 0) return NextResponse.json({ error: 'No confirmed, subscribed recipients match this audience.' }, { status: 400 })
 
+  // Smart-send: skip recipients already emailed within the suppression window.
+  const hours = await suppressionHours()
+  const suppressed = await suppressedSet(recipients.map(r => r.email), hours)
+  const eligible = recipients.filter(r => !suppressed.has(r.email.toLowerCase()))
+  if (eligible.length === 0) return NextResponse.json({ error: `All recipients were emailed within the last ${hours}h (suppressed).` }, { status: 400 })
+
   // Cap per request so the send completes within the function budget; bounded
   // concurrency for throughput. Larger lists: run again or use an automated flow.
   const CAP = 500
-  const batch = recipients.slice(0, CAP)
-  const capped = recipients.length > CAP
-  const results = await runPooled(batch, 8, async r =>
-    (await sendBroadcastEmail(r.email, d.subject, d.body, `${siteUrl()}/unsubscribe?token=${r.unsubscribe_token}`)).sent)
+  const batch = eligible.slice(0, CAP)
+  const capped = eligible.length > CAP
+  const results = await runPooled(batch, 8, async r => {
+    const res = await sendBroadcastEmail(r.email, d.subject, d.body, `${siteUrl()}/unsubscribe?token=${r.unsubscribe_token}`)
+    if (res.sent) await recordEvent({ email: r.email, metric: 'broadcast.email_sent', properties: { subject: d.subject } })
+    return res.sent
+  })
   const sent = results.filter(Boolean).length
   const failed = batch.length - sent
+  const suppressedCount = recipients.length - eligible.length
 
   await writeAudit({
     actor, actorType: 'admin', action: 'email.broadcast', entityType: 'email',
-    metadata: { subject: d.subject, segment: { source: d.source ?? null, leadMagnet: d.leadMagnet ?? null, segmentId: d.segmentId ?? null }, recipientCount: recipients.length, attempted: batch.length, sent, failed, capped },
+    metadata: { subject: d.subject, segment: { source: d.source ?? null, leadMagnet: d.leadMagnet ?? null, segmentId: d.segmentId ?? null }, recipientCount: recipients.length, suppressed: suppressedCount, attempted: batch.length, sent, failed, capped },
     ip,
   })
-  return NextResponse.json({ ok: true, recipientCount: recipients.length, attempted: batch.length, sent, failed, capped })
+  return NextResponse.json({ ok: true, recipientCount: recipients.length, suppressed: suppressedCount, attempted: batch.length, sent, failed, capped })
 }

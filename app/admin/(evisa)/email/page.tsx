@@ -1,11 +1,12 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin/guard'
-import { emailSegments, listPendingOptIn, recentBroadcasts, emailEngagement } from '@/lib/admin/email'
+import { emailSegments, listPendingOptIn, recentBroadcasts, emailEngagement, suppressionHours } from '@/lib/admin/email'
 import { listSegments } from '@/lib/admin/segments'
 import { listTemplates } from '@/lib/admin/templates'
 import { getFlag } from '@/lib/admin/settings'
 import EmailComposer from './EmailComposer'
+import SuppressionControl from './SuppressionControl'
 
 export const metadata: Metadata = { title: 'Email — VisitPlane Admin', robots: { index: false } }
 export const dynamic = 'force-dynamic'
@@ -21,6 +22,7 @@ export default async function AdminEmail() {
     emailEngagement(30),
     listTemplates(),
   ])
+  const supHours = await suppressionHours()
 
   const Stat = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
     <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
@@ -52,6 +54,8 @@ export default async function AdminEmail() {
         <Stat label="Pending opt-in" value={String(segments.pending)} sub="awaiting confirmation" />
         <Stat label="Unsubscribed" value={String(segments.unsubscribed)} />
       </div>
+
+      <SuppressionControl hours={supHours} />
 
       <EmailComposer segments={segments} broadcastsEnabled={broadcastsEnabled} savedSegments={savedSegments.map(s => ({ id: s.id, name: s.name }))} templates={templates.map(t => ({ name: t.name, subject: t.subject, body: t.body_html }))} />
 
