@@ -829,6 +829,14 @@ export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('India', 'Thailand')]: IN_TH,
   [key('India', 'Malaysia')]: IN_MY,
   [key('India', 'Singapore')]: IN_SG,
+  [key('Bangladesh', 'Saudi Arabia')]: BD_SA,
+  [key('Bangladesh', 'Malaysia')]: BD_MY,
+  [key('Bangladesh', 'UAE')]: BD_AE,
+  [key('Nigeria', 'United Kingdom')]: NG_GB,
+  [key('Nigeria', 'Canada')]: NG_CA,
+  [key('Philippines', 'United States')]: PH_US,
+  [key('Philippines', 'Japan')]: PH_JP,
+  [key('Egypt', 'Saudi Arabia')]: EG_SA,
 }
 
 /** Returns the curated official requirements for a route, or null. */
