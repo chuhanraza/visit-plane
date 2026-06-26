@@ -979,6 +979,192 @@ const IN_VN: OfficialRequirements = {
   ],
 }
 
+// ════════════════════════ PAKISTAN → GULF / ASIA / SCHENGEN ════════════════════════
+
+// ── Pakistan → Oman (ROP e-Visa) — Royal Oman Police / Oman MFA, 2026-06 ──
+const PK_OM: OfficialRequirements = {
+  visaType: 'Tourist Visit Visa (e-Visa)',
+  processNote:
+    'Apply online via the Royal Oman Police (ROP) e-Visa portal; the eligibility wizard determines whether you get an unsponsored visa or need an Oman-resident sponsor (Pakistan is not visa-exempt). Separately, Pakistanis holding a valid visa or residence of the US/UK/Schengen/Canada/Japan/Australia get 14-day visa-free entry.',
+  sourceLabel: 'Royal Oman Police e-Visa portal + Oman Ministry of Foreign Affairs',
+  sourceUrl: 'https://evisa.rop.gov.om/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for entry', items: [
+      { name: 'Passport', description: 'Valid at least 6 months before entering Oman.' },
+      { name: 'Online e-Visa application', description: 'Submitted on the ROP portal with passport scan + photo uploaded (≤512 KB each).' },
+      { name: 'Return ticket', description: 'A confirmed onward/return air ticket.' },
+      { name: 'Confirmed hotel reservation', description: 'Accommodation booking for your stay.' },
+      { name: 'Health insurance & sufficient funds', description: 'Valid health cover and funds for the stay.' },
+    ]},
+    { tier: 'conditional', label: 'Depending on your case', items: [
+      { name: 'Oman-resident sponsor', description: 'A sponsor with a valid Omani Civil Number.', conditional: 'If the wizard routes you to a sponsored visa' },
+      { name: 'US/UK/Schengen/Canada/Japan/Australia visa or residence', description: 'Triggers 14-day visa-free entry.', conditional: 'Facilitated-entry route' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Bahrain (e-Visa) — NPRA evisa.gov.bh, 2026-06 ──
+const PK_BH: OfficialRequirements = {
+  visaType: 'Electronic visit visa (e-Visa)',
+  processNote:
+    'Pakistan is on Bahrain’s official online-visa-eligible list (and on the visa-on-arrival list), so you can apply online at evisa.gov.bh without a guarantor in the normal case. The exact document list and stay length are shown per visa type inside the application form.',
+  sourceLabel: 'Kingdom of Bahrain — NPRA official e-Visa portal',
+  sourceUrl: 'https://www.evisa.gov.bh/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'For the e-Visa', items: [
+      { name: 'Passport', description: 'Apply and travel on your own passport.' },
+      { name: 'Online application + fee', description: 'Complete the form, attach the documents shown for your visa type, and pay by card.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Bahrain-based guarantor', description: 'A local company, hotel or citizen guarantor.', conditional: 'Only if you don’t qualify without one' },
+      { name: 'GCC residence / visit permit', description: 'A valid permit for Kuwait/Oman/Qatar/Saudi/UAE.', conditional: 'Can change the visa options offered' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Singapore (tourist visa via authorised agent) — ICA, 2026-06 ──
+const PK_SG: OfficialRequirements = {
+  visaType: 'Tourist visa (via ICA-authorised agent / local contact)',
+  processNote:
+    'Pakistani holders need a visa. Apply online via a Strategic Partner / local contact in Singapore (a citizen or PR, 21+, with Singpass), or through a Singapore Overseas Mission / authorised visa agent, within 30 days before arrival (S$30, ~3 working days). Submit the SG Arrival Card before entry.',
+  sourceLabel: 'Immigration & Checkpoints Authority (ICA), Singapore — Pakistan visa requirements',
+  sourceUrl: 'https://www.ica.gov.sg/enter-transit-depart/entering-singapore/visa_requirements/visa-detail-page/pakistan',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Form 14A', description: 'Completed Application for Entry Visa, signed by the applicant.' },
+      { name: 'Recent photograph', description: 'One passport-size colour photo taken within the last 3 months (ICA specs).' },
+      { name: 'Passport biodata copy', description: 'Copy of the biodata page; passport valid at least 6 months from entry.' },
+      { name: 'Form V39A (Letter of Introduction)', description: 'Issued by a Singapore local contact (citizen/PR, 21+, with Singpass) — an embassy-issued LOI is also accepted.' },
+    ]},
+    { tier: 'conditional', label: 'If requested', items: [
+      { name: 'Additional supporting documents', description: 'Further documents at ICA’s discretion.', conditional: 'Case-by-case' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Japan (Temporary Visitor, tourism) — Embassy of Japan Pakistan, 2026-06 ──
+const PK_JP: OfficialRequirements = {
+  visaType: 'Temporary Visitor (tourism) visa',
+  processNote:
+    'Apply in person at the Embassy of Japan, Islamabad (residents of Sindh & Balochistan apply at the Consulate-General in Karachi). Submission 9:00–11:00 Mon–Fri. Incomplete files may be refused; do NOT buy your ticket before the visa is issued.',
+  sourceLabel: 'Embassy of Japan in Pakistan — visa requirements (Tourism)',
+  sourceUrl: 'https://www.pk.emb-japan.go.jp/VisitingJapan/visarequirements.html',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for tourism', items: [
+      { name: 'Visa application form', description: 'Completed in block letters, black ink, signed; photo pasted on it.' },
+      { name: 'Photograph', description: 'Light/white background, full front face, bare head, no retouching.' },
+      { name: 'Passport', description: 'Original valid passport (plus any expired passports).' },
+      { name: 'CNIC', description: 'Original national ID with a photocopy.' },
+      { name: 'Bank documents', description: 'Attested bank statement for the last 6 months with a bank manager’s letter.' },
+      { name: 'Occupational evidence', description: 'Authentic proof of your present occupation from your organisation.' },
+      { name: 'Airline booking', description: 'Confirmed round-trip booking from a travel agent — do not buy the ticket.' },
+      { name: 'Schedule of visit', description: 'Your day-by-day itinerary in Japan.' },
+      { name: 'Accommodation', description: 'Evidence of accommodation reserved in Japan, with full address.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'NOC / Ex-Pakistan leave certificate', description: 'From the concerned authorities.', conditional: 'For government officials' },
+      { name: 'Guarantor / invitation documents', description: 'Guarantee, invitation and family-registration documents.', conditional: 'If visiting/sponsored by someone in Japan' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Maldives (free visa on arrival) — Maldives Immigration, 2026-06 ──
+const PK_MV: OfficialRequirements = {
+  visaType: 'Free visa on arrival (30 days)',
+  processNote:
+    'The Maldives grants a free 30-day visa on arrival to all nationalities — no pre-approval. Every traveller must submit the IMUGA Traveller Declaration online within 96 hours before arrival (free).',
+  sourceLabel: 'Maldives Immigration — Tourist Visa (On Arrival) + IMUGA',
+  sourceUrl: 'https://www.immigration.gov.mv/visa/tourist-visa',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Carry / complete for entry', items: [
+      { name: 'Passport', description: 'Machine-readable, with at least 1 month validity.' },
+      { name: 'Confirmed return / onward ticket', description: 'Part of a complete travel itinerary.' },
+      { name: 'Confirmed accommodation booking', description: 'Prepaid booking at a registered hotel/guesthouse/resort.' },
+      { name: 'Sufficient funds', description: 'Proof of funds for the duration of your stay.' },
+      { name: 'IMUGA Traveller Declaration', description: 'Submitted online within 96 hours before arrival (free).' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Yellow Fever certificate', description: 'Depending on your country of departure/transit.', conditional: 'If arriving from a yellow-fever area' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Egypt (embassy visa; not e-Visa eligible) — Egypt e-Visa portal, 2026-06 ──
+const PK_EG: OfficialRequirements = {
+  visaType: 'Embassy tourist visa (no e-Visa for Pakistan)',
+  processNote:
+    'Pakistan is NOT on Egypt’s e-Visa eligible list — apply in person at the Egyptian Embassy in Islamabad; you cannot use the online e-Visa. (A visa-on-arrival exception applies only to organised tour groups of 15+ with a guarantee letter from an authorised Egyptian travel agency.)',
+  sourceLabel: 'Official Egypt e-Visa portal — eligible countries / FAQ',
+  sourceUrl: 'https://www.visa2egypt.gov.eg/eVisa/FAQ?active=true',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Baseline', items: [
+      { name: 'Passport', description: 'Valid at least 6 months from your date of arrival in Egypt.' },
+      { name: 'Embassy application', description: 'Lodged at the Egyptian Embassy in Islamabad — confirm the current document list with the embassy.' },
+    ]},
+    { tier: 'conditional', label: 'By purpose', items: [
+      { name: 'Hotel booking / itinerary', description: 'Confirmed accommodation and places to visit.', conditional: 'For tourism' },
+      { name: 'Invitation / company letter', description: 'Supporting letter.', conditional: 'For business/family visits' },
+    ]},
+  ],
+}
+
+// ── Pakistan → France / Schengen (short-stay C) — France-Visas, 2026-06 ──
+const PK_FR: OfficialRequirements = {
+  visaType: 'Schengen short-stay (tourist) visa — Category C',
+  processNote:
+    'Apply online via France-Visas (france-visas.gouv.fr) to build your file, then submit documents and give biometrics (10 fingerprints + photo) in person at the French Embassy in Islamabad. Average ~15 days after the appointment; book well in advance with a complete file.',
+  sourceLabel: 'France-Visas — official French government visa portal (Pakistan)',
+  sourceUrl: 'https://france-visas.gouv.fr/en/pakistan',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'France-Visas application form', description: 'Completed and signed Category C form from the France-Visas wizard.' },
+      { name: 'Passport', description: 'Issued within the last 10 years, valid ≥3 months beyond departure, with 2 blank pages.' },
+      { name: 'Passport photos', description: 'Recent (within 6 months), Schengen/ICAO standard.' },
+      { name: 'Travel medical insurance', description: 'Minimum €30,000, valid across the Schengen area for the whole trip.' },
+      { name: 'Proof of accommodation', description: 'Hotel booking, or an official “attestation d’accueil” if hosted privately.' },
+      { name: 'Proof of travel / return', description: 'Itinerary or round-trip flight reservation.' },
+      { name: 'Proof of financial means', description: 'Personal bank statements for the last 3 months, pay slips or card statements.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Employment / status proof', description: 'Employer letter & leave, business registration, or enrolment certificate.', conditional: 'By your occupation' },
+      { name: 'CNIC copy', description: 'Copy of your national ID.', conditional: 'Commonly required for Pakistani applicants' },
+    ]},
+  ],
+}
+
+// ── Pakistan → South Korea (C-3 short-term visit; not K-ETA) — Korea MOFA, 2026-06 ──
+const PK_KR: OfficialRequirements = {
+  visaType: 'Short-term visit visa (C-3, tourism)',
+  processNote:
+    'Pakistan is NOT K-ETA-eligible, so a visa is required. Apply in person at the Embassy of the Republic of Korea, Islamabad (the Karachi office also accepts). Complete the e-Arrival Card on arrival.',
+  sourceLabel: 'Embassy of the Republic of Korea to Pakistan (MOFA)',
+  sourceUrl: 'https://overseas.mofa.go.kr/pk-en/index.do',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Visa application form', description: 'Completed and signed (from the embassy site or visa.go.kr).' },
+      { name: 'Passport', description: 'Valid at least 6 months.' },
+      { name: 'Photograph', description: 'One recent colour photo, white background.' },
+      { name: 'Bank statement', description: 'Last 6 months’ transactions plus an account-maintenance certificate.' },
+      { name: 'Proof of employment', description: 'Employment certificate / pay slips, enrolment certificate, or business registration.' },
+      { name: 'Flight reservation', description: 'Round-trip e-ticket reservation.' },
+      { name: 'Hotel booking', description: 'Accommodation reservation confirmation.' },
+      { name: 'Cover letter', description: 'Stating the purpose of your visit / itinerary.' },
+    ]},
+    { tier: 'conditional', label: 'May be requested', items: [
+      { name: 'Family / marriage certificate', description: 'To establish family ties.', conditional: 'If accompanying family' },
+      { name: 'Police clearance / travel history', description: 'Police report or prior visa stamps.', conditional: 'If the embassy requests' },
+    ]},
+  ],
+}
+
 export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Pakistan', 'Turkey')]: PK_TR,
   [key('Pakistan', 'Saudi Arabia')]: PK_SA,
@@ -1019,6 +1205,14 @@ export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('India', 'Japan')]: IN_JP,
   [key('India', 'South Korea')]: IN_KR,
   [key('India', 'Vietnam')]: IN_VN,
+  [key('Pakistan', 'Oman')]: PK_OM,
+  [key('Pakistan', 'Bahrain')]: PK_BH,
+  [key('Pakistan', 'Singapore')]: PK_SG,
+  [key('Pakistan', 'Japan')]: PK_JP,
+  [key('Pakistan', 'Maldives')]: PK_MV,
+  [key('Pakistan', 'Egypt')]: PK_EG,
+  [key('Pakistan', 'France')]: PK_FR,
+  [key('Pakistan', 'South Korea')]: PK_KR,
 }
 
 /** Returns the curated official requirements for a route, or null. */
