@@ -1,6 +1,5 @@
 import type { VisaRecord } from '@/app/visa/[passport]/[destination]/VisaPageClient'
 import { resolveDocumentGroups } from '@/components/visa/DocumentChecklist'
-import { getOfficialPortal } from '@/lib/data/officialPortals'
 import { getOfficialRequirements } from '@/lib/data/officialRequirements'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -33,9 +32,6 @@ export default function PrintableChecklist({
     ? official.groups
     : resolveDocumentGroups(visaRecord, destinationName)
   const visaType = official?.visaType ?? (visaRecord.visa_type ?? visaRecord.type ?? 'Tourist Visa').toString()
-  const portal = getOfficialPortal(destinationName)
-  const sourceLabel = official?.sourceLabel ?? portal?.label ?? `${destinationName} — official government immigration / visa portal`
-  const sourceUrl = official?.sourceUrl ?? portal?.url ?? `https://www.google.com/search?q=${encodeURIComponent(`${destinationName} official visa from ${passportName}`)}`
   const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
   const tierName: Record<string, string> = {
@@ -73,7 +69,7 @@ export default function PrintableChecklist({
         <div style={{ fontSize: '10.5px', color: '#374151', margin: '4px 0 2px' }}>{official.processNote}</div>
       ) : !official ? (
         <div style={{ fontSize: '10.5px', color: '#92400E', margin: '4px 0 2px' }}>
-          General preparation guide — the exact required documents depend on your visa type and consulate. Confirm the complete, current list at the official source below.
+          General preparation guide — the exact required documents depend on your visa type and consulate. Confirm the complete, current list with the destination&rsquo;s official immigration authority before you apply.
         </div>
       ) : null}
 
@@ -98,14 +94,9 @@ export default function PrintableChecklist({
         </div>
       ))}
 
-      {/* Official source */}
-      <div style={{ marginTop: '16px', border: '1px solid #111827', borderRadius: '6px', padding: '9px 11px', breakInside: 'avoid' }}>
-        <div style={{ fontSize: '11px', fontWeight: 800, marginBottom: '3px' }}>Official source — verify here before you travel</div>
-        <div style={{ fontWeight: 700 }}>{sourceLabel}</div>
-        <div style={{ color: '#1D4ED8', wordBreak: 'break-all' }}>{sourceUrl}</div>
-        <div style={{ marginTop: '5px', color: '#4B5563' }}>
-          This checklist is compiled by VisitPlane{official ? ' from the official requirement sheet above' : ' and cross-checked against official immigration sources'}. It is a free preparation guide — visa rules change frequently and depend on your exact situation. Always confirm the current requirements, fees and forms at the official source above before booking travel or submitting an application.
-        </div>
+      {/* Disclaimer */}
+      <div style={{ marginTop: '16px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 11px', breakInside: 'avoid', color: '#4B5563' }}>
+        This checklist is a free preparation guide compiled by VisitPlane. Visa rules change frequently and depend on your exact situation — always confirm the current requirements, fees and forms with the destination&rsquo;s official immigration authority before booking travel or submitting an application.
       </div>
     </div>
   )

@@ -5,11 +5,6 @@ import { motion } from 'framer-motion'
 import type { VisaRecord } from '@/app/visa/[passport]/[destination]/VisaPageClient'
 import { getOfficialRequirements } from '@/lib/data/officialRequirements'
 
-const MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-function prettyMonth(ym: string): string {
-  const [y, m] = ym.split('-')
-  return MONTHS[parseInt(m, 10)] ? `${MONTHS[parseInt(m, 10)]} ${y}` : ym
-}
 function IconInfo({ className = 'h-4 w-4' }: { className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 16v-5M12 8h.01" /></svg>
 }
@@ -247,7 +242,7 @@ export default function DocumentChecklist({
               <p className="mt-1 text-sm text-gray-500">
                 {official
                   ? `Official ${official.visaType} requirements — tick each off as you gather it.`
-                  : 'A general preparation guide — confirm the exact, complete list at the official source.'}
+                  : 'A general preparation guide — confirm the exact, complete list before you apply.'}
               </p>
             </div>
             {isFree ? (
@@ -271,24 +266,19 @@ export default function DocumentChecklist({
             </div>
           )}
 
-          {/* Source / honesty note */}
+          {/* Honesty note */}
           {official ? (
-            <div className="mt-4 space-y-3">
-              {official.processNote && (
-                <div className="flex gap-2.5 rounded-xl border border-teal-200 bg-teal-50/60 p-3 text-[13px] leading-relaxed text-teal-900">
-                  <IconInfo className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" />
-                  <span>{official.processNote}</span>
-                </div>
-              )}
-              <a href={official.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-700 hover:underline">
-                <IconInfo className="h-3.5 w-3.5" /> Source: {official.sourceLabel} · verified {prettyMonth(official.lastVerified)} ↗
-              </a>
-            </div>
+            official.processNote ? (
+              <div className="mt-4 flex gap-2.5 rounded-xl border border-teal-200 bg-teal-50/60 p-3 text-[13px] leading-relaxed text-teal-900">
+                <IconInfo className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" />
+                <span>{official.processNote}</span>
+              </div>
+            ) : null
           ) : !isFree ? (
             <div className="mt-4 flex gap-2.5 rounded-xl border border-amber-200 bg-amber-50/70 p-3 text-[13px] leading-relaxed text-amber-900">
               <IconInfo className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
               <span>
-                <span className="font-bold">This is a general guide, not the official list.</span> The exact documents depend on your visa type and the consulate handling your nationality. Always confirm the complete, current requirements at the official source before you apply.
+                <span className="font-bold">This is a general guide, not the official list.</span> The exact documents depend on your visa type and the consulate handling your nationality. Always confirm the complete, current requirements with the destination&rsquo;s official immigration authority before you apply.
               </span>
             </div>
           ) : null}
