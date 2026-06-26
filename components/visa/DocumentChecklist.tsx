@@ -3,6 +3,16 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import type { VisaRecord } from '@/app/visa/[passport]/[destination]/VisaPageClient'
+import { getOfficialRequirements } from '@/lib/data/officialRequirements'
+
+const MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+function prettyMonth(ym: string): string {
+  const [y, m] = ym.split('-')
+  return MONTHS[parseInt(m, 10)] ? `${MONTHS[parseInt(m, 10)]} ${y}` : ym
+}
+function IconInfo({ className = 'h-4 w-4' }: { className?: string }) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 16v-5M12 8h.01" /></svg>
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface DocumentItem {
@@ -199,18 +209,26 @@ function AICheckerCTA({ onOpen }: { onOpen?: () => void }) {
 // ─── Main component ─────────────────────────────────────────────────────────
 export default function DocumentChecklist({
   visaRecord,
+  passportName,
   destinationName,
   onOpenAIChecker,
 }: DocumentChecklistProps) {
   const [checked, setChecked] = useState<Record<string, boolean>>({})
   if (!visaRecord) return null
 
-  const groups = resolveDocumentGroups(visaRecord, destinationName)
   const visaType = (visaRecord.visa_type ?? visaRecord.type ?? '').toString()
   const isFree = /free|no visa/i.test(visaType)
 
+  // Curated, official-sourced requirements take priority; else the country-neutral
+  // baseline (clearly labelled as a general guide).
+  const official = getOfficialRequirements(passportName, destinationName)
+  type Row = { name: string; description?: string; conditional?: string; why?: string }
+  const displayGroups: { tier: 'mandatory' | 'conditional' | 'recommended'; label: string; sub?: string; items: Row[] }[] = official
+    ? official.groups.map((g) => ({ tier: g.tier, label: g.label, items: g.items as Row[] }))
+    : resolveDocumentGroups(visaRecord, destinationName).map((g) => ({ tier: g.tier, label: TIER[g.tier].name, sub: TIER[g.tier].sub, items: g.items as Row[] }))
+
   const allKeys: string[] = []
-  groups.forEach((g, gi) => g.items.forEach((_, idx) => allKeys.push(`${gi}-${idx}`)))
+  displayGroups.forEach((g, gi) => g.items.forEach((_, idx) => allKeys.push(`${gi}-${idx}`)))
   const total = allKeys.length
   const done = allKeys.filter((k) => checked[k]).length
   const pct = total ? Math.round((done / total) * 100) : 0
@@ -226,7 +244,11 @@ export default function DocumentChecklist({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 id="requirements-heading" className="text-xl font-extrabold tracking-tight text-gray-900 sm:text-2xl">Documents needed</h2>
-              <p className="mt-1 text-sm text-gray-500">Tick each off as you gather it — your progress is saved on this page.</p>
+              <p className="mt-1 text-sm text-gray-500">
+                {official
+                  ? `Official ${official.visaType} requirements — tick each off as you gather it.`
+                  : 'A general preparation guide — confirm the exact, complete list at the official source.'}
+              </p>
             </div>
             {isFree ? (
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
@@ -248,19 +270,41 @@ export default function DocumentChecklist({
               />
             </div>
           )}
+
+          {/* Source / honesty note */}
+          {official ? (
+            <div className="mt-4 space-y-3">
+              {official.processNote && (
+                <div className="flex gap-2.5 rounded-xl border border-teal-200 bg-teal-50/60 p-3 text-[13px] leading-relaxed text-teal-900">
+                  <IconInfo className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" />
+                  <span>{official.processNote}</span>
+                </div>
+              )}
+              <a href={official.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-700 hover:underline">
+                <IconInfo className="h-3.5 w-3.5" /> Source: {official.sourceLabel} · verified {prettyMonth(official.lastVerified)} ↗
+              </a>
+            </div>
+          ) : !isFree ? (
+            <div className="mt-4 flex gap-2.5 rounded-xl border border-amber-200 bg-amber-50/70 p-3 text-[13px] leading-relaxed text-amber-900">
+              <IconInfo className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+              <span>
+                <span className="font-bold">This is a general guide, not the official list.</span> The exact documents depend on your visa type and the consulate handling your nationality. Always confirm the complete, current requirements at the official source before you apply.
+              </span>
+            </div>
+          ) : null}
         </div>
 
         {/* Groups */}
         <div className="space-y-8 p-6 sm:p-8">
-          {groups.map((group, gi) => {
+          {displayGroups.map((group, gi) => {
             const t = TIER[group.tier]
             return (
               <div key={`${group.tier}-${gi}`}>
                 {/* Group label */}
                 <div className="mb-3.5 flex items-center gap-2.5">
                   <span className={`h-2.5 w-2.5 rounded-full ${t.dot}`} />
-                  <span className={`text-sm font-extrabold ${t.text}`}>{t.name}</span>
-                  <span className="text-sm font-medium text-gray-400">· {t.sub}</span>
+                  <span className={`text-sm font-extrabold ${t.text}`}>{group.label}</span>
+                  {group.sub && <span className="text-sm font-medium text-gray-400">· {group.sub}</span>}
                   <span className="ml-auto text-xs font-semibold text-gray-400">{group.items.length}</span>
                 </div>
 
