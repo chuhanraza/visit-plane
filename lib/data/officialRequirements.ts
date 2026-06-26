@@ -1165,6 +1165,175 @@ const PK_KR: OfficialRequirements = {
   ],
 }
 
+// ════════════════════════ INDIA → REGIONAL & MID-TIER ════════════════════════
+
+// ── India → Turkey (conditional e-Visa) — evisa.gov.tr, 2026-06 ──
+const IN_TR: OfficialRequirements = {
+  visaType: 'e-Visa (conditional) or sticker visa',
+  processNote:
+    'Indian ordinary-passport holders qualify for the Türkiye e-Visa ONLY if they also hold a valid visa or residence permit from a Schengen country, the USA, the UK or Ireland — and it must be a physical/sticker visa or residence permit (another country’s e-Visa is not accepted). The e-Visa is single-entry, 30-day stay. Without a qualifying document, get a sticker visa from a Turkish mission.',
+  sourceLabel: 'Republic of Türkiye — official e-Visa application system',
+  sourceUrl: 'https://www.evisa.gov.tr/en/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'For the e-Visa', items: [
+      { name: 'Ordinary passport', description: 'Valid at least 60 days beyond your duration of stay.' },
+      { name: 'Supporting visa or residence permit', description: 'A valid physical/sticker visa or residence permit from Schengen, the USA, the UK or Ireland.' },
+    ]},
+    { tier: 'conditional', label: 'If you don’t qualify', items: [
+      { name: 'Sticker visa from a Turkish mission', description: 'Apply at a Turkish embassy/consulate.', conditional: 'If you hold no qualifying Schengen/US/UK/Ireland visa' },
+    ]},
+  ],
+}
+
+// ── India → Sri Lanka (free Tourist ETA) — Sri Lanka Immigration, 2026-06 ──
+const IN_LK: OfficialRequirements = {
+  visaType: 'Tourist ETA (free for Indian holders)',
+  processNote:
+    'India is among the 40 nationalities granted a free tourist ETA (effective 25 May 2026) — 30 days, double-entry. The ETA must still be obtained online before arrival even though it’s free.',
+  sourceLabel: 'Department of Immigration & Emigration, Sri Lanka — Tourist ETA',
+  sourceUrl: 'https://eta.gov.lk/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport', description: 'Valid at least 6 months from your date of arrival.' },
+      { name: 'Electronic Travel Authorization (ETA)', description: 'Obtained online before arrival; free for Indian holders, 30 days double-entry.' },
+      { name: 'Return / onward ticket', description: 'Assurance of return to your country of domicile.' },
+      { name: 'Sufficient funds', description: 'Adequate funds for your stay and return.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Paid visa extension', description: 'Pay the applicable fee.', conditional: 'If staying beyond the free 30 days' },
+    ]},
+  ],
+}
+
+// ── India → Indonesia (Visa on Arrival / e-VOA) — Indonesian Immigration, 2026-06 ──
+const IN_ID: OfficialRequirements = {
+  visaType: 'Visa on Arrival / e-VOA (30 days)',
+  processNote:
+    'India IS on Indonesia’s Visa-on-Arrival / e-VOA eligible list — apply online in advance (e-VOA) at evisa.imigrasi.go.id or get it on arrival. 30-day stay, extendable once at an Immigration Office; fee IDR 500,000.',
+  sourceLabel: 'Directorate General of Immigration, Indonesia — e-VOA / Visitor Visa',
+  sourceUrl: 'https://evisa.imigrasi.go.id/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for the VOA / e-VOA', items: [
+      { name: 'Passport', description: 'Valid at least 6 months from your date of arrival in Indonesia.' },
+      { name: 'Visa fee', description: 'Visitor Visa fee of IDR 500,000.' },
+    ]},
+    { tier: 'conditional', label: 'May be asked / if applicable', items: [
+      { name: 'Return / onward ticket', description: 'The immigration officer may request it at entry.', conditional: 'On request at the border' },
+      { name: 'Residence-permit extension', description: 'Apply at an Immigration Office.', conditional: 'If staying beyond 30 days' },
+    ]},
+  ],
+}
+
+// ── India → China (Tourist L visa) — Chinese Embassy in India, 2026-06 ──
+const IN_CN: OfficialRequirements = {
+  visaType: 'Tourist (L) visa',
+  processNote:
+    'Apply through the Chinese Visa Application Service Center (CVASC) in India (New Delhi, Mumbai or Kolkata by jurisdiction); complete the online COVA form first, then submit at the centre.',
+  sourceLabel: 'Embassy of the People’s Republic of China in India — visa application requirements',
+  sourceUrl: 'https://in.china-embassy.gov.cn/eng/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Visa application form + COVA confirmation', description: 'Completed, printed and signed Chinese visa form with the online COVA confirmation page.' },
+      { name: 'Passport', description: 'Valid 6+ months with 2+ blank visa pages, plus a copy of the bio page.' },
+      { name: 'Photos', description: 'Two recent colour photos, 48×33 mm, bare-head, plain background.' },
+    ]},
+    { tier: 'conditional', label: 'Tourism supporting documents', items: [
+      { name: 'Round-trip flight booking', description: 'Reservation showing entry/exit dates and ports.', conditional: 'For the L category' },
+      { name: 'Hotel reservation', description: 'Proof of accommodation in China.', conditional: 'Unless covered by an invitation letter' },
+      { name: 'Tour itinerary', description: 'Detailed day-to-day travel plan.', conditional: 'For the L category' },
+      { name: 'Invitation letter', description: 'From a host entity/individual in China.', conditional: 'For host-based trips' },
+    ]},
+  ],
+}
+
+// ── India → Egypt (Tourist e-Visa) — Egypt e-Visa portal, 2026-06 ──
+const IN_EG: OfficialRequirements = {
+  visaType: 'Tourist e-Visa',
+  processNote:
+    'India is on Egypt’s e-Visa eligible list. Apply online at the official portal (create account, complete the form, pay by card), then present the e-Visa printout on arrival. Single-entry US$30 / multiple-entry US$65.',
+  sourceLabel: 'Official Egypt e-Visa portal',
+  sourceUrl: 'https://www.visa2egypt.gov.eg/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for the e-Visa', items: [
+      { name: 'Passport', description: 'Valid at least 6 months from your date of arrival in Egypt.' },
+      { name: 'e-Visa printout', description: 'Printed copy of the approved e-Visa to show at the port of entry.' },
+      { name: 'Travel itinerary', description: 'Details of your travel plans.' },
+    ]},
+    { tier: 'conditional', label: 'By purpose', items: [
+      { name: 'Hotel booking / accommodation', description: 'Bookings or places you intend to visit.', conditional: 'For tourism' },
+      { name: 'Invitation / company letter', description: 'Supporting letter.', conditional: 'For business or family visits' },
+    ]},
+  ],
+}
+
+// ── India → Azerbaijan (ASAN e-Visa) — evisa.gov.az, 2026-06 ──
+const IN_AZ: OfficialRequirements = {
+  visaType: 'ASAN e-Visa (single-entry)',
+  processNote:
+    'Fully online at evisa.gov.az — India is on the e-Visa eligible list. Single-entry, 30-day stay, e-Visa valid 90 days from issue; standard processing ~3 working days (urgent ~3 hours). No visa on arrival — obtain it before boarding.',
+  sourceLabel: 'Republic of Azerbaijan — official ASAN Visa portal',
+  sourceUrl: 'https://evisa.gov.az/en/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for the e-Visa', items: [
+      { name: 'Passport', description: 'Valid at least 3 months beyond the e-Visa’s expiry date.' },
+      { name: 'Scanned passport photo page', description: 'Upload the bio-data page in the application.' },
+      { name: 'Application data + fee', description: 'Enter your details online and pay the state fee (US$20) + service fee (US$3).' },
+    ]},
+    { tier: 'conditional', label: 'Optional', items: [
+      { name: 'Urgent processing fee', description: 'For the ~3-hour urgent e-Visa.', conditional: 'If you choose urgent processing' },
+    ]},
+  ],
+}
+
+// ── India → Nepal (visa-free) — Nepal Department of Immigration, 2026-06 ──
+const IN_NP: OfficialRequirements = {
+  visaType: 'No visa required (visa-free)',
+  processNote:
+    'Indian nationals need no visa to enter Nepal by land or air, but must carry a document proving Indian nationality. By air, a passport / Voter ID / government photo ID / Embassy of India (Kathmandu) certificate is required. Aadhaar is NOT accepted.',
+  sourceLabel: 'Nepal Department of Immigration — Information for Indian Nationals',
+  sourceUrl: 'https://www.immigration.gov.np/en/post/information-for-indian-nationals',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Carry proof of Indian nationality', items: [
+      { name: 'Passport', description: 'Accepted for both land and air entry (Aadhaar is not accepted).' },
+      { name: 'Election (Voter) ID card', description: 'Issued by the Election Commission of India — accepted for land and air travel.' },
+    ]},
+    { tier: 'conditional', label: 'Other accepted documents', items: [
+      { name: 'Government photo ID', description: 'Photo ID issued by Govt of India / State / UT to its employees.', conditional: 'For air travel' },
+      { name: 'Embassy Emergency/Identity Certificate', description: 'From the Embassy of India, Kathmandu.', conditional: 'When other documents are unavailable' },
+      { name: 'School ID / age-proof document', description: 'School certificate (15–18) or photo age-proof (under 15 / over 65).', conditional: 'For minors / seniors' },
+    ]},
+  ],
+}
+
+// ── India → Mauritius (visa-free, 60 days) — Mauritius PIO, 2026-06 ──
+const IN_MU: OfficialRequirements = {
+  visaType: 'Visa-free entry (60 days on arrival)',
+  processNote:
+    'India is listed as “No visa required” by the Mauritius Passport & Immigration Office — your passport is stamped on arrival for a 60-day stay (extendable case-by-case up to 6 months per calendar year). Complete the Mauritius All-in-One digital travel form before arrival.',
+  sourceLabel: 'Mauritius Passport & Immigration Office — visa requirements',
+  sourceUrl: 'https://passport.govmu.org/passport/?page_id=587',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Carry at the border', items: [
+      { name: 'Passport', description: 'Valid beyond your intended stay, with a blank page.' },
+      { name: 'Return / onward ticket', description: 'A valid ticket back to your country of origin or residence.' },
+      { name: 'Confirmed accommodation', description: 'Hotel booking or sponsorship for accommodation.' },
+      { name: 'Sufficient funds', description: 'Adequate funds for your stay (no fixed amount stated).' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'All-in-One Travel digital form', description: 'Online immigration/customs/health declaration at safemauritius.govmu.org.', conditional: 'Before check-in / arrival' },
+      { name: 'Stay extension', description: 'Apply at the PIO, Port Louis.', conditional: 'If staying beyond 60 days' },
+    ]},
+  ],
+}
+
 export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Pakistan', 'Turkey')]: PK_TR,
   [key('Pakistan', 'Saudi Arabia')]: PK_SA,
@@ -1213,6 +1382,14 @@ export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Pakistan', 'Egypt')]: PK_EG,
   [key('Pakistan', 'France')]: PK_FR,
   [key('Pakistan', 'South Korea')]: PK_KR,
+  [key('India', 'Turkey')]: IN_TR,
+  [key('India', 'Sri Lanka')]: IN_LK,
+  [key('India', 'Indonesia')]: IN_ID,
+  [key('India', 'China')]: IN_CN,
+  [key('India', 'Egypt')]: IN_EG,
+  [key('India', 'Azerbaijan')]: IN_AZ,
+  [key('India', 'Nepal')]: IN_NP,
+  [key('India', 'Mauritius')]: IN_MU,
 }
 
 /** Returns the curated official requirements for a route, or null. */
