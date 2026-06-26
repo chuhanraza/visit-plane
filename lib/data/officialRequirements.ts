@@ -241,6 +241,195 @@ const PK_QA: OfficialRequirements = {
   ],
 }
 
+// ── Pakistan → United States (B1/B2 visitor visa) — travel.state.gov, 2026-06 ──
+const PK_US: OfficialRequirements = {
+  visaType: 'B1/B2 Visitor visa',
+  processNote:
+    'Complete the online DS-160 form, pay the MRV application fee (≈US$185), then book and attend an in-person interview at the U.S. Embassy Islamabad or Consulate General Karachi (via ustraveldocs.com/pk). The consulate publishes no fixed supporting-document checklist beyond the core items — bring evidence of your ties to Pakistan and purpose of travel.',
+  sourceLabel: 'U.S. Department of State — Bureau of Consular Affairs (Visitor Visa)',
+  sourceUrl: 'https://travel.state.gov/content/travel/en/us-visas/tourism-visit/visitor.html',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport', description: 'Valid for at least 6 months beyond your intended stay in the U.S.' },
+      { name: 'DS-160 confirmation page', description: 'Printed confirmation of your completed online nonimmigrant visa application.' },
+      { name: 'MRV fee receipt', description: 'Proof of the visa application fee payment (≈US$185 for B1/B2).' },
+      { name: 'Photo', description: 'Compliant photo uploaded during the DS-160; bring a printed copy if the upload fails.' },
+    ]},
+    { tier: 'conditional', label: 'Bring to support your case (officer may ask)', items: [
+      { name: 'Purpose of trip', description: 'Documents showing the reason for your travel.', conditional: 'If requested at interview' },
+      { name: 'Proof of ties to Pakistan', description: 'Evidence you intend to return — family, residence, etc.', conditional: 'If requested at interview' },
+      { name: 'Proof of funds', description: 'Evidence you can pay for the trip — bank statements / employment.', conditional: 'If requested at interview' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Canada (Visitor visa / TRV) — IRCC, 2026-06 ──
+const PK_CA: OfficialRequirements = {
+  visaType: 'Visitor visa (Temporary Resident Visa)',
+  processNote:
+    'Apply online to IRCC and pay the application + biometrics fees; you’ll get a Biometric Instruction Letter and have 30 days to give fingerprints + photo at a Canada Visa Application Centre (VFS Global) in Islamabad, Lahore or Karachi. There is no eTA option for Pakistani holders — the visa must be obtained before departure.',
+  sourceLabel: 'IRCC — Temporary Resident Visa document checklist (IMM 5859)',
+  sourceUrl: 'https://ircc.canada.ca/english/pdf/kits/forms/imm5859e.pdf',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Valid passport', description: 'Valid 6+ months from travel. Pakistan VAC applicants must also include copies of current & previous passports (bio page + all non-blank pages).' },
+      { name: 'Two photographs', description: 'Meeting IRCC specs, taken within 6 months (not needed as paper photos if you give biometrics).' },
+      { name: 'Biometrics', description: 'Fingerprints + photo in person at a VAC (ages 14–79); CAD$85 fee.' },
+      { name: 'Proof of funds', description: 'Bank statements/book for the past 3–12 months, plus pay slips, property, investments.' },
+      { name: 'Purpose of trip', description: 'Your itinerary and provisional travel/accommodation bookings.' },
+      { name: 'Application form (IMM 5257)', description: 'Completed visitor-visa application (submitted online).' },
+      { name: 'Family Information Form (IMM 5707)', description: 'Fully completed, dated and signed.' },
+      { name: 'Certified translation', description: 'For any document not in English or French.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Schedule 1 (IMM 5257B)', description: 'Completed and signed.', conditional: 'If you answered “yes” to any background question' },
+      { name: 'Letter of invitation', description: 'From the person/business you’ll visit, or conference/employer letter.', conditional: 'If visiting someone, a conference, or for work' },
+      { name: 'Third-party funding documents', description: 'Signed letter from the payer + their ID and bank proof, dated within 3 months.', conditional: 'If someone else pays for your trip' },
+      { name: 'Employment documents', description: 'Employer letter, leave authorisation, pay slips.', conditional: 'If employed' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Germany / Schengen (short-stay C) — German Mission Pakistan, 2026-06 ──
+const PK_DE: OfficialRequirements = {
+  visaType: 'Schengen short-stay (tourist) visa — Category C',
+  processNote:
+    'Apply in person via the German Mission’s appointment system (Embassy Islamabad / Consulate Karachi), submitting at the VFS Global centre. Fill the Videx online form first; biometrics are required (exempt if taken at any Schengen mission within the past 59 months). Processing ~14 days; apply up to 6 months ahead.',
+  sourceLabel: 'German Federal Foreign Office — German Missions in Pakistan (Tourist visa)',
+  sourceUrl: 'https://pakistan.diplo.de/pk-en/service/3-tourist-visa-seite-1673122',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Application form (Videx)', description: 'Signed original printed from the Videx online system (with barcode page).' },
+      { name: 'Passport + biodata copies', description: 'Original passport (valid ≥3 months beyond stay) plus copies of the biodata pages.' },
+      { name: 'Copies of previous passports', description: 'Full copies of all previous passports.' },
+      { name: 'Two biometric photos', description: 'Not older than 6 months, per the official examples.' },
+      { name: 'Travel health insurance', description: 'Minimum €30,000 cover, valid across all Schengen states for the full stay (original + 1 copy).' },
+      { name: 'Accommodation proof', description: 'Hotel reservations for the whole stay with addresses and a detailed itinerary.' },
+      { name: 'Flight reservation', description: 'Confirmed round-trip booking covering the stay.' },
+      { name: 'Employment proof', description: 'Employer letter stating position, length of employment and permission for the trip (or university confirmation).' },
+      { name: 'Financial evidence', description: 'Bank statements for the last 6 months and salary slips for the last 3 months.' },
+      { name: 'CNIC copy', description: 'Copy of your national ID card.' },
+      { name: 'List of children & relatives abroad', description: 'Signed originals on the mission’s provided templates.' },
+      { name: 'Appointment confirmation', description: 'Printout of the appointment confirmation email.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Family Registration Certificate (FRC)', description: 'Original NADRA FRC.', conditional: 'Family documentation as applicable' },
+      { name: 'Marriage certificate', description: 'Original.', conditional: 'If married' },
+      { name: 'Birth certificate', description: 'Original.', conditional: 'For minors / accompanying children' },
+      { name: 'Previous visa refusal', description: 'Copy of any prior refusal (non-disclosure is treated as fraud).', conditional: 'If ever refused a visa' },
+    ]},
+  ],
+}
+
+// ── Pakistan → China (Tourist L visa) — Chinese Embassy in Pakistan, 2026-06 ──
+const PK_CN: OfficialRequirements = {
+  visaType: 'Tourist (L) visa',
+  processNote:
+    'Apply through Gerry’s Chinese Visa Application Service Center (Islamabad / Karachi / Lahore) by your district: complete the online form at bio.visaforchina.cn, upload documents, then submit originals after the “Online Visa Approved” notification (≈4 working days). The official L category is framed as group tourism — issued to tourists visiting China in a group of at least 5.',
+  sourceLabel: 'Embassy of the People’s Republic of China in Pakistan — Instruction for Chinese Visa Application',
+  sourceUrl: 'https://pk.china-embassy.gov.cn/eng/lsfw/va/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport', description: 'Original, valid 6+ months with a blank visa page.' },
+      { name: 'Passport copy', description: 'Photocopy of the personal-information (data) page.' },
+      { name: 'CNIC copy', description: 'Copy of the front and back of your national ID.' },
+      { name: 'Photo', description: 'One recent colour ID photo, 2-inch, white background, bare-head full-face.' },
+      { name: 'Visa application form', description: 'Completed online at bio.visaforchina.cn.' },
+    ]},
+    { tier: 'conditional', label: 'For tourist (L) applicants', items: [
+      { name: 'Invitation letter for tourist group', description: 'Issued by an authorised tourism office in China (the L visa is for tour groups of at least 5).', conditional: 'Required for the L category' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Australia (Visitor subclass 600, Tourist stream) — Home Affairs, 2026-06 ──
+const PK_AU: OfficialRequirements = {
+  visaType: 'Visitor visa (subclass 600), Tourist stream',
+  processNote:
+    'Apply online via ImmiAccount (attach documents, pay the charge). You must be outside Australia when you apply and when it’s decided. Home Affairs will tell you after applying if you need biometrics and/or health examinations. Pakistani passports aren’t eligible for the ETA/eVisitor.',
+  sourceLabel: 'Australian Department of Home Affairs — Visitor visa (600), Tourist stream',
+  sourceUrl: 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600/tourist-stream-overseas',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Valid passport', description: 'Pages showing your photo, personal details and issue/expiry dates.' },
+      { name: 'Proof of funds', description: 'Evidence you can fund your stay and departure — e.g. 3 months of personal bank statements, pay slips, tax records.' },
+      { name: 'Evidence of ties to home', description: 'Reasons to return — employer letter, proof of study, family, property or assets in Pakistan.' },
+      { name: 'Your plans in Australia', description: 'A statement of what you intend to do during your visit.' },
+      { name: 'English translations', description: 'All non-English documents translated, with originals, in clear colour scans.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'National identity card', description: 'Provide it if you have one.', conditional: 'If you hold a national ID' },
+      { name: 'Invitation letter', description: 'From a relative/friend in Australia stating relationship, purpose and who pays (+ their funds if sponsoring).', conditional: 'If someone in Australia invites/sponsors you' },
+      { name: 'Proof of name change', description: 'Marriage/divorce or change-of-name documents.', conditional: 'If your name has changed' },
+      { name: 'Documents for under-18 applicants', description: 'Birth certificate, guardianship/consent (Form 1229) and host undertaking (Form 1257) as required.', conditional: 'If the applicant is under 18' },
+      { name: 'Police certificate / biometrics / health exams', description: 'Provide if Home Affairs requests them.', conditional: 'If requested by Home Affairs' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Azerbaijan (ASAN e-Visa) — evisa.gov.az, 2026-06 ──
+const PK_AZ: OfficialRequirements = {
+  visaType: 'ASAN e-Visa (single-entry)',
+  processNote:
+    'Fully online at evisa.gov.az in 3 steps (apply, pay, download) — Pakistan is on the e-Visa eligible list, so ordinary passport holders apply directly with no embassy visit. Single-entry, 90-day validity, up to 30-day stay.',
+  sourceLabel: 'Republic of Azerbaijan Official Electronic Visa Portal (ASAN Visa)',
+  sourceUrl: 'https://evisa.gov.az/en/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for the e-Visa', items: [
+      { name: 'Valid passport / travel document', description: 'Valid at least 3 months beyond the e-Visa’s expiry date.' },
+      { name: 'Scanned passport photo page', description: 'Upload the scanned bio-data (photo) page; if unreadable, the application is rejected.' },
+      { name: 'Application data + fee', description: 'Enter your details online and pay the state fee (US$20) + service fee (US$9) by card.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Minor’s documents', description: 'Notarised birth certificate + parental/representative consent + ID copies.', conditional: 'If under 18 travelling unaccompanied' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Sri Lanka (free Tourist ETA) — Sri Lanka Immigration, 2026-06 ──
+const PK_LK: OfficialRequirements = {
+  visaType: 'Tourist ETA (free for Pakistani holders)',
+  processNote:
+    'Pakistani ordinary passport holders must obtain an ETA online before arrival at eta.gov.lk. From 25 May 2026 Pakistan is among 40 nationalities granted a free-of-charge tourist ETA — 30 days, double-entry — but the ETA is still required even though it is free.',
+  sourceLabel: 'Department of Immigration & Emigration, Sri Lanka — Tourist ETA',
+  sourceUrl: 'https://eta.gov.lk/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport', description: 'Valid at least 6 months from your date of arrival.' },
+      { name: 'Electronic Travel Authorization (ETA)', description: 'Obtained online before arrival; free for Pakistani holders, 30 days double-entry.' },
+      { name: 'Adequate funds', description: 'Evidence of enough funds for your stay and return.' },
+      { name: 'Return / onward ticket', description: 'A return ticket, or a visa for your next destination.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Visa extension fee', description: 'Pay the applicable fee.', conditional: 'If staying beyond the free 30-day period' },
+    ]},
+  ],
+}
+
+// ── Pakistan → Indonesia (Visit/Tourist e-Visa C1) — Indonesian Immigration, 2026-06 ──
+const PK_ID: OfficialRequirements = {
+  visaType: 'Tourist e-Visa (Visit / index C1)',
+  processNote:
+    'Pakistani passport holders are NOT on Indonesia’s Visa-on-Arrival / e-VOA list, so you cannot use VOA or visa-free entry — apply in advance for the electronic visit (tourist) e-Visa at evisa.imigrasi.go.id.',
+  sourceLabel: 'Official Indonesian e-Visa — Directorate General of Immigration (Visit Visa)',
+  sourceUrl: 'https://evisa.imigrasi.go.id/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for the e-Visa', items: [
+      { name: 'Passport', description: 'Valid at least 6 months (12 months for non-passport travel documents).' },
+      { name: 'Recent colour photograph', description: 'A recent colour photo of the applicant.' },
+      { name: 'Bank statement', description: 'Personal bank statement showing a minimum balance of US$2,000 (or equivalent) over the last 3 months.' },
+    ]},
+  ],
+}
+
 export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Pakistan', 'Turkey')]: PK_TR,
   [key('Pakistan', 'Saudi Arabia')]: PK_SA,
@@ -249,6 +438,14 @@ export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Pakistan', 'Thailand')]: PK_TH,
   [key('Pakistan', 'UAE')]: PK_AE,
   [key('Pakistan', 'Qatar')]: PK_QA,
+  [key('Pakistan', 'United States')]: PK_US,
+  [key('Pakistan', 'Canada')]: PK_CA,
+  [key('Pakistan', 'Germany')]: PK_DE,
+  [key('Pakistan', 'China')]: PK_CN,
+  [key('Pakistan', 'Australia')]: PK_AU,
+  [key('Pakistan', 'Azerbaijan')]: PK_AZ,
+  [key('Pakistan', 'Sri Lanka')]: PK_LK,
+  [key('Pakistan', 'Indonesia')]: PK_ID,
 }
 
 /** Returns the curated official requirements for a route, or null. */
