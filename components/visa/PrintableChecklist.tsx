@@ -18,6 +18,15 @@ interface Props {
   destinationFlag: string
 }
 
+// Split a process note into individual sentences (bullet points), without
+// breaking on abbreviations like "U.S." (period after an uppercase letter).
+function toPoints(text: string): string[] {
+  return text
+    .split(/(?<=[a-z0-9)’”"])\.\s+(?=[A-Z])/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
 export default function PrintableChecklist({
   visaRecord,
   passportName,
@@ -32,7 +41,6 @@ export default function PrintableChecklist({
     ? official.groups
     : resolveDocumentGroups(visaRecord, destinationName)
   const visaType = official?.visaType ?? (visaRecord.visa_type ?? visaRecord.type ?? 'Tourist Visa').toString()
-  const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
   const tierName: Record<string, string> = {
     mandatory: 'Mandatory — everyone needs',
@@ -51,7 +59,6 @@ export default function PrintableChecklist({
           <div style={{ fontSize: '13px', fontWeight: 700, marginTop: '2px' }}>Visa Document Checklist</div>
         </div>
         <div style={{ textAlign: 'right', fontSize: '10px', color: '#6B7280' }}>
-          <div>Generated {today}</div>
           <div>visitplane.com</div>
         </div>
       </div>
@@ -64,13 +71,18 @@ export default function PrintableChecklist({
         <span style={{ border: '1px solid #111827', borderRadius: '4px', padding: '1px 7px', fontSize: '11px', fontWeight: 700 }}>{visaType}</span>
       </div>
 
-      {/* Process note (curated) or general-guide note (fallback) */}
+      {/* Process note (curated) or general-guide note (fallback) — as points */}
       {official?.processNote ? (
-        <div style={{ fontSize: '10.5px', color: '#374151', margin: '4px 0 2px' }}>{official.processNote}</div>
+        <ul style={{ margin: '6px 0 2px', paddingLeft: '15px', fontSize: '10.5px', color: '#374151', listStyleType: 'disc' }}>
+          {toPoints(official.processNote).map((p, i) => (
+            <li key={i} style={{ marginBottom: '2px' }}>{p}</li>
+          ))}
+        </ul>
       ) : !official ? (
-        <div style={{ fontSize: '10.5px', color: '#92400E', margin: '4px 0 2px' }}>
-          General preparation guide — the exact required documents depend on your visa type and consulate. Confirm the complete, current list with the destination&rsquo;s official immigration authority before you apply.
-        </div>
+        <ul style={{ margin: '6px 0 2px', paddingLeft: '15px', fontSize: '10.5px', color: '#92400E', listStyleType: 'disc' }}>
+          <li style={{ marginBottom: '2px' }}>General preparation guide — the exact required documents depend on your visa type and the consulate handling your nationality.</li>
+          <li>Confirm the complete, current list with the destination&rsquo;s official immigration authority before you apply.</li>
+        </ul>
       ) : null}
 
       {/* Groups */}
@@ -94,9 +106,9 @@ export default function PrintableChecklist({
         </div>
       ))}
 
-      {/* Disclaimer */}
-      <div style={{ marginTop: '16px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 11px', breakInside: 'avoid', color: '#4B5563' }}>
-        This checklist is a free preparation guide compiled by VisitPlane. Visa rules change frequently and depend on your exact situation — always confirm the current requirements, fees and forms with the destination&rsquo;s official immigration authority before booking travel or submitting an application.
+      {/* Disclaimer — single line */}
+      <div style={{ marginTop: '12px', paddingTop: '6px', borderTop: '1px solid #D1D5DB', fontSize: '9px', color: '#6B7280', breakInside: 'avoid' }}>
+        Free preparation guide by VisitPlane — visa rules change; always confirm current requirements with the destination&rsquo;s official immigration authority before applying.
       </div>
     </div>
   )

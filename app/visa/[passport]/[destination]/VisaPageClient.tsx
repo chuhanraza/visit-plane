@@ -151,9 +151,20 @@ export default function VisaPageClient({
     return tourismFirst ?? allVisaData[0]
   }, [allVisaData])
 
-  // Handle download checklist — trigger print dialog
+  // Handle download checklist — trigger print dialog.
+  // Blank document.title during print so the browser's header line (which prints
+  // the page title) comes out empty. The date/time + URL the browser also adds
+  // are controlled by the print dialog's "Headers and footers" toggle.
   const handleDownloadChecklist = useCallback(() => {
+    const prevTitle = document.title
+    const restore = () => {
+      document.title = prevTitle
+      window.removeEventListener('afterprint', restore)
+    }
+    document.title = ' '
+    window.addEventListener('afterprint', restore)
     window.print()
+    setTimeout(restore, 1500)
   }, [])
 
   // Handle "Get My Visa" — open apply URL or scroll to how-to-apply

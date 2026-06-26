@@ -281,6 +281,8 @@ body {
   header, footer, nav { display: none !important; }
   body { background: #ffffff !important; }
   /* #print-checklist (hidden print:block) is the only printed content; the rest
-     of the visa page is print:hidden in VisaPageClient. */
-  @page { margin: 14mm; }
+     of the visa page is print:hidden in VisaPageClient. Tight margins help the
+     checklist fit on a single page. */
+  @page { margin: 10mm; }
+  #print-checklist { font-size: 10.5px !important; }
 }
