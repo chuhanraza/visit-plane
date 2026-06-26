@@ -805,6 +805,180 @@ const EG_SA: OfficialRequirements = {
   ],
 }
 
+// ══════════════════════════ INDIA → GULF & EAST ASIA ══════════════════════════
+
+// ── India → Saudi Arabia (e-Visa conditional / embassy) — Visit Saudi, 2026-06 ──
+const IN_SA: OfficialRequirements = {
+  visaType: 'Tourist e-Visa (conditional) or embassy visa',
+  processNote:
+    'India is NOT on Saudi’s direct tourist e-Visa list. The online e-Visa is available to Indian holders ONLY if they also hold a valid, already-used US/UK/Schengen tourist or business visa — or US/UK/EU residency. Without that, apply through the Saudi embassy / authorised office (Tasheer). The e-Visa is multiple-entry, valid 1 year, up to 90-day stays.',
+  sourceLabel: 'Visit Saudi — official visa regulations tool (nationality: India)',
+  sourceUrl: 'https://www.visitsaudi.com/en/plan-your-trip/visa-regulations',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Core requirements', items: [
+      { name: 'Passport', description: 'Valid at least 6 months beyond your date of entry.' },
+      { name: 'Online application (KSA Visa Portal)', description: 'Complete the application, pay the fee and receive the visa.' },
+      { name: 'Visa fee', description: 'Approx. SAR 339 (≈US$90); application fee included.' },
+    ]},
+    { tier: 'conditional', label: 'Which path applies to you', items: [
+      { name: 'Valid US / UK / Schengen visa or residency', description: 'Used (physical entry stamp), still valid — this unlocks the online e-Visa.', conditional: 'For the online e-Visa path' },
+      { name: 'Embassy / Tasheer documents', description: 'Proof of residence, return ticket, employment, bank statement and itinerary.', conditional: 'If you don’t hold a US/UK/Schengen visa' },
+    ]},
+  ],
+}
+
+// ── India → Qatar (free visa on arrival + Discover Qatar hotel) — Visit Qatar, 2026-06 ──
+const IN_QA: OfficialRequirements = {
+  visaType: 'Free visa on arrival (30 days) — hotel booking required',
+  processNote:
+    'India is not visa-free. Indians get a free 30-day visa on arrival, but Qatar’s Ministry of Interior requires Indian nationals to pre-book accommodation through the official Discover Qatar portal before travel to be granted it. Alternatively, apply in advance for a Hayya (A1) e-visa, which also requires a hotel reservation.',
+  sourceLabel: 'Visit Qatar (Qatar Tourism) + Discover Qatar (official VOA hotel operator)',
+  sourceUrl: 'https://visitqatar.com/intl-en/plan-your-trip/visas',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'For visa on arrival', items: [
+      { name: 'Passport', description: 'Valid at least 3 months from your date of arrival in Qatar.' },
+      { name: 'Discover Qatar hotel booking', description: 'Indian nationals must pre-book accommodation via the official Discover Qatar portal to get the VOA.' },
+    ]},
+    { tier: 'conditional', label: 'Alternative / may be asked', items: [
+      { name: 'Hayya (A1) e-visa', description: 'Apply in advance on the Hayya portal (a hotel reservation is required).', conditional: 'Instead of the VOA route' },
+      { name: 'Return / onward ticket', description: 'A confirmed onward or return air ticket.', conditional: 'Commonly required at entry' },
+    ]},
+  ],
+}
+
+// ── India → Kuwait (no self-apply tourist e-Visa) — Kuwait MOI, 2026-06 ──
+const IN_KW: OfficialRequirements = {
+  visaType: 'Sponsored visit visa (no tourist e-Visa for Indians)',
+  processNote:
+    'India is NOT on Kuwait’s e-Visa / visa-on-arrival eligible list, so ordinary Indian passport holders cannot self-apply for a tourist e-Visa. Entry is via a Kuwait-based sponsor (host, employer or licensed agency) applying on the MOI portal. A simplified e-Visa is available ONLY to Indians who already hold a valid US, UK or Schengen visa or residence permit.',
+  sourceLabel: 'Kuwait Ministry of Interior — official visa portal',
+  sourceUrl: 'https://kuwaitvisa.moi.gov.kw/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Baseline', items: [
+      { name: 'Passport', description: 'Valid at least 6 months from arrival.' },
+    ]},
+    { tier: 'conditional', label: 'Your route into Kuwait', items: [
+      { name: 'Kuwait-based sponsor', description: 'A host, employer or licensed agency submits the visit-visa application on the MOI portal.', conditional: 'Standard route for Indian holders' },
+      { name: 'Valid US / UK / Schengen visa or residence', description: 'Makes you eligible for the simplified self-apply e-Visa.', conditional: 'Alternative to a sponsor' },
+    ]},
+  ],
+}
+
+// ── India → Oman (unsponsored e-Visa + facilitated entry) — Royal Oman Police, 2026-06 ──
+const IN_OM: OfficialRequirements = {
+  visaType: 'Tourist e-Visa (unsponsored)',
+  processNote:
+    'Apply online via the Royal Oman Police (ROP) e-Visa portal. Separately, Indians who hold a valid visa OR residence of the USA, Canada, Australia, UK, Schengen or Japan get 14-day visa-free entry (return ticket, confirmed hotel and health insurance required).',
+  sourceLabel: 'Royal Oman Police e-Visa portal + Oman Ministry of Foreign Affairs',
+  sourceUrl: 'https://evisa.rop.gov.om/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'For the e-Visa', items: [
+      { name: 'Passport', description: 'Valid at least 6 months before entering Oman.' },
+      { name: 'Passport copy', description: 'Uploaded in the e-Visa application.' },
+      { name: 'Photo', description: 'Applicant photo uploaded in the application.' },
+    ]},
+    { tier: 'conditional', label: 'For 14-day visa-free entry', items: [
+      { name: 'Valid US/UK/Schengen/Canada/Japan/Australia visa or residence', description: 'Triggers 14-day visa-free entry for you and accompanying family.', conditional: 'Facilitated-entry route' },
+      { name: 'Return ticket, hotel & health insurance', description: 'Required for the visa-free facility.', conditional: 'With facilitated entry' },
+    ]},
+  ],
+}
+
+// ── India → Bahrain (e-Visa) — NPRA evisa.gov.bh, 2026-06 ──
+const IN_BH: OfficialRequirements = {
+  visaType: 'Electronic visit visa (e-Visa)',
+  processNote:
+    'Fully online via the official NPRA portal (evisa.gov.bh) — India is listed among countries eligible to obtain a visa online. Processing ~3–5 working days. The exact document list and stay length are shown per visa type inside the application form; you must enter on the same passport used to apply.',
+  sourceLabel: 'Kingdom of Bahrain — NPRA official e-Visa portal',
+  sourceUrl: 'https://www.evisa.gov.bh/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'For the e-Visa', items: [
+      { name: 'Passport', description: 'Apply and travel on your own passport — the same one used to apply online.' },
+      { name: 'Documents per visa type', description: 'Attach the documents shown under “See conditions” for your selected visa type in the application.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Bahrain-based guarantor', description: 'A local company, hotel or citizen guarantor.', conditional: 'Only if not using the online-eligible route' },
+    ]},
+  ],
+}
+
+// ── India → Japan (Temporary Visitor / eVISA via VFS) — Japan MOFA, 2026-06 ──
+const IN_JP: OfficialRequirements = {
+  visaType: 'Temporary Visitor (tourist) visa / eVISA',
+  processNote:
+    'Indian nationals apply through the Japan Visa Application Centre (VFS Global), not directly at the embassy; the eVISA is issued electronically and shown on a mobile device at the airport. Apply up to 3 months before travel.',
+  sourceLabel: 'Ministry of Foreign Affairs of Japan — Short-Term Stay checklist (+ Embassy of Japan in India)',
+  sourceUrl: 'https://www.in.emb-japan.go.jp/itpr_en/Visa.html',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for tourism', items: [
+      { name: 'Passport', description: 'Signed, valid passport.' },
+      { name: 'Visa application form', description: 'Completed MOFA/embassy form.' },
+      { name: 'Photograph', description: 'One recent passport-style photo.' },
+      { name: 'Daily schedule of stay', description: 'Day-by-day plan of what you’ll do in Japan, with arrival/departure dates.' },
+      { name: 'Flight itinerary', description: 'Scheduled arrival/departure with flight booking details.' },
+      { name: 'Proof of accommodation', description: 'Hotel reservation (or host’s address if staying with someone).' },
+    ]},
+    { tier: 'conditional', label: 'May be requested', items: [
+      { name: 'Bank statement / ITR', description: 'Proof of funds and income tax return.', conditional: 'To show financial means' },
+      { name: 'Proof of employment', description: 'Employment certificate / occupation proof.', conditional: 'To show ties to India' },
+      { name: 'Relationship / invitation documents', description: 'Family register or inviter’s details.', conditional: 'If visiting relatives or hosted' },
+    ]},
+  ],
+}
+
+// ── India → South Korea (C-3 short-term visit; not K-ETA) — Korea MOFA, 2026-06 ──
+const IN_KR: OfficialRequirements = {
+  visaType: 'Short-term visit visa (C-3, tourism)',
+  processNote:
+    'India is NOT K-ETA-eligible, so a visa is required. Complete the e-application on the Korea Visa Portal (visa.go.kr), print it, and submit at the Korea Visa Application Centre (VFS/KVAC) or the Korean embassy/consulate. An e-Arrival Card is also required on arrival (since Feb 2025).',
+  sourceLabel: 'MOFA / Embassy of the Republic of Korea — C-3-9 short-term tourism visa',
+  sourceUrl: 'https://overseas.mofa.go.kr/in-en/index.do',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Visa application form', description: 'Completed on the Korea Visa Portal (visa.go.kr), printed and signed.' },
+      { name: 'Passport', description: 'Valid 6+ months with blank pages, plus a copy of the bio-data page.' },
+      { name: 'Photo', description: 'One recent 3.5×4.5 cm colour photo, white background.' },
+      { name: 'Proof of financial ability', description: 'Recent bank statement (last 3–6 months) in English.' },
+      { name: 'Employment / status proof', description: 'Employment certificate, business registration, or student certificate.' },
+      { name: 'Flight & accommodation', description: 'Confirmed round-trip flight and hotel bookings.' },
+      { name: 'Travel itinerary', description: 'Detailed day-by-day itinerary in English.' },
+    ]},
+    { tier: 'conditional', label: 'May be requested', items: [
+      { name: 'Income Tax Return (ITR)', description: 'Tax statement of the last 1–2 years.', conditional: 'Additional financial proof' },
+      { name: 'Employer NOC', description: 'No-objection / leave letter.', conditional: 'If employed' },
+      { name: 'Invitation / sponsor documents', description: 'Inviter’s ID and relationship/financial proof.', conditional: 'If hosted or sponsored' },
+    ]},
+  ],
+}
+
+// ── India → Vietnam (official e-Visa) — Vietnam Immigration, 2026-06 ──
+const IN_VN: OfficialRequirements = {
+  visaType: 'e-Visa (up to 90 days, single/multiple entry)',
+  processNote:
+    'Fully online via Vietnam’s official national portal — use ONLY the official .gov.vn site (evisa.gov.vn). Beware of many look-alike sites that overcharge. The fee is paid online and is non-refundable if refused.',
+  sourceLabel: 'Vietnam Immigration Department — National Electronic Visa Portal',
+  sourceUrl: 'https://evisa.gov.vn/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for the e-Visa', items: [
+      { name: 'Passport', description: 'Valid more than 6 months.' },
+      { name: 'Passport bio-data scan', description: 'Clear colour image of the data page.' },
+      { name: 'Portrait photo', description: 'Recent, straight-facing, no glasses.' },
+      { name: 'Personal details + email', description: 'Full name, date of birth and a valid email (your code is sent there).' },
+      { name: 'Temporary address in Vietnam', description: 'Where you’ll stay during the visit.' },
+      { name: 'Entry/exit checkpoints + entry date', description: 'Choose your border gates and intended arrival date.' },
+      { name: 'Visa fee', description: 'US$25 single-entry / US$50 multiple-entry, paid online (non-refundable).' },
+    ]},
+  ],
+}
+
 export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Pakistan', 'Turkey')]: PK_TR,
   [key('Pakistan', 'Saudi Arabia')]: PK_SA,
@@ -837,6 +1011,14 @@ export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Philippines', 'United States')]: PH_US,
   [key('Philippines', 'Japan')]: PH_JP,
   [key('Egypt', 'Saudi Arabia')]: EG_SA,
+  [key('India', 'Saudi Arabia')]: IN_SA,
+  [key('India', 'Qatar')]: IN_QA,
+  [key('India', 'Kuwait')]: IN_KW,
+  [key('India', 'Oman')]: IN_OM,
+  [key('India', 'Bahrain')]: IN_BH,
+  [key('India', 'Japan')]: IN_JP,
+  [key('India', 'South Korea')]: IN_KR,
+  [key('India', 'Vietnam')]: IN_VN,
 }
 
 /** Returns the curated official requirements for a route, or null. */
