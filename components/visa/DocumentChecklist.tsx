@@ -122,7 +122,7 @@ export function resolveDocumentGroups(record: VisaRecord, destinationName: strin
     ? dbDocs.slice(0, 4).map(d => ({ name: d, description: '', why: '' }))
     : [
         { name: 'Valid passport', description: '6+ months validity beyond travel dates', why: 'Most countries require at least 6 months of passport validity on arrival' },
-        { name: 'Completed visa application', description: 'Submitted via the official government portal (see Official Source below)', why: 'Your application must be approved before you travel' },
+        { name: 'Completed visa application', description: 'Submitted via the official government portal', why: 'Your application must be approved before you travel' },
         { name: 'Passport-sized photo', description: 'White background, recent (taken within 6 months)', why: 'Submitted with your application as part of identity verification' },
         { name: 'Confirmed return ticket', description: 'Round-trip or onward flight booking', why: 'Immigration officers commonly verify you have a plan to depart' },
       ]
