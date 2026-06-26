@@ -2,7 +2,8 @@
  * /admin/data-quality
  * ─────────────────────────────────────────────────────────────────────────────
  * Admin dashboard for the visa requirements verification pipeline.
- * Protected by ADMIN_SECRET env var via middleware check.
+ * Protected by requireAdmin() (admin_secret cookie / x-admin-secret header /
+ * Supabase-Auth admin) — no secrets in the URL.
  *
  * Shows:
  *  - Overall stats (verified / pending / low-confidence / overdue)
@@ -11,30 +12,16 @@
  *  - Pending user corrections queue
  */
 import { createClient } from '@supabase/supabase-js'
-import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { requireAdmin } from '@/lib/admin/guard'
 
 export const metadata: Metadata = { title: 'Data Quality — Visitplane Admin' }
 export const dynamic = 'force-dynamic'
 
-// ─── Auth guard ───────────────────────────────────────────────────────────────
-// Simple header-based secret. For production, replace with proper auth.
-import { headers } from 'next/headers'
-
-function parseCookie(cookieHeader: string, name: string): string {
-  const match = cookieHeader.split(';').map(c => c.trim())
-    .find(c => c.startsWith(`${name}=`))
-  return match ? decodeURIComponent(match.slice(name.length + 1)) : ''
-}
-
-async function checkAdminAccess() {
-  const hdrs = await headers()
-  const secret = hdrs.get('x-admin-secret') ?? ''
-  const cookie = hdrs.get('cookie') ?? ''
-  const cookieVal = parseCookie(cookie, 'admin_secret')
-  return secret === process.env.ADMIN_SECRET || cookieVal === process.env.ADMIN_SECRET
-}
+// Access is enforced by requireAdmin() (lib/admin/guard.ts) — the standard
+// admin_secret cookie / x-admin-secret header / Supabase-Auth admin. No secrets
+// in the URL.
 
 // ─── Data fetching ────────────────────────────────────────────────────────────
 
@@ -131,27 +118,10 @@ function ConfidencePill({ level }: { level: 'high' | 'medium' | 'low' }) {
 export default async function DataQualityPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; secret?: string }>
+  searchParams: Promise<{ tab?: string }>
 }) {
+  await requireAdmin()
   const sp = await searchParams
-
-  // Simple access check — accept ?secret= in URL for convenience
-  const isAdmin =
-    sp.secret === process.env.ADMIN_SECRET ||
-    (await checkAdminAccess())
-
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-[#1F2937] mb-2">Admin Access Required</h1>
-          <p className="text-gray-500 text-sm">
-            Append <code className="bg-gray-100 px-1 rounded">?secret=YOUR_ADMIN_SECRET</code> to the URL.
-          </p>
-        </div>
-      </div>
-    )
-  }
 
   const { routes, corrections, flagged, summary } = await fetchDashboardData()
 
@@ -161,7 +131,6 @@ export default async function DataQualityPage({
   const lowConf     = routes.filter(r => r.data_confidence === 'low')
 
   const activeTab = sp.tab ?? 'routes'
-  const secretQs  = sp.secret ? `?secret=${sp.secret}` : ''
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -177,7 +146,7 @@ export default async function DataQualityPage({
           </div>
           <div className="flex gap-3">
             <a
-              href={`/api/visa/run-pipeline${secretQs}`}
+              href="/api/visa/run-pipeline?mode=overdue"
               className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition"
             >
               ▶ Run Pipeline
@@ -216,7 +185,7 @@ export default async function DataQualityPage({
           ].map(tab => (
             <a
               key={tab.id}
-              href={`/admin/data-quality?tab=${tab.id}${sp.secret ? `&secret=${sp.secret}` : ''}`}
+              href={`/admin/data-quality?tab=${tab.id}`}
               className={`px-4 py-2.5 text-sm font-medium border-b-2 transition -mb-px ${
                 activeTab === tab.id
                   ? 'border-[#14B8A6] text-[#14B8A6]'
@@ -375,7 +344,6 @@ export default async function DataQualityPage({
                     <td className="px-4 py-3">
                       <form action={`/api/visa/review-correction`} method="POST" className="flex gap-2">
                         <input type="hidden" name="id" value={c.id} />
-                        <input type="hidden" name="secret" value={sp.secret ?? ''} />
                         <button name="action" value="accept"
                           className="rounded px-2 py-1 text-xs bg-green-100 text-green-700 hover:bg-green-200 transition">
                           Accept
@@ -405,7 +373,7 @@ export default async function DataQualityPage({
                 <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                   <p className="font-semibold text-[#1F2937]">{overdue.length} routes past review date</p>
                   <a
-                    href={`/api/visa/run-pipeline?mode=overdue${sp.secret ? `&secret=${sp.secret}` : ''}`}
+                    href="/api/visa/run-pipeline?mode=overdue"
                     className="rounded-full bg-[#14B8A6] px-4 py-1.5 text-xs font-semibold text-white hover:bg-teal-600 transition"
                   >
                     Re-verify all overdue

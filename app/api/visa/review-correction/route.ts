@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdminApi } from '@/lib/admin/guard'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,14 +8,13 @@ const supabase = createClient(
 )
 
 export async function POST(req: NextRequest) {
+  if (!(await requireAdminApi())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const formData = await req.formData()
   const id       = formData.get('id') as string
   const action   = formData.get('action') as 'accept' | 'reject'
-  const secret   = formData.get('secret') as string
-
-  if (secret !== process.env.ADMIN_SECRET) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
 
   const { error } = await supabase
     .from('data_corrections')
@@ -28,6 +28,6 @@ export async function POST(req: NextRequest) {
 
   // Redirect back to corrections tab
   return NextResponse.redirect(
-    new URL(`/admin/data-quality?tab=corrections&secret=${secret}`, req.url),
+    new URL(`/admin/data-quality?tab=corrections`, req.url),
   )
 }
