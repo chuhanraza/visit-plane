@@ -430,6 +430,198 @@ const PK_ID: OfficialRequirements = {
   ],
 }
 
+// ══════════════════════════════ INDIA ROUTES ══════════════════════════════
+
+// ── India → UAE (sponsored tourist e-Visa) — GDRFA Dubai / ICP, 2026-06 ──
+const IN_AE: OfficialRequirements = {
+  visaType: 'Tourist visa (sponsored e-Visa)',
+  processNote:
+    'Indian holders obtain a sponsored tourist visa in advance — via ICP smart services / GDRFA Dubai, or arranged through a UAE airline, hotel or travel agent (no embassy-issued tourist visas). Indians holding a US green card or a valid UK/EU residence (≥6 months) can instead get a 14-day visa on arrival.',
+  sourceLabel: 'GDRFA Dubai — Issuance of a single-entry tourist visa (with ICP federal service)',
+  sourceUrl: 'https://www.gdrfad.gov.ae/en/services/f9e586fe-0642-11ec-0320-0050569629e8',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required documents', items: [
+      { name: 'Passport', description: 'At least 6 months’ remaining validity; passport copy submitted.' },
+      { name: 'Personal photo', description: 'One recent photo, white background.' },
+      { name: 'Onward / return ticket', description: 'A ticket to continue your journey or leave the UAE.' },
+      { name: 'Medical insurance', description: 'A health insurance policy valid in the UAE.' },
+    ]},
+    { tier: 'conditional', label: 'May be requested (self-sponsored)', items: [
+      { name: 'Tour itinerary', description: 'Statement of your tour programme.', conditional: 'For tourism-type applications via ICP' },
+      { name: 'Bank statement', description: 'Around 6 months of statements showing sufficient funds.', conditional: 'Depending on visa type / channel' },
+    ]},
+  ],
+}
+
+// ── India → United States (B1/B2) — travel.state.gov, 2026-06 ──
+const IN_US: OfficialRequirements = {
+  visaType: 'B1/B2 Visitor visa',
+  processNote:
+    'Complete the online DS-160, pay the MRV fee (≈US$185), then book and attend an in-person interview at a U.S. Embassy/Consulate in India (via ustraveldocs.com/in). Bring evidence of your ties to India and purpose of travel.',
+  sourceLabel: 'U.S. Department of State — Bureau of Consular Affairs (Visitor Visa)',
+  sourceUrl: 'https://travel.state.gov/content/travel/en/us-visas/tourism-visit/visitor.html',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport', description: 'Valid at least 6 months beyond your intended stay in the U.S.' },
+      { name: 'DS-160 confirmation page', description: 'Printed confirmation of your completed online application.' },
+      { name: 'MRV fee receipt', description: 'Proof of the visa application fee payment (≈US$185).' },
+      { name: 'Photo', description: 'Uploaded during the DS-160; bring a printed copy if the upload fails.' },
+    ]},
+    { tier: 'conditional', label: 'Bring to support your case (officer may ask)', items: [
+      { name: 'Purpose of trip', description: 'Documents showing the reason for travel.', conditional: 'If requested at interview' },
+      { name: 'Proof of ties to India', description: 'Employment, family or residence showing you’ll return.', conditional: 'If requested at interview' },
+      { name: 'Proof of funds', description: 'Evidence you can pay for the trip.', conditional: 'If requested at interview' },
+    ]},
+  ],
+}
+
+// ── India → United Kingdom (Standard Visitor) — GOV.UK, 2026-06 ──
+const IN_GB: OfficialRequirements = {
+  visaType: 'Standard Visitor visa',
+  processNote:
+    'Apply online at gov.uk, then give biometrics at a VFS Global centre in India. A TB test certificate (from a Home Office-approved clinic in India) is only required for stays of 6 months or more — not for an ordinary tourist visit.',
+  sourceLabel: 'GOV.UK — Standard Visitor visa',
+  sourceUrl: 'https://www.gov.uk/standard-visitor/apply-standard-visitor-visa',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport or travel document', description: 'Valid for the whole of your stay in the UK.' },
+      { name: 'Biometrics', description: 'Fingerprints and a photo taken at the VFS Global centre in India.' },
+      { name: 'Genuine-visitor evidence', description: 'Evidence you’ll leave at the end of your visit and can cover your costs.' },
+    ]},
+    { tier: 'conditional', label: 'Depending on your circumstances', items: [
+      { name: 'Financial evidence', description: 'Bank statements showing access to and origin of funds.' },
+      { name: 'Employer letter', description: 'On headed paper, stating role, salary and length of employment.', conditional: 'If employed' },
+      { name: 'Self-employment documents', description: 'Business registration or recent invoices.', conditional: 'If self-employed' },
+      { name: 'Sponsor documents', description: 'Who is paying + proof they can support you.', conditional: 'If someone funds your visit' },
+      { name: 'TB test certificate', description: 'Chest X-ray certificate from a Home Office-approved clinic in India.', conditional: 'Only if staying 6 months or more' },
+    ]},
+  ],
+}
+
+// ── India → Canada (Visitor visa / TRV) — IRCC, 2026-06 ──
+const IN_CA: OfficialRequirements = {
+  visaType: 'Visitor visa (Temporary Resident Visa)',
+  processNote:
+    'Apply online to IRCC and pay the fees; give biometrics in person at a VFS Global centre in India. There is no eTA option for Indian holders — the visa must be obtained before departure.',
+  sourceLabel: 'IRCC — Temporary Resident Visa (application kit & document checklist)',
+  sourceUrl: 'https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada.html',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Application form (IMM 5257)', description: 'Completed visitor-visa application (submitted online).' },
+      { name: 'Family Information Form (IMM 5707)', description: 'Fully completed, dated and signed.' },
+      { name: 'Valid passport', description: 'Valid 6+ months from travel; include cancelled/expired passports if any.' },
+      { name: 'Two photographs', description: 'Per IRCC specs, taken within 6 months (not needed as paper photos if you give biometrics).' },
+      { name: 'Biometrics', description: 'Fingerprints + photo at a VAC; fee applies; processing starts once received.' },
+      { name: 'Proof of funds', description: 'Bank statements for the past 3–12 months plus supporting documents.' },
+      { name: 'Purpose of travel', description: 'Itinerary and provisional travel/accommodation bookings.' },
+      { name: 'Certified translation', description: 'For any document not in English or French.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Schedule 1 (background)', description: 'Completed and signed.', conditional: 'If you answered “yes” to any background question' },
+      { name: 'Letter of invitation', description: 'From the person/business you’ll visit.', conditional: 'If visiting someone or a conference' },
+      { name: 'Employment / leave letter', description: 'Employer letter with role, salary and approved leave.', conditional: 'If employed' },
+      { name: 'Third-party funding documents', description: 'Payer’s letter, ID and bank proof, dated within 3 months.', conditional: 'If someone else pays' },
+    ]},
+  ],
+}
+
+// ── India → Germany / Schengen (short-stay C) — German Missions in India, 2026-06 ──
+const IN_DE: OfficialRequirements = {
+  visaType: 'Schengen short-stay (tourist) visa — Category C',
+  processNote:
+    'Apply at a VFS Germany centre in India; complete the VIDEX online form and print all pages (incl. barcodes); give biometrics in person. Lodge no earlier than 6 months and no later than 15 days before travel.',
+  sourceLabel: 'German Missions in India (Federal Foreign Office) — Schengen tourism checklist',
+  sourceUrl: 'https://india.diplo.de/in-en/2674158-2674158',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'VIDEX application form', description: 'Completed online via VIDEX, all pages printed (with barcodes) and signed.' },
+      { name: 'Signed declarations', description: 'Of true/complete information and of valid travel medical insurance.' },
+      { name: 'Passport', description: 'Issued within the last 10 years, valid ≥3 months after return, with 2 blank pages.' },
+      { name: 'Passport copy', description: 'Copy of the biometric (data) page and the address page.' },
+      { name: 'Biometric photograph', description: '35×45 mm, white background, 70–80% face, not older than 6 months.' },
+      { name: 'Cover letter / itinerary', description: 'Stating your means of transport and travel itinerary.' },
+      { name: 'Flight reservation', description: 'Booked round-trip reservation.' },
+      { name: 'Accommodation proof', description: 'Hotel confirmation for the full stay (or host documentation).' },
+      { name: 'Travel medical insurance', description: 'Min. €30,000, valid for all Schengen states for the whole trip.' },
+    ]},
+    { tier: 'conditional', label: 'Proof of finances — by your situation', items: [
+      { name: 'Employed', description: '3 months’ pay slips, employment contract, employer leave letter, 3 months’ stamped bank statements, ITR / Form 16.', conditional: 'If salaried' },
+      { name: 'Self-employed', description: 'Company registration with GST, ITR, 3 months’ bank statements.', conditional: 'If you own a business' },
+      { name: 'Student', description: 'Enrolment/bonafide certificate and no-objection letter (+ bank statements for university students).', conditional: 'If a student' },
+      { name: 'Sponsorship documents', description: 'Sponsor’s documents (vary by sponsor type).', conditional: 'If your trip is sponsored' },
+      { name: 'Minor’s documents', description: 'Both parents’ signatures, birth certificate, parents’ passport copies and consent.', conditional: 'If the applicant is a minor' },
+    ]},
+  ],
+}
+
+// ── India → Thailand (visa exemption, 60 days) — Royal Thai Embassy New Delhi, 2026-06 ──
+const IN_TH: OfficialRequirements = {
+  visaType: 'Visa exemption (visa-free, up to 60 days)',
+  processNote:
+    'Indian ordinary passport holders can enter Thailand visa-free for up to 60 days for tourism — no visa or fee. Complete the Thailand Digital Arrival Card (TDAC) online before arrival. A Tourist e-Visa (thaievisa.go.th) is optional only if you want a longer/pre-issued stay. (Thai visa policy for India is under review — reconfirm at the official source close to travel.)',
+  sourceLabel: 'Royal Thai Embassy, New Delhi — Visa (visa exemption)',
+  sourceUrl: 'https://newdelhi.thaiembassy.org/en/page/visa',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Carry at the border (visa-free entry)', items: [
+      { name: 'Valid passport', description: 'Ordinary Indian passport (at least 6 months’ validity, 2 blank pages).' },
+      { name: 'Proof of funds', description: 'Cash equivalent to ≈20,000 THB per person / 40,000 THB per family.' },
+      { name: 'Thailand Digital Arrival Card (TDAC)', description: 'Completed online before arrival.' },
+    ]},
+    { tier: 'conditional', label: 'May be asked / optional', items: [
+      { name: 'Onward / return ticket & accommodation', description: 'Proof of departure and where you’ll stay.', conditional: 'If asked at check-in or the border' },
+      { name: 'Tourist e-Visa (TR)', description: 'Apply online at thaievisa.go.th.', conditional: 'Only if you want a longer / pre-issued stay' },
+    ]},
+  ],
+}
+
+// ── India → Malaysia (visa exemption, 30 days, through 31 Dec 2026) — Malaysian Immigration, 2026-06 ──
+const IN_MY: OfficialRequirements = {
+  visaType: 'Visa-free (visa exemption, up to 30 days)',
+  processNote:
+    'Indian passport holders enter Malaysia visa-free for up to 30 days for tourism — a temporary exemption currently extended through 31 December 2026 (a visa would be needed after that unless extended). The Malaysia Digital Arrival Card (MDAC) is mandatory and must be submitted online before arrival (up to 3 days prior).',
+  sourceLabel: 'Malaysian Immigration Department — Visa Requirement by Country',
+  sourceUrl: 'https://www.imi.gov.my/index.php/en/main-services/visa/visa-requirement-by-country/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Carry at the border (visa-free entry)', items: [
+      { name: 'Passport', description: 'Valid at least 6 months from the date of entry.' },
+      { name: 'MDAC (Digital Arrival Card)', description: 'Compulsory online submission before arrival (up to 3 days prior).' },
+      { name: 'Return / onward ticket', description: 'A confirmed return or onward ticket.' },
+      { name: 'Proof of accommodation', description: 'Confirmed hotel booking.' },
+      { name: 'Proof of funds', description: 'Evidence of sufficient funds for your stay.' },
+    ]},
+    { tier: 'conditional', label: 'When a visa is needed instead', items: [
+      { name: 'Visa (eVisa / standard)', description: 'Required for work or study, stays over 30 days, or after the exemption lapses.', conditional: 'If not a ≤30-day tourist visit' },
+    ]},
+  ],
+}
+
+// ── India → Singapore (tourist e-Visa via authorised agent) — ICA, 2026-06 ──
+const IN_SG: OfficialRequirements = {
+  visaType: 'Tourist e-Visa (via ICA-authorised agent)',
+  processNote:
+    'Indian nationals need a visa, applied through an ICA-authorised visa agent / Strategic Partner / Singapore local contact using the SAVE e-Service (S$30, processed in ~3 working days; apply within 30 days before arrival). Separately, submit the SG Arrival Card within 3 days before entry.',
+  sourceLabel: 'Immigration & Checkpoints Authority (ICA), Singapore — India visa requirements',
+  sourceUrl: 'https://www.ica.gov.sg/enter-transit-depart/entering-singapore/visa_requirements/visa-detail-page/india',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Form 14A', description: 'Completed Application for Entry Visa, signed by the applicant.' },
+      { name: 'Recent photograph', description: 'One passport-size colour photo taken within the last 3 months (ICA specs).' },
+      { name: 'Passport biodata copy', description: 'Copy of the biodata page; passport valid at least 6 months from entry.' },
+    ]},
+    { tier: 'conditional', label: 'If requested', items: [
+      { name: 'Form V39A (Letter of Introduction)', description: 'Supporting letter of introduction.', conditional: 'Case-by-case, if ICA asks' },
+    ]},
+  ],
+}
+
 export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Pakistan', 'Turkey')]: PK_TR,
   [key('Pakistan', 'Saudi Arabia')]: PK_SA,
@@ -446,6 +638,14 @@ export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Pakistan', 'Azerbaijan')]: PK_AZ,
   [key('Pakistan', 'Sri Lanka')]: PK_LK,
   [key('Pakistan', 'Indonesia')]: PK_ID,
+  [key('India', 'UAE')]: IN_AE,
+  [key('India', 'United States')]: IN_US,
+  [key('India', 'United Kingdom')]: IN_GB,
+  [key('India', 'Canada')]: IN_CA,
+  [key('India', 'Germany')]: IN_DE,
+  [key('India', 'Thailand')]: IN_TH,
+  [key('India', 'Malaysia')]: IN_MY,
+  [key('India', 'Singapore')]: IN_SG,
 }
 
 /** Returns the curated official requirements for a route, or null. */
