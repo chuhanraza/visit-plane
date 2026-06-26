@@ -622,6 +622,189 @@ const IN_SG: OfficialRequirements = {
   ],
 }
 
+// ══════════════════════ BANGLADESH / NIGERIA / PHILIPPINES / EGYPT ══════════════════════
+
+// ── Bangladesh → Saudi Arabia (Group-B; embassy/VAC) — Visit Saudi Help Center, 2026-06 ──
+const BD_SA: OfficialRequirements = {
+  visaType: 'Tourist visit visa (via Saudi embassy / VAC)',
+  processNote:
+    'Bangladesh is a Saudi "Group B" nationality and is NOT eligible for the direct online e-Visa — apply for a visit visa through the Saudi embassy / official Visa Application Centre. Exception: if you hold a valid, already-used US, UK or Schengen visa — or US/UK/EU permanent residency — you can use the e-Visa or visa on arrival.',
+  sourceLabel: 'Visit Saudi Help Center (Saudi Tourism Authority)',
+  sourceUrl: 'https://www.visitsaudi.com/en/help-center',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport', description: 'Valid at least 6 months from entry, with at least 2 blank pages.' },
+      { name: 'Visit-visa application (embassy / VAC)', description: 'Lodged at the Saudi embassy or official VAC — Bangladesh is not e-Visa-eligible on passport alone.' },
+    ]},
+    { tier: 'conditional', label: 'If you qualify for the e-Visa / visa on arrival', items: [
+      { name: 'Valid US / UK / Schengen visa', description: 'Tourist or business, used (entered) at least once.', conditional: 'Using the e-Visa exception' },
+      { name: 'US / UK / EU permanent residency', description: 'A valid permanent-resident permit.', conditional: 'Alternative basis for the exception' },
+    ]},
+  ],
+}
+
+// ── Bangladesh → Malaysia (eVisa) — Malaysian Immigration, 2026-06 ──
+const BD_MY: OfficialRequirements = {
+  visaType: 'Tourist eVisa (single-entry)',
+  processNote:
+    'Bangladesh is not visa-free and not eNTRI-eligible — apply online for the eVISA at malaysiavisa.imi.gov.my (the binding per-nationality document list is shown inside the logged-in application). Separately, submit the mandatory Malaysia Digital Arrival Card (MDAC) before arrival.',
+  sourceLabel: 'Malaysian Immigration Department — Visa Requirement by Country / eVISA',
+  sourceUrl: 'https://malaysiavisa.imi.gov.my/',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for the eVISA', items: [
+      { name: 'Passport biodata page', description: 'Valid at least 6 months from entry, with blank pages.' },
+      { name: 'Passport photo', description: 'Recent, white background.' },
+      { name: 'Confirmed return / onward flight', description: 'Proof of a return or onward ticket.' },
+      { name: 'Proof of accommodation', description: 'Hotel booking confirmation.' },
+      { name: 'Proof of funds', description: 'Evidence of sufficient funds for your stay.' },
+      { name: 'MDAC (Digital Arrival Card)', description: 'Submitted online before arrival (separate from the eVISA).' },
+    ]},
+    { tier: 'conditional', label: 'May be requested', items: [
+      { name: 'Bank statement / employment proof', description: 'Recent statements or employer letter showing ties.', conditional: 'Commonly asked for Bangladeshi applicants' },
+      { name: 'Sponsor / invitation letter', description: 'Host’s letter, ID and address proof.', conditional: 'If staying with a host' },
+    ]},
+  ],
+}
+
+// ── Bangladesh → UAE (sponsored tourist visa) — GDRFA Dubai, 2026-06 ──
+const BD_AE: OfficialRequirements = {
+  visaType: 'Tourist visa (single-entry, sponsored)',
+  processNote:
+    'A sponsored visa arranged through a UAE tourism-sector establishment (hotel, airline or licensed agent) or applied via GDRFA Dubai / ICP smart services (~48 hours). Unlike some nationalities, Bangladesh holders do NOT need to submit a home-country national ID.',
+  sourceLabel: 'GDRFA Dubai — Issuance of a single-entry tourist visa',
+  sourceUrl: 'https://www.gdrfad.gov.ae/en/services/f9e586fe-0642-11ec-0320-0050569629e8',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required documents', items: [
+      { name: 'Personal photo', description: 'One recent passport-style photo.' },
+      { name: 'Passport copy', description: 'Passport valid at least 6 months.' },
+    ]},
+    { tier: 'conditional', label: 'Entry conditions', items: [
+      { name: 'Onward / return ticket & medical insurance', description: 'Proof of exit and UAE-valid health cover.', conditional: 'General conditions' },
+    ]},
+  ],
+}
+
+// ── Nigeria → United Kingdom (Standard Visitor) — GOV.UK, 2026-06 ──
+const NG_GB: OfficialRequirements = {
+  visaType: 'Standard Visitor visa',
+  processNote:
+    'Apply online at gov.uk, then give biometrics at a VFS Global centre in Nigeria. A TB test certificate (from a Home Office-approved clinic in Nigeria) is only required for stays of 6 months or more.',
+  sourceLabel: 'GOV.UK — Standard Visitor visa',
+  sourceUrl: 'https://www.gov.uk/standard-visitor/apply-standard-visitor-visa',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport or travel document', description: 'Valid for the whole of your stay in the UK.' },
+      { name: 'Biometrics', description: 'Fingerprints and a photo taken at the VFS Global centre in Nigeria.' },
+      { name: 'Genuine-visitor evidence', description: 'Evidence you’ll leave at the end of your visit and can cover your costs.' },
+      { name: 'Certified translations', description: 'For any document not in English or Welsh.' },
+    ]},
+    { tier: 'conditional', label: 'Depending on your circumstances', items: [
+      { name: 'Financial evidence', description: 'Bank statements showing access to and origin of funds.' },
+      { name: 'Employer / study letter', description: 'Confirming your role and salary, or your enrolment.', conditional: 'If employed or studying' },
+      { name: 'Sponsor / accommodation evidence', description: 'Who funds/hosts you and proof of their means.', conditional: 'If someone funds or hosts you' },
+      { name: 'TB test certificate', description: 'From a Home Office-approved clinic in Nigeria.', conditional: 'Only if staying 6 months or more' },
+    ]},
+  ],
+}
+
+// ── Nigeria → Canada (Visitor visa / TRV) — IRCC, 2026-06 ──
+const NG_CA: OfficialRequirements = {
+  visaType: 'Visitor visa (Temporary Resident Visa)',
+  processNote:
+    'Apply online to IRCC and pay the fees; give biometrics in person at a VFS Global centre in Nigeria (Lagos or Abuja). There is no eTA option for Nigerian holders — the visa must be obtained before departure.',
+  sourceLabel: 'IRCC — Temporary Resident Visa (document checklist)',
+  sourceUrl: 'https://ircc.canada.ca/english/pdf/kits/forms/imm5859e.pdf',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Application form (IMM 5257)', description: 'Completed visitor-visa application (submitted online).' },
+      { name: 'Family Information Form (IMM 5707)', description: 'Fully completed, dated and signed.' },
+      { name: 'Valid passport', description: 'Valid 6+ months from travel; include cancelled/expired passports if any.' },
+      { name: 'Two photographs', description: 'Per IRCC specs (not needed as paper photos if you give biometrics).' },
+      { name: 'Biometrics', description: 'Fingerprints + photo at a VAC (Lagos/Abuja), ages 14–79.' },
+      { name: 'Proof of funds', description: 'Bank statements for the past 3 months plus supporting documents.' },
+      { name: 'Purpose of travel', description: 'Itinerary and provisional travel/accommodation bookings.' },
+      { name: 'Certified translation', description: 'For any document not in English or French.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'Proof of immigration status', description: 'If you’re not a Nigerian citizen applying in Nigeria.', conditional: 'If a non-Nigerian resident' },
+      { name: 'Schedule 1 (background)', description: 'Completed and signed.', conditional: 'If you answered “yes” to any background question' },
+      { name: 'Employer / leave letter', description: 'With role, salary and approved leave.', conditional: 'If employed' },
+      { name: 'Third-party funding documents', description: 'Payer’s letter, ID and bank proof, dated within 3 months.', conditional: 'If someone else pays' },
+    ]},
+  ],
+}
+
+// ── Philippines → United States (B1/B2) — travel.state.gov, 2026-06 ──
+const PH_US: OfficialRequirements = {
+  visaType: 'B1/B2 Visitor visa',
+  processNote:
+    'Complete the online DS-160, pay the MRV fee (≈US$185), then book and attend an interview at the U.S. Embassy Manila (via ustraveldocs.com/ph). Bring proof of employment, funds and ties to the Philippines.',
+  sourceLabel: 'U.S. Department of State — Visitor Visa (corroborated by ustraveldocs.com/ph)',
+  sourceUrl: 'https://travel.state.gov/content/travel/en/us-visas/tourism-visit/visitor.html',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport', description: 'Valid at least 6 months beyond your intended stay in the U.S.' },
+      { name: 'DS-160 confirmation page', description: 'Printed confirmation of your completed online application.' },
+      { name: 'MRV fee receipt', description: 'Proof of the visa application fee payment (≈US$185).' },
+      { name: 'Photo', description: 'Uploaded during the DS-160; bring a printed 2"×2" copy if the upload fails.' },
+    ]},
+    { tier: 'conditional', label: 'Bring to support your case', items: [
+      { name: 'Employer letter + pay slips', description: 'Certificate of employment plus the last 3 months’ pay slips.', conditional: 'If employed' },
+      { name: 'Proof of ties & funds', description: 'Family, property, and financial evidence showing you’ll return.', conditional: 'If requested at interview' },
+    ]},
+  ],
+}
+
+// ── Philippines → Japan (Temporary Visitor, tourism) — Japan MOFA, 2026-06 ──
+const PH_JP: OfficialRequirements = {
+  visaType: 'Temporary Visitor (tourist) visa — single entry',
+  processNote:
+    'Philippine nationals must apply through a travel agency accredited by the Embassy of Japan (not directly to the embassy). Documents must be issued within the last 3 months; processing ~1 week; the visa is valid 3 months and cannot be extended.',
+  sourceLabel: 'Ministry of Foreign Affairs of Japan — Single Entry Visa for Philippine Nationals',
+  sourceUrl: 'https://www.mofa.go.jp/j_info/visit/visa/short/philippine.html',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for tourism (self-funded)', items: [
+      { name: 'Valid passport', description: 'Signed, valid for the trip.' },
+      { name: 'Visa application form', description: 'Completed Japan visa application form.' },
+      { name: 'Photograph', description: 'One recent passport-size photo.' },
+      { name: 'PSA birth certificate', description: 'On security paper (add a local-government copy if illegible).' },
+      { name: 'Proof of funds', description: 'Certificate of tax payment from a public agency, or a bank certificate of deposit balance.' },
+    ]},
+    { tier: 'conditional', label: 'If applicable', items: [
+      { name: 'PSA marriage certificate', description: 'On security paper.', conditional: 'If you are married' },
+      { name: 'Additional documents', description: 'e.g. certificate of employment, residence or school records.', conditional: 'Only if the embassy requests them' },
+    ]},
+  ],
+}
+
+// ── Egypt → Saudi Arabia (Group-B; embassy/VAC) — Visit Saudi Help Center, 2026-06 ──
+const EG_SA: OfficialRequirements = {
+  visaType: 'Tourist visit visa (via Saudi embassy / VAC)',
+  processNote:
+    'Egypt is a Saudi "Group B" nationality and is NOT eligible for the direct online e-Visa — apply through the Saudi embassy / official VAC. Exception: if you hold a valid, already-used US, UK or Schengen visa — or US/UK/EU permanent residency — you can use the e-Visa or visa on arrival.',
+  sourceLabel: 'Visit Saudi Help Center (Saudi Tourism Authority)',
+  sourceUrl: 'https://www.visitsaudi.com/en/help-center',
+  lastVerified: '2026-06',
+  groups: [
+    { tier: 'mandatory', label: 'Required for all applicants', items: [
+      { name: 'Passport', description: 'Valid at least 6 months from your date of entry.' },
+      { name: 'Visit-visa application (embassy / VAC)', description: 'Lodged at the Saudi embassy or VAC — Egypt is not e-Visa-eligible on passport alone.' },
+      { name: 'Recent photograph', description: 'Passport-size, for the visa application.' },
+      { name: 'Travel / medical insurance', description: 'Health cover for the visit (bundled with the e-Visa fee where the exception applies).' },
+    ]},
+    { tier: 'conditional', label: 'If you qualify for the e-Visa / visa on arrival', items: [
+      { name: 'Valid US / UK / Schengen visa or residency', description: 'A used US/UK/Schengen visa, or US/UK/EU permanent residency.', conditional: 'Using the e-Visa exception' },
+    ]},
+  ],
+}
+
 export const OFFICIAL_REQUIREMENTS: Record<string, OfficialRequirements> = {
   [key('Pakistan', 'Turkey')]: PK_TR,
   [key('Pakistan', 'Saudi Arabia')]: PK_SA,
