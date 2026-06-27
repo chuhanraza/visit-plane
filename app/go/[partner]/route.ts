@@ -95,9 +95,12 @@ export async function GET(
   const sourcePage = cleanSourcePage(searchParams.get('source') ?? req.headers.get('referer'))
   const country = (req.headers.get('x-vercel-ip-country') || '').slice(0, 2).toUpperCase() || null
 
-  // ── Log to Supabase (fire-and-forget, don't block redirect) ───────────────
+  // ── Log to Supabase. AWAIT it so the row is actually persisted (a bare
+  //    fire-and-forget insert is dropped when the serverless function freezes
+  //    after responding). Guarded by a short timeout so a DB hiccup can never
+  //    delay the redirect by more than ~1s. ──────────────────────────────────
   const supabase = getSupabase()
-  supabase
+  const insert = supabase
     .from('affiliate_clicks')
     .insert({
       partner,
@@ -114,6 +117,7 @@ export async function GET(
     .then(({ error }) => {
       if (error) console.error('[affiliate-click] DB error:', error.message)
     })
+  await Promise.race([insert, new Promise(r => setTimeout(r, 1000))])
 
   // ── Build final affiliate URL ──────────────────────────────────────────────
   const affiliateUrl = buildAffiliateUrl(partner, subId, {

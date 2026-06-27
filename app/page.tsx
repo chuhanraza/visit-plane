@@ -13,6 +13,7 @@ import InstallButton from '@/components/InstallButton'
 import DestinationImage from '@/components/DestinationImage'
 import VisaFreeSection from '@/components/home/VisaFreeSection'
 import DifferenceSection from '@/components/home/DifferenceSection'
+import VisaDataPromo from '@/components/home/VisaDataPromo'
 import RotatingWord from '@/components/home/RotatingWord'
 import { getAuthor } from '@/lib/data/authors'
 
@@ -478,6 +479,9 @@ export default function HomePage() {
 
       {/* ────────────────────── 2. THE DIFFERENCE (problem → solution) ───────────── */}
       <DifferenceSection />
+
+      {/* ── Visa Data & Research promo (fills former dead whitespace) ───────────── */}
+      <VisaDataPromo />
 
       {/* ────────────────────── 3. POPULAR DESTINATIONS ──────────── */}
       <section className="bg-white py-20 sm:py-24">

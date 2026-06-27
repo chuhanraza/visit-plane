@@ -64,7 +64,7 @@ export default function DifferenceSection() {
   const inView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section className="relative overflow-hidden border-t border-gray-100 bg-white pb-20 pt-6 sm:pb-28 sm:pt-7">
+    <section className="relative overflow-hidden border-t border-gray-100 bg-white pb-12 pt-6 sm:pb-14 sm:pt-7">
       {/* ambient brand glow */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute -top-24 right-[-10%] h-[480px] w-[480px] rounded-full opacity-60 blur-3xl" style={{ background: 'radial-gradient(circle, rgba(16,201,92,0.10) 0%, transparent 70%)' }} />
