@@ -19,6 +19,7 @@ const PRODUCT_LINKS = [
   { label: 'Passport Strength', href: '/passport-strength'},
   { label: 'AI Visa Wizard',    href: '/wizard'           },
   { label: 'Compare Visas',     href: '/compare'          },
+  { label: 'Visa Data & Research', href: '/visa-data'     },
   { label: 'Blog',              href: '/blog'             },
 ]
 
