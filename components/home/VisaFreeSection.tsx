@@ -78,52 +78,92 @@ export default function VisaFreeSection() {
   // 4+ → seamless marquee makes sense; 1–3 → static centered row (no repeats).
   const useMarquee = dests.length >= 4
 
+  // At-a-glance stats for the header strip (real data only — never fabricated).
+  // The card list is a teaser capped at 30; `meta.total` is the true total. We
+  // ONLY show the visa-free / on-arrival split when the full set is displayed —
+  // otherwise a subset breakdown would misrepresent the total, so we show a
+  // neutral "showing N of total" instead.
+  const visaFreeCount = dests.filter((d) => d.kind === 'visa-free').length
+  const voaCount = dests.filter((d) => d.kind === 'visa-on-arrival').length
+  const maxDays = dests.reduce((m, d) => Math.max(m, d.days ?? 0), 0)
+  const showStats = status === 'ready' && dests.length > 0
+  const isCapped = !!meta && meta.total > dests.length
+
   return (
     <section className="overflow-hidden bg-gray-50 py-16 sm:py-20">
       {/* Header */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 text-center sm:mb-8">
+        <div className="mb-8 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-bold text-emerald-600">
             <span>✈️</span> Visa-Free Travel
           </div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">No Visa Required</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-gray-500">
-            Where{' '}
-            <span className="font-semibold text-gray-700">{passport ? `a ${passport}` : 'your'}</span>{' '}
-            passport can travel visa-free or get a visa on arrival
-            {status === 'ready' && meta && meta.total > 0 && (
-              <> — <span className="font-semibold text-emerald-600">{meta.total} destinations</span></>
+          <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-[2.6rem] sm:leading-[1.1]">No Visa Required</h2>
+
+          {/* Fill-in-the-blank hero line — the passport selector lives in the sentence */}
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-3 text-base text-gray-600 sm:text-lg">
+            <PassportDropdown current={passport} onSelect={changePassport} geoLoading={geoLoading} />
+            <span>can enter</span>
+            {showStats && meta && meta.total > 0 ? (
+              <span className="inline-flex items-baseline gap-1.5">
+                <span className="text-2xl font-extrabold tracking-tight text-emerald-600 sm:text-3xl">{meta.total}</span>
+                <span className="font-semibold text-gray-700">destinations</span>
+              </span>
+            ) : (
+              <span className="font-semibold text-gray-700">destinations</span>
             )}
-            .{' '}
-            <span className="font-semibold text-gray-700">
+            <span>with no advance visa</span>
+          </div>
+          <p className="mt-2 text-[11px] text-gray-400">Auto-detected from your location — change it anytime.</p>
+
+          {/* At-a-glance stat strip — accurate to what's displayed */}
+          {showStats && (
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+              {isCapped ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-sm">
+                  <span aria-hidden="true">✨</span> Showing {dests.length} of {meta?.total}
+                </span>
+              ) : (
+                <>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" /> {visaFreeCount} visa-free
+                  </span>
+                  {voaCount > 0 && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm">
+                      <span className="h-2 w-2 rounded-full bg-amber-400" /> {voaCount} on arrival
+                    </span>
+                  )}
+                  {maxDays > 0 && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm">
+                      <span aria-hidden="true">⏱</span> up to {maxDays} days
+                    </span>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Provenance + honest reconfirm line */}
+          <div className="mt-5 flex flex-col items-center gap-2">
+            {status === 'ready' && meta?.source === 'official-curated' && meta.verified ? (
+              <a
+                href={meta.verified.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold text-emerald-700 transition hover:bg-emerald-500/15"
+              >
+                <span aria-hidden="true">✓</span>
+                {meta.verified.sourceLabel} · {prettyMonth(meta.verified.lastVerified)}
+                <span aria-hidden="true">↗</span>
+              </a>
+            ) : status === 'ready' ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-medium text-gray-500">
+                Guide — shown only where our data is clean &amp; unambiguous
+              </span>
+            ) : null}
+            <p className="text-xs font-semibold text-gray-500">
               Always reconfirm with the official source before you fly.
-            </span>
-          </p>
-
-          {/* Provenance: honest about how each list is sourced */}
-          {status === 'ready' && meta?.source === 'official-curated' && meta.verified ? (
-            <a
-              href={meta.verified.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold text-emerald-700 transition hover:bg-emerald-500/15"
-            >
-              <span aria-hidden="true">✓</span>
-              {meta.verified.sourceLabel} · {prettyMonth(meta.verified.lastVerified)}
-              <span aria-hidden="true">↗</span>
-            </a>
-          ) : status === 'ready' ? (
-            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-medium text-gray-500">
-              Guide — shown only where our data is clean &amp; unambiguous
-            </span>
-          ) : null}
-        </div>
-
-        {/* Passport selector — inline dropdown (auto-set from IP, change anytime) */}
-        <div className="mb-8 flex flex-col items-center justify-center gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-widest text-gray-400">Showing for</span>
-          <PassportDropdown current={passport} onSelect={changePassport} geoLoading={geoLoading} />
-          <span className="text-[11px] text-gray-400">Auto-detected from your location — change it anytime.</span>
+            </p>
+          </div>
         </div>
       </div>
 

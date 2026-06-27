@@ -5,10 +5,17 @@ import Link from 'next/link'
 import DestinationImage from '@/components/DestinationImage'
 import { getPassportFlag } from '@/components/PassportSwitcher'
 import { getCountryImage } from '@/lib/data/countryImages'
+import { ALL_COUNTRIES } from '@/app/destinations/data'
 import type { ReliableDestination } from '@/app/api/visa-free-reliable/route'
 
 function nameToSlug(name: string) {
   return encodeURIComponent(name)
+}
+
+// Region lookup (name → region) from the 197-country dataset, for the card chip.
+const REGION_BY_NAME = new Map(ALL_COUNTRIES.map((c) => [c.name.toLowerCase(), c.region]))
+function regionOf(name: string): string | null {
+  return REGION_BY_NAME.get(name.trim().toLowerCase()) ?? null
 }
 
 // Human label for the allowed-stay length / entry kind.
@@ -18,6 +25,25 @@ function stayLabel(d: ReliableDestination): string {
 }
 function kindLabel(d: ReliableDestination): string {
   return d.kind === 'visa-on-arrival' ? 'Visa on arrival' : 'Visa-free'
+}
+// Entry-kind accent: visa-free = emerald, visa-on-arrival = amber. Distinguishing
+// the two at a glance is genuinely useful — VoA still needs action at the border.
+function kindAccent(d: ReliableDestination) {
+  return d.kind === 'visa-on-arrival'
+    ? { dot: 'bg-amber-400 shadow-[0_0_6px_1px_rgba(251,191,36,0.9)]', text: 'text-amber-200', glow: 'from-amber-500/25', canvas: 'bg-[radial-gradient(120%_90%_at_15%_-5%,#fbbf24_0%,#f59e0b_36%,#0d9488_72%,#0f766e_100%)]' }
+    : { dot: 'bg-emerald-400 shadow-[0_0_6px_1px_rgba(52,211,153,0.9)]', text: 'text-emerald-200', glow: 'from-emerald-500/25', canvas: 'bg-[radial-gradient(120%_90%_at_15%_-5%,#34d399_0%,#10b981_38%,#0d9488_70%,#0f766e_100%)]' }
+}
+
+// Decorative "passport-stamp" motif drawn behind the flag on photo-less cards —
+// turns a flat fallback into a designed travel card (pure SVG, no asset/network).
+function StampMotif() {
+  return (
+    <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.16]" viewBox="0 0 260 360" fill="none" aria-hidden="true">
+      <circle cx="130" cy="128" r="70" stroke="white" strokeWidth="1" strokeDasharray="2 6" />
+      <circle cx="130" cy="128" r="92" stroke="white" strokeWidth="1.5" strokeDasharray="3 8" />
+      <circle cx="130" cy="128" r="114" stroke="white" strokeWidth="1" opacity="0.5" />
+    </svg>
+  )
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -34,10 +60,9 @@ export function VisaFreeCard({
   onClick?: (e: React.MouseEvent) => void
 }) {
   const flag = getPassportFlag(dest.name)
-  // Photo cards label the country in the bottom bar; branded-fallback cards
-  // already render a large flag + name centred, so the bottom label is omitted
-  // there to avoid showing the country twice.
   const hasPhoto = !!getCountryImage(dest.name)
+  const region = regionOf(dest.name)
+  const accent = kindAccent(dest)
   return (
     <Link
       href={`/visa/${nameToSlug(passport)}/${nameToSlug(dest.name)}`}
@@ -46,41 +71,58 @@ export function VisaFreeCard({
       aria-label={`${dest.name} — ${kindLabel(dest).toLowerCase()}, up to ${stayLabel(dest)}`}
       className="group/card relative block h-[300px] w-[220px] shrink-0 overflow-hidden rounded-[1.75rem] bg-gray-900 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)] ring-1 ring-emerald-400/20 transition-all duration-300 will-change-transform hover:-translate-y-2 hover:shadow-[0_28px_55px_-15px_rgba(16,185,129,0.45)] hover:ring-emerald-400/60 focus-visible:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 sm:h-[340px] sm:w-[244px] lg:h-[360px] lg:w-[260px]"
     >
-      {/* full-bleed photo (or branded fallback) */}
-      <DestinationImage
-        name={dest.name}
-        flag={flag}
-        className="h-full w-full scale-105 object-cover transition-transform duration-700 ease-out group-hover/card:scale-110"
-      />
+      {/* ── canvas: full-bleed photo, or a designed travel-stamp gradient ── */}
+      {hasPhoto ? (
+        <DestinationImage
+          name={dest.name}
+          flag={flag}
+          className="h-full w-full scale-105 object-cover transition-transform duration-700 ease-out group-hover/card:scale-110"
+        />
+      ) : (
+        <div className={`absolute inset-0 ${accent.canvas}`}>
+          <StampMotif />
+          <div className="absolute left-1/2 top-[33%] -translate-x-1/2 -translate-y-1/2">
+            <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl border border-white/30 bg-white/15 text-4xl shadow-lg backdrop-blur-md transition-transform duration-500 group-hover/card:scale-110 sm:h-24 sm:w-24 sm:text-5xl">
+              {flag}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* legibility + brand glow */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/5" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/5" />
       <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-white/10" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-emerald-500/20 to-transparent opacity-0 transition-opacity duration-300 group-hover/card:opacity-100" />
+      <div className={`pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t ${accent.glow} to-transparent opacity-0 transition-opacity duration-300 group-hover/card:opacity-100`} />
 
-      {/* top-left status tag */}
-      <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur-md">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_1px_rgba(52,211,153,0.9)]" />
-        {kindLabel(dest)}
+      {/* top row: entry-type status + region */}
+      <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur-md">
+          <span className={`h-1.5 w-1.5 rounded-full ${accent.dot}`} />
+          {kindLabel(dest)}
+        </span>
+        {region && (
+          <span className="shrink-0 rounded-full border border-white/15 bg-black/25 px-2 py-1 text-[10px] font-semibold text-white/85 backdrop-blur-md">
+            {region}
+          </span>
+        )}
       </div>
 
       {/* bottom content block */}
       <div className="absolute inset-x-0 bottom-0 p-4">
         <div className="flex items-end justify-between gap-2">
-          {hasPhoto ? (
-            <div className="min-w-0">
-              <div className="mb-1 text-2xl leading-none drop-shadow">{flag}</div>
-              <h3 className="truncate text-lg font-extrabold leading-tight text-white drop-shadow-sm">{dest.name}</h3>
-            </div>
-          ) : (
-            <span aria-hidden="true" />
-          )}
+          <div className="min-w-0">
+            {/* small flag chip only on photo cards — fallback cards already hero the flag */}
+            {hasPhoto && (
+              <div className="mb-1.5 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-white/25 bg-white/15 text-base leading-none backdrop-blur-md">{flag}</div>
+            )}
+            <h3 className="truncate text-lg font-extrabold leading-tight text-white drop-shadow-sm">{dest.name}</h3>
+          </div>
           <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-white/30 bg-white/20 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md">
             {stayLabel(dest)}
           </span>
         </div>
         {/* explore affordance — slides in on hover */}
-        <div className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-emerald-300 opacity-0 transition-all duration-300 group-hover/card:opacity-100">
+        <div className={`mt-3 flex items-center gap-1.5 text-[11px] font-semibold ${accent.text} opacity-0 transition-all duration-300 group-hover/card:opacity-100`}>
           Explore entry rules
           <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover/card:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
         </div>
