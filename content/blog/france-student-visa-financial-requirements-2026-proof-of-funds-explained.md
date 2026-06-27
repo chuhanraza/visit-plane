@@ -1,11 +1,17 @@
 ---
 title: "France Student Visa Financial Requirements 2026: Proof of Funds Explained"
-date: "2026-06-15"
+date: "2026-06-27"
 excerpt: "How much money do you need for a France student visa in 2026, what counts as proof of funds, and how to show it — explained clearly with the latest figures."
 category: "Visa Guides"
 readTime: "11 min read"
 coverEmoji: "🇫🇷"
 ---
+
+## Quick Answer
+
+For a France student visa (VLS-TS) in 2026, plan for about EUR 615 per month — roughly EUR 7,380 a year — in living costs on top of tuition. Proof of funds can be your savings, a scholarship, or a sponsor guarantee, but the money must be genuinely yours and stable over several months. Confirm the current figure on the official France-Visas and Campus France sites before applying.
+
+**Related on VisitPlane:** [Ireland student visa financial requirements](/blog/ireland-student-visa-financial-requirements-2026-proof-of-funds-explained) · [Visa document checklist](/checklist)
 
 ## Overview
 

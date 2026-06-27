@@ -1,11 +1,17 @@
 ---
 title: "40 Visa-Free Countries for Sri Lanka Passport Holders (2026 List)"
-date: "2026-06-15"
+date: "2026-06-27"
 excerpt: "Which countries are visa-free for Sri Lanka passport holders in 2026? This guide explains how visa-free access works, where it broadly applies, and how to confirm the current list."
 category: "Travel Tips"
 readTime: "11 min read"
 coverEmoji: "🗺️"
 ---
+
+## Quick Answer
+
+A Sri Lanka passport offers visa-free or visa-on-arrival access to roughly 40 destinations in 2026, spanning South and Southeast Asia, the Caucasus, and several African, Caribbean, and Pacific island nations. The exact list changes frequently as governments update policy, so treat any published number as a starting point and confirm the current rule for each country with the [VisitPlane Visa Wizard](/wizard) before booking.
+
+**Related on VisitPlane:** [15 cheapest countries to visit from Sri Lanka](/blog/15-cheapest-countries-to-visit-from-sri-lanka-in-2026) · [Check any route with the Visa Wizard](/wizard)
 
 ## Overview
 

@@ -1,11 +1,17 @@
 ---
 title: "How Much Does a Saudi Arabia Visa Cost from Pakistan? (2026 Fees & Hidden Charges)"
-date: "2026-06-23"
+date: "2026-06-27"
 excerpt: "The true cost of a Saudi Arabia visa from Pakistan in 2026 is more than the headline fee. This guide breaks down the visa charge, service fees, insurance, the visa types available, step-by-step application, and the hidden extras most applicants miss."
 category: "Visa Guides"
 readTime: "12 min read"
 coverEmoji: "🇸🇦"
 ---
+
+## Quick Answer
+
+A Saudi Arabia tourist e-visa from Pakistan costs around SAR 535, a fee that already bundles the mandatory medical insurance. The all-in cost is higher once you add any service charge, passport photos, document costs, and card or currency-conversion fees. Umrah and Hajj are arranged separately through approved operators. Always confirm the current fee on the official Visit Saudi portal before paying.
+
+**Related on VisitPlane:** [15 cheapest countries to visit from Pakistan](/blog/15-cheapest-countries-to-visit-from-pakistan-in-2026) · [Turkey eVisa for Pakistanis](/blog/turkey-evisa-for-pakistanis)
 
 ## Overview
 

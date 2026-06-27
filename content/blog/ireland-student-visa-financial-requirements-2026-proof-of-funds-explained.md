@@ -1,11 +1,17 @@
 ---
 title: "Ireland Student Visa Financial Requirements 2026: Proof of Funds Explained"
-date: "2026-06-15"
+date: "2026-06-27"
 excerpt: "How much money do you need for a Ireland student visa in 2026, what counts as proof of funds, and how to show it — explained clearly with the latest figures."
 category: "Visa Guides"
 readTime: "11 min read"
 coverEmoji: "🇮🇪"
 ---
+
+## Quick Answer
+
+For an Ireland student visa in 2026, courses longer than 8 months require proof of at least EUR 10,000 (about EUR 833 per month) for the first year, on top of tuition, with the same available for each later year. Funds should be held for at least 28 days in your or your sponsor name. These figures took effect 30 June 2025 — confirm the latest on the official Irish immigration site.
+
+**Related on VisitPlane:** [France student visa financial requirements](/blog/france-student-visa-financial-requirements-2026-proof-of-funds-explained) · [Visa document checklist](/checklist)
 
 ## Overview
 

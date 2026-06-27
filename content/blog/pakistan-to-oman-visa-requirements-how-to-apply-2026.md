@@ -1,11 +1,17 @@
 ---
 title: "Pakistan to Oman Visa: Requirements & How to Apply (2026)"
-date: "2026-06-15"
+date: "2026-06-27"
 excerpt: "A complete 2026 guide for Pakistani travellers applying for a Oman visa — who needs one, the requirements, fees, processing time, proof of funds, and how to apply step by step."
 category: "Visa Guides"
 readTime: "11 min read"
 coverEmoji: "🇴🇲"
 ---
+
+## Quick Answer
+
+Pakistani travellers need an Oman tourist e-visa, applied for online through the Royal Oman Police (ROP) portal. A short-stay visa costs around OMR 5, with longer multiple-entry visas costing more. You will need a valid passport, photo, proof of funds, and evidence of ties to Pakistan. Confirm the current fee and your eligibility on the official ROP e-visa portal before applying.
+
+**Related on VisitPlane:** [15 cheapest countries to visit from Pakistan](/blog/15-cheapest-countries-to-visit-from-pakistan-in-2026) · [Saudi Arabia visa cost from Pakistan](/blog/how-much-does-a-saudi-arabia-visa-cost-from-pakistan-2026-fees-hidden-charges)
 
 ## Overview
 

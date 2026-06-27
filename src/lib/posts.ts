@@ -133,7 +133,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'turkey-evisa-for-pakistanis',
     title: 'Turkey eVisa for Pakistani Citizens — Costs, Processing & Tips (2026)',
-    date: '2026-05-30',
+    date: '2026-06-27',
     excerpt:
       'Pakistani passport holders can apply for a Turkey eVisa online in minutes. This guide covers the $90 fee, 24–72 hour processing, required documents, and tips to avoid rejection.',
     category: 'Visa Guides',
@@ -144,6 +144,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/visa/Pakistan/Turkey',
     ctaTitle: 'Check Pakistan to Turkey Visa Requirements',
     faqs: [
+      { q: 'Can Pakistani citizens get a Turkey visa on arrival?', a: 'No. There is no visa on arrival for Pakistani passport holders — the eVisa must be obtained before travel at the official portal evisa.gov.tr.' },
+      { q: 'How long is the Turkey eVisa valid for Pakistanis?', a: 'The Turkey eVisa is generally valid for 180 days from issue and allows stays of up to 30 days per entry. Confirm the validity shown on your approved eVisa.' },
+      { q: 'What passport validity do I need for a Turkey eVisa?', a: 'Pakistani applicants generally need a passport valid at least 150 days beyond the entry date into Turkey, plus a return or onward ticket and accommodation details.' },
+      { q: 'Is the Turkey eVisa fee refundable if rejected?', a: 'No. The eVisa fee is non-refundable even if your application is rejected, which is why it is important to enter your passport details exactly and apply only on the official site.' },
       {
         q: 'How much does the Turkey eVisa cost for Pakistani citizens in 2026?',
         a: 'The Turkey eVisa costs $90 USD (~PKR 25,000) for Pakistani passport holders as of 2026. Only apply on the official site evisa.gov.tr — third-party sites charge extra.',
@@ -1519,7 +1523,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'bangladesh-to-uae-visa-requirements-2026',
     title: 'Bangladesh to UAE (Dubai) Visa: Requirements & How to Apply (2026)',
-    date: '2026-06-15',
+    date: '2026-06-27',
     excerpt:
       'Bangladeshi travellers need a visit visa for the UAE — applied online via airlines, hotels, or agents, with no embassy visit. This 2026 guide covers 30 vs 60-day visas, documents, fees, and processing.',
     category: 'Visa Guides',
@@ -1530,6 +1534,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/visa/Bangladesh/United%20Arab%20Emirates',
     ctaTitle: 'Check Bangladesh to UAE Visa Requirements',
     faqs: [
+      { q: 'Do Bangladeshi citizens need a visa for the UAE?', a: 'Yes. Bangladeshi passport holders are not eligible for UAE visa on arrival and must obtain a visit visa before travel, applied for online and sponsored by an airline, hotel, or authorised agent.' },
+      { q: 'What is the difference between the 30-day and 60-day UAE visa?', a: 'Both are tourist visit visas issued electronically; the 60-day option allows a longer stay and costs more. Single and multiple-entry versions exist. Choose based on your trip length and confirm the current fee with your sponsor.' },
+      { q: 'Who can sponsor a UAE visit visa for a Bangladeshi traveller?', a: 'Airlines such as Emirates, flydubai, Etihad, and Air Arabia, many UAE hotels, authorised travel agents, and sometimes a UAE-resident relative. Use a reputable sponsor and avoid unverified cheap-visa sellers.' },
+      { q: 'How long does a UAE visit visa take for Bangladeshi applicants?', a: 'Electronic visit visas are typically processed within a few business days for complete applications. Apply at least a week or two before travel and check all passport details are correct.' },
       { q: 'Do Bangladeshis need a visa for the UAE?', a: 'Yes. Bangladeshi passport holders are not eligible for UAE visa-on-arrival. You must obtain a visit visa before travel — applied for online via an airline (Emirates, flydubai, Air Arabia), a hotel, or an authorised agent that sponsors the application.' },
       { q: 'What are the UAE visa options for Bangladeshis?', a: 'The common categories are the 30-day and 60-day tourist visas (single or multiple entry), issued electronically. A UAE resident relative can sometimes sponsor a family/visit visa.' },
       { q: 'How much does a UAE visit visa cost for Bangladeshis?', a: 'A 30-day visa is commonly around AED 350 and a 60-day around AED 650, plus service charges. All-in costs typically range from roughly BDT 12,000 to BDT 25,000+ depending on type and agent.' },
@@ -3368,7 +3376,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'france-student-visa-financial-requirements-2026-proof-of-funds-explained',
     title: 'France Student Visa Financial Requirements 2026: Proof of Funds Explained',
-    date: '2026-06-15',
+    date: '2026-06-27',
     excerpt:
       'How much money do you need for a France student visa in 2026, what counts as proof of funds, and how to show it — explained clearly with the latest figures.',
     category: 'Visa Guides',
@@ -3379,6 +3387,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/checklist',
     ctaTitle: 'Build your file with the VisitPlane checklist',
     faqs: [
+      { q: 'How much money do I need for a France student visa in 2026?', a: 'Plan for about EUR 615 per month — roughly EUR 7,380 a year — in living costs on top of tuition. Confirm the current figure on the official France-Visas and Campus France sites before applying.' },
+      { q: 'What counts as proof of funds for a France student visa?', a: 'Acceptable evidence includes bank statements showing the required balance, a scholarship award letter, or a sponsor’s guarantee (attestation de prise en charge) with their bank statements. The document must be recent, legible, and clearly linked to you.' },
+      { q: 'Does the France financial requirement include tuition?', a: 'No. The living-cost figure sits on top of tuition. Build your total from living costs plus your actual programme fees, then add a buffer for exchange-rate movement.' },
+      { q: 'Can a sponsor cover my France student visa funds?', a: 'Yes. A sponsor can provide a guarantee with their identity document, proof of relationship, income evidence, and the monthly commitment. A French guarantor’s commitment is particularly strong.' },
       { q: 'How much money do I need for a French student visa?', a: 'The accepted financial guarantee is €615 per month — about €7,380 for a year — as proof you can cover living costs.' },
       { q: 'What counts as proof?', a: 'Bank statements, a scholarship letter, or a sponsor’s attestation de prise en charge with their income evidence.' },
       { q: 'Is tuition included in the figure?', a: 'No — public-university tuition is low but the €615/month guarantee is for living costs; budget separately for private-school fees.' },
@@ -3408,7 +3420,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'ireland-student-visa-financial-requirements-2026-proof-of-funds-explained',
     title: 'Ireland Student Visa Financial Requirements 2026: Proof of Funds Explained',
-    date: '2026-06-15',
+    date: '2026-06-27',
     excerpt:
       'How much money do you need for a Ireland student visa in 2026, what counts as proof of funds, and how to show it — explained clearly with the latest figures.',
     category: 'Visa Guides',
@@ -3419,6 +3431,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/checklist',
     ctaTitle: 'Build your file with the VisitPlane checklist',
     faqs: [
+      { q: 'How much money do I need for an Ireland student visa in 2026?', a: 'For courses longer than 8 months you must show at least EUR 10,000 (about EUR 833 per month) for the first year on top of tuition, with the same available each subsequent year. For shorter courses the requirement is EUR 833 per month, capped near EUR 6,665.' },
+      { q: 'How long must funds be held for an Ireland student visa?', a: 'Ireland generally expects the money to be held for at least 28 days and genuinely accessible. Document the source of any large deposit so it does not look like borrowed-for-the-photo money.' },
+      { q: 'When did the new Ireland student finance figures take effect?', a: 'The current amounts took effect from 30 June 2025 and apply to both visa-required and non-visa-required nationals. Always confirm the latest figure on the official Irish immigration site.' },
+      { q: 'What counts as proof of funds for Ireland?', a: 'Your own or your sponsor’s bank statements, a scholarship letter, or an education loan, held in the student’s or sponsor’s name and dated within one month of your application.' },
       { q: 'How much money do I need for an Irish student visa?', a: 'For courses over 8 months, show immediate access to at least €10,000 for the first year, plus the same for each later year on top of tuition.' },
       { q: 'What about shorter courses?', a: 'For courses of 8 months or less, the requirement is €833 per month, capped at about €6,665.' },
       { q: 'How long must funds be held?', a: 'At least 28 days, with the statement dated within one month of your application, in your or your sponsor’s name.' },
@@ -5468,7 +5484,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'how-much-does-a-south-korea-visa-cost-from-nigeria-2026-fees-hidden-charges',
     title: 'How Much Does a South Korea Visa Cost from Nigeria? (2026 Fees & Hidden Charges)',
-    date: '2026-06-15',
+    date: '2026-06-27',
     excerpt:
       'The true cost of a South Korea visa from Nigeria in 2026 is more than the headline fee. This guide breaks down the visa charge, service fees, and the hidden extras most applicants miss.',
     category: 'Visa Guides',
@@ -5479,6 +5495,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/wizard',
     ctaTitle: 'Check requirements with the VisitPlane Wizard',
     faqs: [
+      { q: 'Do Nigerians need a visa for South Korea?', a: 'Yes. Nigerian passport holders need a visa for South Korea and apply through the Korea Visa Application Centre. Confirm the current requirement and document list on the official Korea Visa Portal before applying.' },
+      { q: 'What is K-ETA and do Nigerians need it?', a: 'K-ETA is an electronic travel authorisation for visa-waiver nationalities. Nigerian travellers who require a visa do not use K-ETA — they apply for the consular visa instead. Confirm your category before paying.' },
+      { q: 'Is the South Korea visa fee refundable if refused?', a: 'Generally no. The consular fee is a processing fee and is not refunded if your application is refused, so prepare a complete, consistent file the first time.' },
+      { q: 'How long does a South Korea visa take from Nigeria?', a: 'Short-stay visa processing varies by season and individual case and can take several working days to a few weeks. Apply well before travel and confirm current timelines with the visa centre.' },
       { q: 'How much is the visa fee?', a: 'The South Korea short-stay (C-3) visa fee is about USD 40 single-entry. The all-in cost from Nigeria is higher once service charges, biometrics, insurance, and documents are added.' },
       { q: 'What hidden charges should I expect?', a: 'Visa-centre service fees, biometrics, mandatory insurance (Schengen), photos, document costs, and courier — plus agent fees if you use one.' },
       { q: 'Do I get a refund if refused?', a: 'Generally no — the visa fee is a processing fee and isn’t refunded on refusal, which is why getting the application right the first time matters.' },
@@ -6088,7 +6108,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: '40-visa-free-countries-for-sri-lanka-passport-holders-2026-list',
     title: '40 Visa-Free Countries for Sri Lanka Passport Holders (2026 List)',
-    date: '2026-06-15',
+    date: '2026-06-27',
     excerpt:
       'Which countries are visa-free for Sri Lanka passport holders in 2026? This guide explains how visa-free access works, where it broadly applies, and how to confirm the current list.',
     category: 'Travel Tips',
@@ -6099,6 +6119,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/wizard',
     ctaTitle: 'Check your visa with the VisitPlane Wizard',
     faqs: [
+      { q: 'How many countries can Sri Lankan passport holders visit visa-free in 2026?', a: 'A Sri Lanka passport offers visa-free or visa-on-arrival access to roughly 40 destinations, but the figure shifts as countries change policy. Confirm the current rule for each country with the VisitPlane Visa Wizard before booking.' },
+      { q: 'What is the difference between visa-free, visa-on-arrival, and e-visa?', a: 'Visa-free means no visa at all; visa-on-arrival is issued at the border; an e-visa or e-Travel Authorisation is a quick online approval before you fly. The documents and steps differ, so check which applies to your destination.' },
+      { q: 'Which regions are easiest for Sri Lankan travellers to visit?', a: 'Access commonly extends across South and Southeast Asia, the Caucasus, and various African, Caribbean, and Pacific island nations that offer visa-on-arrival or visa-free entry. Always verify each specific destination.' },
+      { q: 'Why do visa-free lists change so often?', a: 'Governments adjust access for reciprocity, security, or tourism reasons, sometimes with little notice. A published list is never a substitute for a real-time check for your passport on the day you plan to travel.' },
       { q: 'How do I choose a destination?', a: 'Match your interest with flight cost, the visa route for your Sri Lankan passport, and the season you can travel.' },
       { q: 'Are these visa-free for my passport?', a: 'Not necessarily — visa rules differ by nationality and change often. Confirm each with the VisitPlane Wizard before booking.' },
       { q: 'How do I keep costs down?', a: 'Travel off-peak, fly midweek, book early, stay outside the centre, and eat where locals eat.' },
@@ -7228,7 +7252,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: '15-cheapest-countries-to-visit-from-philippines-in-2026',
     title: '15 Cheapest Countries to Visit from the Philippines in 2026',
-    date: '2026-06-15',
+    date: '2026-06-27',
     excerpt:
       'The fifteen cheapest countries to visit from the Philippines in 2026 — where flights and daily costs are lowest, what to see, and how to check the visa for your passport.',
     category: 'Travel Tips',
@@ -7239,6 +7263,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/wizard',
     ctaTitle: 'Check your visa with the VisitPlane Wizard',
     faqs: [
+      { q: 'How many countries can Filipino passport holders visit visa-free?', a: 'Filipino passport holders have visa-free or visa-on-arrival access to a substantial number of countries, including much of ASEAN. The exact list changes, so confirm each destination with the Visa Wizard before you book.' },
+      { q: 'Which is the cheapest country to visit from the Philippines?', a: 'Southeast Asian neighbours such as Thailand, Vietnam, Cambodia, and Indonesia usually offer the lowest daily costs and the cheapest flights from Manila or Cebu. Compare live airfares for your dates to find the best-value trip.' },
+      { q: 'Do Filipinos need a visa for Thailand?', a: 'Filipino passport holders typically enjoy visa-free entry to Thailand for short tourist stays, but conditions and limits change. Always confirm the current Philippines to Thailand rule with the Visa Wizard before travel.' },
+      { q: 'When is the cheapest time to visit Southeast Asia from the Philippines?', a: 'Shoulder seasons generally bring lower flight and hotel prices than peak holiday periods. Travelling outside school holidays and major festivals usually stretches a tight budget furthest.' },
       { q: 'How do I choose a destination?', a: 'Match your interest with flight cost, the visa route for your Filipino passport, and the season you can travel.' },
       { q: 'Are these visa-free for my passport?', a: 'Not necessarily — visa rules differ by nationality and change often. Confirm each with the VisitPlane Wizard before booking.' },
       { q: 'How do I keep costs down?', a: 'Travel off-peak, fly midweek, book early, stay outside the centre, and eat where locals eat.' },
@@ -9588,7 +9616,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: '15-cheapest-countries-to-visit-from-bangladesh-in-2026',
     title: '15 Cheapest Countries to Visit from Bangladesh in 2026',
-    date: '2026-06-15',
+    date: '2026-06-27',
     excerpt:
       'The fifteen cheapest countries to visit from Bangladesh in 2026 — where flights and daily costs are lowest, what to see, and how to check the visa for your passport.',
     category: 'Travel Tips',
@@ -9599,6 +9627,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/wizard',
     ctaTitle: 'Check your visa with the VisitPlane Wizard',
     faqs: [
+      { q: 'Which is the cheapest country to visit from Bangladesh?', a: 'Nepal and Sri Lanka are among the cheapest to reach from Dhaka, while Thailand, Indonesia, and Vietnam offer very low daily costs. The cheapest overall trip depends on live airfare for your dates, so compare flights alongside daily budgets.' },
+      { q: 'Do Bangladeshi passport holders get visa-on-arrival anywhere on this list?', a: 'Some destinations offer visa-on-arrival or e-visas to Bangladeshi travellers and others require a visa in advance. Rules change often, so confirm each route with the VisitPlane Visa Wizard before booking.' },
+      { q: 'Is Nepal visa-free for Bangladeshi citizens?', a: 'Bangladeshi passport holders can usually obtain a visa-on-arrival for Nepal, but conditions and fees change. Confirm the current Bangladesh to Nepal rule with the Visa Wizard before you travel.' },
+      { q: 'When is the cheapest time to travel from Bangladesh?', a: 'Travelling in shoulder seasons and avoiding Eid and peak holiday periods typically brings the lowest flight and accommodation prices, making a modest budget go further.' },
       { q: 'How do I choose a destination?', a: 'Match your interest with flight cost, the visa route for your Bangladeshi passport, and the season you can travel.' },
       { q: 'Are these visa-free for my passport?', a: 'Not necessarily — visa rules differ by nationality and change often. Confirm each with the VisitPlane Wizard before booking.' },
       { q: 'How do I keep costs down?', a: 'Travel off-peak, fly midweek, book early, stay outside the centre, and eat where locals eat.' },
@@ -11288,7 +11320,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'pakistan-to-oman-visa-requirements-how-to-apply-2026',
     title: 'Pakistan to Oman Visa: Requirements & How to Apply (2026)',
-    date: '2026-06-15',
+    date: '2026-06-27',
     excerpt:
       'A complete 2026 guide for Pakistani travellers applying for a Oman visa — who needs one, the requirements, fees, processing time, proof of funds, and how to apply step by step.',
     category: 'Visa Guides',
@@ -11299,6 +11331,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/wizard',
     ctaTitle: 'Check requirements with the VisitPlane Wizard',
     faqs: [
+      { q: 'How much does an Oman visa cost from Pakistan?', a: 'A short-stay Oman tourist e-visa is around OMR 5, with longer multiple-entry visas costing more. Fees change, so confirm the current amount on the official Royal Oman Police e-visa portal before paying.' },
+      { q: 'How do Pakistani citizens apply for an Oman visa?', a: 'Most Pakistani travellers apply online through the Royal Oman Police (ROP) e-visa portal. Confirm your eligibility route first, since applying through the wrong channel is a common cause of delay.' },
+      { q: 'What documents do I need for an Oman visa from Pakistan?', a: 'Typically a passport valid well beyond your trip with blank pages, a spec-compliant photo, proof of funds, your trip purpose or bookings, evidence of ties to Pakistan, and travel medical insurance where required.' },
+      { q: 'How long does the Oman e-visa take?', a: 'Processing varies by case and season. Apply at least a couple of weeks before travel so a document re-request does not derail your plans, and keep every payment receipt.' },
       { q: 'Do I need a visa?', a: 'Yes — Pakistani travellers need a Oman tourist e-visa. Apply through the official channel before you travel.' },
       { q: 'What matters most for approval?', a: 'Genuine funds with a clear history and strong ties to Pakistan — plus a consistent, complete application.' },
       { q: 'How long does it take?', a: 'It varies by route and season — apply well ahead and check the current official estimate.' },
@@ -14548,7 +14584,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'how-much-does-a-saudi-arabia-visa-cost-from-pakistan-2026-fees-hidden-charges',
     title: 'How Much Does a Saudi Arabia Visa Cost from Pakistan? (2026 Fees & Hidden Charges)',
-    date: '2026-06-23',
+    date: '2026-06-27',
     excerpt:
       'The true cost of a Saudi Arabia visa from Pakistan in 2026 is more than the headline fee. This guide breaks down the visa charge, service fees, insurance, visa types, step-by-step application, and the hidden extras most applicants miss.',
     category: 'Visa Guides',
@@ -14559,6 +14595,7 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/wizard',
     ctaTitle: 'Check requirements with the VisitPlane Wizard',
     faqs: [
+      { q: 'Can I perform Umrah on a Saudi tourist visa from Pakistan?', a: 'Under current rules, tourist e-visa holders can generally perform Umrah outside peak Hajj periods, but policy changes — confirm the live rule first. For a pilgrimage-focused trip, an Umrah package through an approved operator may be better value.' },
       { q: 'How much does the Saudi tourist e-visa cost from Pakistan?', a: 'The Saudi tourist e-visa fee is around SAR 535, which already includes the compulsory medical insurance. The all-in cost from Pakistan is a little higher once you add any service charge, photos, document costs, and card/currency fees. Always confirm the current fee on the official portal.' },
       { q: 'Does the Saudi visa fee include insurance?', a: 'Yes. The roughly SAR 535 tourist e-visa fee bundles the mandatory medical insurance Saudi Arabia requires of tourist-visa holders. Some travellers still add extra travel-medical cover for peace of mind beyond the basic policy.' },
       { q: 'What hidden charges should I expect?', a: 'Per-application service-centre fees, optional premium/priority services, passport photos, printing, any document translation, and card/currency-conversion fees. Agent fees, if you use one, can exceed the visa cost itself.' },
@@ -15693,7 +15730,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'how-much-does-a-saudi-arabia-visa-cost-from-philippines-2026-fees-hidden-charges',
     title: 'How Much Does a Saudi Arabia Visa Cost from Philippines? (2026 Fees & Hidden Charges)',
-    date: '2026-06-15',
+    date: '2026-06-27',
     excerpt:
       'The true cost of a Saudi Arabia visa from Philippines in 2026 is more than the headline fee. This guide breaks down the visa charge, service fees, and the hidden extras most applicants miss.',
     category: 'Visa Guides',
@@ -15704,6 +15741,10 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/wizard',
     ctaTitle: 'Check requirements with the VisitPlane Wizard',
     faqs: [
+      { q: 'Does the Saudi visa fee include insurance for Filipino applicants?', a: 'The roughly SAR 535 tourist e-visa fee bundles the mandatory medical insurance Saudi Arabia requires of tourist-visa holders. Some travellers still add extra travel-medical cover for peace of mind beyond the basic policy.' },
+      { q: 'Can Filipinos perform Umrah on a Saudi tourist visa?', a: 'Under current rules, tourist-visa holders can generally perform Umrah outside peak Hajj periods, but policy changes — confirm the live rule before relying on it. A dedicated Umrah package may suit a pilgrimage-focused trip better.' },
+      { q: 'Do I get a refund if my Saudi visa is refused?', a: 'Generally no. The visa fee is a processing fee that pays for the assessment, so it is not refunded on refusal, and service charges are non-refundable once the work is done.' },
+      { q: 'How long does the Saudi tourist e-visa take from the Philippines?', a: 'Complete, eligible e-visa applications are often issued within a few days, sometimes faster. Apply two to three weeks before travel to allow for any document re-request, and add buffer during Umrah season and major events.' },
       { q: 'How much is the visa fee?', a: 'The Saudi Arabia tourist e-visa (where eligible) fee is around SAR 535 including insurance. The all-in cost from Philippines is higher once service charges, biometrics, insurance, and documents are added.' },
       { q: 'What hidden charges should I expect?', a: 'Service fees, biometrics where applicable, insurance, photos, document costs, and courier — plus agent fees if you use one.' },
       { q: 'Do I get a refund if refused?', a: 'Generally no — the visa fee is a processing fee and isn’t refunded on refusal.' },
@@ -23233,7 +23274,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: '15-cheapest-countries-to-visit-from-pakistan-in-2026',
     title: '15 Cheapest Countries to Visit from Pakistan in 2026',
-    date: '2026-06-23',
+    date: '2026-06-27',
     excerpt:
       'The fifteen cheapest countries to visit from Pakistan in 2026 — where flights and daily costs are lowest, what makes each one good value, and how to check the visa for your passport before you book.',
     category: 'Travel Tips',
@@ -23244,6 +23285,8 @@ export const blogPosts: BlogPost[] = [
     visaLink: '/wizard',
     ctaTitle: 'Check your visa with the VisitPlane Wizard',
     faqs: [
+      { q: 'Which is the single cheapest country to visit from Pakistan?', a: 'Day to day, Southeast Asian destinations like Thailand, Vietnam, and Cambodia, plus Nepal and Georgia, tend to offer the lowest daily costs. The cheapest overall trip depends on airfare from your city on your dates, so compare live flight prices alongside the daily budget.' },
+      { q: 'Are these cheapest destinations visa-free for Pakistani passport holders?', a: 'Some offer visa-on-arrival or e-visas for Pakistani travellers, while others need a visa in advance. Access changes, so confirm the current rule for each country with the VisitPlane Visa Wizard before booking.' },
       { q: 'What are the cheapest countries to visit from Pakistan in 2026?', a: 'Strong value picks include Thailand, Malaysia, Indonesia, Sri Lanka, Georgia, Vietnam, Cambodia, Egypt, and Nepal for very low daily costs, plus Turkey, Azerbaijan, the UAE, and Qatar for short flights and frequent deals. Match the choice to your interests and the season you can travel.' },
       { q: 'How do I choose the right destination for me?', a: 'Weigh three filters: the flight cost and time from your city, the visa route for your passport, and the season you can travel. The best destination is the one where your interest, budget, ease of entry, and timing all line up.' },
       { q: 'Are these countries visa-free for Pakistani passport holders?', a: 'Not necessarily. Visa rules differ by nationality and change often — some are visa-free, some offer visa on arrival or an e-visa, and others need an embassy visa. Confirm each one for your passport with the VisitPlane Wizard before booking.' },
