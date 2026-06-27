@@ -200,6 +200,13 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        {/* ── Perf: warm the connection to the destination-image CDN early ──
+            Every destination card photo loads from images.unsplash.com. Doing the
+            DNS + TLS handshake ahead of the request shaves latency off the first
+            (and largest) image paint on image-heavy pages. ─────────────────── */}
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+
         {/* ── PWA: Apple touch icons ─────────────────────────────────────── */}
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-maskable-192.png" />
         <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />

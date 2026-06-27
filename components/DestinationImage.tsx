@@ -42,6 +42,11 @@ export default function DestinationImage({
       onError={() => setFailed(true)}
       loading="lazy"
       decoding="async"
+      // Intrinsic size of the Unsplash request (w=600). The card sets the rendered
+      // box via h-full/w-full + object-cover; giving the browser the aspect ratio
+      // up front avoids layout shift (CLS) while the photo loads.
+      width={600}
+      height={400}
       className={`h-full w-full object-cover ${className}`}
     />
   )
