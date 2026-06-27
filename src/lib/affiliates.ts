@@ -35,6 +35,10 @@ export type AffiliatePlacement =
   | 'homepage'
   | 'checkout_flow'
   | 'email'
+  | 'email_sequence'
+  | 'cheapest_page'
+  | 'route_page'
+  | 'itinerary'
 
 export interface AffiliatePartnerConfig {
   id: AffiliatePartner
@@ -175,13 +179,16 @@ export function affiliateTrackingUrl(
     destIso?: string
     routePassport?: string
     blogSlug?: string
+    /** Explicit source-page identifier (falls back to the Referer header in /go). */
+    source?: string
   }
 ): string {
-  const { placement, destIso, routePassport, blogSlug } = opts
+  const { placement, destIso, routePassport, blogSlug, source } = opts
   const params = new URLSearchParams({ placement })
   if (destIso) params.set('dest', destIso)
   if (routePassport) params.set('route', routePassport)
   if (blogSlug) params.set('slug', blogSlug)
+  if (source) params.set('source', source)
   return `/go/${partner}?${params.toString()}`
 }
 

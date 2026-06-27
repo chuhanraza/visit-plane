@@ -35,7 +35,20 @@ const VALID_PARTNERS = new Set(Object.keys(AFFILIATE_PARTNERS))
 
 const VALID_PLACEMENTS = new Set<AffiliatePlacement>([
   'visa_page', 'blog_post', 'homepage', 'checkout_flow', 'email',
+  'email_sequence', 'cheapest_page', 'route_page', 'itinerary',
 ])
+
+/** Reduce a full URL to a clean path (drop origin + query) for attribution. */
+function cleanSourcePage(raw: string | null): string | null {
+  if (!raw) return null
+  try {
+    // Accept absolute URLs (Referer) or already-relative paths.
+    const path = raw.startsWith('http') ? new URL(raw).pathname : raw.split('?')[0]
+    return path.slice(0, 256) || null
+  } catch {
+    return raw.split('?')[0].slice(0, 256) || null
+  }
+}
 
 export async function GET(
   req: NextRequest,
@@ -78,6 +91,10 @@ export async function GET(
 
   const userAgent = req.headers.get('user-agent') ?? ''
 
+  // ── Source page (explicit ?source= wins, else Referer) + country (Vercel geo) ─
+  const sourcePage = cleanSourcePage(searchParams.get('source') ?? req.headers.get('referer'))
+  const country = (req.headers.get('x-vercel-ip-country') || '').slice(0, 2).toUpperCase() || null
+
   // ── Log to Supabase (fire-and-forget, don't block redirect) ───────────────
   const supabase = getSupabase()
   supabase
@@ -88,6 +105,8 @@ export async function GET(
       route_passport: routePassport || null,
       route_dest: destIso || null,
       blog_slug: blogSlug,
+      source_page: sourcePage,
+      country,
       user_session_id: userSessionId,
       user_ip_hash: userIpHash,
       user_agent: userAgent,
