@@ -13,6 +13,7 @@ export const dynamic = 'force-dynamic'
 const NAV: { href: string; label: string; mod: Module }[] = [
   { href: '/admin', label: 'Dashboard', mod: 'dashboard' },
   { href: '/admin/analytics', label: 'Analytics', mod: 'analytics' },
+  { href: '/admin/funnel', label: 'Revenue & Funnel', mod: 'analytics' },
   { href: '/admin/leads', label: 'Leads / CRM', mod: 'leads' },
   { href: '/admin/orders', label: 'e-Visa orders', mod: 'orders' },
   { href: '/admin/revenue', label: 'Revenue', mod: 'revenue' },
