@@ -11,7 +11,7 @@
  *  - Quality gates run automatically; failures go to review queue
  */
 
-import { createClient } from '@supabase/supabase-js'
+import { getServiceClient } from '@/lib/supabase/admin'
 import { COUNTRIES, BY_ISO3 } from './countries'
 import { runQualityGates, type QualityResult } from './qualityGates'
 
@@ -90,10 +90,7 @@ async function callGroq(prompt: string): Promise<string> {
 }
 
 function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
+  return getServiceClient()
 }
 
 // ─── Prompt templates ─────────────────────────────────────────────────────────

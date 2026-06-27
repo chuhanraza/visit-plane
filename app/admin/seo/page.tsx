@@ -14,40 +14,13 @@
  * Auth: x-admin-secret header OR admin_secret cookie
  */
 
-import { createClient } from '@supabase/supabase-js'
-import { redirect } from 'next/navigation'
-import { headers } from 'next/headers'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { requireAdmin } from '@/lib/admin/guard'
+import { getServiceClient } from '@/lib/supabase/admin'
 
 export const metadata: Metadata = { title: 'SEO Dashboard — Visitplane Admin' }
 export const dynamic = 'force-dynamic'
-
-// ── Auth guard ────────────────────────────────────────────────────────────────
-
-function parseCookie(cookieHeader: string, name: string): string {
-  const match = cookieHeader.split(';').map(c => c.trim())
-    .find(c => c.startsWith(`${name}=`))
-  return match ? decodeURIComponent(match.slice(name.length + 1)) : ''
-}
-
-async function checkAdmin() {
-  const hdrs   = await headers()
-  const secret = hdrs.get('x-admin-secret') ?? ''
-  const cookie = hdrs.get('cookie') ?? ''
-  const cookieVal = parseCookie(cookie, 'admin_secret')
-  return secret === process.env.ADMIN_SECRET ||
-         cookieVal === process.env.ADMIN_SECRET
-}
-
-// ── Supabase ──────────────────────────────────────────────────────────────────
-
-function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
-}
 
 // ── Data types ────────────────────────────────────────────────────────────────
 
@@ -96,7 +69,7 @@ type GenerationJob = {
 // ── Data fetching ─────────────────────────────────────────────────────────────
 
 async function getDashboardData() {
-  const supabase = getSupabase()
+  const supabase = getServiceClient()
 
   const [summaryRes, topPagesRes, qualityRes, jobsRes] = await Promise.all([
     // Template-level summary
@@ -254,8 +227,7 @@ function statusBadge(status: string) {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default async function SEOAdminPage() {
-  const isAdmin = await checkAdmin()
-  if (!isAdmin) redirect('/admin/login?from=/admin/seo')
+  await requireAdmin('/admin/login?from=/admin/seo')
 
   const d = await getDashboardData()
 

@@ -19,27 +19,28 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { batchGenerate } from '@/lib/seo/contentGenerator'
 import type { Template, BatchOptions } from '@/lib/seo/contentGenerator'
+import { requireAdminApi } from '@/lib/admin/guard'
+import { getServiceClient } from '@/lib/supabase/admin'
 
 function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
+  return getServiceClient()
 }
 
 function unauthorized() {
   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 }
 
+// Bearer ADMIN_SECRET (legacy tool) OR the standard admin guard.
+async function isAuthed(req: NextRequest): Promise<boolean> {
+  const secret = (req.headers.get('authorization') ?? '').replace('Bearer ', '').trim()
+  if (process.env.ADMIN_SECRET && secret === process.env.ADMIN_SECRET) return true
+  return !!(await requireAdminApi())
+}
+
 export async function POST(req: NextRequest) {
-  const authHeader = req.headers.get('authorization') ?? ''
-  const secret     = authHeader.replace('Bearer ', '').trim()
-  if (!process.env.ADMIN_SECRET || secret !== process.env.ADMIN_SECRET) {
-    return unauthorized()
-  }
+  if (!(await isAuthed(req))) return unauthorized()
 
   let body: { template?: string; phase?: number; forceRegenerate?: boolean }
   try { body = await req.json() } catch { body = {} }
@@ -116,11 +117,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization') ?? ''
-  const secret     = authHeader.replace('Bearer ', '').trim()
-  if (!process.env.ADMIN_SECRET || secret !== process.env.ADMIN_SECRET) {
-    return unauthorized()
-  }
+  if (!(await isAuthed(req))) return unauthorized()
 
   const { searchParams } = new URL(req.url)
   const jobId = searchParams.get('jobId')

@@ -16,9 +16,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { generatePageContent, saveGeneratedContent } from '@/lib/seo/contentGenerator'
 import { BY_ISO3 } from '@/lib/seo/countries'
 import type { Template } from '@/lib/seo/contentGenerator'
+import { requireAdminApi } from '@/lib/admin/guard'
+import { getServiceClient } from '@/lib/supabase/admin'
 
 function unauthorized() {
   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+}
+
+// Accept the legacy Bearer ADMIN_SECRET (used by the /admin/seo/generate tool)
+// OR the standard admin guard (admin_secret cookie / x-admin-secret header /
+// Supabase-Auth admin).
+async function isAuthed(req: NextRequest): Promise<boolean> {
+  const secret = (req.headers.get('authorization') ?? '').replace('Bearer ', '').trim()
+  if (process.env.ADMIN_SECRET && secret === process.env.ADMIN_SECRET) return true
+  return !!(await requireAdminApi())
 }
 
 function badRequest(msg: string) {
@@ -41,11 +52,7 @@ function buildSlugFromIso(template: Template, passportIso: string, destinationIs
 
 export async function POST(req: NextRequest) {
   // ── Auth ──────────────────────────────────────────────────────────────────
-  const authHeader = req.headers.get('authorization') ?? ''
-  const secret     = authHeader.replace('Bearer ', '').trim()
-  if (!process.env.ADMIN_SECRET || secret !== process.env.ADMIN_SECRET) {
-    return unauthorized()
-  }
+  if (!(await isAuthed(req))) return unauthorized()
 
   // ── Parse body ────────────────────────────────────────────────────────────
   let body: {
@@ -106,11 +113,7 @@ export async function POST(req: NextRequest) {
 // ── GET: status check for a single route ─────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization') ?? ''
-  const secret     = authHeader.replace('Bearer ', '').trim()
-  if (!process.env.ADMIN_SECRET || secret !== process.env.ADMIN_SECRET) {
-    return unauthorized()
-  }
+  if (!(await isAuthed(req))) return unauthorized()
 
   const { searchParams } = new URL(req.url)
   const template       = searchParams.get('template') as Template | null
@@ -123,11 +126,7 @@ export async function GET(req: NextRequest) {
 
   const slug = buildSlugFromIso(template, passportIso, destinationIso)
 
-  const { createClient } = await import('@supabase/supabase-js')
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
+  const supabase = getServiceClient()
 
   const { data } = await supabase
     .from('seo_page_content')

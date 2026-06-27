@@ -12,36 +12,13 @@
  *   - EPC trend note
  */
 
-import { createClient } from '@supabase/supabase-js'
-import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { headers } from 'next/headers'
+import { requireAdmin } from '@/lib/admin/guard'
+import { getServiceClient } from '@/lib/supabase/admin'
 
 export const metadata: Metadata = { title: 'Affiliate Analytics — VisitPlane Admin' }
 export const dynamic = 'force-dynamic'
-
-// ─── Auth guard ───────────────────────────────────────────────────────────────
-function parseCookie(cookieHeader: string, name: string): string {
-  const match = cookieHeader.split(';').map(c => c.trim())
-    .find(c => c.startsWith(`${name}=`))
-  return match ? decodeURIComponent(match.slice(name.length + 1)) : ''
-}
-
-async function checkAdminAccess() {
-  const hdrs = await headers()
-  const secret = hdrs.get('x-admin-secret') ?? ''
-  const cookie = hdrs.get('cookie') ?? ''
-  const cookieVal = parseCookie(cookie, 'admin_secret')
-  return secret === process.env.ADMIN_SECRET || cookieVal === process.env.ADMIN_SECRET
-}
-
-function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
-}
 
 // ─── Stat cards ───────────────────────────────────────────────────────────────
 function StatCard({
@@ -92,9 +69,9 @@ function PartnerBadge({ partner }: { partner: string }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function AffiliatesAdminPage() {
-  if (!(await checkAdminAccess())) redirect('/admin/login?from=/admin/affiliates')
+  await requireAdmin('/admin/login?from=/admin/affiliates')
 
-  const supabase = getSupabase()
+  const supabase = getServiceClient()
 
   // ── Aggregate stats ────────────────────────────────────────────────────────
   const now = new Date()

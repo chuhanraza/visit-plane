@@ -38,8 +38,7 @@
   p, li, .text-sm { font-size: 12px !important; }
   .text-xs { font-size: 10px !important; }
 
-  /* Page margins */
-  @page { margin: 1.5cm; }
+  /* Page margins are set once in the checklist print block below (@page 10mm). */
 }
 
 :root {

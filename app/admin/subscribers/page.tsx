@@ -5,40 +5,13 @@
  * Auth: same cookie/header pattern as other admin pages.
  */
 
-import { createClient } from '@supabase/supabase-js'
-import { redirect }     from 'next/navigation'
-import { headers }      from 'next/headers'
 import Link             from 'next/link'
 import type { Metadata } from 'next'
+import { requireAdmin } from '@/lib/admin/guard'
+import { getServiceClient } from '@/lib/supabase/admin'
 
 export const metadata: Metadata = { title: 'Subscribers — VisitPlane Admin' }
 export const dynamic = 'force-dynamic'
-
-// ── Auth ──────────────────────────────────────────────────────────
-
-function parseCookie(cookieHeader: string, name: string): string {
-  const match = cookieHeader.split(';').map(c => c.trim())
-    .find(c => c.startsWith(`${name}=`))
-  return match ? decodeURIComponent(match.slice(name.length + 1)) : ''
-}
-
-async function checkAdmin() {
-  const hdrs      = await headers()
-  const secret    = hdrs.get('x-admin-secret') ?? ''
-  const cookie    = hdrs.get('cookie') ?? ''
-  const cookieVal = parseCookie(cookie, 'admin_secret')
-  return secret === process.env.ADMIN_SECRET ||
-         cookieVal === process.env.ADMIN_SECRET
-}
-
-// ── Supabase ──────────────────────────────────────────────────────
-
-function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
-}
 
 // ── Data helpers ──────────────────────────────────────────────────
 
@@ -53,7 +26,7 @@ interface Subscriber {
 }
 
 async function fetchAll(): Promise<Subscriber[]> {
-  const { data, error } = await getSupabase()
+  const { data, error } = await getServiceClient()
     .from('email_subscribers')
     .select('email,route_passport,route_destination,captured_at,captured_from,confirmed_at,unsubscribed_at')
     .order('captured_at', { ascending: false })
@@ -64,8 +37,7 @@ async function fetchAll(): Promise<Subscriber[]> {
 // ── Page ──────────────────────────────────────────────────────────
 
 export default async function SubscribersPage() {
-  const ok = await checkAdmin()
-  if (!ok) redirect('/admin/login?from=/admin/subscribers')
+  await requireAdmin('/admin/login?from=/admin/subscribers')
 
   const all = await fetchAll()
 
