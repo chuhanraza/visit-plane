@@ -133,6 +133,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // to the homepage, so listing it would put a non-canonical redirect URL in the
     // sitemap. The visa checker lives on `/` (already listed at priority 1.0).
     { url: `${base}/faq`,                     lastModified: LASTMOD, changeFrequency: 'monthly', priority: 0.7 },
+
+    // ── Visa Data & Research hub (original, citable datasets) ───────────────
+    { url: `${base}/visa-data`,                                  lastModified: LASTMOD, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${base}/visa-data/visa-cost-index`,                  lastModified: LASTMOD, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${base}/visa-data/passport-power`,                   lastModified: LASTMOD, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${base}/visa-data/document-requirements-index`,      lastModified: LASTMOD, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${base}/contact`,                 lastModified: LASTMOD, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${base}/privacy`,                 lastModified: LASTMOD, changeFrequency: 'yearly',  priority: 0.3 },
     { url: `${base}/terms`,                   lastModified: LASTMOD, changeFrequency: 'yearly',  priority: 0.3 },
