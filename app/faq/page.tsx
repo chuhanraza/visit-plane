@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
+import { faqPage } from '@/lib/seo/schema'
 
 function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
   return (
@@ -99,8 +100,15 @@ function FAQItem({ faq, index }: { faq: { q: string; a: string }; index: number 
 }
 
 export default function FAQPage() {
+  // FAQPage JSON-LD — the Q&A below is fully visible on the page, so this is a
+  // valid (non-spammy) rich-result source. Built from the same FAQS array.
+  const faqSchema = faqPage(FAQS.map((f) => ({ q: f.q, a: f.a })))
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* HERO */}
       <section className="relative pt-16 pb-12 overflow-hidden">
         <div className="pointer-events-none absolute inset-0">

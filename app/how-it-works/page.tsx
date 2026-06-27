@@ -1,5 +1,20 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+
+export const metadata: Metadata = {
+  title: 'How VisitPlane Works — Check Any Visa in 10 Seconds | VisitPlane',
+  description:
+    'See how VisitPlane works: pick your passport, choose a destination, and get instant visa requirements, fees, processing times and a document checklist — free, no signup.',
+  alternates: { canonical: 'https://www.visitplane.com/how-it-works' },
+  openGraph: {
+    title: 'How VisitPlane Works — Check Any Visa in 10 Seconds',
+    description:
+      'Pick your passport, choose a destination, and get instant visa requirements, fees and a document checklist — free, no signup.',
+    url: 'https://www.visitplane.com/how-it-works',
+    type: 'website',
+  },
+}
 
 const STEPS = [
   {
