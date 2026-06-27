@@ -30,7 +30,7 @@ registerRoute(
     url.pathname.startsWith('/splash/') ||
     request.destination === 'font',
   new CacheFirst({
-    cacheName: 'visitplane-static-v1',
+    cacheName: 'visitplane-static-v2',
     plugins: [
       new ExpirationPlugin({ maxEntries: 120, maxAgeSeconds: 30 * 24 * 60 * 60, purgeOnQuotaError: true }),
       new CacheableResponsePlugin({ statuses: [0, 200] }),
@@ -39,15 +39,22 @@ registerRoute(
 );
 
 // ── Visa data ─────────────────────────────────────────────────────────────────
+// IMPORTANT: only data / sub-resource requests — NEVER an HTML page navigation.
+// Serving a visa *page* from StaleWhileRevalidate hands back old cached HTML that
+// references hashed CSS/JS filenames which get purged from the CDN after a deploy,
+// so they 404 and the page renders unstyled (broken layout + leaking print).
+// Page navigations are excluded here and handled by the NetworkFirst route below,
+// which always returns fresh HTML with current asset hashes.
 registerRoute(
-  ({ url }) =>
-    url.pathname.startsWith('/api/visa/') ||
-    url.pathname.startsWith('/visa/') ||
-    url.pathname.startsWith('/visa-checker') ||
-    url.pathname.startsWith('/passport-strength') ||
-    url.pathname.startsWith('/visa-free-countries'),
+  ({ request, url }) =>
+    request.mode !== 'navigate' &&
+    (url.pathname.startsWith('/api/visa/') ||
+     url.pathname.startsWith('/visa/') ||
+     url.pathname.startsWith('/visa-checker') ||
+     url.pathname.startsWith('/passport-strength') ||
+     url.pathname.startsWith('/visa-free-countries')),
   new StaleWhileRevalidate({
-    cacheName: 'visitplane-visa-data-v1',
+    cacheName: 'visitplane-visa-data-v2',
     plugins: [
       new ExpirationPlugin({ maxEntries: 200, maxAgeSeconds: 24 * 60 * 60, purgeOnQuotaError: true }),
       new CacheableResponsePlugin({ statuses: [0, 200] }),
@@ -59,7 +66,7 @@ registerRoute(
 registerRoute(
   new NavigationRoute(
     new NetworkFirst({
-      cacheName: 'visitplane-pages-v2',
+      cacheName: 'visitplane-pages-v3',
       networkTimeoutSeconds: 3,
       plugins: [
         new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 7 * 24 * 60 * 60 }),
@@ -75,7 +82,7 @@ self.addEventListener('fetch', (event) => {
   if (event.request.mode !== 'navigate') return;
   event.respondWith(
     fetch(event.request).catch(async () => {
-      const cache = await caches.open('visitplane-pages-v2');
+      const cache = await caches.open('visitplane-pages-v3');
       const cached = await cache.match(event.request);
       if (cached) return cached;
       return new Response('<h1>You are offline</h1>', { headers: { 'Content-Type': 'text/html' } });
@@ -159,7 +166,7 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 // ── Cache cleanup ─────────────────────────────────────────────────────────────
-const KEEP = ['visitplane-static-v1', 'visitplane-visa-data-v1', 'visitplane-pages-v2', 'visitplane-gfonts-sheets', 'visitplane-gfonts-files'];
+const KEEP = ['visitplane-static-v2', 'visitplane-visa-data-v2', 'visitplane-pages-v3', 'visitplane-gfonts-sheets', 'visitplane-gfonts-files'];
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(keys =>

@@ -156,15 +156,63 @@ export default function VisaPageClient({
   // the page title) comes out empty. The date/time + URL the browser also adds
   // are controlled by the print dialog's "Headers and footers" toggle.
   const handleDownloadChecklist = useCallback(() => {
-    const prevTitle = document.title
-    const restore = () => {
-      document.title = prevTitle
-      window.removeEventListener('afterprint', restore)
-    }
-    document.title = ' '
-    window.addEventListener('afterprint', restore)
     window.print()
-    setTimeout(restore, 1500)
+  }, [])
+
+  // ── Robust print isolation ────────────────────────────────────────────────
+  // The printout must be ONLY the inline-styled #print-checklist. We do NOT rely
+  // on @media print / Tailwind `print:hidden` to hide the site chrome — on some
+  // browsers the compiled stylesheet isn't applied to the print canvas, which
+  // leaks the header, nav and breadcrumb into the PDF. Instead, on `beforeprint`
+  // we walk up from the checklist and inline `display:none` every sibling at each
+  // level (CSS-independent — inline styles always win), collapse forced heights,
+  // and blank the browser header title. Everything is restored on `afterprint`.
+  useEffect(() => {
+    let active = false
+    const changes: Array<{ el: HTMLElement; prop: string; prev: string }> = []
+    const setStyle = (el: HTMLElement, prop: string, val: string) => {
+      changes.push({ el, prop, prev: el.style.getPropertyValue(prop) })
+      el.style.setProperty(prop, val, 'important')
+    }
+    let prevTitle = ''
+
+    const isolate = () => {
+      if (active) return
+      const target = document.getElementById('print-checklist')
+      if (!target) return
+      active = true
+      prevTitle = document.title
+      document.title = ' '
+      setStyle(target, 'display', 'block')
+      let node: HTMLElement = target
+      while (node.parentElement && node !== document.body) {
+        const parent = node.parentElement
+        for (const sib of Array.from(parent.children)) {
+          if (sib !== node && sib instanceof HTMLElement) setStyle(sib, 'display', 'none')
+        }
+        setStyle(node, 'min-height', '0')
+        node = parent
+      }
+    }
+    const restore = () => {
+      if (!active) return
+      active = false
+      for (const c of changes.splice(0).reverse()) c.el.style.setProperty(c.prop, c.prev)
+      document.title = prevTitle
+    }
+
+    window.addEventListener('beforeprint', isolate)
+    window.addEventListener('afterprint', restore)
+    const mql = window.matchMedia('print')
+    const onChange = (e: MediaQueryListEvent) => (e.matches ? isolate() : restore())
+    mql.addEventListener?.('change', onChange)
+
+    return () => {
+      window.removeEventListener('beforeprint', isolate)
+      window.removeEventListener('afterprint', restore)
+      mql.removeEventListener?.('change', onChange)
+      restore()
+    }
   }, [])
 
   // Handle "Get My Visa" — open apply URL or scroll to how-to-apply
