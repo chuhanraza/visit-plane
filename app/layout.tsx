@@ -10,6 +10,7 @@ import CommandPalette from "@/components/layout/CommandPalette";
 import ChromeGate from "@/components/layout/ChromeGate";
 import { CommandPaletteProvider } from "@/components/layout/CommandPaletteContext";
 import ExitIntentModal from "@/components/ExitIntentModal";
+import FunnelBeacon from "@/components/FunnelBeacon";
 import PWAProvider from "@/components/PWAProvider";
 import { getAuthor } from "@/lib/data/authors";
 import "./globals.css";
@@ -259,6 +260,8 @@ export default async function RootLayout({
         <Analytics />
         {/* Capture Point 3 — Exit Intent Modal (desktop only) */}
         <ExitIntentModal />
+        {/* First-party funnel beacon — anonymous page.view on money pages (DNT-safe) */}
+        <FunnelBeacon />
         {/* PWA: registers SW, handles install prompt, bg-sync, transitions */}
         <PWAProvider />
       </body>
