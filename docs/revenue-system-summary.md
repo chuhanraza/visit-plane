@@ -69,6 +69,24 @@ Built on the existing flow engine (`lib/admin/flows.ts`); editable in
   `email_broadcasts_enabled` flag.
 - Email-driven affiliate clicks are attributed with `placement=email_sequence`.
 
+## Verification (done this sprint)
+
+- **Affiliate clicks**: live `/go` redirect returns 302 with the correct `subID`
+  + `placement`, `no-store`, `noindex`; rows persist with `country` + (for the new
+  placements) `source_page`. The insert is now awaited (was fire-and-forget and
+  occasionally dropped).
+- **Page views**: `POST /api/track` live — real organic `page.view` rows are landing
+  in `marketing_events` with page + country + anonymous session; DNT/GPC dropped.
+- **Welcome sequence (logic)**: verified end-to-end against production —
+  confirm → enrolled → step 1 sent/advanced → step 2/3 scheduled (+2d/+4d) →
+  unsubscribe causes the run to be **cancelled** (no email to opted-out users) →
+  idempotent. Test rows were cleaned up.
+- **Welcome sequence (delivery)**: ⚠️ the send returned `sent:false` (no
+  `flow.email_sent` event) and **0 of 9 historical subscribers have ever confirmed**
+  — strong evidence that `RESEND_API_KEY` is not set in the Vercel **production**
+  env (or the sender domain isn't verified in Resend). Emails will not deliver until
+  this is fixed — see NEEDS HAMAD #4.
+
 ## NEEDS HAMAD
 
 1. **Enter commission/EPC estimates** at `/admin/funnel` (bottom card) so
@@ -81,8 +99,13 @@ Built on the existing flow engine (`lib/admin/flows.ts`); editable in
 3. **Affiliate IDs**: replace the env placeholders in `src/lib/affiliates.ts`
    (`NEXT_PUBLIC_SAFETYWING_ID`, `NEXT_PUBLIC_AIRALO_CODE`, `NEXT_PUBLIC_TP_MARKER`,
    etc.) once each program is approved, so commissions actually attribute.
-4. **Email sending switch**: the welcome sequence sends only when
-   `email_broadcasts_enabled` is ON and `RESEND_API_KEY` is set. (Activated this
-   sprint — toggle off in `/admin/settings` if ever needed.)
+4. **Make email actually deliver** (currently it does NOT): set `RESEND_API_KEY` in
+   the Vercel **production** environment and verify the sender domain in Resend
+   (`orders@visitplane.com` for flow/broadcast, `alerts@visitplane.com` for the
+   confirmation email). The `email_broadcasts_enabled` flag is already ON (activated
+   this sprint) and the flow is active — once the key/domain are in place, new
+   confirmations will receive email 1 immediately and steps 2 & 3 on schedule. Test
+   with a real signup and confirm receipt; toggle the flag off in `/admin/settings`
+   if ever needed.
 5. **Payments**: still OFF by design. Live card charging needs Hamad's legal entity
    + a payment processor — out of scope here.
