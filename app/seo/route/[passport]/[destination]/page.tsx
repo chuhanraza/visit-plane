@@ -15,6 +15,7 @@ import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import VisaRequirementsBlock, { type VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
+import TripEssentials from '@/components/affiliate/TripEssentials'
 
 // DB/param-dependent route — render on demand. Prevents Next 16 from trying to
 // prerender an empty-param shell (which crashed the build on `params.toLowerCase`).
@@ -342,6 +343,15 @@ export default async function LongFormVisaPage({
             ))}
           </ol>
         </section>
+
+        {/* Trip essentials — relevant, disclosed affiliate offers */}
+        <TripEssentials
+          placement="route_page"
+          source={`/seo/route/${passportSlug}/${destinationSlug}`}
+          destIso={(SLUG_TO_ISO3[destinationSlug.toLowerCase()] ?? '').toLowerCase()}
+          passportIso={(SLUG_TO_ISO3[passportSlug.toLowerCase()] ?? '').toLowerCase()}
+          subheading={`Most ${passportName} travelers to ${destinationName} sort these next — insurance may be required, and an eSIM keeps you connected on arrival.`}
+        />
 
         {/* Internal links */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6 mb-12">

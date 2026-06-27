@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import ToolBreadcrumb from '@/components/ToolBreadcrumb'
+import TripEssentials from '@/components/affiliate/TripEssentials'
 import {
   searchAirports,
   formatAirport,
@@ -1474,6 +1475,17 @@ export default function ItineraryGeneratorPage() {
             </a>
           </div>
         </div>
+      </section>
+
+      {/* ─────────────── Trip essentials (relevant, disclosed) ─────────────── */}
+      <section className="mx-auto max-w-3xl px-4 sm:px-6 pb-16">
+        <TripEssentials
+          placement="itinerary"
+          source="/itinerary-generator"
+          show={['flights', 'esim', 'insurance']}
+          heading="Booking your trip?"
+          subheading="A real onward ticket beats a dummy itinerary for many visas — and you will want data and cover on arrival."
+        />
       </section>
     </div>
   )

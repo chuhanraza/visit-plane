@@ -11,6 +11,7 @@ import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BY_NATIONALITY, BY_SLUG, COUNTRIES } from '@/lib/seo/countries'
+import TripEssentials from '@/components/affiliate/TripEssentials'
 
 // Render on demand instead of prerendering at build. These DB-backed SEO pages
 // crashed Next 16's build-time prerender on occasional null/dirty Supabase rows.
@@ -332,6 +333,14 @@ export default async function CheapestVisasPage({
             ))}
           </div>
         </section>
+
+        {/* Trip essentials — relevant, disclosed affiliate offers */}
+        <TripEssentials
+          placement="cheapest_page"
+          source={`/seo/cheapest/${nationality}`}
+          passportIso={country.iso3?.toLowerCase()}
+          subheading={`Travelers on a ${country.name} passport book these next — insurance is required for Schengen, and an eSIM saves on roaming.`}
+        />
 
         {/* FAQ */}
         <section className="mb-12">
