@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { runFlowWorker } from '@/lib/admin/flows'
+
+export const dynamic = 'force-dynamic'
 
 function getSupabase() {
   return createClient(
@@ -32,6 +35,15 @@ export async function GET(req: NextRequest) {
   if (!data) {
     // Either token not found or already confirmed — both are fine to redirect
     return NextResponse.redirect(new URL('/confirm?status=already', req.url))
+  }
+
+  // Newly confirmed → kick the flow worker so the welcome sequence's email 1
+  // (delay 0) goes out immediately instead of waiting for the daily cron. Safe:
+  // idempotent, gated behind email_broadcasts_enabled, honors unsubscribe.
+  try {
+    await runFlowWorker()
+  } catch (e) {
+    console.error('[confirm] flow kick failed (non-fatal):', (e as Error).message)
   }
 
   return NextResponse.redirect(new URL('/confirm?status=ok', req.url))
