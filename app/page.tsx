@@ -134,6 +134,14 @@ const VISA_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
   'Visa on Arrival': { bg: 'bg-blue-500/15',    text: 'text-blue-400',    dot: 'bg-blue-400'    },
 }
 
+// Light pill (for the white card body) + a clean, honest label per visa status.
+const VISA_PILL: Record<string, { label: string; bg: string; text: string; dot: string }> = {
+  'Visa Free':       { label: 'Visa-free',        bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
+  'eVisa':           { label: 'e-Visa',           bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-500'   },
+  'Visa Required':   { label: 'Visa required',    bg: 'bg-rose-50',    text: 'text-rose-700',    dot: 'bg-rose-500'    },
+  'Visa on Arrival': { label: 'Visa on arrival',  bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-500'    },
+}
+
 // ─── Smart popular pills by passport country ──────────────────────────────────
 const POPULAR_PILLS: Record<string, { label: string; dest: string }[]> = {
   'Pakistan': [
@@ -229,6 +237,13 @@ function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+    </svg>
+  )
+}
+function ShieldCheck({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-4" />
     </svg>
   )
 }
@@ -500,27 +515,44 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {POPULAR_DESTINATIONS.map((d, i) => {
-                const vs = VISA_COLORS[d.visa] ?? VISA_COLORS['Visa Required']
+                const pill = VISA_PILL[d.visa] ?? VISA_PILL['Visa Required']
                 return (
                   <motion.div key={d.slug} variants={fadeUp} transition={{ delay: i * 0.06 }}>
-                    <Link href={`/visa/${nameToSlug(linkPassport)}/${nameToSlug(d.slug)}`} className="group relative block overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/10">
+                    <Link
+                      href={`/visa/${nameToSlug(linkPassport)}/${nameToSlug(d.slug)}`}
+                      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/10"
+                    >
+                      {/* Image with flag + country name overlay */}
                       <div className="relative h-44 overflow-hidden">
                         <DestinationImage name={d.name} flag={d.flag} className="transition duration-500 group-hover:scale-105" />
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                        <span className={`absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide backdrop-blur-sm ${vs.bg} ${vs.text}`}>
-                          <span className={`h-1.5 w-1.5 rounded-full ${vs.dot}`} />
-                          {d.visa}
-                        </span>
-                      </div>
-                      <div className="p-4">
-                        <div className="flex items-center gap-2.5">
-                          <span className="text-2xl">{d.flag}</span>
-                          <div className="flex-1">
-                            <h3 className="font-bold text-gray-900">{d.name}</h3>
-                            <p className="text-xs text-gray-400">{d.tagline}</p>
-                          </div>
-                          <ArrowRight className="h-4 w-4 text-gray-300 transition group-hover:text-emerald-500 group-hover:translate-x-0.5" />
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+                        <div className="absolute bottom-3 left-4 right-4 flex items-center gap-2">
+                          <span className="text-2xl drop-shadow-md">{d.flag}</span>
+                          <span className="text-lg font-extrabold tracking-tight text-white drop-shadow-md">{d.name}</span>
                         </div>
+                      </div>
+
+                      {/* Body */}
+                      <div className="flex flex-1 flex-col gap-3 p-5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${pill.bg} ${pill.text}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${pill.dot}`} />
+                            {pill.label}
+                          </span>
+                          <span className="truncate text-xs text-gray-400">{d.tagline}</span>
+                        </div>
+
+                        {/* Honest trust line — VisitPlane is free info, never a paid/guaranteed service */}
+                        <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-[13px] font-semibold text-emerald-700">
+                          <ShieldCheck className="h-4 w-4 shrink-0" />
+                          Free official-source checklist
+                        </div>
+
+                        {/* CTA — opens the full visa breakdown (no payment, no application) */}
+                        <span className="mt-auto inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F172A] px-4 py-3 text-sm font-semibold text-white transition group-hover:bg-emerald-600">
+                          View requirements
+                          <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+                        </span>
                       </div>
                     </Link>
                   </motion.div>
