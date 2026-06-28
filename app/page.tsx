@@ -372,7 +372,10 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#FAFAF7] text-[#0F1419] antialiased overflow-x-hidden">
 
       {/* ────────────────────── 1. HERO ──────────────────────────── */}
-      <section className="relative overflow-hidden pb-0" style={{ paddingTop: '24px', background: '#FFFFFF' }}>
+      {/* No overflow-hidden on the section itself — it would clip the open country
+          dropdown. The decorative background below is clipped by its own
+          overflow-hidden wrapper, so it stays contained regardless. */}
+      <section className="relative pb-0" style={{ paddingTop: '24px', background: '#FFFFFF' }}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
           {/* iVisa-style soft green glow weighted to the right */}
           <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 95% at 100% 35%, #CFF5DD 0%, #E8FBF0 30%, transparent 62%)' }} />
