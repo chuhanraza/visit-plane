@@ -445,15 +445,6 @@ export default function HomePage() {
                 </button>
               </div>
 
-              {passport && !geoBadgeDismissed && !geoLoading && (
-                <div className="mt-2 flex items-center gap-3 px-1">
-                  <span className="text-[10px] text-emerald-600">📍 {t('hero.autoDetected')}</span>
-                  <button onClick={() => setGeoBadgeDismissed(true)} className="text-[10px] text-gray-400 hover:text-gray-600 transition">
-                    {t('hero.notYou')} →
-                  </button>
-                </div>
-              )}
-
               {noPassportError && (
                 <p className="mt-2 text-center text-xs font-semibold text-amber-600">Please select your passport first.</p>
               )}
@@ -464,29 +455,12 @@ export default function HomePage() {
                 <p className="mt-2 text-center text-xs text-amber-600">Please choose a different destination from your passport country.</p>
               )}
             </div>
-
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-              <span className="text-sm" style={{ color: '#94A3B8' }}>Popular:</span>
-              {(POPULAR_PILLS[countryName] ?? DEFAULT_PILLS).map((pill) => (
-                <button key={pill.dest} onClick={() => handlePillClick(pill.dest)} className="text-sm transition-all hover:underline hover:text-emerald-600" style={{ color: '#4A5568' }}>
-                  {pill.label}
-                </button>
-              ))}
-            </div>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="flex justify-center empty:hidden [&:has(>*)]:mt-4">
             <InstallButton />
           </motion.div>
 
-          {/* Honest trust chips */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }} className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold" style={{ color: '#64748B' }}>
-            {['197 countries covered', 'Official-source verified', '100% free · no signup'].map((x) => (
-              <span key={x} className="inline-flex items-center gap-1.5">
-                <CheckIcon className="h-3.5 w-3.5 text-emerald-500" /> {x}
-              </span>
-            ))}
-          </motion.div>
         </div>
 
         <div className="mt-3 h-3" style={{ background: 'linear-gradient(to bottom, transparent, #FFFFFF)' }} />
