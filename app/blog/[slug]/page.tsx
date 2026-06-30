@@ -64,7 +64,9 @@ export async function generateMetadata({
   const tags = getPostTags(post)
 
   return {
-    title: `${post.title} — VisitPlane Visa Blog`,
+    // Concise brand suffix (was " — VisitPlane Visa Blog", 23 chars) so the
+    // query-matched hook in post.title isn't truncated past the SERP limit.
+    title: `${post.title} | VisitPlane`,
     description: post.excerpt.slice(0, 155),
     alternates: { canonical },
     // Sprint 5 content prune: dead doorway clones are de-indexed (reversible —

@@ -2466,7 +2466,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'how-much-saudi-arabia-visa-cost-from-india-2026',
-    title: 'How Much Does a Saudi Arabia Visa Cost from India? 2026 Fees Breakdown',
+    title: 'Saudi Visa Cost from India (2026): Full Fees Breakdown',
     date: '2026-06-15',
     excerpt:
       'A Saudi tourist e-visa costs about SAR 535 (around ₹12,000) for Indians in 2026, including mandatory insurance. This guide breaks down every fee — visa, insurance, service, and the extras.',
@@ -5399,10 +5399,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'how-much-does-a-china-visa-cost-from-nigeria-2026-fees-hidden-charges',
-    title: 'How Much Does a China Visa Cost from Nigeria? (2026 Fees & Hidden Charges)',
-    date: '2026-06-15',
+    title: 'China Visa Cost from Nigeria (2026): Fees + Hidden Charges',
+    date: '2026-06-28',
     excerpt:
-      'The true cost of a China visa from Nigeria in 2026 is more than the headline fee. This guide breaks down the visa charge, service fees, and the hidden extras most applicants miss.',
+      'What a China visa really costs from Nigeria in 2026 — the visa fee, service-centre charges and the hidden extras most applicants miss, plus how to budget for the total before you apply.',
     category: 'Visa Guides',
     readTime: '10 min read',
     coverEmoji: '🇨🇳',
@@ -5539,7 +5539,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'how-much-does-a-japan-visa-cost-from-nigeria-2026-fees-hidden-charges',
-    title: 'How Much Does a Japan Visa Cost from Nigeria? (2026 Fees & Hidden Charges)',
+    title: 'Japan Visa Cost from Nigeria (2026): Fees + Hidden Charges',
     date: '2026-06-15',
     excerpt:
       'The true cost of a Japan visa from Nigeria in 2026 is more than the headline fee. This guide breaks down the visa charge, service fees, and the hidden extras most applicants miss.',
@@ -5559,7 +5559,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'how-much-does-a-malaysia-visa-cost-from-philippines-2026-fees-hidden-charges',
-    title: 'How Much Does a Malaysia Visa Cost from Philippines? (2026 Fees & Hidden Charges)',
+    title: 'Malaysia Visa Cost from the Philippines (2026): Fees + Charges',
     date: '2026-06-15',
     excerpt:
       'The true cost of a Malaysia visa from Philippines in 2026 is more than the headline fee. This guide breaks down the visa charge, service fees, and the hidden extras most applicants miss.',
@@ -5679,7 +5679,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'how-much-does-a-south-korea-visa-cost-from-nigeria-2026-fees-hidden-charges',
-    title: 'How Much Does a South Korea Visa Cost from Nigeria? (2026 Fees & Hidden Charges)',
+    title: 'South Korea Visa Cost from Nigeria (2026): Fees + Hidden Charges',
     date: '2026-06-27',
     excerpt:
       'The true cost of a South Korea visa from Nigeria in 2026 is more than the headline fee. This guide breaks down the visa charge, service fees, and the hidden extras most applicants miss.',
@@ -7267,7 +7267,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'how-much-does-a-saudi-arabia-visa-cost-from-egypt-2026-fees-hidden-charges',
-    title: 'How Much Does a Saudi Arabia Visa Cost from Egypt? (2026 Fees & Hidden Charges)',
+    title: 'Saudi Visa Cost from Egypt (2026): Fees + Hidden Charges',
     date: '2026-06-15',
     excerpt:
       'The true cost of a Saudi Arabia visa from Egypt in 2026 is more than the headline fee. This guide breaks down the visa charge, service fees, and the hidden extras most applicants miss.',
@@ -23050,9 +23050,9 @@ export const blogPosts: BlogPost[] = [
   {
     slug: '15-cheapest-countries-to-visit-from-india-in-2026',
     title: '15 Cheapest Countries to Visit from India in 2026',
-    date: '2026-06-15',
+    date: '2026-06-28',
     excerpt:
-      'The fifteen cheapest countries to visit from India in 2026 — where flights and daily costs are lowest, and how to check the visa for your passport.',
+      'Travelling on a budget from India in 2026? These 15 countries have the cheapest flights and lowest daily spend — what each gives you for the money, and how to confirm your visa first.',
     category: 'Travel Tips',
     readTime: '10 min read',
     coverEmoji: '💸',
@@ -23470,9 +23470,9 @@ export const blogPosts: BlogPost[] = [
   {
     slug: '15-cheapest-countries-to-visit-from-pakistan-in-2026',
     title: '15 Cheapest Countries to Visit from Pakistan in 2026',
-    date: '2026-06-27',
+    date: '2026-06-28',
     excerpt:
-      'The fifteen cheapest countries to visit from Pakistan in 2026 — where flights and daily costs are lowest, what makes each one good value, and how to check the visa for your passport before you book.',
+      'Planning a budget trip from Pakistan in 2026? These 15 countries have the cheapest flights and lowest daily costs — with what each gives you for the money, and how to check your visa before you book.',
     category: 'Travel Tips',
     readTime: '11 min read',
     coverEmoji: '💸',
