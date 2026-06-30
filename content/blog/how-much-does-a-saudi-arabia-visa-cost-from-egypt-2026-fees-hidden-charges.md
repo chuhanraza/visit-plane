@@ -7,6 +7,12 @@ readTime: "10 min read"
 coverEmoji: "🇸🇦"
 ---
 
+## Quick Answer
+
+A Saudi Arabia tourist e-visa from Egypt (where eligible) costs around **SAR 535** for the one-year multiple-entry e-visa — a figure that already includes mandatory insurance — and the **all-in cost** can be higher once you add any service charge, photos and documents. Eligibility and fees change, so confirm the current charge on the official Saudi e-visa portal (Visit Saudi) before you pay.
+
+**Related on VisitPlane:** [Egypt → Saudi Arabia visa requirements](/visa/Egypt/Saudi%20Arabia) · [Saudi visa cost from India](/blog/how-much-saudi-arabia-visa-cost-from-india-2026) · [Cheapest countries from Egypt](/blog/15-cheapest-countries-to-visit-from-egypt-in-2026) · [Visa Wizard](/wizard)
+
 ## Overview
 
 For Egyptian travellers, the real cost of a Saudi Arabia tourist e-visa (where eligible) is more than the government fee on the official website. Once you add the service charge, biometrics, insurance, photos, and supporting paperwork, the all-in figure can be noticeably higher. This 2026 guide breaks down exactly what you'll pay — headline fee and hidden extras — so you can budget accurately.

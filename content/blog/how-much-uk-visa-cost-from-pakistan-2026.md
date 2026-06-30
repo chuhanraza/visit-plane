@@ -7,6 +7,12 @@ readTime: "10 min read"
 coverEmoji: "🇬🇧"
 ---
 
+## Quick Answer
+
+A UK Standard Visitor visa from Pakistan costs **£135** (~PKR 50,000) for the 6-month visa, with longer **2-year (~£512)** and **5-year (~£931)** options. The **all-in cost is higher** once you add the VFS Global service fee, biometrics, the **mandatory TB test**, and travel insurance. UK visa fees rose in April 2026, so confirm the current charge on **GOV.UK** before you apply.
+
+**Related on VisitPlane:** [Pakistan → UK visa requirements](/visa/Pakistan/United%20Kingdom) · [US visa cost from Pakistan](/blog/how-much-us-visa-cost-from-pakistan-2026) · [Cheapest countries from Pakistan](/blog/15-cheapest-countries-to-visit-from-pakistan-in-2026) · [Visa Wizard](/wizard)
+
 ## Overview
 
 The United Kingdom is one of the most popular destinations for Pakistani travellers — for tourism, visiting family, and business. But the true cost of a UK visa surprises many first-time applicants, because the headline visa fee is only one part of the total. Between the visa charge, the VFS Global service fee, biometrics, the mandatory TB test, and insurance, the real number is higher than the figure you see advertised.

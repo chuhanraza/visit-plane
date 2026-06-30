@@ -7,6 +7,12 @@ readTime: "10 min read"
 coverEmoji: "🇨🇳"
 ---
 
+## Quick Answer
+
+A China tourist (L) visa from Nigeria carries a government fee of roughly **USD 30–60** for single entry, but the **all-in cost is higher** once you add the CVASC service charge, biometrics, travel insurance, photos and documents. Fees and exchange rates change, so confirm the current charge with the official **Chinese Visa Application Service Centre (CVASC)** before you pay, and budget your naira total with a small buffer.
+
+**Related on VisitPlane:** [Nigeria → China visa requirements](/visa/Nigeria/China) · [Japan visa cost from Nigeria](/blog/how-much-does-a-japan-visa-cost-from-nigeria-2026-fees-hidden-charges) · [South Korea visa cost from Nigeria](/blog/how-much-does-a-south-korea-visa-cost-from-nigeria-2026-fees-hidden-charges) · [Cheapest countries from Nigeria](/blog/15-cheapest-countries-to-visit-from-nigeria-in-2026)
+
 ## Overview
 
 For Nigerian travellers, the real cost of a China tourist (L) visa is more than the government fee on the official website. Once you add the visa-centre service charge, biometrics, insurance, photos, and the supporting paperwork, the all-in figure can be noticeably higher. This 2026 guide breaks down exactly what you'll pay — headline fee and hidden extras — so you can budget accurately.

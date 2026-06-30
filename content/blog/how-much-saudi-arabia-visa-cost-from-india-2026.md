@@ -7,6 +7,12 @@ readTime: "10 min read"
 coverEmoji: "🇸🇦"
 ---
 
+## Quick Answer
+
+A Saudi Arabia tourist e-visa from India costs about **SAR 535** (~₹12,000) online — a fee that already **includes mandatory insurance** — or about **SAR 480** for visa on arrival where eligible. The **all-in cost** is higher once you add documents, photos and any card or conversion fees. Fees and eligibility change, so confirm the current charge on the official Saudi e-visa portal (Visit Saudi) before you pay.
+
+**Related on VisitPlane:** [India → Saudi Arabia visa requirements](/visa/India/Saudi%20Arabia) · [Saudi visa cost from Egypt](/blog/how-much-does-a-saudi-arabia-visa-cost-from-egypt-2026-fees-hidden-charges) · [Cheapest countries from India](/blog/15-cheapest-countries-to-visit-from-india-in-2026) · [Visa Wizard](/wizard)
+
 ## Overview
 
 Saudi Arabia has opened up dramatically to tourism, and it's increasingly popular with Indian travellers — the futuristic developments, the historic sites of AlUla and Diriyah, the Red Sea coast, and of course Umrah and religious visits. For tourism, Indian passport holders can apply for a **tourist e-visa** online. Religious (Umrah/Hajj) travel uses a separate route.

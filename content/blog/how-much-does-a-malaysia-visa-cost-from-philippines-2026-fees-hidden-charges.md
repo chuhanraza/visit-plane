@@ -7,6 +7,12 @@ readTime: "10 min read"
 coverEmoji: "🇲🇾"
 ---
 
+## Quick Answer
+
+A Malaysia eVisa from the Philippines costs about **USD 20** in government fee (the eNTRI route is cheaper where eligible), but the **all-in cost is higher** once you add any service charge, travel insurance, photos and documents. Fees and eligibility change, so confirm the current charge on Malaysia's official Immigration / eVisa portal before you apply, and budget in pesos with a small buffer for card fees.
+
+**Related on VisitPlane:** [Philippines → Malaysia visa requirements](/visa/Philippines/Malaysia) · [Cheapest countries from the Philippines](/blog/15-cheapest-countries-to-visit-from-philippines-in-2026) · [Check any route with the Visa Wizard](/wizard)
+
 ## Overview
 
 For Filipino travellers, the real cost of a Malaysia eVisa / eNTRI is more than the government fee on the official website. Once you add the visa-centre service charge, biometrics, insurance, photos, and the supporting paperwork, the all-in figure can be noticeably higher. This 2026 guide breaks down exactly what you'll pay — headline fee and hidden extras — so you can budget accurately.

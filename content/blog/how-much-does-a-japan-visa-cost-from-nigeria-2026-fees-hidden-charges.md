@@ -7,6 +7,12 @@ readTime: "10 min read"
 coverEmoji: "🇯🇵"
 ---
 
+## Quick Answer
+
+A Japan short-stay visa from Nigeria has a government fee of about **JPY 3,000 (~USD 21)** for single entry, or **JPY 6,000** for multiple entry, but the **all-in cost is higher** once you add the visa-centre/agency service charge, documents, travel insurance and photos. Fees and rules change, so confirm the current consular fee with the Embassy of Japan or its designated visa centre before you apply.
+
+**Related on VisitPlane:** [Nigeria → Japan visa requirements](/visa/Nigeria/Japan) · [China visa cost from Nigeria](/blog/how-much-does-a-china-visa-cost-from-nigeria-2026-fees-hidden-charges) · [South Korea visa cost from Nigeria](/blog/how-much-does-a-south-korea-visa-cost-from-nigeria-2026-fees-hidden-charges) · [Cheapest countries from Nigeria](/blog/15-cheapest-countries-to-visit-from-nigeria-in-2026)
+
 ## Overview
 
 For Nigerian travellers, the real cost of a Japan short-stay visa is more than the government fee on the official website. Once you add the visa-centre service charge, biometrics, insurance, photos, and the supporting paperwork, the all-in figure can be noticeably higher. This 2026 guide breaks down exactly what you'll pay — headline fee and hidden extras — so you can budget accurately.
