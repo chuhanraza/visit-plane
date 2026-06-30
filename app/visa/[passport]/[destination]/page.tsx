@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import { hasConflictingStatus } from '@/lib/visa/detectConflict'
 import VisaPageClient, { type VisaRecord } from './VisaPageClient'
 
@@ -128,6 +129,34 @@ async function fetchAllVisaTypes(passportName: string, destinationName: string):
   return (data ?? []) as VisaRecord[]
 }
 
+// Soft-404 guard fetch. Same query as fetchAllVisaTypes, but it tells the caller
+// whether the query SUCCEEDED so we can distinguish "this pair genuinely has no
+// record" (→ real 404) from "Supabase errored" (transient — keep the page at 200
+// so an outage never mass-404s the whole /visa index). The `destinations` table is
+// the canonical source of truth for which visa pairs exist — the sitemap builds
+// /visa/{passport}/{destination} URLs straight from these same rows. `ilike` is an
+// exact, case-insensitive match on the already-decoded names, so encoded multi-word
+// countries ("United Kingdom", "Sao Tome and Principe") validate correctly and no
+// real pair is ever falsely rejected.
+async function fetchVisaTypesResult(
+  passportName: string,
+  destinationName: string,
+): Promise<{ ok: boolean; rows: VisaRecord[] }> {
+  const supabase = getSupabase()
+  const { data, error } = await supabase
+    .from('destinations')
+    .select('*')
+    .ilike('passport_country', passportName)
+    .ilike('country_name', destinationName)
+    .order('id', { ascending: true })
+    .limit(20)
+  if (error) {
+    console.error('[fetchVisaTypesResult] Supabase error:', error)
+    return { ok: false, rows: [] } // transient — caller must NOT 404 on this
+  }
+  return { ok: true, rows: (data ?? []) as VisaRecord[] }
+}
+
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 export async function generateMetadata({
   params,
@@ -185,21 +214,42 @@ export default async function VisaResultPage({
   const passportName    = decodeURIComponent(passportSlug)
   const destinationName = decodeURIComponent(destinationSlug)
 
-  // Defensively wrap all data fetches — any Supabase error must return empty data,
-  // never crash the page with an unhandled rejection (would produce 500).
-  let allVisaData: VisaRecord[] = []
+  // ── Soft-404 guard ───────────────────────────────────────────────────────────
+  // Validate the pair against the canonical source of truth (the `destinations`
+  // table — the same rows the sitemap builds these URLs from) BEFORE rendering.
+  // If the query succeeded but found no record (typo'd / malformed / non-existent
+  // country pair like /visa/Nowhere/Nowhereland), return a genuine HTTP 404 via
+  // notFound() instead of a templated 200 "Coming Soon" page that Google reads as a
+  // soft 404. A Supabase ERROR is treated as transient and is NOT 404'd, so an
+  // outage can never mass-404 the tens of thousands of valid /visa pages.
+  //
+  // The fetch is wrapped in try/catch, but notFound() is called AFTER it (outside
+  // the catch) — notFound() signals the 404 boundary by throwing, so it must never
+  // be swallowed by this error handler.
+  let visaResult: { ok: boolean; rows: VisaRecord[] } = { ok: false, rows: [] }
+  try {
+    visaResult = await fetchVisaTypesResult(passportName, destinationName)
+  } catch (err) {
+    console.error('[VisaResultPage] visa fetch error for', passportName, '→', destinationName, err)
+    // Transient fetch failure: treat as not-ok so we render gracefully at HTTP 200.
+    visaResult = { ok: false, rows: [] }
+  }
+  if (visaResult.ok && visaResult.rows.length === 0) {
+    notFound() // real 404 — invalid pair / no visa record exists for this route
+  }
+  const allVisaData: VisaRecord[] = visaResult.rows
+
+  // Secondary, best-effort fetches — never block the page or affect the status code.
   let relatedDestinations: string[] = []
   let otherPassports: string[] = []
   try {
-    ;[allVisaData, relatedDestinations, otherPassports] = await Promise.all([
-      fetchAllVisaTypes(passportName, destinationName),
+    ;[relatedDestinations, otherPassports] = await Promise.all([
       fetchRelatedDestinations(passportName, destinationName),
       fetchOtherPassports(destinationName, passportName),
     ])
   } catch (err) {
-    console.error('[VisaResultPage] data fetch error for', passportName, '→', destinationName, err)
-    // allVisaData / relatedDestinations / otherPassports stay as empty arrays.
-    // The page renders the "Coming Soon" state via VisaPageClient, HTTP 200.
+    console.error('[VisaResultPage] related-data fetch error for', passportName, '→', destinationName, err)
+    // relatedDestinations / otherPassports stay as empty arrays.
   }
 
   const passportFlag    = resolveFlag(passportSlug,    passportName)
