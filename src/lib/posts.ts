@@ -641,18 +641,22 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'best-travel-insurance-schengen-visa',
-    title: 'Schengen Travel Insurance 2026: The €30,000 Rule and How to Get a Compliant Policy',
-    date: '2026-05-29',
+    title: 'Travel Insurance for a Schengen Visa (2026 Rules)',
+    date: '2026-06-28',
     excerpt:
-      'Every Schengen visa requires travel medical insurance with at least €30,000 of cover, valid across all Schengen countries, including emergency hospital treatment and repatriation. This guide explains exactly what the policy must include, how to buy one that won\'t get your visa rejected, and the mistakes that catch people out.',
+      'Schengen visas require travel medical insurance with €30,000 cover, valid Schengen-wide, including repatriation. See exactly what qualifies, what it costs, and how to buy a policy that won\'t get your visa rejected.',
     category: 'Travel Tips',
-    readTime: '12 min read',
+    readTime: '13 min read',
     coverEmoji: '🛡️',
     passportCountry: 'Pakistan',
     destinationCountry: 'Germany',
     visaLink: '/visa/Pakistan/Germany',
     ctaTitle: 'Check Pakistan to Germany Schengen Visa Requirements',
     faqs: [
+      {
+        q: 'How much does travel insurance for a Schengen visa cost?',
+        a: 'For a typical two-to-three-week European trip, Schengen-compliant travel medical insurance is usually one of the cheaper line items in the whole application — often a small daily premium rather than a large lump sum. Exact pricing depends on your age, trip length and any cover above the €30,000 minimum, so get a live quote for your own dates rather than trusting a fixed figure. Never buy the cheapest product without checking it meets all four conditions.',
+      },
       {
         q: 'Is travel insurance mandatory for all Schengen visas?',
         a: 'Yes. Under the Schengen Visa Code, travel medical insurance with at least €30,000 of cover is mandatory for all short-stay (Type C) visa categories — tourist, business and family visit. Applications without a valid policy are routinely refused.',
@@ -1037,11 +1041,11 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'germany-job-seeker-visa-complete-requirements',
-    title: 'Germany Job Seeker Visa 2026: The Complete Guide (Opportunity Card & Classic Route)',
-    date: '2026-05-06',
-    excerpt: "Germany lets qualified non-EU professionals come and look for work before they have an offer — through the classic Job Seeker Visa and the newer points-based Opportunity Card (Chancenkarte). This guide covers who qualifies, the money you need, documents, timelines, and how to convert to a work permit.",
+    title: 'Germany Job Seeker Visa 2026 (Opportunity Card Guide)',
+    date: '2026-06-28',
+    excerpt: "Germany lets non-EU professionals come to look for work before they have a job offer — via the Job Seeker Visa and the points-based Opportunity Card. Who qualifies, the funds you need, documents, timeline and how to convert to a work permit.",
     category: 'Visa Guides',
-    readTime: '12 min read',
+    readTime: '13 min read',
     coverEmoji: '🇩🇪',
     passportCountry: 'Pakistan',
     destinationCountry: 'Germany',
