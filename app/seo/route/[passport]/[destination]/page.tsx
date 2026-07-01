@@ -53,15 +53,26 @@ function getSupabase() {
   )
 }
 
-async function fetchVisaData(passportCountry: string, destinationCountry: string) {
+// Returns `ok` so the caller can tell "pair genuinely has no rows" (real 404)
+// apart from "Supabase errored" (transient — must NOT 404, or an outage would
+// mass-deindex this whole template).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function fetchVisaData(
+  passportCountry: string,
+  destinationCountry: string,
+): Promise<{ ok: boolean; rows: any[] }> {
   const supabase = getSupabase()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('destinations')
     .select('*')
     .ilike('passport_country', passportCountry)
     .ilike('country_name', destinationCountry)
     .limit(5)
-  return data ?? []
+  if (error) {
+    console.error('[seo/route] Supabase error:', error)
+    return { ok: false, rows: [] }
+  }
+  return { ok: true, rows: data ?? [] }
 }
 
 // ISO slug → ISO 3166-1 alpha-3 mapping for the top routes
@@ -109,7 +120,9 @@ export async function generateMetadata({
 
   const title       = `${passportName} to ${destinationName} Visa Requirements 2026 — Complete Guide`
   const description = `Everything a ${passportName} passport holder needs to know before visiting ${destinationName}: visa type, fee, processing time, required documents, and how to apply. Updated May 2026.`
-  const canonical   = `https://www.visitplane.com/${passportSlug}-to-${destinationSlug}-visa-requirements`
+  // Lowercased: lookups are case-insensitive, so an uppercase URL variant would
+  // otherwise self-canonicalise as a duplicate.
+  const canonical   = `https://www.visitplane.com/${passportSlug.toLowerCase()}-to-${destinationSlug.toLowerCase()}-visa-requirements`
 
   return {
     title,
@@ -131,12 +144,16 @@ export default async function LongFormVisaPage({
   const destinationName = resolveCountry(destinationSlug)
 
   // Fetch both: verified (new) and legacy (for page existence + hero data)
-  const [visaData, verifiedReq] = await Promise.all([
+  const [visaResult, verifiedReq] = await Promise.all([
     fetchVisaData(passportName, destinationName),
     fetchVerifiedRequirement(passportSlug, destinationSlug),
   ])
 
-  if (visaData.length === 0) notFound()
+  // Only a CONFIRMED-empty result is a 404. A transient Supabase error throws
+  // to the error boundary (5xx) — Google retries 5xx, but drops 404s.
+  if (!visaResult.ok) throw new Error('Visa data temporarily unavailable')
+  if (visaResult.rows.length === 0) notFound()
+  const visaData = visaResult.rows
 
   const primary = visaData[0]
 

@@ -4,9 +4,12 @@ import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 // Rotating hero adjective (iVisa-style). Cycles a green-gradient word in the
-// headline to add motion + reinforce the value props. Width is reserved by an
-// invisible sizer (the longest word) so the rest of the line never jumps, and
-// it freezes on the first word under prefers-reduced-motion.
+// headline to add motion + reinforce the value props. Exactly ONE word exists
+// in the DOM at a time (mode="wait"), so server HTML / crawlers read a single
+// clean word — the old sizer+sr-only+animated trio rendered as
+// "smartesteasiesteasiest" in the raw H1. Width is reserved with a ch-based
+// min-width so the line doesn't reflow, and it freezes on the first word under
+// prefers-reduced-motion.
 const WORDS = ['easiest', 'smartest', 'fastest', 'simplest', 'clearest']
 const GRADIENT = 'linear-gradient(135deg, #16C95C 0%, #0EA94A 100%)'
 const INTERVAL = 2200
@@ -32,20 +35,18 @@ export default function RotatingWord() {
   const longest = WORDS.reduce((a, b) => (b.length > a.length ? b : a))
 
   return (
-    <span className="relative inline-block align-baseline">
-      {/* sizer reserves the widest word's width so the line never reflows */}
-      <span className="invisible" aria-hidden="true">{longest}</span>
-      {/* one stable word for screen readers / crawlers (visible words are decorative) */}
-      <span className="sr-only">{WORDS[0]}</span>
-      <AnimatePresence initial={false}>
+    <span
+      className="inline-block whitespace-nowrap text-center align-baseline"
+      style={{ minWidth: `${longest.length + 0.5}ch` }}
+    >
+      <AnimatePresence initial={false} mode="wait">
         <motion.span
           key={WORDS[index]}
-          aria-hidden="true"
-          initial={reduced ? false : { y: '0.55em', opacity: 0 }}
+          initial={reduced ? false : { y: '0.4em', opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={reduced ? undefined : { y: '-0.55em', opacity: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0 flex items-center justify-center whitespace-nowrap bg-clip-text text-transparent"
+          exit={reduced ? undefined : { y: '-0.4em', opacity: 0 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="inline-block bg-clip-text text-transparent"
           style={{ backgroundImage: GRADIENT }}
         >
           {WORDS[index]}

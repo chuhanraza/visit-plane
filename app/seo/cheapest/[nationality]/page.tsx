@@ -51,11 +51,14 @@ function parsePrice(pricing: string | null): number {
 
 async function getCheapestDestinations(passportCountry: string) {
   const supabase = getSupabase()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('destinations')
     .select('country_name, visa_type, processing_time, pricing')
     .ilike('passport_country', passportCountry)
     .order('country_name')
+  // Throw on a Supabase ERROR so the caller can 5xx instead of 404ing the page
+  // ("no rows" and "outage" must stay distinguishable).
+  if (error) throw new Error(`[seo/cheapest] destinations query failed: ${error.message}`)
   if (!data) return []
   return (data as DestRow[])
     // Drop rows with a missing country_name — a null here crashed the build
@@ -87,7 +90,7 @@ export async function generateMetadata({
   const year = new Date().getFullYear()
   const title = `Cheapest Visa Destinations for ${country.name} Passport Holders (${year})`
   const description = `Top 30 cheapest countries to visit on a ${country.name} passport, sorted by visa fee. Includes free-entry destinations, cheap visa on arrival, and affordable eVisa options. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`
-  const canonical = `https://www.visitplane.com/cheapest-visas-from-${nationality}-passport`
+  const canonical = `https://www.visitplane.com/cheapest-visas-from-${nationality.toLowerCase()}-passport`
 
   return {
     title,
@@ -114,6 +117,7 @@ export default async function CheapestVisasPage({
 
   let allDests: Awaited<ReturnType<typeof getCheapestDestinations>> = []
   let seoIntro: string | null = null
+  let fetchFailed = false
   try {
     ;[allDests, seoIntro] = await Promise.all([
       getCheapestDestinations(country.name),
@@ -121,8 +125,11 @@ export default async function CheapestVisasPage({
     ])
   } catch (err) {
     console.error('[CheapestVisasPage] data fetch error for', nationality, err)
+    fetchFailed = true
   }
 
+  // Transient fetch failure → 5xx (retried by Google), never a 404 (deindexed).
+  if (fetchFailed && allDests.length === 0) throw new Error('Visa data temporarily unavailable')
   if (allDests.length === 0) notFound()
 
   const top30   = allDests.slice(0, 30)
@@ -138,7 +145,7 @@ export default async function CheapestVisasPage({
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.visitplane.com' },
       { '@type': 'ListItem', position: 2, name: 'Destinations', item: 'https://www.visitplane.com/destinations' },
-      { '@type': 'ListItem', position: 3, name: `Cheapest Visas for ${country.name}`, item: `https://www.visitplane.com/cheapest-visas-from-${nationality}-passport` },
+      { '@type': 'ListItem', position: 3, name: `Cheapest Visas for ${country.name}`, item: `https://www.visitplane.com/cheapest-visas-from-${nationality.toLowerCase()}-passport` },
     ],
   }
 

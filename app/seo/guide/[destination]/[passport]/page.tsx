@@ -113,14 +113,17 @@ async function fetchVisaRequirement(passportIso: string, destinationIso: string)
   return data as VisaRequirement | null
 }
 
+// Throws on a Supabase ERROR (transient — caller must not 404 on it); returns []
+// only for a genuinely empty result.
 async function fetchLegacy(passportName: string, destinationName: string) {
   const supabase = getSupabase()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('destinations')
     .select('*')
     .ilike('passport_country', passportName)
     .ilike('country_name', destinationName)
     .limit(5)
+  if (error) throw new Error(`[seo/guide] destinations query failed: ${error.message}`)
   return data ?? []
 }
 
@@ -195,7 +198,9 @@ export async function generateMetadata({
   const year = new Date().getFullYear()
   const title = `${destinationCountry.name} Visa Guide for ${passportCountry.nounPlural} (${year}) — Complete Handbook`
   const description = `Everything ${passportCountry.nounPlural} need to know about getting a ${destinationCountry.name} visa in ${year}: types, fees, documents, application walkthrough, real timelines, and what to do if rejected.`
-  const canonical = `https://www.visitplane.com/${destinationSlug}-visa-guide-for-${passportNounSlug}`
+  // Lowercased: lookups are case-insensitive, so an uppercase URL variant would
+  // otherwise self-canonicalise as a duplicate.
+  const canonical = `https://www.visitplane.com/${destinationSlug.toLowerCase()}-visa-guide-for-${passportNounSlug.toLowerCase()}`
 
   return {
     title,
@@ -234,6 +239,7 @@ export default async function Template4Page({
   let legacy: Awaited<ReturnType<typeof fetchLegacy>> = []
   let related: Awaited<ReturnType<typeof fetchRelatedRoutes>> = []
   let seoContent: Awaited<ReturnType<typeof fetchSeoContent>> = null
+  let fetchFailed = false
   try {
     ;[req, legacy, related, seoContent] = await Promise.all([
       fetchVisaRequirement(passportCountry.iso3, destinationCountry.iso3),
@@ -243,10 +249,12 @@ export default async function Template4Page({
     ])
   } catch (err) {
     console.error('[Template4Page] data fetch error for', passName, '→', destName, err)
-    // All vars stay as null/[]. We fall through to notFound below if no data.
+    fetchFailed = true
   }
 
   const primary = legacy[0] ?? null
+  // Transient fetch failure → 5xx (retried by Google), never a 404 (deindexed).
+  if (fetchFailed && !req && !primary) throw new Error('Visa data temporarily unavailable')
   if (!req && !primary) notFound()
 
   const cat        = req?.visa_category ?? (primary?.visa_type?.toLowerCase().includes('free') ? 'visa_free' : primary?.visa_type?.toLowerCase().includes('arrival') ? 'visa_on_arrival' : 'visa_required') as string

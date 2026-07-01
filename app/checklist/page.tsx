@@ -453,7 +453,7 @@ export default function ChecklistPage() {
     const text = encodeURIComponent(
       `📋 ${passport} → ${destination} ${visaType} Visa Checklist\n\nGenerated via VisitPlane.com/checklist\n\nDocuments needed:\n` +
       documents.slice(0, 5).map((d, i) => `${i + 1}. ${d}`).join('\n') +
-      `\n...and ${documents.length - 5} more.\n\nCheck the full list: https://visitplane.com/checklist`
+      `\n...and ${documents.length - 5} more.\n\nCheck the full list: https://www.visitplane.com/checklist`
     )
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank')
   }

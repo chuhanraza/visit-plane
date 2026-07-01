@@ -3,7 +3,7 @@ import { Resend } from 'resend'
 const FROM = 'VisitPlane <orders@visitplane.com>'
 
 function siteUrl() {
-  return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://visitplane.com'
+  return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://www.visitplane.com'
 }
 
 /** Low-level send. Degrades safely: no RESEND_API_KEY => logs and returns, never throws. */

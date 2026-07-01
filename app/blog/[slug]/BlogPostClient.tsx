@@ -126,7 +126,7 @@ export function SocialShare({ title, slug }: { title: string; slug: string }) {
   const url =
     typeof window !== 'undefined'
       ? `${window.location.origin}/blog/${slug}`
-      : `https://visitplane.com/blog/${slug}`
+      : `https://www.visitplane.com/blog/${slug}`
 
   const waText = encodeURIComponent(
     `Check this visa guide: ${title} — ${url}`

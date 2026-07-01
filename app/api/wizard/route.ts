@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
   try {
     const params = new URLSearchParams({ passport, destination, purpose })
     const visaRes = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://visitplane.com'}/api/visa-data?${params}`,
+      `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.visitplane.com'}/api/visa-data?${params}`,
       { next: { revalidate: 86400 } }
     )
     if (visaRes.ok) {

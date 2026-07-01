@@ -9,9 +9,16 @@ interface Props {
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const { passport = 'United States' } = await searchParams
-  const title = `All Visa Requirements for ${passport} Passport Holders | VisitPlane`
-  const description = `Browse visa requirements for all ${ALL_COUNTRIES.length} countries with a ${passport} passport. See visa types, max stay, and fees — updated 2026.`
+  const { passport } = await searchParams
+  // The bare /destinations URL is passport-neutral — don't bake a default
+  // nationality into the indexed title. ?passport= variants canonicalise to the
+  // clean URL, so only the neutral title ever represents this page in SERPs.
+  const title = passport
+    ? `All Visa Requirements for ${passport} Passport Holders (2026)`
+    : `Visa Requirements by Country — All ${ALL_COUNTRIES.length} Destinations (2026)`
+  const description = passport
+    ? `Browse visa requirements for all ${ALL_COUNTRIES.length} countries with a ${passport} passport. See visa types, max stay, and fees — updated 2026.`
+    : `Browse visa requirements for all ${ALL_COUNTRIES.length} countries by passport. See visa types, max stay, and fees — updated 2026.`
 
   return {
     title,
@@ -20,7 +27,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       title,
       description,
       type: 'website',
-      url: `https://visitplane.com/destinations`,
+      url: `https://www.visitplane.com/destinations`,
     },
     twitter: {
       card: 'summary_large_image',
@@ -28,7 +35,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       description,
     },
     alternates: {
-      canonical: 'https://visitplane.com/destinations',
+      canonical: 'https://www.visitplane.com/destinations',
     },
   }
 }
@@ -40,7 +47,7 @@ function DestinationsJsonLd({ passport }: { passport: string }) {
     '@type': 'ListItem',
     position: i + 1,
     name: c.name,
-    url: `https://visitplane.com/visa/${encodeURIComponent(passport)}/${encodeURIComponent(c.name)}`,
+    url: `https://www.visitplane.com/visa/${encodeURIComponent(passport)}/${encodeURIComponent(c.name)}`,
     description: `${c.visa} — ${c.max_stay} — ${c.fee_usd}`,
   }))
 

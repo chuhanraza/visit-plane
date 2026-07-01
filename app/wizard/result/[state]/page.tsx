@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${from} → ${to} Visa Plan`,
       description: `${visaData.visaLabel} · ${visaData.costUSD != null ? `$${visaData.costUSD}` : 'Free'} · Up to ${visaData.maxStayDays} days`,
-      url: `https://visitplane.com/wizard/result/${state}`,
+      url: `https://www.visitplane.com/wizard/result/${state}`,
       siteName: 'VisitPlane',
       type: 'website',
     },

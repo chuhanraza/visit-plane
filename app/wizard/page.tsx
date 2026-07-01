@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: 'AI Visa Wizard 2026 | Get Personalized Visa Guidance | VisitPlane',
     description:
       'Answer 5 questions and get your complete personalized visa guide powered by AI. Free for all 197 countries.',
-    url: 'https://visitplane.com/wizard',
+    url: 'https://www.visitplane.com/wizard',
     siteName: 'VisitPlane',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'VisitPlane AI Visa Wizard' }],
     type: 'website',

@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     'visa on arrival countries',
     'passport strength map',
   ],
-  metadataBase: new URL('https://visitplane.com'),
+  metadataBase: new URL('https://www.visitplane.com'),
   alternates: { canonical: '/visa-free-map' },
   openGraph: {
     title: 'Visa-Free World Map 2026 | VisitPlane',
     description:
       'See every country you can visit visa-free on a beautiful interactive world map. Select your passport and explore instantly.',
-    url: 'https://visitplane.com/visa-free-map',
+    url: 'https://www.visitplane.com/visa-free-map',
     siteName: 'VisitPlane',
     type: 'website',
   },

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: 'Visa Vault - Save Your Travel Profile | VisitPlane',
     description:
       'Store your passport details once. Auto-fill any visa application in seconds. 100% private — stored only in your browser.',
-    url: 'https://visitplane.com/visa-vault',
+    url: 'https://www.visitplane.com/visa-vault',
     siteName: 'VisitPlane',
   },
 }

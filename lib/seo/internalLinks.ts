@@ -74,7 +74,7 @@ export function getCrossTemplateLinks(
 
   if (currentTemplate !== 3) {
     links.push({
-      href: `/cheapest-visas-from-${passportSlug}`,
+      href: `/cheapest-visas-from-${passportSlug}-passport`,
       label: `Cheapest Visa Destinations`,
       type: 'cross-template',
       relevanceScore: 75,

@@ -156,6 +156,17 @@ export default function VisaHeroCard({
   const isArrival = /arrival/i.test(visaType)
   const applyLabel = isFree ? 'No visa needed' : isArrival ? 'On arrival' : 'Apply online'
 
+  // Verdict-first page H1 (the "instant answer" pattern that wins featured
+  // snippets — e.g. Sherpa's "You need a visa for Türkiye if you have a
+  // Pakistani passport"). This is the page's ONLY h1.
+  const verdictH1 = isFree
+    ? `${passportName} citizens can visit ${destinationName} visa-free`
+    : isArrival
+      ? `${passportName} citizens get a visa on arrival in ${destinationName}`
+      : /e-?visa/i.test(visaType)
+        ? `${passportName} citizens need an eVisa for ${destinationName}`
+        : `${passportName} citizens need a visa for ${destinationName}`
+
   const stats = [
     { label: 'How to apply', value: applyLabel, sub: null as string | null, Icon: IGlobe },
     { label: 'Cost', value: isFree ? 'Free' : fee, sub: isFree ? null : pkr, Icon: ITag },
@@ -169,12 +180,12 @@ export default function VisaHeroCard({
       <div className="mb-6 flex items-center justify-center gap-3 sm:gap-5">
         <div className="flex items-center gap-2.5">
           <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm ring-1 ring-gray-100 sm:h-12 sm:w-12 sm:text-[26px]">{passportFlag}</span>
-          <h1 className="text-xl font-extrabold tracking-tight text-gray-900 sm:text-[26px]">{passportName}</h1>
+          <span className="text-xl font-extrabold tracking-tight text-gray-900 sm:text-[26px]">{passportName}</span>
         </div>
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-500/10 text-teal-600"><IArrow /></span>
         <div className="flex items-center gap-2.5">
           <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm ring-1 ring-gray-100 sm:h-12 sm:w-12 sm:text-[26px]">{destinationFlag}</span>
-          <h1 className="text-xl font-extrabold tracking-tight text-gray-900 sm:text-[26px]">{destinationName}</h1>
+          <span className="text-xl font-extrabold tracking-tight text-gray-900 sm:text-[26px]">{destinationName}</span>
         </div>
       </div>
 
@@ -186,8 +197,8 @@ export default function VisaHeroCard({
             <StatusGlyph k={theme.icon} className="h-6 w-6 sm:h-7 sm:w-7" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className={`text-[11px] font-bold uppercase tracking-[0.14em] ${tone.text}`}>Visa status</div>
-            <div className="mt-0.5 text-2xl font-extrabold leading-tight text-gray-900 sm:text-[28px]">{theme.label}</div>
+            <div className={`text-[11px] font-bold uppercase tracking-[0.14em] ${tone.text}`}>Visa status: {theme.label}</div>
+            <h1 className="mt-0.5 text-xl font-extrabold leading-tight text-gray-900 sm:text-2xl">{verdictH1}</h1>
             <p className="mt-1 text-sm leading-snug text-gray-500 sm:hidden">{theme.verdict}</p>
           </div>
           <p className="hidden max-w-[15rem] text-right text-sm leading-snug text-gray-500 sm:block">{theme.verdict}</p>

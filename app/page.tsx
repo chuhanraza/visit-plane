@@ -395,7 +395,7 @@ export default function HomePage() {
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.08 }} className="font-extrabold leading-[1.06]" style={{ fontSize: 'clamp(40px, 5vw, 64px)', color: '#0F1419', letterSpacing: '-0.02em' }}>
             The{' '}
             <RotatingWord />{' '}
-            way
+            way{' '}
             <br />
             to check your travel visa
           </motion.h1>

@@ -26,7 +26,7 @@ export default function InterviewHero({ country, visaType, onCountryChange, onVi
 
             {/* Headline */}
             <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight text-[#0f0c29] leading-[1.05] mb-5">
-              Pass Your Visa Interview<br />
+              Pass Your Visa Interview{' '}<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-500">With Confidence.</span>
             </h1>
 

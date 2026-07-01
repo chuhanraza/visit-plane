@@ -127,7 +127,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/travel-insurance`,        lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.8 },
     { url: `${base}/interview-prep`,          lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.8 },
     { url: `${base}/visa-vault`,              lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.8 },
-    { url: `${base}/passport-scanner`,        lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.7 },
+    // NOTE: /passport-scanner is intentionally excluded — robots.txt Disallows it
+    // (on-device camera tool), so listing it created a crawl-block/sitemap conflict.
     { url: `${base}/how-it-works`,            lastModified: LASTMOD, changeFrequency: 'monthly', priority: 0.7 },
     // NOTE: /visa-requirements is intentionally excluded — that route 307-redirects
     // to the homepage, so listing it would put a non-canonical redirect URL in the

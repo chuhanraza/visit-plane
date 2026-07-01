@@ -13,7 +13,7 @@ function getSupabase() {
 }
 
 function siteUrl() {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://visitplane.com').replace(/\/$/, '')
+  return (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.visitplane.com').replace(/\/$/, '')
 }
 
 async function sendConfirmationEmail(

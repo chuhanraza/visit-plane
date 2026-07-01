@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: 'Passport Scanner & Visa Photo Tool | VisitPlane',
     description:
       'Scan your passport MRZ instantly and generate perfect visa photos for USA, UK, Schengen, UAE and more. Free, private, instant.',
-    url: 'https://visitplane.com/passport-scanner',
+    url: 'https://www.visitplane.com/passport-scanner',
     siteName: 'VisitPlane',
     type: 'website',
   },

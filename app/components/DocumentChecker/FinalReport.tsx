@@ -250,7 +250,7 @@ export default function FinalReport({ docs, country, onClose }: Props) {
       lines.push('')
     }
 
-    lines.push('Full report available at: https://visitplane.com')
+    lines.push('Full report available at: https://www.visitplane.com')
 
     const body = encodeURIComponent(lines.join('\n'))
     const mailto = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`

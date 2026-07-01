@@ -99,14 +99,17 @@ async function fetchVisaRequirement(passportIso: string, destinationIso: string)
   return data as VisaRequirement | null
 }
 
+// Throws on a Supabase ERROR (transient — caller must not 404 on it); returns []
+// only for a genuinely empty result. Keeps "no data" distinguishable from "outage".
 async function fetchLegacyVisaData(passportName: string, destinationName: string) {
   const supabase = getSupabase()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('destinations')
     .select('*')
     .ilike('passport_country', passportName)
     .ilike('country_name', destinationName)
     .limit(5)
+  if (error) throw new Error(`[seo/req] destinations query failed: ${error.message}`)
   return data ?? []
 }
 
@@ -212,7 +215,9 @@ export async function generateMetadata({
 
   const title = `Visa Requirements for ${passportName} Citizens Traveling to ${destinationName} (${year})`
   const description = `Complete ${year} visa guide for ${passportName} passport holders visiting ${destinationName}. Exact fees, processing times, required documents, application steps, and official sources. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`
-  const canonical = `https://www.visitplane.com/visa-requirements-for-${passportSlug}-citizens-to-${destinationSlug}`
+  // Lowercase the slug echo — lookups are case-insensitive, so an uppercase URL
+  // variant would otherwise self-canonicalise as a duplicate.
+  const canonical = `https://www.visitplane.com/visa-requirements-for-${passportSlug.toLowerCase()}-citizens-to-${destinationSlug.toLowerCase()}`
 
   return {
     title,
@@ -253,6 +258,7 @@ export default async function Template1Page({
   let legacyData: Awaited<ReturnType<typeof fetchLegacyVisaData>> = []
   let relatedRoutes: Awaited<ReturnType<typeof fetchRelatedRoutes>> = { samePassport: [], sameDestination: [] }
   let seoContent: Awaited<ReturnType<typeof fetchSeoContent>> = null
+  let fetchFailed = false
   try {
     ;[verifiedReq, legacyData, relatedRoutes, seoContent] = await Promise.all([
       fetchVisaRequirement(passportCountry.iso3, destinationCountry.iso3),
@@ -262,10 +268,13 @@ export default async function Template1Page({
     ])
   } catch (err) {
     console.error('[Template1Page] data fetch error for', passportName, '→', destinationName, err)
-    // All vars stay as null/[]. We fall through to notFound below if no data.
+    fetchFailed = true
   }
 
   const primary = legacyData[0]
+  // A transient fetch failure must surface as a 5xx (Google retries those), never
+  // as a 404 (Google deindexes those) — only a confirmed-empty result may 404.
+  if (fetchFailed && !verifiedReq && !primary) throw new Error('Visa data temporarily unavailable')
   if (!verifiedReq && !primary) notFound()
 
   // Resolve data — prefer verified, fall back to legacy

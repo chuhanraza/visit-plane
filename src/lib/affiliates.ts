@@ -120,11 +120,19 @@ export const AFFILIATE_PARTNERS: Record<AffiliatePartner, AffiliatePartnerConfig
 const AFFILIATE_IDS = {
   SAFETYWING_REFERENCE_ID: process.env.NEXT_PUBLIC_SAFETYWING_ID ?? 'visitplane',
   AIRALO_AFF_CODE: process.env.NEXT_PUBLIC_AIRALO_CODE ?? 'visitplane',
-  TRAVELPAYOUTS_MARKER: process.env.NEXT_PUBLIC_TP_MARKER ?? '0',
+  // No fallback: marker=0 is Travelpayouts' "no affiliate" value — a link carrying
+  // it tracks nothing payable. When unset we skip tp.media entirely (see below).
+  TRAVELPAYOUTS_MARKER: process.env.NEXT_PUBLIC_TP_MARKER ?? '',
   WAYAWAY_PROGRAM_ID: process.env.NEXT_PUBLIC_WAYAWAY_PROGRAM_ID ?? '4114',
   KIWI_PROGRAM_ID: process.env.NEXT_PUBLIC_KIWI_PROGRAM_ID ?? '3',
   HEYMONDO_REF_ID: process.env.NEXT_PUBLIC_HEYMONDO_ID ?? 'visitplane',
   SAILY_AFF_CODE: process.env.NEXT_PUBLIC_SAILY_CODE ?? 'visitplane',
+}
+
+// True when the Travelpayouts marker is a real affiliate ID (set and non-zero).
+function hasTpMarker(): boolean {
+  const m = AFFILIATE_IDS.TRAVELPAYOUTS_MARKER.trim()
+  return m !== '' && m !== '0'
 }
 
 // ─── Build the final affiliate URL (with subID injected) ─────────────────────
@@ -153,6 +161,12 @@ export function buildAffiliateUrl(
     case 'wayaway': {
       const dest = destIso ? `&destination=${destIso.toUpperCase()}` : ''
       const origin = originIso ? `&origin=${originIso.toUpperCase()}` : ''
+      // Without a real marker, tp.media would attribute nothing — send the user
+      // straight to WayAway instead of a dead tracking hop.
+      if (!hasTpMarker()) {
+        console.error('[affiliates] NEXT_PUBLIC_TP_MARKER is not set — WayAway link is UNATTRIBUTED')
+        return `https://wayaway.io/?destination=${destIso}${origin}&utm_source=visitplane&utm_medium=affiliate`
+      }
       const u = encodeURIComponent(`https://wayaway.io/?destination=${destIso}${origin}`)
       return `https://tp.media/r?marker=${AFFILIATE_IDS.TRAVELPAYOUTS_MARKER}&trs=visitplane_${subId}&p=${AFFILIATE_IDS.WAYAWAY_PROGRAM_ID}&u=${u}&utm_source=visitplane&utm_medium=affiliate${dest}${origin}`
     }
@@ -160,7 +174,12 @@ export function buildAffiliateUrl(
     case 'kiwi': {
       const o = originIso.toUpperCase()
       const d = destIso.toUpperCase()
-      const u = encodeURIComponent(`https://www.kiwi.com/us/search/${o}/${d}/anytime/anytime`)
+      const kiwiUrl = `https://www.kiwi.com/us/search/${o}/${d}/anytime/anytime`
+      if (!hasTpMarker()) {
+        console.error('[affiliates] NEXT_PUBLIC_TP_MARKER is not set — Kiwi link is UNATTRIBUTED')
+        return kiwiUrl
+      }
+      const u = encodeURIComponent(kiwiUrl)
       return `https://tp.media/r?marker=${AFFILIATE_IDS.TRAVELPAYOUTS_MARKER}&trs=visitplane_${subId}&p=${AFFILIATE_IDS.KIWI_PROGRAM_ID}&u=${u}&utm_source=visitplane&utm_medium=affiliate`
     }
 

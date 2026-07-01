@@ -75,7 +75,7 @@ function buildEmailHtml(answers: WizardAnswers, visaData: VisaData): string {
 
     <!-- CTA -->
     <div style="padding:24px 32px;text-align:center">
-      <a href="https://visitplane.com/visa/${encodeURIComponent(passport)}/${encodeURIComponent(destination)}"
+      <a href="https://www.visitplane.com/visa/${encodeURIComponent(passport)}/${encodeURIComponent(destination)}"
         style="display:inline-block;background:linear-gradient(135deg,#14b8a6,#10b981);color:#fff;padding:14px 28px;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;box-shadow:0 4px 12px rgba(20,184,166,0.3)">
         View Full Visa Requirements →
       </a>
@@ -87,7 +87,7 @@ function buildEmailHtml(answers: WizardAnswers, visaData: VisaData): string {
     <!-- Footer -->
     <div style="background:#f8fafc;padding:16px 32px;text-align:center;border-top:1px solid #f1f5f9">
       <p style="font-size:12px;color:#94a3b8;margin:0">
-        Sent by <a href="https://visitplane.com" style="color:#14b8a6">VisitPlane</a> · Your AI Visa Intelligence Platform
+        Sent by <a href="https://www.visitplane.com" style="color:#14b8a6">VisitPlane</a> · Your AI Visa Intelligence Platform
       </p>
     </div>
   </div>

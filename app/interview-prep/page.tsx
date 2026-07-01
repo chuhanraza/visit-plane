@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: 'Visa Interview Questions & Answers 2026 | VisitPlane',
     description:
       'Prepare for your visa interview with real questions and expert answers for the US, UK, Canada, Australia, Germany, UAE and Japan.',
-    url: 'https://visitplane.com/interview-prep',
+    url: 'https://www.visitplane.com/interview-prep',
     siteName: 'VisitPlane',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'VisitPlane Interview Prep' }],
     type: 'website',

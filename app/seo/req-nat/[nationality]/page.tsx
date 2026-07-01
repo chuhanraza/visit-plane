@@ -79,7 +79,7 @@ export async function generateMetadata({
 
   const title       = `Visa Requirements for ${country} Citizens — All 197 Countries (2026)`
   const description = `Complete visa requirements matrix for ${country} citizens. Find out which countries require a visa, which are visa-free, and where you can get a visa on arrival or eVisa. Updated May 2026.`
-  const canonical   = `https://www.visitplane.com/visa-requirements-for-${nationality}-citizens`
+  const canonical   = `https://www.visitplane.com/visa-requirements-for-${nationality.toLowerCase()}-citizens`
 
   return {
     title,
@@ -146,7 +146,7 @@ export default async function VisaRequirementsForNationalityPage({
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.visitplane.com' },
       { '@type': 'ListItem', position: 2, name: 'Visa Requirements', item: 'https://www.visitplane.com/visa-requirements' },
-      { '@type': 'ListItem', position: 3, name: `${country} Citizens`, item: `https://www.visitplane.com/visa-requirements-for-${nationality}-citizens` },
+      { '@type': 'ListItem', position: 3, name: `${country} Citizens`, item: `https://www.visitplane.com/visa-requirements-for-${nationality.toLowerCase()}-citizens` },
     ],
   }
 

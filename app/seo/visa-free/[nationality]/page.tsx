@@ -43,11 +43,14 @@ type DestRow = {
 
 async function getDestinations(passportCountry: string): Promise<DestRow[]> {
   const supabase = getSupabase()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('destinations')
     .select('country_name, visa_type, processing_time, pricing')
     .ilike('passport_country', passportCountry)
     .order('country_name')
+  // Throw on a Supabase ERROR so the caller can 5xx instead of 404ing the page
+  // ("no rows" and "outage" must stay distinguishable).
+  if (error) throw new Error(`[seo/visa-free] destinations query failed: ${error.message}`)
   // Drop rows with a missing country_name — a null here crashed the build when
   // downstream code called d.country_name.toLowerCase() during prerender.
   return ((data ?? []) as DestRow[]).filter(d => !!d.country_name)
@@ -117,7 +120,7 @@ export async function generateMetadata({
   const year = new Date().getFullYear()
   const title = `Visa-Free Countries for ${country.name} Passport Holders (${year})`
   const description = `Complete ${year} list: all countries ${country.name} passport holders can visit visa-free, visa on arrival, and with eVisa. Sortable by region, fee, and entry type. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`
-  const canonical = `https://www.visitplane.com/visa-free-countries-for-${nationality}-passport`
+  const canonical = `https://www.visitplane.com/visa-free-countries-for-${nationality.toLowerCase()}-passport`
 
   return {
     title,
@@ -145,6 +148,7 @@ export default async function VisaFreeCountriesPage({
 
   let allDests: Awaited<ReturnType<typeof getDestinations>> = []
   let seoIntro: string | null = null
+  let fetchFailed = false
   try {
     ;[allDests, seoIntro] = await Promise.all([
       getDestinations(country.name),
@@ -152,8 +156,11 @@ export default async function VisaFreeCountriesPage({
     ])
   } catch (err) {
     console.error('[VisaFreeCountriesPage] data fetch error for', nationality, err)
+    fetchFailed = true
   }
 
+  // Transient fetch failure → 5xx (retried by Google), never a 404 (deindexed).
+  if (fetchFailed && allDests.length === 0) throw new Error('Visa data temporarily unavailable')
   if (allDests.length === 0) notFound()
 
   const { free, voa, evisa, required } = classify(allDests)
@@ -172,7 +179,7 @@ export default async function VisaFreeCountriesPage({
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.visitplane.com' },
       { '@type': 'ListItem', position: 2, name: 'Passport Strength', item: 'https://www.visitplane.com/passport-strength' },
-      { '@type': 'ListItem', position: 3, name: `${country.name} Visa-Free`, item: `https://www.visitplane.com/visa-free-countries-for-${nationality}-passport` },
+      { '@type': 'ListItem', position: 3, name: `${country.name} Visa-Free`, item: `https://www.visitplane.com/visa-free-countries-for-${nationality.toLowerCase()}-passport` },
     ],
   }
 
@@ -449,7 +456,7 @@ export default async function VisaFreeCountriesPage({
                 title: 'Budget Trip',
                 desc: 'Combine cheap visa destinations with low-cost-of-living countries for maximum travel on a tight budget.',
                 emoji: '💰',
-                link: `/cheapest-visas-from-${nationality}`,
+                link: `/cheapest-visas-from-${nationality}-passport`,
               },
               {
                 title: 'Multi-Country Route',
@@ -511,7 +518,7 @@ export default async function VisaFreeCountriesPage({
           <h3 className="font-bold text-[#1F2937] mb-4">Explore More</h3>
           <div className="flex flex-wrap gap-2">
             {[
-              { href: `/cheapest-visas-from-${nationality}`, label: '💰 Cheapest Visas' },
+              { href: `/cheapest-visas-from-${nationality}-passport`, label: '💰 Cheapest Visas' },
               { href: `/visa-requirements-for-${nationality}-citizens-to-uae`, label: '🇦🇪 UAE Visa' },
               { href: `/visa-requirements-for-${nationality}-citizens-to-turkey`, label: '🇹🇷 Turkey Visa' },
               { href: `/visa-requirements-for-${nationality}-citizens-to-thailand`, label: '🇹🇭 Thailand Visa' },

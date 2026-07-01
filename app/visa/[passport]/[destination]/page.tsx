@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { hasConflictingStatus } from '@/lib/visa/detectConflict'
 import VisaPageClient, { type VisaRecord } from './VisaPageClient'
 
@@ -66,6 +66,18 @@ const NAME_FLAG_MAP: Record<string, string> = {
 
 function resolveFlag(slug: string, name: string): string {
   return COUNTRY_MAP[slug]?.flag ?? NAME_FLAG_MAP[name.toLowerCase()] ?? '🌍'
+}
+
+// Short display names used ONLY in <title> so long country pairs stay under the
+// ~60-char SERP truncation point ("United Kingdom" alone burns 14 chars).
+const TITLE_SHORT_NAMES: Record<string, string> = {
+  'united states': 'US',
+  'united states of america': 'US',
+  'united kingdom': 'UK',
+  'united arab emirates': 'UAE',
+}
+function titleName(name: string): string {
+  return TITLE_SHORT_NAMES[name.toLowerCase()] ?? name
 }
 
 // ─── Supabase ──────────────────────────────────────────────────────────────────
@@ -181,7 +193,9 @@ export async function generateMetadata({
   const processing = (primary?.processing_time ?? '').toString().trim()
   const procText   = processing ? ` · Processing: ${processing}` : ''
 
-  const title       = `${destinationName} Visa Requirements for ${passportName} Passport Holders (2026) | VisitPlane`
+  // ≤60 chars: no "| VisitPlane" suffix (it truncated ~90% of these titles in
+  // SERPs) and short names for long countries. Keyword phrase kept intact.
+  const title       = `${titleName(destinationName)} Visa Requirements for ${titleName(passportName)} Citizens (2026)`
   const description = `${passportName} passport holders visiting ${destinationName}: ${visaType}${feeText}${procText}. Complete document checklist, step-by-step application guide, and official sources. Updated June 2026.`
   const canonical   = `https://www.visitplane.com/visa/${encodeURIComponent(passportSlug)}/${encodeURIComponent(destinationSlug)}`
 
@@ -238,6 +252,24 @@ export default async function VisaResultPage({
     notFound() // real 404 — invalid pair / no visa record exists for this route
   }
   const allVisaData: VisaRecord[] = visaResult.rows
+
+  // ── Case-canonicalisation guard ─────────────────────────────────────────────
+  // The ilike lookup above is case-INsensitive, so /visa/pakistan/turkey and
+  // /visa/PAKISTAN/TURKEY would otherwise render as indexable, self-canonical
+  // 200 duplicates of /visa/Pakistan/Turkey. The DB row spelling is the single
+  // canonical casing (the sitemap builds URLs from these same rows) — any other
+  // casing gets a 301 to it.
+  if (allVisaData.length > 0) {
+    const canonicalPassport    = (allVisaData[0].passport_country ?? passportName).toString().trim()
+    const canonicalDestination = (allVisaData[0].country_name ?? destinationName).toString().trim()
+    if (
+      (canonicalPassport !== passportName || canonicalDestination !== destinationName) &&
+      canonicalPassport.toLowerCase() === passportName.toLowerCase().trim() &&
+      canonicalDestination.toLowerCase() === destinationName.toLowerCase().trim()
+    ) {
+      permanentRedirect(`/visa/${encodeURIComponent(canonicalPassport)}/${encodeURIComponent(canonicalDestination)}`)
+    }
+  }
 
   // Secondary, best-effort fetches — never block the page or affect the status code.
   let relatedDestinations: string[] = []

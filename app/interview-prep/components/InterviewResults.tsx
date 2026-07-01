@@ -43,7 +43,7 @@ export default function InterviewResults({ country, visaType, questionCount, onR
   const focusAreas = FOCUS_AREAS[visaType] ?? FOCUS_AREAS.Tourist
 
   const handleWhatsApp = () => {
-    const text = encodeURIComponent(`🎉 I just scored ${score}% on my ${country} ${visaType} visa interview prep!\n\nPractice yours free: https://visitplane.com/interview-prep`)
+    const text = encodeURIComponent(`🎉 I just scored ${score}% on my ${country} ${visaType} visa interview prep!\n\nPractice yours free: https://www.visitplane.com/interview-prep`)
     window.open(`https://wa.me/?text=${text}`, '_blank')
   }
 

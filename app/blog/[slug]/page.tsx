@@ -64,9 +64,10 @@ export async function generateMetadata({
   const tags = getPostTags(post)
 
   return {
-    // Concise brand suffix (was " — VisitPlane Visa Blog", 23 chars) so the
-    // query-matched hook in post.title isn't truncated past the SERP limit.
-    title: `${post.title} | VisitPlane`,
+    // No brand suffix: post titles are written to the ~60-char SERP limit, and
+    // even " | VisitPlane" (13 chars) truncated most of them. Google appends
+    // the site name to SERP titles on its own.
+    title: post.title,
     description: post.excerpt.slice(0, 155),
     alternates: { canonical },
     // Sprint 5 content prune: dead doorway clones are de-indexed (reversible —
