@@ -219,9 +219,13 @@ export async function generateMetadata({
 
   const title = `Visa Requirements for ${passportName} Citizens Traveling to ${destinationName} (${year})`
   const description = `Complete ${year} visa guide for ${passportName} passport holders visiting ${destinationName}. Exact fees, processing times, required documents, application steps, and official sources. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`
-  // Lowercase the slug echo — lookups are case-insensitive, so an uppercase URL
-  // variant would otherwise self-canonicalise as a duplicate.
-  const canonical = `https://www.visitplane.com/visa-requirements-for-${passportSlug.toLowerCase()}-citizens-to-${destinationSlug.toLowerCase()}`
+  // Canonicalise to the RESOLVED forms (nationality + destination slug — the
+  // exact forms the sitemap emits), not the raw slug echo: the lookups accept
+  // several slug variants (country-name slugs, case variants), and echoing them
+  // self-canonicalised each variant as a separate page.
+  const canonical = passportCountry && destinationCountry
+    ? `https://www.visitplane.com/visa-requirements-for-${passportCountry.nationality}-citizens-to-${destinationCountry.slug}`
+    : `https://www.visitplane.com/visa-requirements-for-${passportSlug.toLowerCase()}-citizens-to-${destinationSlug.toLowerCase()}`
 
   return {
     title,

@@ -16,6 +16,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import VisaRequirementsBlock, { type VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
 import TripEssentials from '@/components/affiliate/TripEssentials'
+import { BY_SLUG } from '@/lib/seo/countries'
+import { getRelatedPassportLinks, getRelatedDestinationLinks } from '@/lib/seo/internalLinks'
 
 // ISR: 24h edge cache per route. Empty generateStaticParams prevents Next 16
 // from prerendering an empty-param shell at build (which crashed the build on
@@ -382,7 +384,7 @@ export default async function LongFormVisaPage({
               className="rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-sm text-teal-700 hover:bg-teal-100 transition">
               Quick Visa Check Tool →
             </Link>
-            <Link href={`/visa-free-countries-for-${passportSlug}-passport`}
+            <Link href={`/visa-free-countries-for-${BY_SLUG[passportSlug.toLowerCase()]?.nationality ?? passportSlug.toLowerCase()}-passport`}
               className="rounded-full border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-700 hover:bg-green-100 transition">
               Visa-Free Countries for {passportName} →
             </Link>
@@ -400,6 +402,43 @@ export default async function LongFormVisaPage({
             </Link>
           </div>
         </div>
+
+        {/* Bidirectional cluster links — same-passport routes + same-destination
+            nationalities (the hub-and-spoke blocks that build topical authority;
+            previously this template was link-poor) */}
+        {(() => {
+          const ppCountry   = BY_SLUG[passportSlug.toLowerCase()]
+          const destCountry = BY_SLUG[destinationSlug.toLowerCase()]
+          if (!ppCountry || !destCountry) return null
+          const samePassport    = getRelatedPassportLinks(ppCountry.nationality, ppCountry.continent, destCountry.slug, 5)
+          const sameDestination = getRelatedDestinationLinks(destCountry.slug, destCountry.name, ppCountry.nationality)
+          return (
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 mb-12">
+              <div className="grid gap-8 sm:grid-cols-2">
+                <div>
+                  <h3 className="font-bold text-[#1F2937] mb-3">More destinations for {ppCountry.name} citizens</h3>
+                  <ul className="space-y-2">
+                    {samePassport.map((l) => (
+                      <li key={l.href}>
+                        <Link href={l.href} className="text-sm text-teal-700 hover:underline">{l.label}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#1F2937] mb-3">{destCountry.name} visas for other nationalities</h3>
+                  <ul className="space-y-2">
+                    {sameDestination.map((l) => (
+                      <li key={l.href}>
+                        <Link href={l.href} className="text-sm text-teal-700 hover:underline">{l.label}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
 
         {/* FAQ section */}
         <div>

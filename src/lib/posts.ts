@@ -29,6 +29,72 @@ export interface BlogPost {
 }
 
 export const blogPosts: BlogPost[] = [
+  // ── SEO probe: Nigeria-outbound deep cluster (2026-07-02) ────────────────────
+  {
+    slug: 'dubai-visa-for-nigerians-2026',
+    title: 'Dubai Visa for Nigerians (2026): Fees, Requirements & Time',
+    date: '2026-07-02',
+    excerpt:
+      'How Nigerians actually get a Dubai visa in 2026 — the sponsor/agency system explained, 30 vs 60-day fees in AED and naira, documents, processing time and refusal traps.',
+    category: 'Visa Guides',
+    readTime: '12 min read',
+    coverEmoji: '🇦🇪',
+    passportCountry: 'Nigeria',
+    destinationCountry: 'United Arab Emirates',
+    visaLink: '/visa/Nigeria/United%20Arab%20Emirates',
+    ctaTitle: 'Check Nigeria to UAE Visa Requirements',
+    faqs: [
+      { q: 'How much is Dubai visa from Nigeria?', a: 'As of mid-2026, a 30-day tourist visa is commonly around AED 350 (~USD 95, roughly NGN 145,000) and a 60-day around AED 650 (~USD 175, roughly NGN 270,000), before sponsor service charges. All-in agent packages cost more, and exchange rates move — confirm the total with your sponsor before paying.' },
+      { q: 'Can Nigerians apply for a UAE visa online by themselves?', a: 'Not directly. There is no open public tourist eVisa portal for Nigerian applicants — applications are submitted by a sponsor: an airline (Emirates, flydubai, Air Arabia), a hotel, a licensed UAE travel agency, or a UAE resident host. The approved visa arrives as a PDF by email.' },
+      { q: 'How long does a Dubai visa take for Nigerians?', a: 'Typically 3–7 working days, but Nigerian applications can be routed into additional security screening that adds days or occasionally weeks. Apply at least two to three weeks before travel and keep bookings refundable until the visa is issued.' },
+      { q: 'Why was the UAE not giving Nigerians visas?', a: 'The UAE suspended most visa issuance for Nigerians in late 2022 during a diplomatic dispute, and Emirates halted Nigeria flights. Visas and direct flights resumed in 2024 with tighter documentation standards — much online information still dates from the suspension era.' },
+      { q: 'What documents do I need for a Dubai visa from Nigeria?', a: 'A passport valid 6+ months, a clear bio-page scan, a white-background photo, confirmed return flights, accommodation proof, and bank statements (commonly 3–6 months) showing stable funds. Sponsors may also ask for employment or business evidence.' },
+      { q: 'Why do Dubai visas get rejected for Nigerians?', a: 'Common reasons: weak or suspicious bank statements, incomplete or inconsistent documents, previous UAE overstays or fines, first-time travellers with no employment evidence, and applications lodged through unregistered agents. A refusal is not a ban — fix the weakness and reapply.' },
+    ],
+  },
+  {
+    slug: 'turkey-visa-for-nigerian-citizens-2026',
+    title: 'Turkey Visa for Nigerian Citizens (2026): e-Visa & Fees',
+    date: '2026-07-02',
+    excerpt:
+      'Can Nigerians get the Turkey e-Visa? Only conditionally — with a valid Schengen, US, UK or Irish visa. This 2026 guide covers both routes, fees in USD and naira, documents and timing.',
+    category: 'Visa Guides',
+    readTime: '12 min read',
+    coverEmoji: '🇹🇷',
+    passportCountry: 'Nigeria',
+    destinationCountry: 'Turkey',
+    visaLink: '/visa/Nigeria/Turkey',
+    ctaTitle: 'Check Nigeria to Turkey Visa Requirements',
+    faqs: [
+      { q: 'Can a Nigerian get a Turkey e-Visa?', a: 'Only conditionally. Nigerians qualify for a single-entry 30-day e-Visa on evisa.gov.tr if they hold a valid visa or residence permit from a Schengen country, the USA, the UK or Ireland, and meet the portal’s conditions (approved airline, hotel booking, sufficient funds). Without that supporting document, you need a sticker visa from the embassy.' },
+      { q: 'How much is Turkey visa fee in Nigeria?', a: 'The conditional e-Visa costs approximately USD 60 (roughly NGN 90,000 at mid-2026 rates) on the official portal. The embassy sticker-visa route typically lands around USD 250 all told, plus service charges and mandatory travel insurance. Fees change — confirm on evisa.gov.tr or with the consulate.' },
+      { q: 'How long does a Turkey visa take for Nigerians?', a: 'The conditional e-Visa is often approved within minutes to 24 hours. The sticker visa typically takes 15–21 working days, plus time to secure an appointment in Lagos or Abuja — apply 4–6 weeks before travel at minimum.' },
+      { q: 'What documents do Nigerians need for a Turkey visa?', a: 'For the sticker visa: a passport valid 6+ months, application form, biometric photos, refundable flight reservation, hotel bookings, 3–6 months of bank statements, an employment letter or business records, and travel insurance valid in Turkey. The consulate can request more at its discretion.' },
+      { q: 'Does an expired UK or US visa qualify me for the Turkey e-Visa?', a: 'No. The supporting Schengen, US, UK or Irish visa or residence permit must still be valid — and electronic visas generally do not satisfy the condition. If in doubt, apply through the embassy sticker-visa route instead.' },
+    ],
+  },
+  {
+    slug: 'canada-visa-for-nigerians-requirements-2026',
+    title: 'Canada Visitor Visa for Nigerians (2026): Fees & Process',
+    date: '2026-07-02',
+    excerpt:
+      'The honest 2026 guide to the Canada visitor visa (TRV) from Nigeria — IRCC’s online process, biometrics at VFS Lagos/Abuja, proof of funds, realistic timelines and why applications get refused.',
+    category: 'Visa Guides',
+    readTime: '13 min read',
+    coverEmoji: '🇨🇦',
+    passportCountry: 'Nigeria',
+    destinationCountry: 'Canada',
+    visaLink: '/visa/Nigeria/Canada',
+    ctaTitle: 'Check Nigeria to Canada Visa Requirements',
+    faqs: [
+      { q: 'How much is Canada visitor visa fee from Nigeria?', a: 'CAD 100 for the visitor visa (TRV) plus CAD 85 for biometrics — about USD 135 combined, roughly NGN 205,000 at mid-2026 exchange rates. Families applying together pay a maximum of CAD 170 for biometrics. Fees are processing fees and are not refunded on refusal — confirm current amounts on canada.ca.' },
+      { q: 'How long does Canada visa take in Nigeria?', a: 'It varies widely — from a few weeks to several months — depending on volumes, season and case complexity, and the Lagos office has carried well-documented backlogs. Check IRCC’s live processing-times tool for visitor visas from Nigeria on the day you apply, and never book non-refundable travel before approval.' },
+      { q: 'How much bank balance do I need for a Canada visitor visa?', a: 'IRCC publishes no fixed amount. Officers look for 4–6 months of stable statements that plausibly cover flights, accommodation and daily costs without draining your savings. Sudden unexplained deposits are a classic red flag — if funds genuinely arrived, document the source.' },
+      { q: 'Why is Canada refusing Nigerian visitor visas?', a: 'The most common grounds are weak ties to Nigeria (the officer isn’t satisfied you will leave Canada), insufficient or implausible funds, an unclear purpose of visit, and limited travel history. You can request the officer’s GCMS notes to see the exact reasoning, then fix that weakness and reapply.' },
+      { q: 'Where do I give biometrics for a Canada visa in Nigeria?', a: 'At a VFS Global visa application centre in Lagos or Abuja, within 30 days of receiving IRCC’s biometrics instruction letter. VFS only collects biometrics and handles passports — it does not decide applications.' },
+      { q: 'Can I visit Canada and then convert to study or work?', a: 'A visitor visa is for visits up to six months and is not a path to working. Study programmes over six months need a study permit — a separate application with different requirements. Treat any agent selling a “visit first, convert later” scheme as a red flag.' },
+    ],
+  },
   // ── SEO probe: US / UK / India passport-holder cluster (2026-07-02) ──────────
   {
     slug: 'visa-free-countries-for-us-citizens-2026',
@@ -10125,21 +10191,23 @@ export const blogPosts: BlogPost[] = [
   {
     slug: '15-cheapest-countries-to-visit-from-nigeria-in-2026',
     title: '15 Cheapest Countries to Visit from Nigeria in 2026',
-    date: '2026-06-15',
+    date: '2026-07-02',
     excerpt:
-      'The fifteen cheapest countries to visit from Nigeria in 2026 — where flights and daily costs are lowest, what to see, and how to check the visa for your passport.',
+      'Fifteen genuinely affordable trips for Nigerian passport holders in 2026 — ranked by visa cost and ease of entry, from free ECOWAS neighbours to Rwanda, Kenya and the Maldives.',
     category: 'Travel Tips',
-    readTime: '11 min read',
+    readTime: '13 min read',
     coverEmoji: '💸',
     passportCountry: 'Nigeria',
-    destinationCountry: 'Turkey',
+    destinationCountry: 'Ghana',
     visaLink: '/wizard',
     ctaTitle: 'Check your visa with the VisitPlane Wizard',
     faqs: [
-      { q: 'How do I choose a destination?', a: 'Match your interest with flight cost, the visa route for your Nigerian passport, and the season you can travel.' },
-      { q: 'Are these visa-free for my passport?', a: 'Not necessarily — visa rules differ by nationality and change often. Confirm each with the VisitPlane Wizard before booking.' },
-      { q: 'How do I keep costs down?', a: 'Travel off-peak, fly midweek, book early, stay outside the centre, and eat where locals eat.' },
-      { q: 'What order should I plan in?', a: 'Decide, verify the visa for your passport, then book — keeping bookings refundable until any visa is secured.' },
+      { q: 'What is the cheapest country to travel to from Nigeria?', a: 'Benin Republic — it is visa-free under ECOWAS and reachable by road from Lagos through the Seme border, so there is no visa fee and no flight cost. Togo and Ghana follow closely on the same visa-free, low-cost logic.' },
+      { q: 'Which countries can Nigerians visit without a visa?', a: 'All ECOWAS states (including Ghana, Benin, Togo, Côte d’Ivoire, Senegal, The Gambia and Cabo Verde) are visa-free for Nigerians, and Rwanda admits African nationals visa-free. Barbados has a visa-waiver arrangement with Nigeria, and São Tomé & Príncipe allows short visa-free stays. Rules change — confirm each route before booking.' },
+      { q: 'Do Nigerians need a visa for Kenya?', a: 'Kenya replaced visas with an electronic travel authorisation (eTA) in 2024, then moved to waive the fee for most African nationals, including Nigerians, for stays of up to about two months. The rules have changed more than once — confirm on the official portal, etakenya.go.ke, before travelling.' },
+      { q: 'Is Dubai cheap to visit from Nigeria?', a: 'It is the priciest pick on our list: the visa is sponsor-applied at roughly AED 350 for 30 days plus service fees, and daily costs are high. Direct flights and stopover deals help, but for pure value the visa-free ECOWAS and East African options win comfortably.' },
+      { q: 'Can Nigerians get a visa on arrival in the Maldives?', a: 'Yes — the Maldives grants all nationalities, including Nigerians, a free 30-day visa on arrival, with proof of accommodation, funds and onward travel plus the pre-arrival traveller declaration. Check your transit airport’s rules, as Gulf and European layovers may need a transit visa.' },
+      { q: 'How do I keep travel costs down from Nigeria?', a: 'Book flights early and midweek, travel in shoulder season, favour guesthouses and local food, and never pay twice for a visa: prepare applications properly the first time, and where entry is visa-free, don’t let an agent charge you for a visa that doesn’t exist.' },
     ],
   },
   {

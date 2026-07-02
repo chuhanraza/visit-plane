@@ -56,7 +56,9 @@ export function getCrossTemplateLinks(
 
   if (currentTemplate !== 4) {
     links.push({
-      href: `/${destinationSlug}-visa-guide-for-${passportNationality}s`,
+      // Non-plural nationality — this is the canonical form the sitemap emits;
+      // the plural variant resolves too but self-canonicalises as a duplicate.
+      href: `/${destinationSlug}-visa-guide-for-${passportNationality}`,
       label: `${destinationSlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} Complete Visa Guide`,
       type: 'cross-template',
       relevanceScore: 90,

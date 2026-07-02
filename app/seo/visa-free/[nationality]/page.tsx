@@ -113,7 +113,9 @@ export async function generateMetadata({
   const year = new Date().getFullYear()
   const title = `Visa-Free Countries for ${country.name} Passport Holders (${year})`
   const description = `Complete ${year} list: all countries ${country.name} passport holders can visit visa-free, visa on arrival, and with eVisa. Sortable by region, fee, and entry type. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`
-  const canonical = `https://www.visitplane.com/visa-free-countries-for-${nationality.toLowerCase()}-passport`
+  // Resolved nationality = the form the sitemap emits; the lookup also accepts
+  // country-name slugs, which would otherwise self-canonicalise as duplicates.
+  const canonical = `https://www.visitplane.com/visa-free-countries-for-${country.nationality}-passport`
 
   return {
     title,

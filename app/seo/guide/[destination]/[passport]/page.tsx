@@ -203,9 +203,10 @@ export async function generateMetadata({
   const year = new Date().getFullYear()
   const title = `${destinationCountry.name} Visa Guide for ${passportCountry.nounPlural} (${year}) — Complete Handbook`
   const description = `Everything ${passportCountry.nounPlural} need to know about getting a ${destinationCountry.name} visa in ${year}: types, fees, documents, application walkthrough, real timelines, and what to do if rejected.`
-  // Lowercased: lookups are case-insensitive, so an uppercase URL variant would
-  // otherwise self-canonicalise as a duplicate.
-  const canonical = `https://www.visitplane.com/${destinationSlug.toLowerCase()}-visa-guide-for-${passportNounSlug.toLowerCase()}`
+  // Canonicalise to the RESOLVED forms (the sitemap emits destination slug +
+  // nationality adjective) — the lookup also accepts plural noun slugs
+  // ("pakistanis"), which would otherwise self-canonicalise as duplicates.
+  const canonical = `https://www.visitplane.com/${destinationCountry.slug}-visa-guide-for-${passportCountry.nationality}`
 
   return {
     title,

@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { BY_NATIONALITY } from '@/lib/seo/countries'
+import { getRelatedPassportLinks } from '@/lib/seo/internalLinks'
 
 // ISR: 24h edge cache per page. Empty generateStaticParams avoids the Next 16
 // empty-param prerender crash while letting rendered pages be cached.
@@ -240,7 +242,7 @@ export default async function VisaRequirementsForNationalityPage({
               className="rounded-full border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-700 hover:bg-green-100 transition">
               Visa-Free Countries →
             </Link>
-            <Link href={`/cheapest-visa-from-${nationality}-passport`}
+            <Link href={`/cheapest-visas-from-${nationality.toLowerCase()}-passport`}
               className="rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-700 hover:bg-amber-100 transition">
               Cheapest Visa Destinations →
             </Link>
@@ -254,6 +256,26 @@ export default async function VisaRequirementsForNationalityPage({
             </Link>
           </div>
         </div>
+
+        {/* Same-passport cluster links — deep-links into the T1 requirement pages
+            (this template previously linked only to tools/hubs) */}
+        {(() => {
+          const ppCountry = BY_NATIONALITY[nationality.toLowerCase()]
+          if (!ppCountry) return null
+          const routeLinks = getRelatedPassportLinks(ppCountry.nationality, ppCountry.continent, '', 6)
+          return (
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 mt-6">
+              <h3 className="font-bold text-[#1F2937] mb-3">Popular visa guides for {country} citizens</h3>
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {routeLinks.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-sm text-teal-700 hover:underline">{l.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        })()}
 
         {/* FAQ */}
         <div className="mt-12">

@@ -84,7 +84,9 @@ export async function generateMetadata({
   const year = new Date().getFullYear()
   const title = `Cheapest Visa Destinations for ${country.name} Passport Holders (${year})`
   const description = `Top 30 cheapest countries to visit on a ${country.name} passport, sorted by visa fee. Includes free-entry destinations, cheap visa on arrival, and affordable eVisa options. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`
-  const canonical = `https://www.visitplane.com/cheapest-visas-from-${nationality.toLowerCase()}-passport`
+  // Resolved country slug = the form the sitemap emits; the lookup also accepts
+  // nationality-adjective slugs, which would otherwise self-canonicalise.
+  const canonical = `https://www.visitplane.com/cheapest-visas-from-${country.slug}-passport`
 
   return {
     title,
