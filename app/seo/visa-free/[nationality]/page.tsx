@@ -12,19 +12,12 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BY_NATIONALITY, BY_SLUG, COUNTRIES } from '@/lib/seo/countries'
 
-// Render on demand instead of prerendering at build (avoids Next 16 prerender
-// crashes on occasional null/dirty Supabase rows).
-export const dynamic = 'force-dynamic'
-
-// ── Static params for top passports ──────────────────────────────────────────
+// ISR: 24h edge cache per page. Empty generateStaticParams = nothing prerenders
+// at build (build-time prerender crashed Next 16 on occasional null/dirty
+// Supabase rows); pages generate on first request and are then served cached.
+export const revalidate = 86400
 export async function generateStaticParams() {
-  return [
-    'pakistani','indian','bangladeshi','nigerian','indonesian','filipino','egyptian',
-    'turkish','iranian','vietnamese','british','american','german','french','canadian',
-    'australian','chinese','japanese','south-korean','saudi','emirati','qatari',
-    'kenyan','ethiopian','south-african','moroccan','sri-lankan','nepali','malaysian',
-    'thai','singaporean','brazilian','argentinian','mexican',
-  ].map(nationality => ({ nationality }))
+  return []
 }
 
 function getSupabase() {

@@ -9,7 +9,8 @@ import { redirectedSlugSet } from '@/lib/data/blogRedirectSlugs'
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const dynamic = 'force-dynamic'
+// ISR only — force-dynamic previously overrode revalidate, so every sitemap
+// fetch ran the full multi-query DB enumeration live.
 export const revalidate = 86400 // re-generate once per day
 
 // Slug-ify a country name for programmatic SEO URLs
@@ -228,21 +229,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority:        0.85,
     }))
 
+    // T2/T3 pages notFound() when the passport has zero `destinations` rows, so
+    // only emit them for passports that actually have data — same match the
+    // pages themselves use (case-insensitive name equality). Emitting all 140
+    // countries unconditionally put guaranteed-404 URLs in the sitemap.
+    const passportsWithData = new Set(legacyPassports.map((p) => (p ?? '').toLowerCase()))
+
     // Template 2: /visa-free-countries-for-{nationality}-passport
-    const template2Pages: MetadataRoute.Sitemap = COUNTRIES.map((c) => ({
-      url:             `${base}/visa-free-countries-for-${c.nationality}-passport`,
-      lastModified:    LASTMOD,
-      changeFrequency: 'weekly' as const,
-      priority:        getSitemapPriority(2, c.iso3),
-    }))
+    const template2Pages: MetadataRoute.Sitemap = COUNTRIES
+      .filter((c) => passportsWithData.has(c.name.toLowerCase()))
+      .map((c) => ({
+        url:             `${base}/visa-free-countries-for-${c.nationality}-passport`,
+        lastModified:    LASTMOD,
+        changeFrequency: 'weekly' as const,
+        priority:        getSitemapPriority(2, c.iso3),
+      }))
 
     // Template 3: /cheapest-visas-from-{slug}-passport
-    const template3Pages: MetadataRoute.Sitemap = COUNTRIES.map((c) => ({
-      url:             `${base}/cheapest-visas-from-${c.slug}-passport`,
-      lastModified:    LASTMOD,
-      changeFrequency: 'weekly' as const,
-      priority:        getSitemapPriority(3, c.iso3),
-    }))
+    const template3Pages: MetadataRoute.Sitemap = COUNTRIES
+      .filter((c) => passportsWithData.has(c.name.toLowerCase()))
+      .map((c) => ({
+        url:             `${base}/cheapest-visas-from-${c.slug}-passport`,
+        lastModified:    LASTMOD,
+        changeFrequency: 'weekly' as const,
+        priority:        getSitemapPriority(3, c.iso3),
+      }))
 
     // Template 4: /{destination}-visa-guide-for-{nationality}
     // NOTE: Use nationality adjective (URL-safe), NOT nounPlural which contains spaces.

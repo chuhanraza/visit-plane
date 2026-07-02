@@ -4,8 +4,15 @@ import { notFound, permanentRedirect } from 'next/navigation'
 import { hasConflictingStatus } from '@/lib/visa/detectConflict'
 import VisaPageClient, { type VisaRecord } from './VisaPageClient'
 
-// Force dynamic rendering — always fetch fresh data from Supabase
-export const dynamic = 'force-dynamic'
+// ISR: cache each rendered pair for 24h at the edge (visa data changes rarely;
+// the old force-dynamic made every visit + every Googlebot crawl a live
+// Supabase render at 0.5–1.3s TTFB). Empty generateStaticParams = nothing is
+// prerendered at build (avoids the Next 16 empty-param-shell build crash);
+// pages generate on first request and are then served cached.
+export const revalidate = 86400
+export async function generateStaticParams() {
+  return []
+}
 
 // ─── Country lookup (by 2-letter code) ────────────────────────────────────────
 const COUNTRY_MAP: Record<string, { name: string; flag: string }> = {

@@ -21,6 +21,10 @@ export const dynamic = 'force-dynamic'   // never statically cache the route its
 
 const VARIANT_OFFSET: Record<string, number> = { hero: 0, card: 1, inline: 2, alt: 3 }
 
+// Width per variant — cards/inlines were shipping the full 1600px JPEG (~500KB
+// each; the /blog listing weighed 8.3MB). Pexels CDN resizes via the w= param.
+const VARIANT_WIDTH: Record<string, number> = { hero: 1600, card: 800, inline: 1000, alt: 800 }
+
 /**
  * Verified Pexels photo IDs of each destination's most famous sightseeing
  * landmarks. Each ID was confirmed to return real image bytes via the canonical
@@ -130,13 +134,14 @@ export async function GET(request: Request) {
 
   // ── 1. Curated landmark photo (key-independent, always available) ──────────
   const key = destination.trim().toLowerCase()
+  const width = VARIANT_WIDTH[v] ?? 1600
   const ids = LANDMARKS[key] ?? (destination ? DEFAULT_LANDMARKS : null)
   if (ids && ids.length > 0) {
     // Deterministic per (destination, variant) so each variant differs but is stable.
     const idx = (hash(key) + offset) % ids.length
     const ordered = [ids[idx], ...ids.filter((_, i) => i !== idx)]
     for (const id of ordered) {
-      const res = await proxyImage(pexelsCdnUrl(id))
+      const res = await proxyImage(pexelsCdnUrl(id, width))
       if (res) {
         console.log(`[photo] curated dest="${destination}" v=${v} id=${id}`)
         return res
@@ -159,7 +164,11 @@ export async function GET(request: Request) {
       }
       if (photos && photos.length > 0) {
         const idx = (hash(slug || query) + offset) % photos.length
-        const res = await proxyImage(photos[idx])
+        // Pexels CDN URLs honour w= — downsize to the variant width when possible.
+        const sized = photos[idx].includes('images.pexels.com')
+          ? photos[idx].replace(/([?&])w=\d+/, `$1w=${width}`)
+          : photos[idx]
+        const res = await proxyImage(sized)
         if (res) return res
       }
     } catch {

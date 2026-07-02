@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { rateLimit, clientKey } from '@/lib/rateLimit'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,6 +9,11 @@ const supabase = createClient(
 
 export async function POST(req: NextRequest) {
   try {
+    // Unauthenticated service-role insert — cap the spam surface.
+    if (!rateLimit(clientKey(req, 'report-correction'), 5, 10 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Too many reports — try again later' }, { status: 429 })
+    }
+
     const body = await req.json()
     const { visa_req_id, passport_iso, destination_iso, purpose, what_is_wrong, corrected_value, source_url } = body
 

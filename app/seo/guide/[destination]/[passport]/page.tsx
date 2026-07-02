@@ -18,12 +18,16 @@ import {
 } from '@/lib/seo/countries'
 import type { VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
 
-// Render on demand instead of prerendering at build (avoids Next 16 prerender
-// crashes on occasional null/dirty Supabase rows).
-export const dynamic = 'force-dynamic'
-
-// ── Static params (top 50 routes at build time) ───────────────────────────────
+// ISR: 24h edge cache per page. Empty generateStaticParams = nothing prerenders
+// at build (build-time prerender crashed Next 16 on occasional null/dirty
+// Supabase rows); pages generate on first request and are then served cached.
+export const revalidate = 86400
 export async function generateStaticParams() {
+  return []
+}
+
+// Top routes list (reference only — previously build-time prerendered).
+function topRoutesReference() {
   return [
     { destination: 'uae',           passport: 'pakistanis' },
     { destination: 'uae',           passport: 'indians' },
@@ -77,6 +81,7 @@ export async function generateStaticParams() {
     { destination: 'indonesia',     passport: 'pakistanis' },
   ]
 }
+void topRoutesReference
 
 // ── Supabase ───────────────────────────────────────────────────────────────────
 function getSupabase() {

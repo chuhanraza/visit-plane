@@ -17,14 +17,17 @@ import { COUNTRIES, BY_NATIONALITY, BY_SLUG, resolveCountry, OFFICIAL_VISA_PORTA
 import type { VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
 
 // ── ISR ────────────────────────────────────────────────────────────────────────
-// Render on demand instead of prerendering at build (avoids Next 16 prerender
-// crashes on occasional null/dirty Supabase rows).
-export const dynamic = 'force-dynamic'
+// 24h edge cache per route. Nothing is prerendered at build (topRoutes below is
+// kept for reference but NOT returned — build-time prerender crashed Next 16 on
+// occasional null/dirty Supabase rows); every route generates on first request.
+export const revalidate = 86400
 
-// ── Static params for top 50 routes (build-time) ─────────────────────────────
 export async function generateStaticParams() {
-  // Build-time: generate top 50 routes
-  // Remaining routes handled by ISR on first request
+  return []
+}
+
+// Top-50 routes list (reference only — previously build-time prerendered).
+function topRoutesReference() {
   const topRoutes: Array<{ passport: string; destination: string }> = [
     { passport: 'pakistani',   destination: 'uae' },
     { passport: 'pakistani',   destination: 'saudi-arabia' },
@@ -78,6 +81,7 @@ export async function generateStaticParams() {
   ]
   return topRoutes
 }
+void topRoutesReference
 
 // ── Supabase ───────────────────────────────────────────────────────────────────
 function getSupabase() {

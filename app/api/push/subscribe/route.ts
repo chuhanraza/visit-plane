@@ -23,6 +23,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit, clientKey } from '@/lib/rateLimit'
 import { createClient } from '@supabase/supabase-js';
 
 function getSupabase() {
@@ -37,6 +38,11 @@ function getSupabase() {
 // ── POST — store subscription ─────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
+    // Unauthenticated insert — cap the spam surface.
+    if (!rateLimit(clientKey(req, 'push-subscribe'), 10, 10 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Too many attempts' }, { status: 429 });
+    }
+
     const body = await req.json();
     const { subscription, country, userId } = body as {
       subscription: { endpoint: string; keys: { p256dh: string; auth: string } };

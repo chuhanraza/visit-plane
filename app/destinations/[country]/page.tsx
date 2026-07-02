@@ -15,15 +15,13 @@ function findCountry(slug: string) {
   )
 }
 
-// ─── Static params (all 197 countries) ────────────────────────────────────────
-
+// ISR: 24h edge cache per hub. Empty generateStaticParams = nothing prerenders
+// at build (build-time prerender crashed Next 16 on occasional null/dirty
+// Supabase rows); hubs generate on first request and are then served cached.
+export const revalidate = 86400
 export async function generateStaticParams() {
-  return ALL_COUNTRIES.map((c) => ({ country: c.name }))
+  return []
 }
-
-// Render on demand instead of prerendering at build (avoids Next 16 prerender
-// crashes on occasional null/dirty Supabase rows).
-export const dynamic = 'force-dynamic'
 
 // ─── SEO metadata ─────────────────────────────────────────────────────────────
 

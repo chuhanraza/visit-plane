@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit, clientKey } from '@/lib/rateLimit'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { recordEvent } from '@/lib/admin/events'
@@ -97,6 +98,11 @@ function buildEmailHtml(answers: WizardAnswers, visaData: VisaData): string {
 
 export async function POST(req: NextRequest) {
   try {
+    // Email-sending endpoint — cap the spam/cost surface.
+    if (!rateLimit(clientKey(req, 'wizard-email'), 5, 10 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Too many attempts — try again later.' }, { status: 429 })
+    }
+
     const { email, answers, visaData, consent } = (await req.json()) as {
       email: string
       answers: WizardAnswers

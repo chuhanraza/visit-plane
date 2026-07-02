@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit, clientKey } from '@/lib/rateLimit'
 import { createClient } from '@supabase/supabase-js'
 import { randomBytes } from 'crypto'
 import { recordEvent } from '@/lib/admin/events'
@@ -119,6 +120,11 @@ async function sendConfirmationEmail(
 
 export async function POST(req: NextRequest) {
   try {
+    // Email-sending endpoint — cap the spam/cost surface.
+    if (!rateLimit(clientKey(req, 'subscribe'), 5, 10 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Too many attempts — try again later.' }, { status: 429 })
+    }
+
     const body = await req.json().catch(() => ({}))
     const { email, passport, destination, captured_from, consent, lead_magnet } = body as Record<string, string | boolean>
 

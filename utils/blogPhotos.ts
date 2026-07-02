@@ -60,7 +60,8 @@ void pexelsUrl
 // image otherwise — so blog images always render.
 
 // Bump CB to bust CDN/browser caches of previously-cached image responses.
-const CB = '6'
+// 7: variant-sized images (card/inline no longer ship the 1600px original).
+const CB = '7'
 
 /** Full-width hero image. */
 export function getBlogHeroImage(slug: string): string {

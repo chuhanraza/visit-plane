@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
+import enMessages from "@/messages/en.json";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
 import CommandPalette from "@/components/layout/CommandPalette";
@@ -26,8 +26,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
 });
-
-const RTL_LOCALES = ["ar", "ur"];
 
 // ─── 1. Metadata ──────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
@@ -187,17 +185,21 @@ const webAppSchema = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
 
-export default async function RootLayout({
+// Locale is fixed to English at the server layer. The old getLocale()/
+// getMessages() calls read the NEXT_LOCALE cookie on EVERY request, which
+// forced every route in the app — including ~2,000 SEO pages — to render
+// dynamically (cache-control: no-store, x-vercel-cache: MISS, 0.5–1.3s TTFB).
+// The language switcher is currently disabled (single locale), and the non-en
+// message files only ever covered the homepage shell, so nothing user-visible
+// depends on request-time locale. When real localization ships, use locale
+// path prefixes (/ur/...) instead of a cookie so pages stay cacheable.
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const locale = await getLocale();
-  const messages = await getMessages();
-  const dir = RTL_LOCALES.includes(locale) ? "rtl" : "ltr";
-
   return (
     <html
-      lang={locale}
-      dir={dir}
+      lang="en"
+      dir="ltr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
@@ -247,7 +249,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-[#FAFAFA]">
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale="en" messages={enMessages}>
           <CommandPaletteProvider>
             <ChromeGate><SiteHeader /></ChromeGate>
             <ChromeGate><CommandPalette /></ChromeGate>

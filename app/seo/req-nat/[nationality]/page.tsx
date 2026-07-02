@@ -3,8 +3,12 @@ import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-// DB/param-dependent route — render on demand (avoids Next 16 empty-param prerender crash).
-export const dynamic = 'force-dynamic'
+// ISR: 24h edge cache per page. Empty generateStaticParams avoids the Next 16
+// empty-param prerender crash while letting rendered pages be cached.
+export const revalidate = 86400
+export async function generateStaticParams() {
+  return []
+}
 
 const NATIONALITY_TO_COUNTRY: Record<string, string> = {
   'pakistani': 'Pakistan', 'indian': 'India', 'bangladeshi': 'Bangladesh',

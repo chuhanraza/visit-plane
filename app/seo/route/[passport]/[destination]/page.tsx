@@ -17,9 +17,13 @@ import { notFound } from 'next/navigation'
 import VisaRequirementsBlock, { type VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
 import TripEssentials from '@/components/affiliate/TripEssentials'
 
-// DB/param-dependent route — render on demand. Prevents Next 16 from trying to
-// prerender an empty-param shell (which crashed the build on `params.toLowerCase`).
-export const dynamic = 'force-dynamic'
+// ISR: 24h edge cache per route. Empty generateStaticParams prevents Next 16
+// from prerendering an empty-param shell at build (which crashed the build on
+// `params.toLowerCase`) while still letting rendered pages be cached.
+export const revalidate = 86400
+export async function generateStaticParams() {
+  return []
+}
 
 // ── Slug → country name resolution ───────────────────────────────────────────
 // Converts "pakistan" → "Pakistan", "united-kingdom" → "United Kingdom"
