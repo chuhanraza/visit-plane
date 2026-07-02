@@ -28,6 +28,7 @@ export type AffiliatePartner =
   | 'saily'
   | 'wayaway'
   | 'kiwi'
+  | 'ivisa'
 
 export type AffiliatePlacement =
   | 'visa_page'
@@ -43,7 +44,7 @@ export type AffiliatePlacement =
 export interface AffiliatePartnerConfig {
   id: AffiliatePartner
   name: string
-  category: 'insurance' | 'esim' | 'flights'
+  category: 'insurance' | 'esim' | 'flights' | 'visa-services'
   trustpilotRating: number  // must be ≥ 4.0
   baseUrl: string
   description: string
@@ -113,6 +114,21 @@ export const AFFILIATE_PARTNERS: Record<AffiliatePartner, AffiliatePartnerConfig
     priceFrom: 'Best fares',
     commission: 'Via Travelpayouts',
   },
+  // Monetizes the "apply for X visa" intent we can't serve ourselves (we don't
+  // process visas). Apply at ivisa.com/affiliates; set NEXT_PUBLIC_IVISA_TRACKING_URL
+  // to the tracking link from the dashboard once approved. Until then /go/ivisa
+  // redirects to ivisa.com unattributed. Always show the official government
+  // channel + fee alongside any iVisa CTA (honesty layer).
+  ivisa: {
+    id: 'ivisa',
+    name: 'iVisa',
+    category: 'visa-services',
+    trustpilotRating: 4.3,
+    baseUrl: 'https://www.ivisa.com',
+    description: 'Online visa application service — expert review, 24/7 support.',
+    priceFrom: 'Service fee applies',
+    commission: 'Per approved order',
+  },
 }
 
 // ─── Affiliate ID placeholders ─────────────────────────────────────────────────
@@ -127,6 +143,9 @@ const AFFILIATE_IDS = {
   KIWI_PROGRAM_ID: process.env.NEXT_PUBLIC_KIWI_PROGRAM_ID ?? '3',
   HEYMONDO_REF_ID: process.env.NEXT_PUBLIC_HEYMONDO_ID ?? 'visitplane',
   SAILY_AFF_CODE: process.env.NEXT_PUBLIC_SAILY_CODE ?? 'visitplane',
+  // Full tracking link from the iVisa affiliate dashboard (may contain a
+  // {subId} placeholder). Empty = not yet approved → plain ivisa.com link.
+  IVISA_TRACKING_URL: process.env.NEXT_PUBLIC_IVISA_TRACKING_URL ?? '',
 }
 
 // True when the Travelpayouts marker is a real affiliate ID (set and non-zero).
@@ -181,6 +200,16 @@ export function buildAffiliateUrl(
       }
       const u = encodeURIComponent(kiwiUrl)
       return `https://tp.media/r?marker=${AFFILIATE_IDS.TRAVELPAYOUTS_MARKER}&trs=visitplane_${subId}&p=${AFFILIATE_IDS.KIWI_PROGRAM_ID}&u=${u}&utm_source=visitplane&utm_medium=affiliate`
+    }
+
+    case 'ivisa': {
+      const tracking = AFFILIATE_IDS.IVISA_TRACKING_URL.trim()
+      if (tracking) {
+        return tracking.includes('{subId}')
+          ? tracking.replaceAll('{subId}', encodeURIComponent(subId))
+          : tracking
+      }
+      return 'https://www.ivisa.com/?utm_source=visitplane&utm_medium=referral'
     }
 
     default: {

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import type { VisaRecord } from '@/app/visa/[passport]/[destination]/VisaPageClient'
 import { getCuratedDestinationFee } from '@/lib/data/destinationFees'
+import { useLocalCurrency } from '@/hooks/useLocalCurrency'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface VisaHeroCardProps {
@@ -98,10 +99,9 @@ function resolveSmartProcessing(record: VisaRecord, visaType: string): string {
 function resolveValidity(record: VisaRecord): string {
   return (record.validity ?? record.stay_duration ?? '').toString().trim() || 'Varies'
 }
-function estimatePKR(feeStr: string): string | null {
+function parseUsd(feeStr: string): number | null {
   const match = feeStr.match(/\$(\d+(?:\.\d+)?)/)
-  if (!match) return null
-  return `≈ PKR ${Math.round(parseFloat(match[1]) * 280).toLocaleString()}`
+  return match ? parseFloat(match[1]) : null
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -115,6 +115,7 @@ export default function VisaHeroCard({
   onDownloadChecklist,
 }: VisaHeroCardProps) {
   const [saved, setSaved] = useState(false)
+  const localCurrency = useLocalCurrency()
 
   useEffect(() => {
     try {
@@ -145,7 +146,11 @@ export default function VisaHeroCard({
   const theme = resolveTheme(visaType)
   const tone = TONES[theme.tone]
   const fee = resolveSmartFee(visaRecord, visaType, destinationName)
-  const pkr = estimatePKR(fee)
+  // Visitor-currency approximation (was a hardcoded PKR×280 estimate for
+  // everyone). Client-side so the ISR-cached page HTML stays visitor-agnostic;
+  // null until geo + daily /api/fx rates resolve, then "≈ PKR 25,400" etc.
+  const usdFee = parseUsd(fee)
+  const localApprox = usdFee !== null ? localCurrency.format(usdFee) : null
   const processing = resolveSmartProcessing(visaRecord, visaType)
   const validity = resolveValidity(visaRecord)
   const applyUrl = resolveApplyUrl(visaRecord, destinationName)
@@ -169,7 +174,7 @@ export default function VisaHeroCard({
 
   const stats = [
     { label: 'How to apply', value: applyLabel, sub: null as string | null, Icon: IGlobe },
-    { label: 'Cost', value: isFree ? 'Free' : fee, sub: isFree ? null : pkr, Icon: ITag },
+    { label: 'Cost', value: isFree ? 'Free' : fee, sub: isFree ? null : localApprox, Icon: ITag },
     { label: 'Processing', value: processing, sub: null, Icon: IClock },
     { label: 'Stay', value: validity, sub: null, Icon: ICal },
   ]
