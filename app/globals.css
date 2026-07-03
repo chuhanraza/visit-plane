@@ -285,3 +285,15 @@ body {
   @page { margin: 10mm; }
   #print-checklist { font-size: 10.5px !important; }
 }
+
+/* ── Mobile forms: 16px minimum on text-entry controls so iOS Safari never
+   auto-zooms on focus (69% of traffic is mobile). Checkboxes/radios excluded —
+   zoom only triggers on text-editable controls. Admin is desktop-only and
+   unaffected in practice. ── */
+@media (max-width: 640px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

@@ -332,11 +332,17 @@ export default function VisaFreeMarquee({
         aria-label="Visa-free destinations — scroll, drag or use arrow keys to browse"
         className="vp-marquee-scroll flex cursor-grab gap-4 overflow-x-auto overflow-y-hidden px-4 py-4 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 active:cursor-grabbing sm:gap-5 sm:px-8"
       >
-        {loop.map((d, i) => (
-          <div key={`${d.name}-${i}`} aria-hidden={i < destinations.length || i >= destinations.length * 2}>
-            <VisaFreeCard passport={passport} dest={d} onClick={onCardClick} />
-          </div>
-        ))}
+        {loop.map((d, i) => {
+          const isClone = i < destinations.length || i >= destinations.length * 2
+          return (
+            // Clone copies are inert as well as aria-hidden: without inert their
+            // links stay keyboard-focusable, which axe flags (aria-hidden-focus)
+            // and which traps screen-reader/keyboard users in duplicate cards.
+            <div key={`${d.name}-${i}`} aria-hidden={isClone} inert={isClone ? true : undefined}>
+              <VisaFreeCard passport={passport} dest={d} onClick={onCardClick} />
+            </div>
+          )
+        })}
       </div>
     </div>
   )

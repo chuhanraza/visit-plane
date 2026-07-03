@@ -135,7 +135,7 @@ export default function WizardStep({ step, answers, onAnswer, onNext, onBack, au
           )}
 
           {step === 3 && (
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {PURPOSE_OPTIONS.map((opt) => {
                 const selected = answers.purpose === opt.value
                 return (
@@ -163,6 +163,7 @@ export default function WizardStep({ step, answers, onAnswer, onNext, onBack, au
               <div className="relative">
                 <input
                   type="number"
+                  inputMode="numeric"
                   min={1}
                   max={365}
                   value={answers.duration ?? ''}

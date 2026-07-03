@@ -86,7 +86,7 @@ export default function SiteFooter() {
                 <span className="text-emerald-400">Plane</span>
               </span>
             </Link>
-            <p className="mb-5 max-w-xs text-sm leading-relaxed text-white/30">
+            <p className="mb-5 max-w-xs text-sm leading-relaxed text-white/55">
               The world&apos;s visa requirements, decoded in seconds. Free, fast, and always updated.
             </p>
             <div className="flex items-center gap-3">
@@ -97,7 +97,7 @@ export default function SiteFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-white/40 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
+                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
                 >
                   {s.icon}
                 </a>
@@ -107,15 +107,15 @@ export default function SiteFooter() {
 
           {/* Column 2 — Product */}
           <div>
-            <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">
+            <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/50">
               Product
-            </h4>
+            </p>
             <ul className="space-y-2.5">
               {PRODUCT_LINKS.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/30 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 rounded"
+                    className="inline-block py-1 text-sm text-white/60 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 rounded"
                   >
                     {link.label}
                   </Link>
@@ -126,15 +126,15 @@ export default function SiteFooter() {
 
           {/* Column 3 — Trust */}
           <div>
-            <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">
+            <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/50">
               Trust
-            </h4>
+            </p>
             <ul className="space-y-2.5">
               {TRUST_LINKS.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/30 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 rounded"
+                    className="inline-block py-1 text-sm text-white/60 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 rounded"
                   >
                     {link.label}
                   </Link>
@@ -145,15 +145,15 @@ export default function SiteFooter() {
 
           {/* Column 4 — Legal */}
           <div>
-            <h4 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/40">
+            <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/50">
               Legal
-            </h4>
+            </p>
             <ul className="space-y-2.5">
               {LEGAL_LINKS.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/30 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 rounded"
+                    className="inline-block py-1 text-sm text-white/60 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 rounded"
                   >
                     {link.label}
                   </Link>
@@ -165,14 +165,14 @@ export default function SiteFooter() {
 
         {/* Recommended partners strip */}
         <div className="mt-10 border-t border-white/5 pt-8">
-          <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-white/30">
+          <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-white/50">
             Recommended Partners
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <a
               href="/go/safetywing?placement=homepage"
               rel="nofollow sponsored"
-              className="text-xs text-white/25 transition hover:text-white/60"
+              className="inline-block py-1.5 text-sm text-white/60 transition hover:text-white"
             >
               SafetyWing Insurance
             </a>
@@ -180,7 +180,7 @@ export default function SiteFooter() {
             <a
               href="/go/airalo?placement=homepage"
               rel="nofollow sponsored"
-              className="text-xs text-white/25 transition hover:text-white/60"
+              className="inline-block py-1.5 text-sm text-white/60 transition hover:text-white"
             >
               Airalo eSIM
             </a>
@@ -188,12 +188,12 @@ export default function SiteFooter() {
             <a
               href="/go/wayaway?placement=homepage"
               rel="nofollow sponsored"
-              className="text-xs text-white/25 transition hover:text-white/60"
+              className="inline-block py-1.5 text-sm text-white/60 transition hover:text-white"
             >
               WayAway Flights
             </a>
             <span className="text-white/10 hidden sm:inline">·</span>
-            <span className="text-[10px] text-white/15 w-full sm:w-auto">
+            <span className="text-[11px] text-white/45 w-full sm:w-auto">
               Partner links — VisitPlane may earn a commission. Never affects your price.
             </span>
           </div>
@@ -201,10 +201,10 @@ export default function SiteFooter() {
 
         {/* Bottom strip */}
         <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-white/5 pt-6 sm:flex-row">
-          <p className="text-xs text-white/20">
+          <p className="text-xs text-white/45">
             © {new Date().getFullYear()} VisitPlane · All rights reserved.
           </p>
-          <p className="text-xs text-white/15 text-center sm:text-right">
+          <p className="text-xs text-white/45 text-center sm:text-right">
             Visa data is sourced from official embassies. Always verify before traveling.
           </p>
         </div>

@@ -213,7 +213,7 @@ export default function DestinationsClient() {
               {rawSearch && (
                 <button
                   onClick={() => { setRawSearch(''); setSearch('') }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition text-lg leading-none"
+                  className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-gray-400 hover:text-gray-600 transition text-lg leading-none"
                   aria-label="Clear search"
                 >
                   ×
@@ -226,7 +226,7 @@ export default function DestinationsClient() {
               {/* All chip */}
               <button
                 onClick={() => setVisaFilters([])}
-                className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all border ${
+                className={`rounded-full px-4 py-2 sm:px-3.5 sm:py-1 text-xs font-semibold transition-all border ${
                   visaFilters.length === 0
                     ? 'bg-[#0f0c29] text-white border-[#0f0c29] shadow'
                     : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
@@ -241,7 +241,7 @@ export default function DestinationsClient() {
                   <button
                     key={cat}
                     onClick={() => toggleVisa(cat)}
-                    className={`rounded-full px-3.5 py-1 text-xs font-semibold border transition-all ${
+                    className={`rounded-full px-4 py-2 sm:px-3.5 sm:py-1 text-xs font-semibold border transition-all ${
                       active
                         ? `${b.bg} ${b.text} ${b.border}`
                         : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
@@ -261,7 +261,7 @@ export default function DestinationsClient() {
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
                 aria-label="Filter by region"
-                className="rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-emerald-500/60 cursor-pointer"
+                className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 sm:py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-emerald-500/60 cursor-pointer"
               >
                 {REGIONS.map((r) => (
                   <option key={r} value={r}>{r === 'All' ? 'All Regions' : r}</option>
@@ -273,7 +273,7 @@ export default function DestinationsClient() {
                 value={sort}
                 onChange={(e) => setSort(e.target.value as typeof sort)}
                 aria-label="Sort destinations"
-                className="rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-emerald-500/60 cursor-pointer"
+                className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 sm:py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-emerald-500/60 cursor-pointer"
               >
                 <option value="popular">Most Popular</option>
                 <option value="az">A → Z</option>

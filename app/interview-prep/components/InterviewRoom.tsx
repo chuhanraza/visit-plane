@@ -147,14 +147,14 @@ export default function InterviewRoom({ questions, country, visaType, currentQ, 
 
       {/* ── Bottom Navigation ────────────────────────────────────────────────── */}
       <div className="border-t border-white/10 bg-[#0a0820]/80 backdrop-blur-sm">
-        <div className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between gap-4">
+        <div className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between gap-3 sm:gap-4">
           <button onClick={onPrev} disabled={currentQ === 0}
-            className="flex items-center gap-2 rounded-xl border border-white/15 px-5 py-2.5 text-sm font-semibold text-white/60 hover:border-white/30 hover:text-white transition disabled:opacity-25 disabled:cursor-not-allowed">
+            className="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl border border-white/15 px-4 py-2.5 text-sm font-semibold text-white/60 hover:border-white/30 hover:text-white transition disabled:opacity-25 disabled:cursor-not-allowed sm:flex-none sm:px-5">
             ← Previous
           </button>
 
-          {/* Dots */}
-          <div className="flex items-center gap-1.5">
+          {/* Dots — the progress bar + counter carry this on phones */}
+          <div className="hidden items-center gap-1.5 sm:flex">
             {questions.map((_, i) => (
               <span key={i} className={`rounded-full transition-all duration-300 ${i === currentQ ? 'h-2.5 w-6 bg-teal-400' : i < currentQ ? 'h-2 w-2 bg-teal-600/60' : 'h-2 w-2 bg-white/20'}`} />
             ))}
@@ -162,12 +162,12 @@ export default function InterviewRoom({ questions, country, visaType, currentQ, 
 
           {isLast ? (
             <button onClick={onComplete}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-teal-500/25 hover:from-teal-600 hover:to-emerald-600 transition">
+              className="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-teal-500/25 hover:from-teal-600 hover:to-emerald-600 transition sm:flex-none sm:px-5">
               Complete Interview ✓
             </button>
           ) : (
             <button onClick={onNext}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-teal-500/25 hover:from-teal-600 hover:to-emerald-600 transition">
+              className="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-teal-500/25 hover:from-teal-600 hover:to-emerald-600 transition sm:flex-none sm:px-5">
               Next Question →
             </button>
           )}

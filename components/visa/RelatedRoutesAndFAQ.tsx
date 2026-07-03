@@ -167,7 +167,7 @@ export default function RelatedRoutesAndFAQ({
                   <li key={`dest-${dest.toLowerCase()}`}>
                     <Link
                       href={`/visa/${encodeURIComponent(passportName)}/${encodeURIComponent(dest)}`}
-                      className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#1F2937] hover:bg-[#14B8A6]/5 hover:text-[#14B8A6] transition"
+                      className="flex min-h-[44px] items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#1F2937] hover:bg-[#14B8A6]/5 hover:text-[#14B8A6] transition"
                     >
                       <span className="text-lg leading-none">{getFlag(dest)}</span>
                       <span>{passportName} → {dest} Visa</span>
@@ -195,7 +195,7 @@ export default function RelatedRoutesAndFAQ({
                   <li key={`passport-${passport.toLowerCase()}`}>
                     <Link
                       href={`/visa/${encodeURIComponent(passport)}/${encodeURIComponent(destinationName)}`}
-                      className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#1F2937] hover:bg-[#14B8A6]/5 hover:text-[#14B8A6] transition"
+                      className="flex min-h-[44px] items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#1F2937] hover:bg-[#14B8A6]/5 hover:text-[#14B8A6] transition"
                     >
                       <span className="text-lg leading-none">{getFlag(passport)}</span>
                       <span>{passport} → {destinationName} Visa</span>

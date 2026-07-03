@@ -394,13 +394,13 @@ export default function VisaRequirementsBlock({
       {/* At-a-glance table */}
       <section>
         <h2 className="text-2xl font-bold text-[#1F2937] mb-6">Visa Requirements at a Glance</h2>
-        <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 bg-white overflow-x-auto">
           <table className="w-full text-sm">
             <tbody className="divide-y divide-gray-50">
 
               <tr>
-                <td className="px-5 py-3.5 font-medium text-gray-500 w-44 bg-gray-50">Visa Type</td>
-                <td className="px-5 py-3.5 font-semibold text-[#1F2937]">
+                <td className="px-4 py-3.5 sm:px-5 font-medium text-gray-500 w-1/3 sm:w-44 bg-gray-50">Visa Type</td>
+                <td className="px-4 py-3.5 sm:px-5 font-semibold text-[#1F2937]">
                   {req.visa_category === 'visa_free'      && 'Visa Free'}
                   {req.visa_category === 'visa_on_arrival' && 'Visa on Arrival'}
                   {req.visa_category === 'evisa'           && 'eVisa (Online)'}
@@ -412,8 +412,8 @@ export default function VisaRequirementsBlock({
               </tr>
 
               <tr>
-                <td className="px-5 py-3.5 font-medium text-gray-500 bg-gray-50">Visa Fee</td>
-                <td className="px-5 py-3.5">
+                <td className="px-4 py-3.5 sm:px-5 font-medium text-gray-500 bg-gray-50">Visa Fee</td>
+                <td className="px-4 py-3.5 sm:px-5">
                   💰 <FeeDisplay req={req} />
                   {req.fee_notes && (
                     <p className="text-xs text-gray-400 mt-1">{req.fee_notes}</p>
@@ -422,23 +422,23 @@ export default function VisaRequirementsBlock({
               </tr>
 
               <tr>
-                <td className="px-5 py-3.5 font-medium text-gray-500 bg-gray-50">Max Stay</td>
-                <td className="px-5 py-3.5 font-semibold text-[#1F2937]">
+                <td className="px-4 py-3.5 sm:px-5 font-medium text-gray-500 bg-gray-50">Max Stay</td>
+                <td className="px-4 py-3.5 sm:px-5 font-semibold text-[#1F2937]">
                   {req.max_stay_days ? `${req.max_stay_days} days` : 'Verify with embassy'}
                 </td>
               </tr>
 
               <tr>
-                <td className="px-5 py-3.5 font-medium text-gray-500 bg-gray-50">Processing Time</td>
-                <td className="px-5 py-3.5 font-semibold text-[#1F2937]">
+                <td className="px-4 py-3.5 sm:px-5 font-medium text-gray-500 bg-gray-50">Processing Time</td>
+                <td className="px-4 py-3.5 sm:px-5 font-semibold text-[#1F2937]">
                   {req.processing_label ?? 'Varies'}
                 </td>
               </tr>
 
               {req.validity_days && (
                 <tr>
-                  <td className="px-5 py-3.5 font-medium text-gray-500 bg-gray-50">Visa Validity</td>
-                  <td className="px-5 py-3.5 font-semibold text-[#1F2937]">
+                  <td className="px-4 py-3.5 sm:px-5 font-medium text-gray-500 bg-gray-50">Visa Validity</td>
+                  <td className="px-4 py-3.5 sm:px-5 font-semibold text-[#1F2937]">
                     {req.validity_days} days from issue
                   </td>
                 </tr>
@@ -446,8 +446,8 @@ export default function VisaRequirementsBlock({
 
               {req.multiple_entry !== null && (
                 <tr>
-                  <td className="px-5 py-3.5 font-medium text-gray-500 bg-gray-50">Multiple Entry</td>
-                  <td className="px-5 py-3.5 font-semibold text-[#1F2937]">
+                  <td className="px-4 py-3.5 sm:px-5 font-medium text-gray-500 bg-gray-50">Multiple Entry</td>
+                  <td className="px-4 py-3.5 sm:px-5 font-semibold text-[#1F2937]">
                     {req.multiple_entry ? 'Yes' : 'No (single entry)'}
                   </td>
                 </tr>
@@ -455,8 +455,8 @@ export default function VisaRequirementsBlock({
 
               {req.passport_validity_months && (
                 <tr>
-                  <td className="px-5 py-3.5 font-medium text-gray-500 bg-gray-50">Passport Validity</td>
-                  <td className="px-5 py-3.5 font-semibold text-[#1F2937]">
+                  <td className="px-4 py-3.5 sm:px-5 font-medium text-gray-500 bg-gray-50">Passport Validity</td>
+                  <td className="px-4 py-3.5 sm:px-5 font-semibold text-[#1F2937]">
                     {req.passport_validity_months} months beyond intended stay
                   </td>
                 </tr>
@@ -464,8 +464,8 @@ export default function VisaRequirementsBlock({
 
               {req.application_url && (
                 <tr>
-                  <td className="px-5 py-3.5 font-medium text-gray-500 bg-gray-50">Apply At</td>
-                  <td className="px-5 py-3.5">
+                  <td className="px-4 py-3.5 sm:px-5 font-medium text-gray-500 bg-gray-50">Apply At</td>
+                  <td className="px-4 py-3.5 sm:px-5">
                     <a
                       href={req.application_url}
                       target="_blank"

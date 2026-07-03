@@ -685,7 +685,7 @@ export default function HomePage() {
                   </button>
                 </div>
                 <label className="flex cursor-pointer items-start gap-2 text-xs text-gray-500">
-                  <input type="checkbox" checked={emailConsent} onChange={(e) => setEmailConsent(e.target.checked)} className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-teal-500" />
+                  <input type="checkbox" checked={emailConsent} onChange={(e) => setEmailConsent(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-teal-500" />
                   I agree to receive the checklist and email alerts about visa rule changes. Unsubscribe anytime.
                 </label>
               </form>

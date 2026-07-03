@@ -129,7 +129,7 @@ export default function ExitIntentModal() {
             <button
               onClick={dismiss}
               aria-label="Close"
-              className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-xl leading-none transition"
+              className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-xl leading-none transition"
             >
               ×
             </button>

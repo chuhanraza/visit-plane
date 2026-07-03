@@ -104,7 +104,7 @@ export default function PostLookupModal({ passport, destination }: Props) {
           <button
             onClick={dismiss}
             aria-label="Dismiss notification"
-            className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-base leading-none transition"
+            className="absolute right-1.5 top-1.5 flex h-11 w-11 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-base leading-none transition"
           >
             ×
           </button>

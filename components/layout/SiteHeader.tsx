@@ -324,7 +324,7 @@ export default function SiteHeader() {
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
-            className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 md:hidden transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="flex h-11 w-11 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 md:hidden transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             {mobileOpen ? (
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -392,16 +392,16 @@ export default function SiteHeader() {
             </button>
 
             {mobileToolsOpen && (
-              <div className="mt-3 grid grid-cols-4 gap-2 px-2 pb-2">
+              <div className="mt-3 grid grid-cols-3 gap-2 px-2 pb-2">
                 {TOOLS.map((tool) => (
                   <Link
                     key={tool.href}
                     href={tool.href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex flex-col items-center gap-1 rounded-xl bg-gray-50 p-2 text-center transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                    className="flex min-h-[64px] flex-col items-center justify-center gap-1 rounded-xl bg-gray-50 p-2 text-center transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                   >
                     <span className="text-2xl" aria-hidden="true">{tool.emoji}</span>
-                    <span className="text-[10px] leading-tight text-gray-600">
+                    <span className="text-xs leading-tight text-gray-700">
                       {tool.name.split(' ')[0]}
                     </span>
                   </Link>
