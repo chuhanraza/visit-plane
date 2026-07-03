@@ -441,7 +441,7 @@ export default function HomePage() {
                   type="button"
                   onClick={handleCheck}
                   disabled={!canSubmit}
-                  className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#16C95C] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#12B350] disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#16C95C] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#12B350] disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
                 >
                   <PlaneIcon className="h-4 w-4" />
                   {t('hero.checkButton')}

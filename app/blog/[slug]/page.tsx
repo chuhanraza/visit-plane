@@ -681,7 +681,7 @@ export default async function BlogPostPage({
 
                   {/* Card body */}
                   <div className="flex flex-1 flex-col gap-2 p-4">
-                    <p className="text-xs leading-relaxed text-gray-500 line-clamp-2">
+                    <p className="text-sm leading-relaxed text-gray-500 line-clamp-2">
                       {related.excerpt}
                     </p>
                     <div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-100">

@@ -136,7 +136,7 @@ function TravelCard({
         <a
           href={trackingUrl}
           rel="nofollow sponsored"
-          className={`shrink-0 whitespace-nowrap rounded-xl px-4 py-2 text-xs font-bold text-white transition active:scale-95 ${
+          className={`inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-xl px-5 py-2 text-sm font-bold text-white transition active:scale-95 sm:min-h-0 sm:px-4 sm:text-xs ${
             card.required
               ? 'bg-red-500 hover:bg-red-600'
               : 'bg-[#14B8A6] hover:bg-[#0d9488]'

@@ -84,8 +84,10 @@ export default function InterviewHero({ country, visaType, onCountryChange, onVi
             <p className="mt-3 text-xs text-gray-400">Free · No signup · ~5 minutes</p>
           </div>
 
-          {/* ── Right (40%) — Animated Officer Panel ───────────────────────── */}
-          <div className="lg:max-w-[38%] w-full flex justify-center">
+          {/* ── Right (40%) — Animated Officer Panel. Decorative — hidden on
+              phones so the selectors + Start CTA sit above the fold instead of
+              a 320px illustration pushing them down. ───────────────────────── */}
+          <div className="hidden lg:flex lg:max-w-[38%] w-full justify-center">
             <div className="relative w-72 h-80 animate-pulse-glass">
               {/* Outer glow frame */}
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-[#1a1040] to-[#0f0c29] border border-teal-500/20 shadow-2xl shadow-teal-500/10 overflow-hidden">

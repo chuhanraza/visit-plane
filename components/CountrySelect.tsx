@@ -407,7 +407,7 @@ export default function CountrySelect({
     : 'border-[#10B981] ring-2 ring-[#10B981]/20'
 
   const triggerText = isDark ? 'text-white' : 'text-[#0F1419]'
-  const triggerPlaceholder = isDark ? 'text-gray-400' : 'text-gray-400'
+  const triggerPlaceholder = isDark ? 'text-gray-400' : 'text-gray-500'
 
   const dropdownBg = isDark
     ? 'bg-[#0f0c29] border-white/10 shadow-2xl shadow-black/50'
@@ -534,7 +534,7 @@ export default function CountrySelect({
           </div>
 
           {/* Countries list */}
-          <div ref={listRef} className={isDark ? 'max-h-64 overflow-y-auto' : 'max-h-[320px] overflow-y-auto'}>
+          <div ref={listRef} className={isDark ? 'max-h-[min(16rem,45vh)] overflow-y-auto' : 'max-h-[min(320px,45vh)] overflow-y-auto'}>
             {filtered.length === 0 ? (
               <div className="px-4 py-8 text-center">
                 <span className="text-3xl">🔍</span>

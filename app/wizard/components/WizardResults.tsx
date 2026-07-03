@@ -297,6 +297,8 @@ export default function WizardResults({ answers, visaData, aiInsight, aiLoading,
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
+                autoComplete="email"
+                inputMode="email"
                 required
                 className="w-full rounded-lg border border-teal-200 bg-white px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
               />
@@ -305,7 +307,7 @@ export default function WizardResults({ answers, visaData, aiInsight, aiLoading,
                   type="checkbox"
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 rounded border-slate-300 text-teal-500 focus:ring-teal-500"
+                  className="mt-0.5 h-5 w-5 rounded border-slate-300 text-teal-500 focus:ring-teal-500"
                 />
                 <span className="text-xs text-slate-600">
                   I agree to receive this plan and occasional visa alerts from VisitPlane. Unsubscribe anytime.
@@ -339,8 +341,9 @@ export default function WizardResults({ answers, visaData, aiInsight, aiLoading,
             </div>
           )}
 
-          {/* Share row */}
-          <div className="flex gap-2">
+          {/* Share row — 2-up + full-width copy on phones (three ~110px buttons
+              were cramped one-handed); single row from sm up */}
+          <div className="grid grid-cols-2 gap-2 sm:flex">
             <a
               href={`https://wa.me/?text=${whatsappText}`}
               target="_blank"
@@ -359,7 +362,7 @@ export default function WizardResults({ answers, visaData, aiInsight, aiLoading,
             </a>
             <button
               onClick={handleCopyLink}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-teal-400 hover:bg-teal-50 transition"
+              className="col-span-2 flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-teal-400 hover:bg-teal-50 transition sm:col-span-1"
             >
               {copied ? '✓ Copied!' : '🔗 Copy Link'}
             </button>

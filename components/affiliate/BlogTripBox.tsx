@@ -120,7 +120,7 @@ export default function BlogTripBox({
             <a
               href={card.href}
               rel="nofollow sponsored"
-              className={`shrink-0 rounded-lg px-3 py-2 text-xs font-bold text-white transition hover:opacity-90 active:scale-95 ${
+              className={`inline-flex min-h-[44px] shrink-0 items-center rounded-lg px-4 py-2 text-xs font-bold text-white transition hover:opacity-90 active:scale-95 sm:min-h-0 sm:px-3 ${
                 card.highlight ? 'bg-red-500' : 'bg-[#14B8A6]'
               }`}
             >

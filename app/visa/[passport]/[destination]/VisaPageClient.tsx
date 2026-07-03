@@ -92,18 +92,26 @@ function StickyMobileCTA({
   const feeDisplay = fee && !/n\/a|contact|check/i.test(fee)
     ? (/^\$/.test(fee) ? fee : `$${fee}`)
     : ''
+  // Only show a processing time if THIS route actually has one — a hardcoded
+  // "3–5 business days" would be a false claim for most routes.
+  const processing = (visaRecord?.processing_time ?? '').toString().trim()
 
   return (
     <div
       className={[
-        'fixed bottom-0 left-0 right-0 z-50 p-3 transition-all duration-300 print:hidden sm:hidden',
+        'fixed bottom-0 left-0 right-0 z-50 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] transition-all duration-300 print:hidden sm:hidden',
         show ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none',
       ].join(' ')}
     >
       <div className="rounded-2xl bg-[#134e4a] px-4 py-3 flex items-center justify-between shadow-2xl gap-3">
         <div>
           <p className="text-xs font-bold text-white leading-tight">{destinationFlag} {visaType}</p>
-          {feeDisplay && <p className="text-[11px] text-teal-300 mt-0.5">{feeDisplay} · 3–5 business days</p>}
+          {feeDisplay && (
+            <p className="text-[11px] text-teal-300 mt-0.5">
+              {feeDisplay}
+              {processing ? ` · ${processing}` : ''}
+            </p>
+          )}
         </div>
         <button
           onClick={onClick}

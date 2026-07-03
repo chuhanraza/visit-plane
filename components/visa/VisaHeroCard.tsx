@@ -217,7 +217,9 @@ export default function VisaHeroCard({
                 <s.Icon />
               </div>
               <div className="mt-3 text-[10px] font-bold uppercase tracking-wider text-gray-400">{s.label}</div>
-              <div className="mt-0.5 truncate text-[15px] font-extrabold text-gray-900" title={s.value}>{s.value}</div>
+              {/* Wrap, don't truncate: the value IS the answer (fee, processing
+                  time) and mobile users can't hover the title tooltip. */}
+              <div className="mt-0.5 break-words text-[15px] font-extrabold leading-snug text-gray-900">{s.value}</div>
               {s.sub && <div className="truncate text-[11px] font-medium text-gray-400">{s.sub}</div>}
             </div>
           ))}
