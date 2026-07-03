@@ -120,7 +120,7 @@ export default function SiteHeader() {
 
   const linkCls = (href: string) =>
     `rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-[#0F1419] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-      isActive(href) ? 'text-emerald-600 underline underline-offset-4' : 'text-gray-600'
+      isActive(href) ? 'text-emerald-700 underline underline-offset-4' : 'text-gray-600'
     }`
 
   // Tools hover — 200 ms closing delay
@@ -166,7 +166,7 @@ export default function SiteHeader() {
           </div>
           <span className="text-lg font-bold tracking-tight">
             <span className="text-[#0F1419]">Visit</span>
-            <span className="text-emerald-600">Plane</span>
+            <span className="text-emerald-700">Plane</span>
           </span>
         </Link>
 
@@ -192,7 +192,7 @@ export default function SiteHeader() {
               aria-expanded={toolsOpen}
               aria-controls="tools-menu"
               className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-[#0F1419] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-                isToolsActive || toolsOpen ? 'text-emerald-600 bg-gray-100' : 'text-gray-600'
+                isToolsActive || toolsOpen ? 'text-emerald-700 bg-gray-100' : 'text-gray-600'
               }`}
             >
               Tools
@@ -220,7 +220,7 @@ export default function SiteHeader() {
                 <div className="grid grid-cols-2 gap-2">
                   {/* Left column */}
                   <div>
-                    <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-emerald-600">
+                    <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-emerald-700">
                       ⚡ Quick Tools
                     </p>
                     {leftTools.map((tool) => (
@@ -235,7 +235,7 @@ export default function SiteHeader() {
                           {tool.emoji}
                         </span>
                         <div>
-                          <p className="text-sm font-medium leading-tight text-gray-900 transition-colors group-hover:text-emerald-600">
+                          <p className="text-sm font-medium leading-tight text-gray-900 transition-colors group-hover:text-emerald-700">
                             {tool.name}
                           </p>
                           <p className="mt-0.5 text-xs leading-tight text-gray-500">{tool.desc}</p>
@@ -261,7 +261,7 @@ export default function SiteHeader() {
                           {tool.emoji}
                         </span>
                         <div>
-                          <p className="text-sm font-medium leading-tight text-gray-900 transition-colors group-hover:text-emerald-600">
+                          <p className="text-sm font-medium leading-tight text-gray-900 transition-colors group-hover:text-emerald-700">
                             {tool.name}
                           </p>
                           <p className="mt-0.5 text-xs leading-tight text-gray-500">{tool.desc}</p>
@@ -355,7 +355,7 @@ export default function SiteHeader() {
             href="/destinations"
             onClick={() => setMobileOpen(false)}
             className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition hover:bg-gray-100 hover:text-[#0F1419] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-              isActive('/destinations') ? 'text-emerald-600' : 'text-gray-700'
+              isActive('/destinations') ? 'text-emerald-700' : 'text-gray-700'
             }`}
           >
             🌍 Destinations
@@ -365,7 +365,7 @@ export default function SiteHeader() {
             href="/blog"
             onClick={() => setMobileOpen(false)}
             className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition hover:bg-gray-100 hover:text-[#0F1419] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-              isActive('/blog') ? 'text-emerald-600' : 'text-gray-700'
+              isActive('/blog') ? 'text-emerald-700' : 'text-gray-700'
             }`}
           >
             📝 Blog

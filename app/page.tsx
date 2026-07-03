@@ -516,7 +516,7 @@ export default function HomePage() {
                             <span className={`h-1.5 w-1.5 rounded-full ${pill.dot}`} />
                             {pill.label}
                           </span>
-                          <span className="truncate text-xs text-gray-400">{d.tagline}</span>
+                          <span className="truncate text-xs text-gray-500">{d.tagline}</span>
                         </div>
 
                         {/* Honest trust line — VisitPlane is free info, never a paid/guaranteed service */}

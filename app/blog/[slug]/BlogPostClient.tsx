@@ -199,7 +199,7 @@ export function SocialShare({ title, slug }: { title: string; slug: string }) {
 
       {/* Mobile: inline horizontal bar above footer */}
       <div className="mt-8 flex items-center justify-center gap-3 xl:hidden">
-        <span className="text-xs font-semibold text-gray-400">Share:</span>
+        <span className="text-xs font-semibold text-gray-500">Share:</span>
         <a
           href={`https://wa.me/?text=${waText}`}
           target="_blank"

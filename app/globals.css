@@ -297,3 +297,17 @@ body {
     font-size: 16px !important;
   }
 }
+
+/* ── WCAG 2.3.3: honor prefers-reduced-motion globally. Custom keyframes and
+   framer-motion transforms all collapse to near-instant; the marquee already
+   disables autoplay separately via matchMedia. ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
