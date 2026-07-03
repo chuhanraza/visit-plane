@@ -68,6 +68,19 @@ Top perf offenders (Lighthouse opportunities):
 - **P1: ~14** clusters (tap targets, hero-card truncation, sticky bar, dropdowns, TOC, forms, badge contrast, affiliate CTA size/placement)
 - **P2: ~9** (image sizes, fixed circles, marquee width, spacing polish)
 
+## Results (post-wave, production Lighthouse mobile, 2026-07-03)
+
+| Page | Perf | A11y | LCP | CLS | TBT | Images |
+|---|---|---|---|---|---|---|
+| Homepage | 76 → **78** | 91 → **96** | 5.5 → 5.6s | 0.031 | 0ms | 184KB |
+| Visa page | 74 → **76** | 95 → **96** | 5.2 → **4.7s** | 0.007 → **0** | 0ms | 2KB |
+| Blog post | 75 → **78** | 86 → **96** | 7.3 → **5.5s** | 0 | 50→90ms | 853 → **589KB** |
+
+Fixed entirely: aria-hidden-focus ×60 (marquee), button-name/link-name ×6 (share buttons),
+heading-order ×3 (footer). Contrast failures reduced (42–81 → and further after the
+wave4b chip/footer pass, which deployed after these runs). Remaining contrast items are
+per-page body-copy instances (gray-400 fee notes, teal hover-links) — tracked as P2.
+
 ## Wave plan
 
 - **Wave 1 (P0):** input font-size ≥16px globally on mobile; footer contrast; marquee `inert`/tabindex fix; table overflow wrapper; destinations pills ≥44px + select font; share button aria-labels; header menu grid 3-col + 12px labels; wizard grid-cols-1; interview room mobile stacking.
