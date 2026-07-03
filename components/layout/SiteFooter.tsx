@@ -193,7 +193,7 @@ export default function SiteFooter() {
               WayAway Flights
             </a>
             <span className="text-white/10 hidden sm:inline">·</span>
-            <span className="text-[11px] text-white/45 w-full sm:w-auto">
+            <span className="text-[11px] text-white/55 w-full sm:w-auto">
               Partner links — VisitPlane may earn a commission. Never affects your price.
             </span>
           </div>
@@ -201,10 +201,10 @@ export default function SiteFooter() {
 
         {/* Bottom strip */}
         <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-white/5 pt-6 sm:flex-row">
-          <p className="text-xs text-white/45">
+          <p className="text-xs text-white/55">
             © {new Date().getFullYear()} VisitPlane · All rights reserved.
           </p>
-          <p className="text-xs text-white/45 text-center sm:text-right">
+          <p className="text-xs text-white/55 text-center sm:text-right">
             Visa data is sourced from official embassies. Always verify before traveling.
           </p>
         </div>

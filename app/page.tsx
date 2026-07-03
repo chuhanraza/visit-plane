@@ -128,10 +128,10 @@ const TOOLS = [
 ]
 
 const VISA_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
-  'Visa Free':       { bg: 'bg-emerald-500/15', text: 'text-emerald-400', dot: 'bg-emerald-400' },
-  'eVisa':           { bg: 'bg-amber-500/15',   text: 'text-amber-400',   dot: 'bg-amber-400'   },
-  'Visa Required':   { bg: 'bg-rose-500/15',    text: 'text-rose-400',    dot: 'bg-rose-400'    },
-  'Visa on Arrival': { bg: 'bg-blue-500/15',    text: 'text-blue-400',    dot: 'bg-blue-400'    },
+  'Visa Free':       { bg: 'bg-emerald-500/15', text: 'text-emerald-700', dot: 'bg-emerald-500' },
+  'eVisa':           { bg: 'bg-amber-500/15',   text: 'text-amber-700',   dot: 'bg-amber-500'   },
+  'Visa Required':   { bg: 'bg-rose-500/15',    text: 'text-rose-700',    dot: 'bg-rose-500'    },
+  'Visa on Arrival': { bg: 'bg-blue-500/15',    text: 'text-blue-700',    dot: 'bg-blue-500'    },
 }
 
 // Light pill (for the white card body) + a clean, honest label per visa status.
