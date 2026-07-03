@@ -11,7 +11,9 @@
  *      (and a key is configured).
  *   3. Branded SVG /api/cover — final guaranteed fallback, never 404s.
  *
- * Query: slug, v (hero|card|inline|alt), optional q / d overrides.
+ * Query: slug, v (hero|card|inline|alt), optional q / d overrides,
+ * optional w (explicit width 320–1600 for responsive srcset — mobile phones
+ * shouldn't download the 1600px hero; Pexels CDN resizes via its w= param).
  */
 
 import { getPostBySlug } from '@/src/lib/posts'
@@ -134,7 +136,10 @@ export async function GET(request: Request) {
 
   // ── 1. Curated landmark photo (key-independent, always available) ──────────
   const key = destination.trim().toLowerCase()
-  const width = VARIANT_WIDTH[v] ?? 1600
+  const wParam = parseInt(searchParams.get('w') ?? '', 10)
+  const width = Number.isFinite(wParam)
+    ? Math.min(1600, Math.max(320, wParam))
+    : (VARIANT_WIDTH[v] ?? 1600)
   const ids = LANDMARKS[key] ?? (destination ? DEFAULT_LANDMARKS : null)
   if (ids && ids.length > 0) {
     // Deterministic per (destination, variant) so each variant differs but is stable.

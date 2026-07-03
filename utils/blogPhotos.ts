@@ -68,6 +68,19 @@ export function getBlogHeroImage(slug: string): string {
   return `/api/photo?slug=${encodeURIComponent(slug)}&v=hero&cb=${CB}`
 }
 
+/**
+ * Responsive srcset for the hero — phones must not download the 1600px JPEG
+ * (445KB measured; it was the blog's LCP bottleneck on throttled mobile).
+ * /api/photo honours the w= override and Pexels CDN does the resizing.
+ */
+export function getBlogHeroSrcSet(slug: string): string {
+  const base = `/api/photo?slug=${encodeURIComponent(slug)}&v=hero&cb=${CB}`
+  return [640, 960, 1200, 1600].map((w) => `${base}&w=${w} ${w}w`).join(', ')
+}
+
+/** sizes attribute matching the full-bleed hero layout. */
+export const BLOG_HERO_SIZES = '100vw'
+
 /** Card thumbnail. */
 export function getBlogCardImage(slug: string): string {
   return `/api/photo?slug=${encodeURIComponent(slug)}&v=card&cb=${CB}`

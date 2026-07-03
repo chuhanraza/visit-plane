@@ -9,7 +9,7 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import CommandPalette from "@/components/layout/CommandPalette";
 import ChromeGate from "@/components/layout/ChromeGate";
 import { CommandPaletteProvider } from "@/components/layout/CommandPaletteContext";
-import ExitIntentModal from "@/components/ExitIntentModal";
+import LazyExitIntent from "@/components/LazyExitIntent";
 import FunnelBeacon from "@/components/FunnelBeacon";
 import PWAProvider from "@/components/PWAProvider";
 import { getAuthor } from "@/lib/data/authors";
@@ -260,8 +260,9 @@ export default function RootLayout({
         <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
         {/* Vercel Analytics — privacy-friendly page-view counter */}
         <Analytics />
-        {/* Capture Point 3 — Exit Intent Modal (desktop only) */}
-        <ExitIntentModal />
+        {/* Capture Point 3 — Exit Intent Modal (desktop only). Lazy: keeps
+            framer-motion out of every page's critical JS (mobile 3G LCP). */}
+        <LazyExitIntent />
         {/* First-party funnel beacon — anonymous page.view on money pages (DNT-safe) */}
         <FunnelBeacon />
         {/* PWA: registers SW, handles install prompt, bg-sync, transitions */}

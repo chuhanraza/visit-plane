@@ -11,6 +11,8 @@ import remarkHtml from 'remark-html'
 import { ReadingProgressBar, TableOfContents, SocialShare } from './BlogPostClient'
 import {
   getBlogHeroImage,
+  getBlogHeroSrcSet,
+  BLOG_HERO_SIZES,
   getBlogCardImage,
   getArticleInlineImage,
   getDestinationCaption,
@@ -204,6 +206,7 @@ export default async function BlogPostPage({
   const isHighIntent = LEAD_MAGNET_SLUGS.has(slug)
 
   const heroImg = getBlogHeroImage(slug)
+  const heroSrcSet = getBlogHeroSrcSet(slug)
   const inlineImg = getArticleInlineImage(slug)
   // Second image to break up the article (real photo when key set, else cover).
   const secondaryImg = `/api/photo?slug=${encodeURIComponent(slug)}&v=alt&cb=6`
@@ -288,8 +291,17 @@ export default async function BlogPostPage({
         />
       )}
 
-      {/* Preload hero image — critical for LCP score */}
-      <link rel="preload" as="image" href={heroImg} fetchPriority="high" />
+      {/* Preload hero image — critical for LCP score. imageSrcSet keeps the
+          preload aligned with the responsive <img> pick (a 375px phone grabs
+          the 640/960px file, not the 445KB 1600px original). */}
+      <link
+        rel="preload"
+        as="image"
+        href={heroImg}
+        imageSrcSet={heroSrcSet}
+        imageSizes={BLOG_HERO_SIZES}
+        fetchPriority="high"
+      />
 
       {/* Reading progress bar — teal, fixed at very top */}
       <ReadingProgressBar />
@@ -306,6 +318,8 @@ export default async function BlogPostPage({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={heroImg}
+          srcSet={heroSrcSet}
+          sizes={BLOG_HERO_SIZES}
           alt=""
           aria-hidden="true"
           fetchPriority="high"
@@ -413,7 +427,7 @@ export default async function BlogPostPage({
               <figure className="my-12">
                 <div className="aspect-video w-full overflow-hidden rounded-2xl shadow-xl">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={inlineImg} alt={caption} className="h-full w-full object-cover" loading="lazy" />
+                  <img src={inlineImg} srcSet={`${inlineImg}&w=640 640w, ${inlineImg}&w=1000 1000w`} sizes="(max-width: 768px) 100vw, 768px" alt={caption} width={1000} height={563} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                 </div>
                 <figcaption className="mt-3 text-center text-sm italic text-gray-400">{caption}</figcaption>
               </figure>
@@ -438,7 +452,7 @@ export default async function BlogPostPage({
               <figure className="my-12">
                 <div className="aspect-[16/9] w-full overflow-hidden rounded-2xl shadow-xl">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={secondaryImg} alt={`Travel and visa planning for ${post.destinationCountry}`} className="h-full w-full object-cover" loading="lazy" />
+                  <img src={secondaryImg} srcSet={`${secondaryImg}&w=640 640w, ${secondaryImg}&w=1000 1000w`} sizes="(max-width: 768px) 100vw, 768px" alt={`Travel and visa planning for ${post.destinationCountry}`} width={1000} height={563} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                 </div>
                 <figcaption className="mt-3 text-center text-sm italic text-gray-400">Plan your {post.destinationCountry} trip with confidence</figcaption>
               </figure>
