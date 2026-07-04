@@ -69,7 +69,7 @@ export function VisaFreeCard({
       onClick={onClick}
       draggable={false}
       aria-label={`${dest.name} — ${kindLabel(dest).toLowerCase()}, up to ${stayLabel(dest)}`}
-      className="group/card relative block h-[300px] w-[220px] shrink-0 overflow-hidden rounded-[1.75rem] bg-gray-900 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)] ring-1 ring-emerald-400/20 transition-all duration-300 will-change-transform hover:-translate-y-2 hover:shadow-[0_28px_55px_-15px_rgba(16,185,129,0.45)] hover:ring-emerald-400/60 focus-visible:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 sm:h-[340px] sm:w-[244px] lg:h-[360px] lg:w-[260px]"
+      className="group/card relative block h-[256px] w-[220px] shrink-0 overflow-hidden rounded-[1.75rem] bg-gray-900 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)] ring-1 ring-emerald-400/20 transition-all duration-300 will-change-transform hover:-translate-y-2 hover:shadow-[0_28px_55px_-15px_rgba(16,185,129,0.45)] hover:ring-emerald-400/60 focus-visible:-translate-y-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 sm:h-[288px] sm:w-[244px] lg:h-[304px] lg:w-[260px]"
     >
       {/* ── canvas: full-bleed photo, or a designed travel-stamp gradient ── */}
       {hasPhoto ? (

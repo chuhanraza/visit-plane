@@ -12,13 +12,6 @@ import type { ReliableDestination, ReliableVisaFreeResponse } from '@/app/api/vi
 type Status = 'detecting' | 'loading' | 'ready' | 'empty' | 'error'
 type Meta = Pick<ReliableVisaFreeResponse, 'source' | 'verified' | 'total'>
 
-const MONTHS = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-function prettyMonth(ym: string): string {
-  const [y, m] = ym.split('-')
-  const name = MONTHS[parseInt(m, 10)]
-  return name ? `${name} ${y}` : ym
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Homepage "No Visa Required" section.
 //
@@ -113,7 +106,6 @@ export default function VisaFreeSection() {
             )}
             <span>with no advance visa</span>
           </div>
-          <p className="mt-2 text-[11px] text-gray-400">Auto-detected from your location — change it anytime.</p>
 
           {/* At-a-glance stat strip — accurate to what's displayed */}
           {showStats && (
@@ -142,28 +134,6 @@ export default function VisaFreeSection() {
             </div>
           )}
 
-          {/* Provenance + honest reconfirm line */}
-          <div className="mt-5 flex flex-col items-center gap-2">
-            {status === 'ready' && meta?.source === 'official-curated' && meta.verified ? (
-              <a
-                href={meta.verified.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold text-emerald-700 transition hover:bg-emerald-500/15"
-              >
-                <span aria-hidden="true">✓</span>
-                {meta.verified.sourceLabel} · {prettyMonth(meta.verified.lastVerified)}
-                <span aria-hidden="true">↗</span>
-              </a>
-            ) : status === 'ready' ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-medium text-gray-500">
-                Guide — shown only where our data is clean &amp; unambiguous
-              </span>
-            ) : null}
-            <p className="text-xs font-semibold text-gray-500">
-              Always reconfirm with the official source before you fly.
-            </p>
-          </div>
         </div>
       </div>
 
@@ -171,7 +141,7 @@ export default function VisaFreeSection() {
       {(status === 'detecting' || status === 'loading') && (
         <div className="flex flex-wrap items-stretch justify-center gap-4 px-4 sm:gap-5" aria-hidden="true">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-[300px] w-[220px] shrink-0 animate-pulse rounded-[1.75rem] bg-gray-200/70 sm:h-[340px] sm:w-[244px] lg:h-[360px] lg:w-[260px]" />
+            <div key={i} className="h-[256px] w-[220px] shrink-0 animate-pulse rounded-[1.75rem] bg-gray-200/70 sm:h-[288px] sm:w-[244px] lg:h-[304px] lg:w-[260px]" />
           ))}
         </div>
       )}
