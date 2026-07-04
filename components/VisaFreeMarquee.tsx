@@ -81,50 +81,42 @@ export function VisaFreeCard({
       ) : (
         <div className={`absolute inset-0 ${accent.canvas}`}>
           <StampMotif />
-          <div className="absolute left-1/2 top-[33%] -translate-x-1/2 -translate-y-1/2">
-            <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl border border-white/30 bg-white/15 text-4xl shadow-lg backdrop-blur-md transition-transform duration-500 group-hover/card:scale-110 sm:h-24 sm:w-24 sm:text-5xl">
-              {flag}
-            </div>
-          </div>
         </div>
       )}
 
       {/* legibility + brand glow */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/5" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/5" />
       <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-white/10" />
       <div className={`pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t ${accent.glow} to-transparent opacity-0 transition-opacity duration-300 group-hover/card:opacity-100`} />
 
-      {/* top row: entry-type status + region */}
-      <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur-md">
-          <span className={`h-1.5 w-1.5 rounded-full ${accent.dot}`} />
-          {kindLabel(dest)}
-        </span>
-        {region && (
-          <span className="shrink-0 rounded-full border border-white/15 bg-black/25 px-2 py-1 text-[10px] font-semibold text-white/85 backdrop-blur-md">
+      {/* region chip — clean top-right (Atlys-style) */}
+      {region && (
+        <div className="absolute right-3 top-3">
+          <span className="rounded-full border border-white/20 bg-black/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/85 backdrop-blur-md">
             {region}
           </span>
-        )}
-      </div>
-
-      {/* bottom content block */}
-      <div className="absolute inset-x-0 bottom-0 p-4">
-        <div className="flex items-end justify-between gap-2">
-          <div className="min-w-0">
-            {/* small flag chip only on photo cards — fallback cards already hero the flag */}
-            {hasPhoto && (
-              <div className="mb-1.5 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-white/25 bg-white/15 text-base leading-none backdrop-blur-md">{flag}</div>
-            )}
-            <h3 className="truncate text-lg font-extrabold leading-tight text-white drop-shadow-sm">{dest.name}</h3>
-          </div>
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-white/30 bg-white/20 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md">
-            {stayLabel(dest)}
-          </span>
         </div>
-        {/* explore affordance — slides in on hover */}
-        <div className={`mt-3 flex items-center gap-1.5 text-[11px] font-semibold ${accent.text} opacity-0 transition-all duration-300 group-hover/card:opacity-100`}>
-          Explore entry rules
-          <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover/card:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+      )}
+
+      {/* bottom content — flag badge · serif name · divider · honest info row */}
+      <div className="absolute inset-x-0 bottom-0 p-5 text-center">
+        <div className="mx-auto mb-2.5 flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-white/15 text-2xl shadow-lg backdrop-blur-md transition-transform duration-500 group-hover/card:scale-110">
+          {flag}
+        </div>
+        <h3 className="line-clamp-2 px-1 font-serif text-xl font-semibold leading-tight tracking-wide text-white drop-shadow-md">
+          {dest.name}
+        </h3>
+        <div className="mx-auto mt-3 mb-2.5 h-px w-3/4 bg-white/25" />
+        <div className="flex items-start justify-center gap-6">
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-white/55">Entry</p>
+            <p className="mt-0.5 text-[13px] font-bold text-white">{dest.kind === 'visa-free' ? 'Visa-free' : 'On arrival'}</p>
+          </div>
+          <div className="w-px self-stretch bg-white/20" />
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-white/55">Max stay</p>
+            <p className="mt-0.5 text-[13px] font-bold text-white">{dest.days ? `${dest.days} days` : 'Short stay'}</p>
+          </div>
         </div>
       </div>
     </Link>
