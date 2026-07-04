@@ -3,7 +3,6 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView, type Variants } from 'framer-motion'
-import BirdHeroBanner from '@/components/home/BirdHeroBanner'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // "The difference" — two-column comparison (iVisa-style): a muted "Do it
@@ -85,9 +84,6 @@ export default function DifferenceSection() {
             </span>
           </motion.h2>
         </motion.div>
-
-        {/* Brand illustrated lead banner */}
-        <BirdHeroBanner />
 
         {/* Two-column comparison */}
         <motion.div
