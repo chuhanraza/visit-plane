@@ -469,11 +469,11 @@ export default function HomePage() {
         <div className="mt-3 h-3" style={{ background: 'linear-gradient(to bottom, transparent, #FFFFFF)' }} />
       </section>
 
-      {/* ────────────────────── 2. THE DIFFERENCE (problem → solution) ───────────── */}
-      <DifferenceSection />
-
-      {/* ── Visa Data & Research promo (fills former dead whitespace) ───────────── */}
-      <VisaDataPromo />
+      {/* ─────────── 2. NO VISA REQUIRED (desire hook — reacts to passport) ─────── */}
+      {/* Lead below the hero with the aspirational, personalised payoff: where the
+          visitor's passport can go visa-free. Self-contained: IP-default passport +
+          manual switcher + accuracy-guarded reliable list + cinematic carousel. */}
+      <VisaFreeSection />
 
       {/* ────────────────────── 3. POPULAR DESTINATIONS ──────────── */}
       <section className="bg-white py-20 sm:py-24">
@@ -540,10 +540,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ────────────────────── 5. NO VISA REQUIRED ──────────────── */}
-      {/* Self-contained: IP-default passport + manual switcher + accuracy-guarded
-          reliable visa-free list + auto/manual cinematic carousel. */}
-      <VisaFreeSection />
+      {/* ────────────────────── 4. THE DIFFERENCE (problem → solution) ───────────── */}
+      <DifferenceSection />
+
+      {/* ── Visa Data & Research promo ───────────── */}
+      <VisaDataPromo />
 
       {/* ────────────────────── 6. PROVEN ROUTES / GUIDES ────────── */}
       <section className="bg-white py-20 sm:py-24">
