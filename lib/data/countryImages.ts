@@ -12,7 +12,10 @@
 // If unsure, leave it out: the branded fallback (flag + name on a teal
 // gradient) is the safe, honest default.
 
-const U = (id: string) => `https://images.unsplash.com/${id}?w=600&q=80&auto=format&fit=crop`
+// w=900 (was 600) for crisp retina/HD rendering on the destination cards; q=82
+// + auto=format keeps the webp/avif weight reasonable. Unsplash resizes on its
+// CDN, so this only changes the requested pixels, not the (verified) photo.
+const U = (id: string) => `https://images.unsplash.com/${id}?w=900&q=82&auto=format&fit=crop`
 
 export const COUNTRY_IMAGES: Record<string, string> = {
   'UAE':            U('photo-1512453979798-5ea266f8880c'), // Dubai skyline
