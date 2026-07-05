@@ -136,9 +136,10 @@ export const AFFILIATE_PARTNERS: Record<AffiliatePartner, AffiliatePartnerConfig
 const AFFILIATE_IDS = {
   SAFETYWING_REFERENCE_ID: process.env.NEXT_PUBLIC_SAFETYWING_ID ?? 'visitplane',
   AIRALO_AFF_CODE: process.env.NEXT_PUBLIC_AIRALO_CODE ?? 'visitplane',
-  // No fallback: marker=0 is Travelpayouts' "no affiliate" value — a link carrying
-  // it tracks nothing payable. When unset we skip tp.media entirely (see below).
-  TRAVELPAYOUTS_MARKER: process.env.NEXT_PUBLIC_TP_MARKER ?? '',
+  // 546374 is a public value (it appears in every outbound Travelpayouts URL,
+  // not a secret). Hardcoded as default because Vercel env inlining for this
+  // var has been unreliable; env var still overrides if set to a real value.
+  TRAVELPAYOUTS_MARKER: process.env.NEXT_PUBLIC_TP_MARKER || '546374',
   WAYAWAY_PROGRAM_ID: process.env.NEXT_PUBLIC_WAYAWAY_PROGRAM_ID ?? '4114',
   KIWI_PROGRAM_ID: process.env.NEXT_PUBLIC_KIWI_PROGRAM_ID ?? '3',
   HEYMONDO_REF_ID: process.env.NEXT_PUBLIC_HEYMONDO_ID ?? 'visitplane',
