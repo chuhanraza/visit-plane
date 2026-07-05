@@ -134,7 +134,10 @@ export const AFFILIATE_PARTNERS: Record<AffiliatePartner, AffiliatePartnerConfig
 // ─── Affiliate ID placeholders ─────────────────────────────────────────────────
 // Replace these when your applications are approved
 const AFFILIATE_IDS = {
-  SAFETYWING_REFERENCE_ID: process.env.NEXT_PUBLIC_SAFETYWING_ID ?? 'visitplane',
+  // 26557179 is the approved SafetyWing Ambassador referenceID — public (it
+  // appears in the outbound affiliate URL), hardcoded as default since Vercel
+  // env inlining for these vars has been unreliable; env var still overrides.
+  SAFETYWING_REFERENCE_ID: process.env.NEXT_PUBLIC_SAFETYWING_ID || '26557179',
   AIRALO_AFF_CODE: process.env.NEXT_PUBLIC_AIRALO_CODE ?? 'visitplane',
   // 546374 is a public value (it appears in every outbound Travelpayouts URL,
   // not a secret). Hardcoded as default because Vercel env inlining for this
