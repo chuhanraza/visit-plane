@@ -95,29 +95,41 @@ export async function GET(
   const sourcePage = cleanSourcePage(searchParams.get('source') ?? req.headers.get('referer'))
   const country = (req.headers.get('x-vercel-ip-country') || '').slice(0, 2).toUpperCase() || null
 
+  // ── Respect Do-Not-Track / Global Privacy Control — same rule as /api/track.
+  //    Skips the click log only; the redirect below always happens regardless. ─
+  const dntRequested = req.headers.get('dnt') === '1' || req.headers.get('sec-gpc') === '1'
+
   // ── Log to Supabase. AWAIT it so the row is actually persisted (a bare
   //    fire-and-forget insert is dropped when the serverless function freezes
   //    after responding). Guarded by a short timeout so a DB hiccup can never
-  //    delay the redirect by more than ~1s. ──────────────────────────────────
-  const supabase = getSupabase()
-  const insert = supabase
-    .from('affiliate_clicks')
-    .insert({
-      partner,
-      placement,
-      route_passport: routePassport || null,
-      route_dest: destIso || null,
-      blog_slug: blogSlug,
-      source_page: sourcePage,
-      country,
-      user_session_id: userSessionId,
-      user_ip_hash: userIpHash,
-      user_agent: userAgent,
-    })
-    .then(({ error }) => {
-      if (error) console.error('[affiliate-click] DB error:', error.message)
-    })
-  await Promise.race([insert, new Promise(r => setTimeout(r, 1000))])
+  //    delay the redirect by more than ~1s, and wrapped in try/catch so any
+  //    logging failure — including a thrown client-init error — can never
+  //    break or delay the redirect itself. ───────────────────────────────────
+  if (!dntRequested) {
+    try {
+      const supabase = getSupabase()
+      const insert = supabase
+        .from('affiliate_clicks')
+        .insert({
+          partner,
+          placement,
+          route_passport: routePassport || null,
+          route_dest: destIso || null,
+          blog_slug: blogSlug,
+          source_page: sourcePage,
+          country,
+          user_session_id: userSessionId,
+          user_ip_hash: userIpHash,
+          user_agent: userAgent,
+        })
+        .then(({ error }) => {
+          if (error) console.error('[affiliate-click] DB error:', error.message)
+        })
+      await Promise.race([insert, new Promise(r => setTimeout(r, 1000))])
+    } catch (err) {
+      console.error('[affiliate-click] logging failed:', err)
+    }
+  }
 
   // ── Build final affiliate URL ──────────────────────────────────────────────
   const affiliateUrl = buildAffiliateUrl(partner, subId, {

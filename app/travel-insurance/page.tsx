@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import CountrySelect from '@/components/CountrySelect'
+import { affiliateTrackingUrl } from '@/src/lib/affiliates'
 
 const DESTINATIONS = ['Australia','Canada','France','Germany','Italy','Japan','Spain','UAE','United Kingdom','United States']
 const DURATIONS = ['1 Week','2 Weeks','1 Month','3 Months']
@@ -41,6 +42,14 @@ export default function TravelInsurancePage() {
   const [count, setCount] = useState('1')
   const [cov, setCov] = useState('')
   const [shown, setShown] = useState(false)
+
+  // Tracked SafetyWing affiliate link — same helper/route every other CTA in
+  // the app uses (see components/visa/TravelReadinessGrid.tsx). Replaces a
+  // previous untracked, non-partner worldnomads.com link.
+  const insuranceHref = affiliateTrackingUrl('safetywing', {
+    placement: 'checkout_flow',
+    source: '/travel-insurance',
+  })
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#0f0c29] antialiased overflow-x-hidden">{/* ── HERO ── */}
@@ -127,7 +136,7 @@ export default function TravelInsurancePage() {
                       </li>
                     ))}
                   </ul>
-                  <a href="https://worldnomads.com" target="_blank" rel="noopener noreferrer"
+                  <a href={insuranceHref} rel="nofollow sponsored"
                     className={`block text-center rounded-xl py-2.5 text-sm font-bold transition-all ${p.popular ? 'bg-teal-500 text-white hover:bg-teal-600 shadow-lg shadow-teal-500/25' : 'border border-gray-200 bg-white/5 text-gray-600 hover:bg-gray-100 hover:text-white'}`}>
                     Get Quote
                   </a>
