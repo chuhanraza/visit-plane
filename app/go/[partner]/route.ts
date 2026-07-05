@@ -30,6 +30,14 @@ function getSupabase() {
   )
 }
 
+// ─── Bot/crawler detection ─────────────────────────────────────────────────
+// Same signature coverage as the backfill in
+// supabase/migrations/20260705_affiliate_clicks_is_bot.sql — keep both in sync.
+const BOT_UA_RE = /bot|crawl|spider|slurp|bingpreview|curl|wget|python-requests|headless/i
+function isBotUserAgent(ua: string): boolean {
+  return ua === '' || BOT_UA_RE.test(ua)
+}
+
 // ─── Valid partner slugs ──────────────────────────────────────────────────────
 const VALID_PARTNERS = new Set(Object.keys(AFFILIATE_PARTNERS))
 
@@ -99,13 +107,17 @@ export async function GET(
   //    Skips the click log only; the redirect below always happens regardless. ─
   const dntRequested = req.headers.get('dnt') === '1' || req.headers.get('sec-gpc') === '1'
 
+  // ── Skip logging obvious crawlers (they fetch every /go/ link on a page
+  //    just by crawling it — that's not a human click). Redirect still happens. ─
+  const isBot = isBotUserAgent(userAgent)
+
   // ── Log to Supabase. AWAIT it so the row is actually persisted (a bare
   //    fire-and-forget insert is dropped when the serverless function freezes
   //    after responding). Guarded by a short timeout so a DB hiccup can never
   //    delay the redirect by more than ~1s, and wrapped in try/catch so any
   //    logging failure — including a thrown client-init error — can never
   //    break or delay the redirect itself. ───────────────────────────────────
-  if (!dntRequested) {
+  if (!dntRequested && !isBot) {
     try {
       const supabase = getSupabase()
       const insert = supabase
