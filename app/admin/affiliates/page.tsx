@@ -187,6 +187,12 @@ export default async function AffiliatesAdminPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link
+              href="/admin/affiliate-clicks"
+              className="rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 text-xs font-semibold text-teal-700 transition hover:bg-teal-100"
+            >
+              🧑 Human-only clicks →
+            </Link>
+            <Link
               href="/admin/data-quality"
               className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-600 transition hover:bg-gray-50"
             >
