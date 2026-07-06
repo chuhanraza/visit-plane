@@ -15,6 +15,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { COUNTRIES, BY_NATIONALITY, BY_SLUG, resolveCountry, OFFICIAL_VISA_PORTALS } from '@/lib/seo/countries'
 import type { VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
+import TripEssentials from '@/components/affiliate/TripEssentials'
 
 // ── ISR ────────────────────────────────────────────────────────────────────────
 // 24h edge cache per route. Nothing is prerendered at build (topRoutes below is
@@ -738,6 +739,16 @@ export default async function Template1Page({
                 </div>
               </section>
             )}
+
+            {/* Trip essentials — relevant, disclosed affiliate offers */}
+            <TripEssentials
+              placement="req_page"
+              source={`/seo/req/${passportSlug}/${destinationSlug}`}
+              destIso={destinationCountry.iso3.toLowerCase()}
+              passportIso={passportCountry.iso3.toLowerCase()}
+              show={['insurance', 'flights']}
+              subheading={`${passportName} travelers to ${destinationName} sort these next — insurance may be required for some visa types, and flights are worth comparing before you book.`}
+            />
 
             {/* FAQ */}
             <section>

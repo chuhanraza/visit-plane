@@ -17,6 +17,7 @@ import {
   COUNTRIES, BY_NATIONALITY, BY_SLUG, OFFICIAL_VISA_PORTALS
 } from '@/lib/seo/countries'
 import type { VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
+import TripEssentials from '@/components/affiliate/TripEssentials'
 
 // ISR: 24h edge cache per page. Empty generateStaticParams = nothing prerenders
 // at build (build-time prerender crashed Next 16 on occasional null/dirty
@@ -704,6 +705,16 @@ export default async function Template4Page({
                 </div>
               </div>
             </section>
+
+            {/* Trip essentials — relevant, disclosed affiliate offers */}
+            <TripEssentials
+              placement="guide_page"
+              source={`/seo/guide/${destinationSlug}/${passportNounSlug}`}
+              destIso={destinationCountry.iso3.toLowerCase()}
+              passportIso={passportCountry.iso3.toLowerCase()}
+              show={['insurance', 'flights']}
+              subheading={`${passNational} book these next — insurance may be required for some visa types, and flights are worth comparing before you apply.`}
+            />
 
             {/* FAQ */}
             <section>

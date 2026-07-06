@@ -9,7 +9,7 @@
  */
 import { affiliateTrackingUrl, type AffiliatePlacement, type AffiliatePartner } from '@/src/lib/affiliates'
 
-type Essential = 'insurance' | 'esim' | 'flights'
+type Essential = 'insurance' | 'esim' | 'flights' | 'ivisa'
 
 interface Props {
   placement: AffiliatePlacement
@@ -37,6 +37,14 @@ const CARDS: Record<Essential, { partner: AffiliatePartner; icon: string; label:
     partner: 'wayaway', icon: '✈️', label: 'Flights',
     desc: 'Compare 700+ airlines and see cashback-eligible fares before you book.',
     price: 'Compare fares', cta: 'Search flights →',
+  },
+  // Not shown anywhere yet — iVisa affiliate application is still in review.
+  // Once approved (NEXT_PUBLIC_IVISA_TRACKING_URL set), enable it on a page by
+  // adding 'ivisa' to that page's `show` array — no other change needed.
+  ivisa: {
+    partner: 'ivisa', icon: '📄', label: 'Visa application help',
+    desc: 'Expert review of your application and documents, with 24/7 support.',
+    price: 'Service fee applies', cta: 'Get help applying →',
   },
 }
 

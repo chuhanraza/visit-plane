@@ -44,6 +44,7 @@ const VALID_PARTNERS = new Set(Object.keys(AFFILIATE_PARTNERS))
 const VALID_PLACEMENTS = new Set<AffiliatePlacement>([
   'visa_page', 'blog_post', 'homepage', 'checkout_flow', 'email',
   'email_sequence', 'cheapest_page', 'route_page', 'itinerary',
+  'req_page', 'guide_page',
 ])
 
 /** Reduce a full URL to a clean path (drop origin + query) for attribution. */

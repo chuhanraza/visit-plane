@@ -40,6 +40,8 @@ export type AffiliatePlacement =
   | 'cheapest_page'
   | 'route_page'
   | 'itinerary'
+  | 'req_page'
+  | 'guide_page'
 
 export interface AffiliatePartnerConfig {
   id: AffiliatePartner
