@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CountrySelect from '@/components/CountrySelect'
 import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 import AffiliateDisclosure from '@/components/affiliate/AffiliateDisclosure'
@@ -16,6 +16,7 @@ import {
   type ExtraordinaryAnswer,
   type EligibilityResult,
 } from '@/src/lib/flightCompensation'
+import { estimateDistanceBand, detectCarrierRegion } from '@/src/lib/flightAutoDetect'
 
 // ─── Small shared UI bits (mirrors the button-toggle pattern used on
 // /cost-calculator and /travel-insurance — no new design system introduced) ────
@@ -186,6 +187,36 @@ export default function FlightCompensationPage() {
   const [deniedBoardingVoluntary, setDeniedBoardingVoluntary] = useState<'yes' | 'no' | ''>('')
   const [submitted, setSubmitted] = useState(false)
 
+  // Both of these start as "not yet touched by hand" — the effects below keep
+  // auto-filling from the countries/airline name until the user overrides the
+  // toggle themselves, at which point we stop guessing and respect their pick.
+  const [distanceBandTouched, setDistanceBandTouched] = useState(false)
+  const [carrierRegionTouched, setCarrierRegionTouched] = useState(false)
+  const [distanceEstimateKm, setDistanceEstimateKm] = useState<number | null>(null)
+  const [carrierRegionAutoDetected, setCarrierRegionAutoDetected] = useState(false)
+
+  useEffect(() => {
+    if (distanceBandTouched) return
+    const estimate = estimateDistanceBand(departureCountry, arrivalCountry)
+    if (estimate) {
+      setDistanceBand(estimate.band)
+      setDistanceEstimateKm(estimate.km)
+    } else {
+      setDistanceEstimateKm(null)
+    }
+  }, [departureCountry, arrivalCountry, distanceBandTouched])
+
+  useEffect(() => {
+    if (carrierRegionTouched) return
+    const detected = detectCarrierRegion(airlineName)
+    if (detected) {
+      setCarrierRegion(detected)
+      setCarrierRegionAutoDetected(true)
+    } else {
+      setCarrierRegionAutoDetected(false)
+    }
+  }, [airlineName, carrierRegionTouched])
+
   const disruptionFieldsComplete =
     disruption === 'delay'
       ? delayHours !== '' && extraordinaryCircumstances !== ''
@@ -320,13 +351,22 @@ export default function FlightCompensationPage() {
               <ToggleGroup
                 columns={3}
                 value={carrierRegion}
-                onChange={(v) => setCarrierRegion(v as CarrierRegion)}
+                onChange={(v) => {
+                  setCarrierRegion(v as CarrierRegion)
+                  setCarrierRegionTouched(true)
+                  setCarrierRegionAutoDetected(false)
+                }}
                 options={[
                   { value: 'eu_eea', label: 'EU / EEA', hint: 'e.g. Lufthansa, Air France, KLM' },
                   { value: 'uk', label: 'UK', hint: 'e.g. British Airways, easyJet' },
                   { value: 'other', label: 'Elsewhere', hint: 'e.g. US, Gulf, Asian carrier' },
                 ]}
               />
+              {carrierRegionAutoDetected && carrierRegion && (
+                <p className="mt-1.5 text-[11px] text-emerald-600">
+                  Detected from &quot;{airlineName}&quot; — tap a different option above if that&apos;s wrong.
+                </p>
+              )}
             </div>
 
             <div>
@@ -334,16 +374,25 @@ export default function FlightCompensationPage() {
               <ToggleGroup
                 columns={3}
                 value={distanceBand}
-                onChange={(v) => setDistanceBand(v as DistanceBand)}
+                onChange={(v) => {
+                  setDistanceBand(v as DistanceBand)
+                  setDistanceBandTouched(true)
+                }}
                 options={[
                   { value: 'short', label: 'Short-haul', hint: DISTANCE_LABEL.short },
                   { value: 'medium', label: 'Medium-haul', hint: DISTANCE_LABEL.medium },
                   { value: 'long', label: 'Long-haul', hint: DISTANCE_LABEL.long },
                 ]}
               />
-              <p className="mt-1.5 text-[11px] text-gray-400">
-                Not sure? Rough guide: Paris–Rome ≈ 1,100 km (short), London–Dubai ≈ 5,500 km (long), New York–London ≈ 5,570 km (long).
-              </p>
+              {!distanceBandTouched && distanceEstimateKm !== null && distanceBand ? (
+                <p className="mt-1.5 text-[11px] text-emerald-600">
+                  Estimated ~{distanceEstimateKm.toLocaleString()} km from your two countries — tap a different option above if that&apos;s wrong.
+                </p>
+              ) : (
+                <p className="mt-1.5 text-[11px] text-gray-400">
+                  Not sure? Rough guide: Paris–Rome ≈ 1,100 km (short), London–Dubai ≈ 5,500 km (long), New York–London ≈ 5,570 km (long).
+                </p>
+              )}
             </div>
 
             <div>
