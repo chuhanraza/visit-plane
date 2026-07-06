@@ -29,6 +29,7 @@ export type AffiliatePartner =
   | 'wayaway'
   | 'kiwi'
   | 'ivisa'
+  | 'airhelp'
 
 export type AffiliatePlacement =
   | 'visa_page'
@@ -42,11 +43,12 @@ export type AffiliatePlacement =
   | 'itinerary'
   | 'req_page'
   | 'guide_page'
+  | 'flight_delay_page'
 
 export interface AffiliatePartnerConfig {
   id: AffiliatePartner
   name: string
-  category: 'insurance' | 'esim' | 'flights' | 'visa-services'
+  category: 'insurance' | 'esim' | 'flights' | 'visa-services' | 'claims-services'
   trustpilotRating: number  // must be ≥ 4.0
   baseUrl: string
   description: string
@@ -131,6 +133,26 @@ export const AFFILIATE_PARTNERS: Record<AffiliatePartner, AffiliatePartnerConfig
     priceFrom: 'Service fee applies',
     commission: 'Per approved order',
   },
+  // ── DARK / PLACEHOLDER — no real affiliate relationship yet ─────────────────
+  // Used by app/flight-compensation (the flight delay/cancellation compensation
+  // checker). trustpilotRating 4.5 is AirHelp's real public Trustpilot score as
+  // of July 2026 (trustpilot.com/review/www.airhelp.com — "Excellent", 231k+
+  // reviews), not fabricated. There is NO tracking link yet: buildAffiliateUrl()
+  // below intentionally falls through to the site's own homepage (a safe,
+  // non-affiliate fallback) instead of airhelp.com, so this never sends a click
+  // to a real partner without attribution/commission set up. Apply at
+  // airhelp.com/partners, then set NEXT_PUBLIC_AIRHELP_TRACKING_URL (see
+  // AFFILIATE_IDS below) — that one env var is the only change needed to go live.
+  airhelp: {
+    id: 'airhelp',
+    name: 'AirHelp',
+    category: 'claims-services',
+    trustpilotRating: 4.5,
+    baseUrl: 'https://www.airhelp.com',
+    description: 'Flight delay/cancellation compensation claims handled for you — no win, no fee.',
+    priceFrom: 'Free to check; fee only if they win your claim',
+    commission: 'Per successful claim (pending partner approval)',
+  },
 }
 
 // ─── Affiliate ID placeholders ─────────────────────────────────────────────────
@@ -152,6 +174,10 @@ const AFFILIATE_IDS = {
   // Full tracking link from the iVisa affiliate dashboard (may contain a
   // {subId} placeholder). Empty = not yet approved → plain ivisa.com link.
   IVISA_TRACKING_URL: process.env.NEXT_PUBLIC_IVISA_TRACKING_URL ?? '',
+  // Full tracking link from the AirHelp affiliate dashboard once approved (may
+  // contain a {subId} placeholder). Empty = not yet approved → dark fallback
+  // (VisitPlane homepage, NOT airhelp.com) so no unattributed traffic is sent.
+  AIRHELP_TRACKING_URL: process.env.NEXT_PUBLIC_AIRHELP_TRACKING_URL ?? '',
 }
 
 // True when the Travelpayouts marker is a real affiliate ID (set and non-zero).
@@ -213,6 +239,21 @@ export function buildAffiliateUrl(
           : tracking
       }
       return 'https://www.ivisa.com/?utm_source=visitplane&utm_medium=referral'
+    }
+
+    case 'airhelp': {
+      // DARK until approved: no real tracking link configured yet, so redirect
+      // to our own homepage rather than sending unattributed traffic to a real
+      // competitor/partner site. Set NEXT_PUBLIC_AIRHELP_TRACKING_URL (one env
+      // var) once the AirHelp affiliate application is approved to go live —
+      // no other code change required.
+      const tracking = AFFILIATE_IDS.AIRHELP_TRACKING_URL.trim()
+      if (tracking) {
+        return tracking.includes('{subId}')
+          ? tracking.replaceAll('{subId}', encodeURIComponent(subId))
+          : tracking
+      }
+      return 'https://www.visitplane.com/'
     }
 
     default: {
