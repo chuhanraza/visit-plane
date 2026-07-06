@@ -183,18 +183,15 @@ export function buildAffiliateUrl(
     case 'saily':
       return `https://saily.com/?aff=${AFFILIATE_IDS.SAILY_AFF_CODE}&click_id=${subId}`
 
-    case 'wayaway': {
-      const dest = destIso ? `&destination=${destIso.toUpperCase()}` : ''
-      const origin = originIso ? `&origin=${originIso.toUpperCase()}` : ''
-      // Without a real marker, tp.media would attribute nothing — send the user
-      // straight to WayAway instead of a dead tracking hop.
-      if (!hasTpMarker()) {
-        console.error('[affiliates] NEXT_PUBLIC_TP_MARKER is not set — WayAway link is UNATTRIBUTED')
-        return `https://wayaway.io/?destination=${destIso}${origin}&utm_source=visitplane&utm_medium=affiliate`
-      }
-      const u = encodeURIComponent(`https://wayaway.io/?destination=${destIso}${origin}`)
-      return `https://tp.media/r?marker=${AFFILIATE_IDS.TRAVELPAYOUTS_MARKER}&trs=visitplane_${subId}&p=${AFFILIATE_IDS.WAYAWAY_PROGRAM_ID}&u=${u}&utm_source=visitplane&utm_medium=affiliate${dest}${origin}`
-    }
+    case 'wayaway':
+      // The old hand-built tp.media/r?marker=...&trs=...&p=...&u=... link
+      // returned HTTP 400/403 — trs needs a numeric Travelpayouts
+      // traffic-source id (not our string subId), and the account needed
+      // explicit WayAway-program authorization. Replaced with a verified
+      // Travelpayouts short link (marker + program routing baked in
+      // server-side on their end) — it's complete and self-contained, so no
+      // params get appended here; adding any could break it.
+      return 'https://aviasales.tpo.lu/Da1Eq1Ch'
 
     case 'kiwi': {
       const o = originIso.toUpperCase()
