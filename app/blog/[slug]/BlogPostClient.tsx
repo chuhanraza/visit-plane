@@ -142,8 +142,8 @@ export function SocialShare({ title, slug }: { title: string; slug: string }) {
 
   return (
     <>
-      {/* Desktop: fixed vertical strip on left */}
-      <div className="fixed left-4 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-center gap-3 xl:flex">
+      {/* Desktop: fixed vertical strip on right */}
+      <div className="fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-center gap-3 xl:flex">
         <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-gray-400">
           Share
         </p>
