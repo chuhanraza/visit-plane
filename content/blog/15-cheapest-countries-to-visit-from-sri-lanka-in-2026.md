@@ -100,7 +100,7 @@ Whichever destination you pick, these habits keep the cost down: search flights 
 
 ## Don't Forget Travel Insurance and the Essentials
 
-Budget travel shouldn't mean skipping the basics. **Travel insurance** is inexpensive relative to the cost of a medical or trip-cancellation problem abroad, and some destinations require it for entry. Carry **copies of your passport, visa, and bookings** stored offline and in the cloud, sort out **mobile data** with a local SIM or eSIM, and keep a little **local currency** for small purchases. These small steps protect your trip and your budget at the same time, and they let you focus on enjoying the destination rather than firefighting.
+Budget travel shouldn't mean skipping the basics. **Travel insurance** is inexpensive relative to the cost of a medical or trip-cancellation problem abroad, and some destinations require it for entry — Schengen Europe most strictly, with a specific minimum cover level; see our [guide to what a Schengen visa's insurance rule actually requires](/blog/best-travel-insurance-schengen-visa) to know what to look for. Carry **copies of your passport, visa, and bookings** stored offline and in the cloud, sort out **mobile data** with a local SIM or eSIM, and keep a little **local currency** for small purchases. These small steps protect your trip and your budget at the same time, and they let you focus on enjoying the destination rather than firefighting.
 
 ## Plan in the Right Order
 

@@ -26,7 +26,7 @@ A realistic Nigerian applicant's budget includes several layers:
 - **The government visa fee** — around AUD 190.
 - **The service charge** — most applications go through a partner centre or platform that adds its own fee.
 - **Biometrics** — no advance biometrics for most applicants; checks happen on arrival.
-- **Travel insurance** — mandatory for Schengen routes and sensible for any trip.
+- **Travel insurance** — [mandatory for Schengen routes](/blog/best-travel-insurance-schengen-visa) and sensible for any trip.
 - **Photographs** — passport-spec photos to the exact requirements.
 - **Supporting documents** — bank statements, any notarisation, translations, and printouts.
 - **Courier or passport return** — where the centre charges to return your passport.

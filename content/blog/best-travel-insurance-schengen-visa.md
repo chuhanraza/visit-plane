@@ -88,7 +88,7 @@ These are the errors we see again and again — each one is avoidable:
 
 If you are applying for a **multiple-entry** visa, the rules are slightly more involved. You must hold compliant insurance for your **first** planned trip, and you typically sign a declaration undertaking to hold valid cover for each subsequent trip during the visa's validity. Many travellers buy an **annual multi-trip** travel-medical policy for this, so they are covered for every entry without re-buying each time.
 
-For **long-stay (national, Type D) visas** — for study, work or, for example, Germany's job-seeker routes — insurance requirements differ from the short-stay rule and depend on the country and purpose. If you are heading to Germany to look for work, see our companion guide to the [Germany Job Seeker Visa](/blog/germany-job-seeker-visa-complete-requirements), which covers the health-cover expectations for that route specifically.
+For **long-stay (national, Type D) visas** — for study, work or, for example, Germany's job-seeker routes — insurance requirements differ from the short-stay rule and depend on the country and purpose. If you are heading to Germany to look for work, see our companion guide to the [Germany Job Seeker Visa](/blog/germany-job-seeker-visa-complete-requirements), which covers the health-cover expectations for that route specifically. If you're heading to France to study instead, see our breakdown of the [France student visa's own financial and insurance expectations](/blog/france-student-visa-financial-requirements-2026-proof-of-funds-explained), which differ from the short-stay Schengen rule above.
 
 ## Country-by-country notes
 

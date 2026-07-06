@@ -94,6 +94,8 @@ You must show you can support yourself for the whole search period without worki
 
 The required monthly amount is set by the authorities and is revised periodically — recent figures have been in the region of **just over €1,000 per month**, which scales with the length of your permit (so a longer Opportunity Card requires proportionally more). Because this figure is updated and differs between missions, **do not lock in an exact number from any blog, including this one** — confirm the current blocked-account minimum with the Federal Foreign Office (auswaertiges-amt.de) or your consulate before opening the account. On the Opportunity Card, lawful part-time earnings can also help demonstrate that you can cover your costs.
 
+For comparison, France runs a similar proof-of-funds logic for its own long-stay visas, on a smaller monthly figure — see our breakdown of [France's student-visa financial requirements](/blog/france-student-visa-financial-requirements-2026-proof-of-funds-explained) if you're weighing routes across different European countries.
+
 ## Step-by-step: how to apply
 
 1. **Check your recognition first.** Look up your qualification on anabin and, if needed, request a ZAB statement of comparability or vocational recognition. Everything else depends on this.
