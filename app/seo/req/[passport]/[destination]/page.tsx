@@ -7,7 +7,7 @@
  * "[nationality] visa requirements for [destination]" search queries.
  * Target: 38,809 pages (197 passports × 197 destinations)
  *
- * ISR: revalidated every 7 days
+ * ISR: revalidated every 30 days
  */
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
@@ -18,10 +18,13 @@ import type { VisaRequirement } from '@/components/visa/VisaRequirementsBlock'
 import TripEssentials from '@/components/affiliate/TripEssentials'
 
 // ── ISR ────────────────────────────────────────────────────────────────────────
-// 24h edge cache per route. Nothing is prerendered at build (topRoutes below is
-// kept for reference but NOT returned — build-time prerender crashed Next 16 on
-// occasional null/dirty Supabase rows); every route generates on first request.
-export const revalidate = 86400
+// 30-day edge cache per route (was 24h — the 197×197 param space regenerating
+// daily was a major driver of the ISR-write overage that paused the Vercel
+// project; visa rules change slowly, so a month-long window is safe). Nothing
+// is prerendered at build (topRoutes below is kept for reference but NOT
+// returned — build-time prerender crashed Next 16 on occasional null/dirty
+// Supabase rows); every route generates on first request.
+export const revalidate = 2592000
 
 export async function generateStaticParams() {
   return []

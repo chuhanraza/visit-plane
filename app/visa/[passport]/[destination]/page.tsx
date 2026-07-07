@@ -4,12 +4,14 @@ import { notFound, permanentRedirect } from 'next/navigation'
 import { hasConflictingStatus } from '@/lib/visa/detectConflict'
 import VisaPageClient, { type VisaRecord } from './VisaPageClient'
 
-// ISR: cache each rendered pair for 24h at the edge (visa data changes rarely;
-// the old force-dynamic made every visit + every Googlebot crawl a live
-// Supabase render at 0.5–1.3s TTFB). Empty generateStaticParams = nothing is
-// prerendered at build (avoids the Next 16 empty-param-shell build crash);
-// pages generate on first request and are then served cached.
-export const revalidate = 86400
+// ISR: cache each rendered pair for 30 days at the edge (was 24h — the large
+// param space regenerating daily was a major driver of the ISR-write overage
+// that paused the Vercel project; visa data changes rarely, so a month-long
+// window is safe — the old force-dynamic made every visit + every Googlebot
+// crawl a live Supabase render at 0.5–1.3s TTFB). Empty generateStaticParams =
+// nothing is prerendered at build (avoids the Next 16 empty-param-shell build
+// crash); pages generate on first request and are then served cached.
+export const revalidate = 2592000
 export async function generateStaticParams() {
   return []
 }

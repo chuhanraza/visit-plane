@@ -19,10 +19,13 @@ import TripEssentials from '@/components/affiliate/TripEssentials'
 import { BY_SLUG } from '@/lib/seo/countries'
 import { getRelatedPassportLinks, getRelatedDestinationLinks } from '@/lib/seo/internalLinks'
 
-// ISR: 24h edge cache per route. Empty generateStaticParams prevents Next 16
-// from prerendering an empty-param shell at build (which crashed the build on
-// `params.toLowerCase`) while still letting rendered pages be cached.
-export const revalidate = 86400
+// ISR: 30-day edge cache per route (was 24h — the large param space
+// regenerating daily was a major driver of the ISR-write overage that paused
+// the Vercel project; visa rules change slowly, so a month-long window is
+// safe). Empty generateStaticParams prevents Next 16 from prerendering an
+// empty-param shell at build (which crashed the build on `params.toLowerCase`)
+// while still letting rendered pages be cached.
+export const revalidate = 2592000
 export async function generateStaticParams() {
   return []
 }
