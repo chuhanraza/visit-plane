@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { BLOCKED_BOT_UA_PATTERN } from '@/lib/security/botBlocklist';
 
 // IP country to language mapping
 const COUNTRY_TO_LANGUAGE: Record<string, string> = {
@@ -150,6 +151,20 @@ const COUNTRY_TO_LANGUAGE: Record<string, string> = {
 };
 
 export default async function middleware(request: NextRequest) {
+  // Hard-block aggressive/non-essential crawlers before they ever reach an
+  // ISR/SSR route — robots.txt is advisory only, and these bots (SEO
+  // scrapers, AI training/browsing bots) were driving the bulk of our ISR
+  // writes and bandwidth. Never blocks Googlebot/Bingbot. Fails open: any
+  // error in the check just falls through to normal request handling.
+  try {
+    const userAgent = request.headers.get('user-agent') ?? '';
+    if (userAgent && BLOCKED_BOT_UA_PATTERN.test(userAgent)) {
+      return new NextResponse('Forbidden', { status: 403 });
+    }
+  } catch {
+    // fail-open — a bug in bot detection must never block real traffic
+  }
+
   const savedLocale = request.cookies.get('NEXT_LOCALE')?.value;
 
   if (!savedLocale) {

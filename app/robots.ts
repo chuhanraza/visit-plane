@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { BLOCKED_BOT_USER_AGENTS } from '@/lib/security/botBlocklist'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -19,6 +20,19 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/', '/_next/'],
       },
+      {
+        // Allow Bing to crawl everything it needs for indexing
+        userAgent: 'Bingbot',
+        allow: '/',
+        disallow: ['/api/', '/_next/'],
+      },
+      // Advisory block for aggressive/non-essential crawlers (SEO scrapers,
+      // AI training/browsing bots) — polite bots honor this; rude ones don't,
+      // which is why middleware.ts also hard-blocks the same list at the edge.
+      ...BLOCKED_BOT_USER_AGENTS.map((userAgent) => ({
+        userAgent,
+        disallow: '/',
+      })),
     ],
     sitemap: [
       'https://www.visitplane.com/sitemap.xml',
