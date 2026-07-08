@@ -8,12 +8,12 @@
  *                    Replace SAFETYWING_REFERENCE_ID below with your ID (numeric)
  *   2. Airalo      → Apply at partners.airalo.com
  *                    Replace AIRALO_AFF_CODE below with your code (string)
- *   3. WayAway     → Apply at tp.media (Travelpayouts) for WayAway program
- *                    Replace TRAVELPAYOUTS_MARKER with your marker ID
- *                    Replace WAYAWAY_PROGRAM_ID with WayAway's program ID (4114 typically)
+ *   3. WayAway     → Via Travelpayouts: generate a SHORT LINK in the dashboard
+ *                    (tp.media hand-built links break — see `case 'wayaway'`)
  *   4. HeyMondo    → Apply at heymondo.com/affiliates
  *                    Replace HEYMONDO_REF_ID below
- *   5. Kiwi        → Via Travelpayouts — use TRAVELPAYOUTS_MARKER + KIWI_PROGRAM_ID
+ *   5. Kiwi        → Via Travelpayouts: generate a SHORT LINK in the dashboard
+ *                    and set NEXT_PUBLIC_KIWI_TRACKING_URL (see `case 'kiwi'`)
  *   6. Saily       → Apply via NordVPN affiliate program
  *                    Replace SAILY_AFF_CODE below
  *
@@ -162,15 +162,24 @@ const AFFILIATE_IDS = {
   // appears in the outbound affiliate URL), hardcoded as default since Vercel
   // env inlining for these vars has been unreliable; env var still overrides.
   SAFETYWING_REFERENCE_ID: process.env.NEXT_PUBLIC_SAFETYWING_ID || '26557179',
-  AIRALO_AFF_CODE: process.env.NEXT_PUBLIC_AIRALO_CODE ?? 'visitplane',
-  // 546374 is a public value (it appears in every outbound Travelpayouts URL,
-  // not a secret). Hardcoded as default because Vercel env inlining for this
-  // var has been unreliable; env var still overrides if set to a real value.
+  AIRALO_AFF_CODE: process.env.NEXT_PUBLIC_AIRALO_CODE || 'visitplane',
+  // ⚠️ MARKER INCONSISTENCY — kept only as documentation, no longer used to
+  // build links (both flight partners now use dashboard-generated short links):
+  //   546374 = the marker this codebase historically hardcoded. tp.media
+  //            returned 403 for it on the WayAway program pre-activation.
+  //   746637 = the marker the VERIFIED WayAway short link actually attributes
+  //            to (observed live: aviasales.tpo.lu/Da1Eq1Ch 302s to
+  //            aviasales.com?marker=746637...). This is the activated account.
+  // Do NOT hand-build tp.media/r links with either marker — trs requires a
+  // numeric traffic-source id and the program must be authorized; generate
+  // short links from the Travelpayouts dashboard instead.
   TRAVELPAYOUTS_MARKER: process.env.NEXT_PUBLIC_TP_MARKER || '546374',
-  WAYAWAY_PROGRAM_ID: process.env.NEXT_PUBLIC_WAYAWAY_PROGRAM_ID ?? '4114',
-  KIWI_PROGRAM_ID: process.env.NEXT_PUBLIC_KIWI_PROGRAM_ID ?? '3',
-  HEYMONDO_REF_ID: process.env.NEXT_PUBLIC_HEYMONDO_ID ?? 'visitplane',
-  SAILY_AFF_CODE: process.env.NEXT_PUBLIC_SAILY_CODE ?? 'visitplane',
+  // Full Kiwi tracking link from the Travelpayouts dashboard (generate a short
+  // link for the Kiwi.com program, same as WayAway's). Empty = not yet
+  // generated → plain kiwi.com deep link (works, but unattributed).
+  KIWI_TRACKING_URL: process.env.NEXT_PUBLIC_KIWI_TRACKING_URL || '',
+  HEYMONDO_REF_ID: process.env.NEXT_PUBLIC_HEYMONDO_ID || 'visitplane',
+  SAILY_AFF_CODE: process.env.NEXT_PUBLIC_SAILY_CODE || 'visitplane',
   // Full tracking link from the iVisa affiliate dashboard (may contain a
   // {subId} placeholder). Empty = not yet approved → plain ivisa.com link.
   IVISA_TRACKING_URL: process.env.NEXT_PUBLIC_IVISA_TRACKING_URL ?? '',
@@ -180,19 +189,16 @@ const AFFILIATE_IDS = {
   AIRHELP_TRACKING_URL: process.env.NEXT_PUBLIC_AIRHELP_TRACKING_URL ?? '',
 }
 
-// True when the Travelpayouts marker is a real affiliate ID (set and non-zero).
-function hasTpMarker(): boolean {
-  const m = AFFILIATE_IDS.TRAVELPAYOUTS_MARKER.trim()
-  return m !== '' && m !== '0'
-}
-
 // ─── Build the final affiliate URL (with subID injected) ─────────────────────
 export function buildAffiliateUrl(
   partner: AffiliatePartner,
   subId: string,
   opts: { destIso?: string; originIso?: string } = {}
 ): string {
-  const { destIso = '', originIso = 'pk' } = opts
+  // opts.originIso is currently unused (Kiwi no longer builds a route deep
+  // link) but stays in the signature — /go/[partner] passes it, and a real
+  // Kiwi tracking link may use it again later.
+  const { destIso = '' } = opts
 
   switch (partner) {
     case 'safetywing':
@@ -220,15 +226,27 @@ export function buildAffiliateUrl(
       return 'https://aviasales.tpo.lu/Da1Eq1Ch'
 
     case 'kiwi': {
-      const o = originIso.toUpperCase()
-      const d = destIso.toUpperCase()
-      const kiwiUrl = `https://www.kiwi.com/us/search/${o}/${d}/anytime/anytime`
-      if (!hasTpMarker()) {
-        console.error('[affiliates] NEXT_PUBLIC_TP_MARKER is not set — Kiwi link is UNATTRIBUTED')
-        return kiwiUrl
+      // The old hand-built tp.media/r?marker=...&trs=...&p=3&u=... link was
+      // broken twice over (verified live 2026-07-08): trs rejected our string
+      // subId with HTTP 400 "schema: error converting value for trs", and
+      // program id 3 returns 404 "promo not found" with EITHER marker even
+      // with trs fixed — so every Kiwi click died on a tp.media error page
+      // and never reached Kiwi. Same failure class WayAway had before its
+      // verified short link. Until a real Kiwi short link is generated from
+      // the Travelpayouts dashboard (set NEXT_PUBLIC_KIWI_TRACKING_URL —
+      // that one env var is the only change needed to go live), send users
+      // to a working kiwi.com search directly: functional, just unattributed.
+      const tracking = AFFILIATE_IDS.KIWI_TRACKING_URL.trim()
+      if (tracking) {
+        // Dashboard short links are complete and self-contained — appending
+        // params can break them (same rule as the WayAway case above).
+        return tracking
       }
-      const u = encodeURIComponent(kiwiUrl)
-      return `https://tp.media/r?marker=${AFFILIATE_IDS.TRAVELPAYOUTS_MARKER}&trs=visitplane_${subId}&p=${AFFILIATE_IDS.KIWI_PROGRAM_ID}&u=${u}&utm_source=visitplane&utm_medium=affiliate`
+      console.error('[affiliates] NEXT_PUBLIC_KIWI_TRACKING_URL is not set — Kiwi link is UNATTRIBUTED')
+      // NOT a deep link: the old /us/search/{ISO}/{ISO}/anytime/anytime format
+      // 404s on kiwi.com (verified live — Kiwi expects place slugs, not ISO
+      // codes), so the site root is the only verified-working destination.
+      return 'https://www.kiwi.com/us/'
     }
 
     case 'ivisa': {

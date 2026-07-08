@@ -418,8 +418,8 @@ export default async function AffiliatesAdminPage() {
                   { partner: 'HeyMondo', env: 'NEXT_PUBLIC_HEYMONDO_ID', url: 'heymondo.com/affiliates', payout: '8-10% commission' },
                   { partner: 'Airalo', env: 'NEXT_PUBLIC_AIRALO_CODE', url: 'partners.airalo.com', payout: '7% commission' },
                   { partner: 'Saily', env: 'NEXT_PUBLIC_SAILY_CODE', url: 'nordvpn.com/affiliates', payout: 'Competitive' },
-                  { partner: 'WayAway', env: 'NEXT_PUBLIC_WAYAWAY_PROGRAM_ID', url: 'tp.media (Travelpayouts)', payout: 'Up to 50% profit share' },
-                  { partner: 'Kiwi.com', env: 'NEXT_PUBLIC_KIWI_PROGRAM_ID', url: 'tp.media (Travelpayouts)', payout: 'Per booking' },
+                  { partner: 'WayAway', env: 'verified short link (baked in)', url: 'Travelpayouts dashboard', payout: 'Up to 50% profit share' },
+                  { partner: 'Kiwi.com', env: 'NEXT_PUBLIC_KIWI_TRACKING_URL', url: 'Travelpayouts dashboard (short link)', payout: 'Per booking' },
                   { partner: 'Travelpayouts', env: 'NEXT_PUBLIC_TP_MARKER', url: 'travelpayouts.com', payout: 'Unified dashboard' },
                 ].map(({ partner, env, url, payout }) => (
                   <tr key={env} className="hover:bg-gray-50/50">
