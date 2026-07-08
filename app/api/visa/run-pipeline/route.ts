@@ -19,12 +19,46 @@
  * This endpoint fires the script async and returns immediately with a job ID.
  */
 import { NextRequest, NextResponse } from 'next/server'
-import { exec } from 'child_process'
-import { promisify } from 'util'
-import path from 'path'
 import { requireAdminApi } from '@/lib/admin/guard'
 
-const execAsync = promisify(exec)
+// TODO(cloudflare-migration, Stage 2): this route shells out to a Node script
+// via child_process.exec — that fundamentally cannot work on Cloudflare
+// Workers (no OS process model; nodejs_compat's child_process is a
+// non-functional stub for actually spawning anything, compat flags or not).
+// The real fix is to inline scripts/verify-visa-route.mjs's logic as a
+// directly-importable function, or move this job to a GitHub Action /
+// Supabase Edge Function on its own schedule, decoupled from the web app
+// entirely. Until that rewrite happens, tryRunPipeline() below makes this
+// route build-safe on any platform (dynamic imports, wrapped in try/catch —
+// never a static top-level `child_process` import): it attempts the spawn,
+// and if the runtime can't actually do it, returns a clear "unavailable"
+// response instead of silently claiming a pipeline run started.
+async function tryRunPipeline(scriptPath: string, args: string): Promise<{ ok: boolean; reason?: string }> {
+  try {
+    const { exec } = await import('child_process')
+    const { promisify } = await import('util')
+    const execAsync = promisify(exec)
+
+    // Fire and don't await — pipeline can take minutes.
+    execAsync(`node ${scriptPath} ${args}`, {
+      env: { ...process.env },
+      timeout: 30 * 60 * 1000, // 30 min max
+    }).then(({ stdout, stderr }) => {
+      if (stderr) console.error('[pipeline]', stderr.slice(0, 500))
+      console.log('[pipeline] Complete:', stdout.slice(0, 200))
+    }).catch(e => {
+      console.error('[pipeline] Error:', e.message)
+    })
+
+    return { ok: true }
+  } catch (err) {
+    console.error('[pipeline] child_process unavailable on this runtime — skipping', err)
+    return {
+      ok: false,
+      reason: 'child_process is not available in this runtime (e.g. Cloudflare Workers). See the TODO comment in this file — the verification pipeline needs to be inlined or moved to a GitHub Action / Supabase Edge Function.',
+    }
+  }
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -58,18 +92,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Specify ?route=PAK-ARE or ?mode=overdue|top20' }, { status: 400 })
   }
 
-  const scriptPath = path.join(process.cwd(), 'scripts', 'verify-visa-route.mjs')
+  const { join } = await import('path')
+  const scriptPath = join(process.cwd(), 'scripts', 'verify-visa-route.mjs')
 
-  // Fire and don't await — pipeline can take minutes
-  execAsync(`node ${scriptPath} ${args}`, {
-    env: { ...process.env },
-    timeout: 30 * 60 * 1000, // 30 min max
-  }).then(({ stdout, stderr }) => {
-    if (stderr) console.error('[pipeline]', stderr.slice(0, 500))
-    console.log('[pipeline] Complete:', stdout.slice(0, 200))
-  }).catch(e => {
-    console.error('[pipeline] Error:', e.message)
-  })
+  const result = await tryRunPipeline(scriptPath, args)
+  if (!result.ok) {
+    return NextResponse.json({
+      status: 'unavailable',
+      mode: isCron ? 'cron-overdue' : mode,
+      args,
+      message: result.reason,
+    }, { status: 501 })
+  }
 
   return NextResponse.json({
     status: 'started',
