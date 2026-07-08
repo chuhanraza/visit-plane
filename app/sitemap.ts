@@ -21,6 +21,40 @@ function toSlug(name: string): string {
     .replace(/[^a-z0-9-]/g, '')
 }
 
+type DestinationRow = { passport_country: string; country_name: string }
+
+// PostgREST caps unlimited selects at 1000 rows — a plain .select() here was
+// silently truncating the 73k-row `destinations` table to whichever 3-4
+// passports sorted first, which truncated the sitemap (and everything
+// downstream that reused this array: legacyPassports/legacyDests,
+// oldTemplateA/D pages, /destinations hub pages) to those same few countries.
+// Page through the table in .range() batches (ordered by the stable `id` PK,
+// not passport_country, so page boundaries can't skip/duplicate rows) until
+// a short page signals the end.
+async function fetchAllDestinationRows(): Promise<DestinationRow[]> {
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+  const PAGE_SIZE = 1000
+  const MAX_PAGES = 200 // safety valve: 200k-row ceiling, well above current ~73k
+  const rows: DestinationRow[] = []
+
+  for (let page = 0; page < MAX_PAGES; page++) {
+    const from = page * PAGE_SIZE
+    const to = from + PAGE_SIZE - 1
+    const { data, error } = await supabase
+      .from('destinations')
+      .select('passport_country, country_name')
+      .order('id', { ascending: true })
+      .range(from, to)
+
+    if (error) throw error
+    if (!data || data.length === 0) break
+    rows.push(...(data as DestinationRow[]))
+    if (data.length < PAGE_SIZE) break
+  }
+
+  return rows
+}
+
 // Nationality adjective map (used for Template A/C slugs)
 // Falls back to "{country}-passport" / "{country}-citizens" when missing
 const NATIONALITY_MAP: Record<string, string> = {
@@ -177,13 +211,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ── Dynamic visa + programmatic SEO pages ───────────────────────────────────
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+    const data = await fetchAllDestinationRows()
 
-    const { data, error } = await supabase
-      .from('destinations')
-      .select('passport_country, country_name')
-      .order('passport_country')
-
-    if (error || !data) return [...staticPages, ...blogPages, ...blogTaxonomyPages]
+    if (data.length === 0) return [...staticPages, ...blogPages, ...blogTaxonomyPages]
 
     // Legacy visa pages: /visa/{passport}/{destination}
     const visaPages: MetadataRoute.Sitemap = data.map((row) => ({
