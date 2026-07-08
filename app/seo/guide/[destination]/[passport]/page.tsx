@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { PHASE_PRODUCTION_BUILD } from 'next/constants'
 import {
   COUNTRIES, BY_NATIONALITY, BY_SLUG, OFFICIAL_VISA_PORTALS
 } from '@/lib/seo/countries'
@@ -21,32 +22,52 @@ import TripEssentials from '@/components/affiliate/TripEssentials'
 
 // ISR: 30-day edge cache per page (was 24h — the large param space regenerating
 // daily was a major driver of the ISR-write overage that paused the Vercel
-// project; visa rules change slowly, so a month-long window is safe). Empty
-// generateStaticParams = nothing prerenders at build (build-time prerender
-// crashed Next 16 on occasional null/dirty Supabase rows); pages generate on
-// first request and are then served cached.
+// project; visa rules change slowly, so a month-long window is safe).
 export const revalidate = 2592000
 
-// dynamicParams=true (the default) is made explicit here: any pair NOT in the
-// (currently empty) static params list still renders on-demand rather than
-// 404ing — this is what keeps every existing URL working.
+// Any pair NOT in the curated static list below still renders on-demand
+// rather than 404ing — every existing URL keeps working; only the curated
+// routes below skip the on-demand ISR write.
 export const dynamicParams = true
 
-// A curated top-routes list exists below (topRoutesReference) but is
-// deliberately NOT wired into generateStaticParams: fetchLegacy throws on any
-// Supabase error (line ~135) and the page throws 'Visa data temporarily
-// unavailable' if nothing resolves (line ~267) — build-time prerendering
-// re-runs those fetches for every listed route during the Vercel build, so a
-// single transient Supabase hiccup on ANY one of them would fail the whole
-// deployment. Re-enabling this needs per-route try/catch isolation in
-// generateStaticParams first (skip a failing route, don't throw), tested
-// against a real build before shipping — not attempted here given the site
-// is currently recovering from an outage.
+// Pre-render the curated top-routes list (below) so these highest-traffic
+// pairs are static at build time — zero ISR write on every subsequent hit.
+// This was previously abandoned because a Supabase error for ANY one route
+// would throw and fail the WHOLE build (fetchLegacy threw on error; the page
+// itself threw 'Visa data temporarily unavailable' below). Fixed here two
+// ways: (1) below, each route's data is checked with its own try/catch — a
+// route that errors or has no data is silently skipped, not thrown; (2) in
+// the page component, the request-time throw is now build-phase-gated (see
+// `PHASE_PRODUCTION_BUILD` below) so even a route that slips past this check
+// can never crash the build — it just soft-404s for that one route instead.
 export async function generateStaticParams() {
-  return []
+  const routes = topRoutesReference()
+  const validParams: Array<{ destination: string; passport: string }> = []
+
+  for (const route of routes) {
+    try {
+      const destinationCountry = BY_SLUG[route.destination.toLowerCase()]
+      const passportCountry = resolvePassportFromNounSlug(route.passport.toLowerCase())
+      if (!destinationCountry || !passportCountry) continue
+
+      const [req, legacy] = await Promise.all([
+        fetchVisaRequirement(passportCountry.iso3, destinationCountry.iso3),
+        fetchLegacy(passportCountry.name, destinationCountry.name),
+      ])
+      if (!req && legacy.length === 0) continue // no renderable data — skip, don't prerender a dud
+
+      validParams.push({ destination: route.destination, passport: route.passport })
+    } catch (err) {
+      // A single route's Supabase hiccup must never take out the others —
+      // log and move on, this route just falls back to on-demand rendering.
+      console.error(`[seo/guide] generateStaticParams: skipping ${route.destination}/${route.passport}`, err)
+    }
+  }
+
+  return validParams
 }
 
-// Top routes list (reference only — previously build-time prerendered).
+// Top routes list — the curated set generateStaticParams above prerenders.
 function topRoutesReference() {
   return [
     { destination: 'uae',           passport: 'pakistanis' },
@@ -101,7 +122,6 @@ function topRoutesReference() {
     { destination: 'indonesia',     passport: 'pakistanis' },
   ]
 }
-void topRoutesReference
 
 // ── Supabase ───────────────────────────────────────────────────────────────────
 function getSupabase() {
@@ -280,7 +300,15 @@ export default async function Template4Page({
 
   const primary = legacy[0] ?? null
   // Transient fetch failure → 5xx (retried by Google), never a 404 (deindexed).
-  if (fetchFailed && !req && !primary) throw new Error('Visa data temporarily unavailable')
+  // EXCEPT during `next build`'s static generation: this page runs for every
+  // route in generateStaticParams' curated list above, and a throw here would
+  // fail the ENTIRE deployment over one route's bad luck — so during the
+  // build phase only, fail soft (notFound()) instead. Runtime (on-demand ISR
+  // for the long tail) keeps the throw-for-retry behavior.
+  if (fetchFailed && !req && !primary) {
+    if (process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD) notFound()
+    throw new Error('Visa data temporarily unavailable')
+  }
   if (!req && !primary) notFound()
 
   const cat        = req?.visa_category ?? (primary?.visa_type?.toLowerCase().includes('free') ? 'visa_free' : primary?.visa_type?.toLowerCase().includes('arrival') ? 'visa_on_arrival' : 'visa_required') as string
