@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import VisaDataDisclaimer from '@/components/VisaDataDisclaimer'
 import PassportDropdown from '@/components/home/PassportDropdown'
 import VisaFreeMarquee, { VisaFreeCard } from '@/components/VisaFreeMarquee'
 import { useUserCountry } from '@/hooks/useUserCountry'
@@ -193,18 +192,6 @@ export default function VisaFreeSection() {
         </div>
       )}
 
-      {/* Honest framing: reconfirm + official-source link, and full map */}
-      <div className="mx-auto mt-8 max-w-3xl px-4 sm:px-6 lg:px-8">
-        {status === 'ready' && (
-          <p className="mb-4 text-center text-xs text-gray-400">
-            Drag, swipe or use arrow keys to explore ·{' '}
-            <Link href="/visa-free-map" className="font-semibold text-emerald-600 underline-offset-2 hover:underline">
-              See full requirements on your passport map →
-            </Link>
-          </p>
-        )}
-        <VisaDataDisclaimer variant="compact" />
-      </div>
     </section>
   )
 }
