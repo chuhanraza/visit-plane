@@ -45,6 +45,7 @@ const VALID_PLACEMENTS = new Set<AffiliatePlacement>([
   'visa_page', 'blog_post', 'homepage', 'checkout_flow', 'email',
   'email_sequence', 'cheapest_page', 'route_page', 'itinerary',
   'req_page', 'guide_page', 'flight_delay_page',
+  'visa_free_page', 'nat_hub_page', 'destination_page',
 ])
 
 /** Reduce a full URL to a clean path (drop origin + query) for attribution. */
