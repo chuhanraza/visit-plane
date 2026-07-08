@@ -16,8 +16,6 @@
 
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
-
 // Per-template colour schemes
 const THEMES = {
   '1': { bg: 'linear-gradient(135deg,#eff6ff 0%,#dbeafe 60%,#bfdbfe 100%)', pill: '#2563EB', text: '#1E3A5F' },
