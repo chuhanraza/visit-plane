@@ -22,21 +22,16 @@
     }
   ],
 
-  // ── Incremental cache (ISR) — R2, not KV ──────────────────────────────────
-  // KV free tier (1,000 writes/day) is far too small for this site's
-  // revalidation churn (the 872K ISR-write incident on Vercel). R2 free tier
-  // (1M Class A ops/month, 10M Class B ops/month, 10GB storage) is the
-  // documented recommendation for sites at this scale.
-  //
-  // ACCOUNT ACTION NEEDED (not done by this commit — Cloudflare dashboard):
-  //   1. Create an R2 bucket, e.g. named "visitplane-isr-cache".
-  //   2. Replace <BUCKET_NAME> below with that bucket's name, then uncomment.
-  // "r2_buckets": [
-  //   {
-  //     "binding": "NEXT_INC_CACHE_R2_BUCKET",
-  //     "bucket_name": "<BUCKET_NAME>"
-  //   }
-  // ],
+  // ── Incremental cache (ISR) — none, by design ─────────────────────────────
+  // No R2 bucket, no KV namespace. R2 requires a card on file even for its
+  // free tier — off the table, the user isn't adding one. KV doesn't require
+  // a card, but its free tier (1,000 writes/day) is the exact ceiling that
+  // caused the original Vercel ISR-write outage, so it's not a safe fallback
+  // either. open-next.config.ts intentionally passes no `incrementalCache`
+  // override, which uses OpenNext's documented no-op "dummy" cache instead —
+  // zero bindings, zero billing surface. Acceptable now that ISR churn is low
+  // (bots blocked at the edge, revalidate lengthened to 30 days on the
+  // heaviest templates).
 
   "observability": {
     "enabled": true
