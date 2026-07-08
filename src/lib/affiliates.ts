@@ -44,6 +44,9 @@ export type AffiliatePlacement =
   | 'req_page'
   | 'guide_page'
   | 'flight_delay_page'
+  | 'visa_free_page'
+  | 'nat_hub_page'
+  | 'destination_page'
 
 export interface AffiliatePartnerConfig {
   id: AffiliatePartner

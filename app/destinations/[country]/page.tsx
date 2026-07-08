@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { ALL_COUNTRIES } from '../data'
 import DestinationCountryClient from './DestinationCountryClient'
+import TripEssentials from '@/components/affiliate/TripEssentials'
+import { COUNTRIES } from '@/lib/seo/countries'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -88,6 +90,9 @@ export default async function DestinationCountryPage({ params }: Props) {
   const stay   = c?.max_stay ?? '—'
   const fee    = c?.fee_usd  ?? '—'
 
+  // ISO-3 for click attribution (route_dest); COUNTRIES is keyed by name.
+  const destIso = COUNTRIES.find((sc) => sc.name.toLowerCase() === name.toLowerCase())?.iso3
+
   return (
     <>
       <CountryJsonLd slug={slug} name={name} />
@@ -99,6 +104,23 @@ export default async function DestinationCountryPage({ params }: Props) {
         maxStay={stay}
         feeUsd={fee}
       />
+      {/* Decision point: reader is planning a trip to this country — flights and
+          insurance are the next bookings. Skipped for Not Permitted destinations:
+          a booking CTA there would contradict the page's own answer. */}
+      {visa !== 'Not Permitted' && (
+        <div className="bg-[#FAFAFA] px-4 sm:px-6 lg:px-8 pb-16">
+          <div className="mx-auto max-w-7xl">
+          <TripEssentials
+            placement="destination_page"
+            source={`/destinations/${decodeURIComponent(slug).toLowerCase()}`}
+            destIso={destIso}
+            heading={`Planning a trip to ${name}?`}
+            subheading="Once your entry requirements are clear, these are the essentials travelers book next."
+            show={['flights', 'insurance']}
+          />
+          </div>
+        </div>
+      )}
     </>
   )
 }

@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BY_NATIONALITY } from '@/lib/seo/countries'
 import { getRelatedPassportLinks } from '@/lib/seo/internalLinks'
+import TripEssentials from '@/components/affiliate/TripEssentials'
 
 // ISR: 24h edge cache per page. Empty generateStaticParams avoids the Next 16
 // empty-param prerender crash while letting rendered pages be cached.
@@ -233,6 +234,17 @@ export default async function VisaRequirementsForNationalityPage({
             </div>
           </section>
         ))}
+
+        {/* Decision point: requirements checked — insurance and flights are the
+            next things travelers book. */}
+        <TripEssentials
+          placement="nat_hub_page"
+          source={`/seo/req-nat/${nationality.toLowerCase()}`}
+          passportIso={BY_NATIONALITY[nationality.toLowerCase()]?.iso3}
+          heading="Sort the rest of your trip"
+          subheading={`Once you know where your ${country} passport can take you, these are the essentials travelers book next.`}
+          show={['insurance', 'flights']}
+        />
 
         {/* Related links */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6 mt-10">

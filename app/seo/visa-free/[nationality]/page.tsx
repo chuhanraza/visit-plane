@@ -11,6 +11,7 @@ import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BY_NATIONALITY, BY_SLUG, COUNTRIES } from '@/lib/seo/countries'
+import TripEssentials from '@/components/affiliate/TripEssentials'
 
 // ISR: 24h edge cache per page. Empty generateStaticParams = nothing prerenders
 // at build (build-time prerender crashed Next 16 on occasional null/dirty
@@ -391,6 +392,17 @@ export default async function VisaFreeCountriesPage({
             </div>
           </section>
         )}
+
+        {/* Decision point: the reader has just seen where they can go without a
+            visa — the only remaining steps are flights and insurance. */}
+        <TripEssentials
+          placement="visa_free_page"
+          source={`/seo/visa-free/${nationality.toLowerCase()}`}
+          passportIso={country.iso3}
+          heading="Ready to use that visa-free access?"
+          subheading={`With no visa paperwork standing in the way, flights and travel insurance are the only things left to book.`}
+          show={['flights', 'insurance']}
+        />
 
         {/* Passport comparison */}
         {neighborPassports.length > 0 && strength && (
