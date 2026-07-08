@@ -26,6 +26,16 @@ import { getRelatedPassportLinks, getRelatedDestinationLinks } from '@/lib/seo/i
 // empty-param shell at build (which crashed the build on `params.toLowerCase`)
 // while still letting rendered pages be cached.
 export const revalidate = 2592000
+
+// dynamicParams=true (the default) is made explicit here: any pair NOT in the
+// (currently empty) static params list still renders on-demand rather than
+// 404ing — this is what keeps every existing URL working. This template has
+// no curated top-routes list (unlike seo/req and seo/guide), and its data
+// path throws 'Visa data temporarily unavailable' on an unresolved fetch
+// (line ~163) — build-time prerendering of any param list here carries the
+// same single-bad-fetch-fails-the-whole-build risk, so none is added.
+export const dynamicParams = true
+
 export async function generateStaticParams() {
   return []
 }

@@ -26,6 +26,21 @@ import TripEssentials from '@/components/affiliate/TripEssentials'
 // Supabase rows); every route generates on first request.
 export const revalidate = 2592000
 
+// dynamicParams=true (the default) is made explicit here: any pair NOT in the
+// (currently empty) static params list still renders on-demand rather than
+// 404ing — this is what keeps every existing URL working.
+export const dynamicParams = true
+
+// A curated top-50 list exists below (topRoutesReference) but is deliberately
+// NOT wired into generateStaticParams: fetchLegacyVisaData throws on any
+// Supabase error (line ~120) and the page throws 'Visa data temporarily
+// unavailable' if nothing resolves (line ~289) — build-time prerendering
+// re-runs those fetches for every listed route during the Vercel build, so a
+// single transient Supabase hiccup on ANY one of them would fail the whole
+// deployment. Re-enabling this needs per-route try/catch isolation in
+// generateStaticParams first (skip a failing route, don't throw), tested
+// against a real build before shipping — not attempted here given the site
+// is currently recovering from an outage.
 export async function generateStaticParams() {
   return []
 }

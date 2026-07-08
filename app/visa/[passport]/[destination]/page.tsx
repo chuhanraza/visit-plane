@@ -12,6 +12,16 @@ import VisaPageClient, { type VisaRecord } from './VisaPageClient'
 // nothing is prerendered at build (avoids the Next 16 empty-param-shell build
 // crash); pages generate on first request and are then served cached.
 export const revalidate = 2592000
+
+// dynamicParams=true (the default) is made explicit here: any pair NOT in the
+// (currently empty) static params list still renders on-demand rather than
+// 404ing — this is what keeps every existing URL working. No curated
+// top-routes list exists for this template; build-time prerendering of any
+// param list here would re-run live Supabase fetches during the Vercel build,
+// carrying the same single-bad-fetch-fails-the-whole-build risk seen on the
+// sibling templates, so none is added.
+export const dynamicParams = true
+
 export async function generateStaticParams() {
   return []
 }
