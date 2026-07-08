@@ -9,7 +9,10 @@
  *   Line 2: EY18499333PAK9203228M24092940<<<<<<<<<<<<<<6
  */
 
-import { parseMRZLines, mrzDateToISO, lookupCountryName } from '../utils/mrzParser'
+import {
+  parseMRZLines, mrzDateToISO, lookupCountryName,
+  parseNameField, orderMRZLines, detectMRZFormat,
+} from '../utils/mrzParser'
 
 // ─── Helper: compute ICAO check digit ────────────────────────────────────────
 function computeCheckDigit(str: string): number {
@@ -64,6 +67,125 @@ describe('lookupCountryName', () => {
   })
   it('handles empty input', () => {
     expect(lookupCountryName('')).toBe('')
+  })
+})
+
+// ─── ICAO 9303 name-field parsing (surname << given names) ──────────────────
+
+describe('parseNameField — ICAO 9303 primary/secondary split', () => {
+  it('splits surname and given names on the first "<<"', () => {
+    expect(parseNameField('ERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<'))
+      .toEqual({ surname: 'ERIKSSON', givenNames: 'ANNA MARIA' })
+  })
+  it('handles a single given name', () => {
+    expect(parseNameField('SMITH<<JOHN<<<<<<<<<<<<<<<<<<<<<<<<<<<<'))
+      .toEqual({ surname: 'SMITH', givenNames: 'JOHN' })
+  })
+  it('keeps multi-component surnames intact (single "<" within primary)', () => {
+    expect(parseNameField('VAN<DER<BERG<<WILLEM<<<<<<<<<<<<<<<<<<<'))
+      .toEqual({ surname: 'VAN DER BERG', givenNames: 'WILLEM' })
+  })
+  it('handles missing given names (mononym)', () => {
+    expect(parseNameField('MADONNA<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'))
+      .toEqual({ surname: 'MADONNA', givenNames: '' })
+  })
+  it('handles a name that fills the field with no trailing padding (truncated)', () => {
+    expect(parseNameField('PAPADOPOULOS<<KONSTANTINOS<ALEXANDROS<A'))
+      .toEqual({ surname: 'PAPADOPOULOS', givenNames: 'KONSTANTINOS ALEXANDROS A' })
+  })
+})
+
+// ─── MRZ line ordering (structural, never by length) ────────────────────────
+
+describe('orderMRZLines', () => {
+  const L1 = 'P<PAKASHRAF<<MUHAMMAD<SALMAN<<<<<<<<<<<<<<<<'
+  const L2 = 'EY18499333PAK9203228M24092940<<<<<<<<<<<<<<6'
+
+  it('keeps correctly ordered lines', () => {
+    expect(orderMRZLines(L1, L2)).toEqual([L1, L2])
+  })
+  it('restores order when lines arrive swapped', () => {
+    expect(orderMRZLines(L2, L1)).toEqual([L1, L2])
+  })
+  it('restores order even when line 1 OCRed shorter than line 2', () => {
+    const shortL1 = 'P<PAKASHRAF<<MUHAMMAD<SALMAN<<<' // trailing filler lost by OCR
+    expect(orderMRZLines(L2, shortL1)).toEqual([shortL1, L2])
+  })
+})
+
+describe('detectMRZFormat', () => {
+  it('detects TD3 (2×44)', () => {
+    expect(detectMRZFormat(['A'.repeat(44), 'B'.repeat(44)])).toBe('TD3')
+  })
+  it('detects TD2 (2×36)', () => {
+    expect(detectMRZFormat(['A'.repeat(36), 'B'.repeat(36)])).toBe('TD2')
+  })
+  it('detects TD1 (3×30)', () => {
+    expect(detectMRZFormat(['A'.repeat(30), 'B'.repeat(30), 'C'.repeat(30)])).toBe('TD1')
+  })
+  it('returns UNKNOWN otherwise', () => {
+    expect(detectMRZFormat(['HELLO', 'WORLD'])).toBe('UNKNOWN')
+  })
+})
+
+// ─── Required end-to-end name cases (task spec) ──────────────────────────────
+
+describe('parseMRZLines — name-field acceptance cases', () => {
+  it('ICAO specimen: ERIKSSON / ANNA MARIA / issuer UTO', () => {
+    const r = parseMRZLines(
+      'P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<',
+      'L898902C36UTO7408122F1204159ZE184226B<<<<<10',
+    )
+    expect(r.success).toBe(true)
+    expect(r.fields.surname).toBe('ERIKSSON')
+    expect(r.fields.givenNames).toBe('ANNA MARIA')
+    expect(r.fields.issuingCountry).toBe('UTO')
+  })
+  it('GBR: SMITH / JOHN', () => {
+    const r = parseMRZLines(
+      'P<GBRSMITH<<JOHN<<<<<<<<<<<<<<<<<<<<<<<<<<<<',
+      'GB12345673GBR9501027M2812313<<<<<<<<<<<<<<04',
+    )
+    expect(r.success).toBe(true)
+    expect(r.fields.surname).toBe('SMITH')
+    expect(r.fields.givenNames).toBe('JOHN')
+    expect(r.fields.issuingCountry).toBe('GBR')
+  })
+  it('NLD: VAN DER BERG / WILLEM (multi-component surname)', () => {
+    const r = parseMRZLines(
+      'P<NLDVAN<DER<BERG<<WILLEM<<<<<<<<<<<<<<<<<<<',
+      'AB12345678NLD9001013M3001017<<<<<<<<<<<<<<02',
+    )
+    expect(r.success).toBe(true)
+    expect(r.fields.surname).toBe('VAN DER BERG')
+    expect(r.fields.givenNames).toBe('WILLEM')
+    expect(r.fields.issuingCountry).toBe('NLD')
+  })
+  it('PAK: KHAN / MUHAMMAD HAMAD', () => {
+    const r = parseMRZLines(
+      'P<PAKKHAN<<MUHAMMAD<HAMAD<<<<<<<<<<<<<<<<<<<',
+      'EY18499333PAK9203228M24092940<<<<<<<<<<<<<<6',
+    )
+    expect(r.success).toBe(true)
+    expect(r.fields.surname).toBe('KHAN')
+    expect(r.fields.givenNames).toBe('MUHAMMAD HAMAD')
+    expect(r.fields.issuingCountry).toBe('PAK')
+  })
+})
+
+// ─── Defense in depth: swapped input lines are re-ordered before parsing ────
+
+describe('parseMRZLines — swapped-line input is recovered', () => {
+  const LINE1 = 'P<PAKASHRAF<<MUHAMMAD<SALMAN<<<<<<<<<<<<<<<<'
+  const LINE2 = 'EY18499333PAK9203228M24092940<<<<<<<<<<<<<<6'
+
+  it('parses names and passport number correctly even when lines arrive swapped', () => {
+    const r = parseMRZLines(LINE2, LINE1)
+    expect(r.success).toBe(true)
+    expect(r.fields.surname).toBe('ASHRAF')
+    expect(r.fields.givenNames).toBe('MUHAMMAD SALMAN')
+    expect(r.fields.passportNumber).toBe('EY1849933')
+    expect(r.fields.dateOfBirth).toBe('1992-03-22')
   })
 })
 

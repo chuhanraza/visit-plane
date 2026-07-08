@@ -4,6 +4,8 @@
  * NEVER called automatically — requires explicit user consent.
  */
 
+import { orderMRZLines } from './mrzParser';
+
 export const GEMINI_CONSENT_PROMPT =
   'Your passport image could not be read locally. To try a cloud-assisted scan, ' +
   'we need to send your passport image securely to Google\'s Gemini AI service. ' +
@@ -61,9 +63,12 @@ function parseResponse(text: string): [string, string] | null {
     .map(l => l.trim().toUpperCase().replace(/[^A-Z0-9<]/g, ''))
     .filter(l => l.length >= 40);
   if (candidates.length < 2) return null;
-  candidates.sort((a, b) => b.length - a.length);
+  // Line 1 vs line 2 decided by MRZ structure, never by length or output
+  // order — swapped lines scramble every parsed field downstream.
+  const top = [...candidates].sort((a, b) => b.length - a.length).slice(0, 2);
+  const [raw1, raw2] = orderMRZLines(top[0], top[1]);
   const pad = (s: string, n: number) => s.length > n ? s.slice(0,n) : s.padEnd(n,'<');
-  const l1 = pad(candidates[0], 44), l2 = pad(candidates[1], 44);
+  const l1 = pad(raw1, 44), l2 = pad(raw2, 44);
   return /^[A-Z0-9<]{44}$/.test(l1) && /^[A-Z0-9<]{44}$/.test(l2) ? [l1, l2] : null;
 }
 

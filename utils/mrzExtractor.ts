@@ -4,7 +4,11 @@
  * Tesseract.js OCR wrapper for MRZ extraction.
  * Character whitelist enforces ICAO 9303 character set: A-Z, 0-9, <
  * Numeric-field OCR substitution corrections applied ONLY at known digit positions.
+ * TD3 (passport, 2×44) only — TD1/TD2 documents are not supported by this
+ * OCR path; parseMRZLines handles them if lines are supplied directly.
  */
+
+import { orderMRZLines } from './mrzParser';
 
 export interface MRZExtractResult {
   lines: [string, string] | null;
@@ -82,20 +86,17 @@ function postProcessOcr(raw: string): [string, string] | null {
     .filter(l => /^[A-Z0-9<]{30,}$/.test(l));
 
   if (segments.length < 2) return null;
-  segments.sort((a, b) => b.length - a.length);
 
-  let line1: string | null = null, line2: string | null = null;
-  for (let i = 0; i < segments.length && !line1; i++) {
-    for (let j = i + 1; j < segments.length && !line2; j++) {
-      if (/^[A-Z]/.test(segments[i]) && /^[A-Z0-9]/.test(segments[j])) {
-        line1 = segments[i]; line2 = segments[j];
-      }
-    }
-  }
-  if (!line1 || !line2) { line1 = segments[0]; line2 = segments[1]; }
+  // Candidates: the two longest segments. But which is MRZ line 1 vs line 2
+  // must be decided by STRUCTURE (line 2 carries the digit-heavy dates and
+  // check digits), never by length or OCR output order — line 1's trailing
+  // "<" filler often OCRs short, which used to feed the lines swapped and
+  // scrambled every parsed field, names included.
+  const candidates = [...segments].sort((a, b) => b.length - a.length).slice(0, 2);
+  let [line1, line2] = orderMRZLines(candidates[0], candidates[1]);
 
-  line1 = norm(line1!, 44);
-  line2 = norm(correctNumeric(norm(line2!, 44)), 44);
+  line1 = norm(line1, 44);
+  line2 = norm(correctNumeric(norm(line2, 44)), 44);
 
   return /^[A-Z0-9<]{44}$/.test(line1) && /^[A-Z0-9<]{44}$/.test(line2)
     ? [line1, line2]
