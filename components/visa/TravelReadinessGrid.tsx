@@ -57,18 +57,22 @@ function resolveCards(
       requiredLabel: insuranceRequired ? 'Required' : 'Recommended',
       requiredColor: insuranceRequired ? 'text-red-600' : 'text-amber-600',
     },
-    {
-      partner: 'airalo' as AffiliatePartner,
-      icon: '📶',
-      label: `eSIM — ${destinationName}`,
-      tagline: 'Data from arrival, no SIM swap',
-      details: `Activate before you land. Works with any unlocked phone — iPhone 13+ and most modern Android. ${destinationName} data plans from $5.`,
-      price: 'From $5',
-      buttonLabel: 'Get eSIM →',
-      required: false,
-      requiredLabel: 'Recommended',
-      requiredColor: 'text-blue-600',
-    },
+    // DECLINED 2026-07-09 — Airalo rejected the affiliate application, so the
+    // eSIM card is removed (its link attributed to nothing). Re-enable (once
+    // reapproved): restore the card below AND flip the grid back to
+    // sm:grid-cols-3 in the JSX.
+    // {
+    //   partner: 'airalo' as AffiliatePartner,
+    //   icon: '📶',
+    //   label: `eSIM — ${destinationName}`,
+    //   tagline: 'Data from arrival, no SIM swap',
+    //   details: `Activate before you land. Works with any unlocked phone — iPhone 13+ and most modern Android. ${destinationName} data plans from $5.`,
+    //   price: 'From $5',
+    //   buttonLabel: 'Get eSIM →',
+    //   required: false,
+    //   requiredLabel: 'Recommended',
+    //   requiredColor: 'text-blue-600',
+    // },
     {
       partner: 'wayaway' as AffiliatePartner,
       icon: '✈️',
@@ -178,7 +182,8 @@ export default function TravelReadinessGrid({
           While your visa processes, get these sorted.
         </p>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {/* 2 columns while the Airalo eSIM card is disabled (see resolveCards) */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {cards.map((card) => (
             <TravelCard
               key={card.partner}

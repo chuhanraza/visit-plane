@@ -176,14 +176,9 @@ export default function SiteFooter() {
             >
               SafetyWing Insurance
             </a>
-            <span className="text-white/10">·</span>
-            <a
-              href="/go/airalo?placement=homepage"
-              rel="nofollow sponsored"
-              className="inline-block py-1.5 text-sm text-white/60 transition hover:text-white"
-            >
-              Airalo eSIM
-            </a>
+            {/* Airalo eSIM link removed — affiliate application DECLINED
+                2026-07-09 (aff link attributed to nothing). Restore here if
+                reapproved. */}
             <span className="text-white/10">·</span>
             <a
               href="/go/wayaway?placement=homepage"

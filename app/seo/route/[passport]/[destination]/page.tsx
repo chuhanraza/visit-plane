@@ -386,7 +386,7 @@ export default async function LongFormVisaPage({
           source={`/seo/route/${passportSlug}/${destinationSlug}`}
           destIso={(SLUG_TO_ISO3[destinationSlug.toLowerCase()] ?? '').toLowerCase()}
           passportIso={(SLUG_TO_ISO3[passportSlug.toLowerCase()] ?? '').toLowerCase()}
-          subheading={`Most ${passportName} travelers to ${destinationName} sort these next — insurance may be required, and an eSIM keeps you connected on arrival.`}
+          subheading={`Most ${passportName} travelers to ${destinationName} sort these next — insurance may be required for your visa.`}
         />
 
         {/* Internal links */}

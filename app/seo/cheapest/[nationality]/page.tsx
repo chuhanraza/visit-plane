@@ -342,7 +342,7 @@ export default async function CheapestVisasPage({
           placement="cheapest_page"
           source={`/seo/cheapest/${nationality}`}
           passportIso={country.iso3?.toLowerCase()}
-          subheading={`Travelers on a ${country.name} passport book these next — insurance is required for Schengen, and an eSIM saves on roaming.`}
+          subheading={`Travelers on a ${country.name} passport book these next — insurance is required for Schengen visas.`}
         />
 
         {/* FAQ */}

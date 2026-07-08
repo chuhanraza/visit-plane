@@ -45,11 +45,14 @@ export default function BlogTripBox({
     destIso: dest,
     blogSlug,
   })
-  const esimUrl = affiliateTrackingUrl('airalo', {
-    placement: 'blog_post',
-    destIso: dest,
-    blogSlug,
-  })
+  // DECLINED 2026-07-09 — Airalo rejected the affiliate application; the eSIM
+  // row is removed so no traffic flows to an unattributed link. Re-enable
+  // (once reapproved): restore the esimUrl + the eSIM entry in `cards` below.
+  // const esimUrl = affiliateTrackingUrl('airalo', {
+  //   placement: 'blog_post',
+  //   destIso: dest,
+  //   blogSlug,
+  // })
   const flightsUrl = affiliateTrackingUrl('wayaway', {
     placement: 'blog_post',
     destIso: dest,
@@ -69,13 +72,13 @@ export default function BlogTripBox({
       href: insuranceUrl,
       highlight: insuranceRequired,
     },
-    {
-      icon: '📶',
-      label: `eSIM for ${destinationName}`,
-      description: `Stay connected from arrival. Activate before you fly — no SIM swap needed.`,
-      cta: 'Get eSIM →',
-      href: esimUrl,
-    },
+    // {
+    //   icon: '📶',
+    //   label: `eSIM for ${destinationName}`,
+    //   description: `Stay connected from arrival. Activate before you fly — no SIM swap needed.`,
+    //   cta: 'Get eSIM →',
+    //   href: esimUrl,
+    // },
     {
       icon: '✈️',
       label: `Flights: ${passportCountry} → ${destinationName}`,

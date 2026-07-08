@@ -6,8 +6,8 @@
  * ⚠️  HOW TO ADD YOUR AFFILIATE IDs:
  *   1. SafetyWing  → Apply at safetywing.com/partners
  *                    Replace SAFETYWING_REFERENCE_ID below with your ID (numeric)
- *   2. Airalo      → Apply at partners.airalo.com
- *                    Replace AIRALO_AFF_CODE below with your code (string)
+ *   2. Airalo      → DECLINED 2026-07-09 — reapply at partners.airalo.com when
+ *                    traffic grows. See AIRALO_AFF_CODE below for re-enable steps.
  *   3. WayAway     → Via Travelpayouts: generate a SHORT LINK in the dashboard
  *                    (tp.media hand-built links break — see `case 'wayaway'`)
  *   4. HeyMondo    → Apply at heymondo.com/affiliates
@@ -162,6 +162,13 @@ const AFFILIATE_IDS = {
   // appears in the outbound affiliate URL), hardcoded as default since Vercel
   // env inlining for these vars has been unreliable; env var still overrides.
   SAFETYWING_REFERENCE_ID: process.env.NEXT_PUBLIC_SAFETYWING_ID || '26557179',
+  // ⚠️ DECLINED 2026-07-09 — Airalo rejected the affiliate application; the
+  // 'visitplane' code was only ever a placeholder that attributes to nothing.
+  // Not used to build links while declined (case 'airalo' below returns a
+  // plain unattributed airalo.com URL). Reapply when traffic grows; to
+  // re-enable: set the real code here, restore the aff= link in
+  // `case 'airalo'`, and un-filter 'esim' in TripEssentials +
+  // TravelReadinessGrid + BlogTripBox (each has a matching DECLINED comment).
   AIRALO_AFF_CODE: process.env.NEXT_PUBLIC_AIRALO_CODE || 'visitplane',
   // ⚠️ MARKER INCONSISTENCY — kept only as documentation, no longer used to
   // build links (both flight partners now use dashboard-generated short links):
@@ -195,10 +202,11 @@ export function buildAffiliateUrl(
   subId: string,
   opts: { destIso?: string; originIso?: string } = {}
 ): string {
-  // opts.originIso is currently unused (Kiwi no longer builds a route deep
-  // link) but stays in the signature — /go/[partner] passes it, and a real
-  // Kiwi tracking link may use it again later.
-  const { destIso = '' } = opts
+  // opts.originIso and opts.destIso are currently unused (Kiwi no longer
+  // builds a route deep link; Airalo is declined so its &destination= param
+  // went with the aff= link) but stay in the signature — /go/[partner] passes
+  // them, and re-enabled partners may use them again later.
+  void opts
 
   switch (partner) {
     case 'safetywing':
@@ -207,13 +215,22 @@ export function buildAffiliateUrl(
     case 'heymondo':
       return `https://heymondo.com/?utm_source=visitplane&utm_medium=affiliate&utm_campaign=visa_page&ref=${AFFILIATE_IDS.HEYMONDO_REF_ID}&clickid=${subId}`
 
-    case 'airalo': {
-      const dest = destIso ? `&destination=${destIso.toUpperCase()}` : ''
-      return `https://www.airalo.com/?aff=${AFFILIATE_IDS.AIRALO_AFF_CODE}&aff_click_id=${subId}${dest}`
-    }
+    case 'airalo':
+      // DECLINED 2026-07-09 — application rejected, so the aff= placeholder
+      // attributes to nothing. Plain unattributed link (same principle as the
+      // Kiwi fallback): honest for any straggler click (bookmarks, cached
+      // pages), while every UI placement is removed. Re-enable (once
+      // reapproved): restore
+      //   `https://www.airalo.com/?aff=${AFFILIATE_IDS.AIRALO_AFF_CODE}&aff_click_id=${subId}` (+ optional &destination=<ISO>)
+      return 'https://www.airalo.com/'
 
     case 'saily':
-      return `https://saily.com/?aff=${AFFILIATE_IDS.SAILY_AFF_CODE}&click_id=${subId}`
+      // NOT APPROVED — no NordVPN/Saily affiliate relationship exists; the
+      // aff= value was a placeholder attributing to nothing. No UI placement
+      // renders Saily; only direct /go/saily hits land here. Plain
+      // unattributed link until a real approval. Re-enable: restore
+      //   `https://saily.com/?aff=${AFFILIATE_IDS.SAILY_AFF_CODE}&click_id=${subId}`
+      return 'https://saily.com/'
 
     case 'wayaway':
       // The old hand-built tp.media/r?marker=...&trs=...&p=...&u=... link

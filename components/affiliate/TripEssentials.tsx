@@ -54,13 +54,22 @@ export default function TripEssentials({
   subheading = 'Once your visa is sorted, these are the essentials travelers book next.',
   show = ['insurance', 'esim', 'flights'],
 }: Props) {
+  // DECLINED 2026-07-09 — Airalo (the only eSIM partner) rejected the
+  // affiliate application, so the eSIM card is filtered out centrally here:
+  // no page edits needed, and no traffic flows to an unattributed link.
+  // Re-enable (once reapproved): delete this filter — pages that request
+  // 'esim' (or use the default) start showing the card again.
+  const visible = show.filter(key => key !== 'esim')
+  // Column count follows the rendered cards so a filtered card never leaves
+  // an empty grid slot.
+  const gridCols = visible.length >= 3 ? 'sm:grid-cols-3' : visible.length === 2 ? 'sm:grid-cols-2' : ''
   return (
     <section aria-labelledby="trip-essentials-heading" className="mb-12">
       <div className="rounded-2xl border border-gray-200 bg-white p-6">
         <h2 id="trip-essentials-heading" className="text-xl font-bold text-[#1F2937] mb-1">{heading}</h2>
         <p className="text-sm text-gray-500 mb-5">{subheading}</p>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {show.map(key => {
+        <div className={`grid gap-4 ${gridCols}`}>
+          {visible.map(key => {
             const c = CARDS[key]
             const href = affiliateTrackingUrl(c.partner, { placement, destIso, routePassport: passportIso, source })
             return (

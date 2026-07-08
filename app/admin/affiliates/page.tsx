@@ -416,7 +416,7 @@ export default async function AffiliatesAdminPage() {
                 {[
                   { partner: 'SafetyWing', env: 'NEXT_PUBLIC_SAFETYWING_ID', url: 'safetywing.com/partners', payout: '$10/signup' },
                   { partner: 'HeyMondo', env: 'NEXT_PUBLIC_HEYMONDO_ID', url: 'heymondo.com/affiliates', payout: '8-10% commission' },
-                  { partner: 'Airalo', env: 'NEXT_PUBLIC_AIRALO_CODE', url: 'partners.airalo.com', payout: '7% commission' },
+                  { partner: 'Airalo', env: 'DECLINED 2026-07-09 — reapply when traffic grows', url: 'partners.airalo.com', payout: 'Placements OFF' },
                   { partner: 'Saily', env: 'NEXT_PUBLIC_SAILY_CODE', url: 'nordvpn.com/affiliates', payout: 'Competitive' },
                   { partner: 'WayAway', env: 'verified short link (baked in)', url: 'Travelpayouts dashboard', payout: 'Up to 50% profit share' },
                   { partner: 'Kiwi.com', env: 'NEXT_PUBLIC_KIWI_TRACKING_URL', url: 'Travelpayouts dashboard (short link)', payout: 'Per booking' },

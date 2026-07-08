@@ -1484,7 +1484,7 @@ export default function ItineraryGeneratorPage() {
           source="/itinerary-generator"
           show={['flights', 'esim', 'insurance']}
           heading="Booking your trip?"
-          subheading="A real onward ticket beats a dummy itinerary for many visas — and you will want data and cover on arrival."
+          subheading="A real onward ticket beats a dummy itinerary for many visas — and you will want cover on arrival."
         />
       </section>
     </div>
