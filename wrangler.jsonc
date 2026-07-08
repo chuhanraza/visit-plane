@@ -1,0 +1,44 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "visitplane",
+  "main": ".open-next/worker.js",
+  // 2026-07-08 satisfies both the fs auto-enable date (2025-09-15+) and the
+  // child_process module-stub auto-enable date (2026-03-17+) — see
+  // app/api/visa/run-pipeline/route.ts for why the latter doesn't actually
+  // help us (Workers has no OS process model regardless of the stub).
+  "compatibility_date": "2026-07-08",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "visitplane"
+    }
+  ],
+
+  // ── Incremental cache (ISR) — R2, not KV ──────────────────────────────────
+  // KV free tier (1,000 writes/day) is far too small for this site's
+  // revalidation churn (the 872K ISR-write incident on Vercel). R2 free tier
+  // (1M Class A ops/month, 10M Class B ops/month, 10GB storage) is the
+  // documented recommendation for sites at this scale.
+  //
+  // ACCOUNT ACTION NEEDED (not done by this commit — Cloudflare dashboard):
+  //   1. Create an R2 bucket, e.g. named "visitplane-isr-cache".
+  //   2. Replace <BUCKET_NAME> below with that bucket's name, then uncomment.
+  // "r2_buckets": [
+  //   {
+  //     "binding": "NEXT_INC_CACHE_R2_BUCKET",
+  //     "bucket_name": "<BUCKET_NAME>"
+  //   }
+  // ],
+
+  "observability": {
+    "enabled": true
+  }
+}
