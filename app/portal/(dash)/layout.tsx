@@ -14,6 +14,7 @@ export default function PortalLayout({ children }: { children: ReactNode }) {
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/portal" className="text-gray-600 hover:text-gray-900">My orders</Link>
+            <Link href="/crew" className="text-gray-600 hover:text-gray-900">My crews</Link>
             <Link href="/order" className="text-gray-600 hover:text-gray-900">New order</Link>
             <form action="/portal/auth/signout" method="post">
               <button type="submit" className="text-gray-500 hover:text-red-600">Sign out</button>

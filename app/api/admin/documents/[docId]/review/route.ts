@@ -19,7 +19,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ docId: str
   const svc = getServiceClient()
   const { data: doc, error } = await svc.from('order_documents')
     .update({ status, reviewed_by: actor, reviewed_at: new Date().toISOString() })
-    .eq('id', docId).select('order_id').single()
+    .eq('id', docId).select('order_id, doc_type').single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   await writeAudit({
@@ -27,5 +27,15 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ docId: str
     entityType: 'order', entityId: doc.order_id as string,
     metadata: { document_id: docId, status },
   })
+
+  // Group Sync: reflect the review outcome in the owner's coarse crew status
+  // (status word only; best-effort). Back-to-pending maps to 'uploaded'.
+  const { syncProgressForOrderDocument } = await import('@/lib/crew/service')
+  await syncProgressForOrderDocument(
+    doc.order_id as string,
+    doc.doc_type as string,
+    status === 'pending' ? 'uploaded' : status,
+  )
+
   return NextResponse.json({ ok: true, status })
 }

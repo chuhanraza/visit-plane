@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/admin'
 import { resolveOrderAccess } from '@/lib/orders/access'
 import { writeAudit } from '@/lib/audit'
+import { syncProgressForOrderDocument } from '@/lib/crew/service'
 
 export const dynamic = 'force-dynamic'
 
@@ -54,6 +55,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     action: 'document.uploaded', entityType: 'order', entityId: orderId,
     metadata: { document_id: doc.id, doc_type: docType, file_name: file.name, size: file.size },
   })
+
+  // Group Sync: advance the order owner's coarse crew status (status word only;
+  // best-effort — never blocks the upload). No-op for users not in any crew.
+  await syncProgressForOrderDocument(orderId, docType, 'uploaded')
 
   return NextResponse.json({ id: doc.id, status: 'pending' }, { status: 201 })
 }
