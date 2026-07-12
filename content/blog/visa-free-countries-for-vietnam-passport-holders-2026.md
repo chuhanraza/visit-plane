@@ -1,7 +1,7 @@
 ---
-title: "Visa-Free Countries for Vietnamese Passport Holders (2026 Guide)"
+title: "Visa-Free Countries for Vietnamese: ASEAN + More (2026)"
 date: "2026-06-27"
-excerpt: "How visa-free access works for a Vietnamese passport, the regions it commonly opens, and how to confirm the current rule before you book."
+excerpt: "How far a Vietnamese passport goes visa-free in 2026 — easiest across ASEAN, plus growing e-Visa and visa-on-arrival access."
 category: "Travel Tips"
 readTime: "10 min read"
 coverEmoji: "🗺️"

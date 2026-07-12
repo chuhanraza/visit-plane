@@ -1,7 +1,7 @@
 ---
-title: "Countries That Require a Visa for US Citizens (2026) + How to Get Each"
+title: "13 Countries That Still Require a US Visa (2026)"
 date: "2026-07-02"
-excerpt: "The notable countries Americans still need a visa, eVisa or authorisation for in 2026 — grouped by type, with how to get each. Always confirm before booking."
+excerpt: "From China to Saudi Arabia — the 13 destinations Americans still need a visa, eVisa or authorisation for in 2026, and how to get each."
 category: "Visa Guides"
 readTime: "13 min read"
 coverEmoji: "🛂"

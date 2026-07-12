@@ -1,7 +1,7 @@
 ---
-title: "Do UK Citizens Need a Visa for Europe in 2026? ETIAS & Schengen Explained"
+title: "Do UK Citizens Need a Europe Visa? No (2026)"
 date: "2026-07-02"
-excerpt: "In 2026 UK citizens need no visa for short Schengen trips. Here's how the 90/180 rule, the new EES border and the coming ETIAS authorisation actually work."
+excerpt: "No — UK citizens don't need a visa for short Europe trips in 2026. Here's the 90/180 rule, EES, and the ETIAS change explained."
 category: "Visa Guides"
 readTime: "13 min read"
 coverEmoji: "🇪🇺"

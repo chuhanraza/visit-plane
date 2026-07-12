@@ -1,7 +1,7 @@
 ---
-title: "Do Indian Citizens Need ETIAS for Europe in 2026? Schengen Visa Explained"
+title: "Do Indians Need ETIAS for Europe? No (2026)"
 date: "2026-07-02"
-excerpt: "No — Indians can't use ETIAS. In 2026 you still need a Schengen Type C visa for Europe. Here's what actually applies, honestly, confirm-first."
+excerpt: "No — Indians can't use ETIAS. You still need a Schengen visa for Europe in 2026. Here's exactly what applies, honestly explained."
 category: "Visa Guides"
 readTime: "13 min read"
 coverEmoji: "🇪🇺"

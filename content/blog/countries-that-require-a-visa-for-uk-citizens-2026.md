@@ -1,7 +1,7 @@
 ---
-title: "Countries That Require a Visa for UK Citizens (2026) + How to Apply"
+title: "10 Countries That Still Require a UK Visa (2026)"
 date: "2026-07-02"
-excerpt: "The notable countries where British passport holders need a visa, eVisa or authorisation in advance in 2026 — grouped by type, with confirm-first how-to guidance."
+excerpt: "From China to Saudi Arabia — the 10 destinations Britons still need a visa, eVisa or authorisation for in 2026, and how to apply."
 category: "Visa Guides"
 readTime: "13 min read"
 coverEmoji: "🛂"

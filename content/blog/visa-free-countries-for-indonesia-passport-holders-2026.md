@@ -1,7 +1,7 @@
 ---
-title: "Visa-Free Countries for Indonesian Passport Holders (2026 Guide)"
+title: "Visa-Free Countries for Indonesians: ASEAN + More (2026)"
 date: "2026-06-27"
-excerpt: "An honest, up-to-date explainer on how visa-free access works for an Indonesian passport, which regions it opens, and how to confirm the current rule."
+excerpt: "How far an Indonesian passport goes visa-free in 2026 — easiest across ASEAN, plus e-Visa and visa-on-arrival options beyond it."
 category: "Travel Tips"
 readTime: "10 min read"
 coverEmoji: "🗺️"

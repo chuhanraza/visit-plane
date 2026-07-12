@@ -1,7 +1,7 @@
 ---
-title: "Visa-Free Countries for Kenyan Passport Holders (2026 Guide)"
+title: "Visa-Free Countries for Kenyans: Africa + More (2026)"
 date: "2026-06-27"
-excerpt: "A clear, honest guide to how visa-free travel works for Kenyan passport holders in 2026 — which regions open up, and how to confirm the current rule."
+excerpt: "How far a Kenyan passport goes visa-free in 2026 — easiest across East Africa, plus Asian and island e-Visa destinations."
 category: "Travel Tips"
 readTime: "10 min read"
 coverEmoji: "🗺️"

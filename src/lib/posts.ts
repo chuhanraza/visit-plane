@@ -98,9 +98,9 @@ export const blogPosts: BlogPost[] = [
   // ── SEO probe: US / UK / India passport-holder cluster (2026-07-02) ──────────
   {
     slug: 'visa-free-countries-for-us-citizens-2026',
-    title: 'Visa-Free Countries for US Citizens (2026 Guide)',
+    title: '180+ Visa-Free Countries for US Citizens (2026)',
     date: '2026-07-02',
-    excerpt: 'How a US passport unlocks roughly 180+ destinations visa-free or on arrival in 2026 — plus the new ETIAS change coming to Europe. Confirm before you fly.',
+    excerpt: 'See where a US passport gets visa-free entry in 2026 — plus the ETIAS change coming to Europe. Confirm your route before you book.',
     category: 'Travel Tips',
     readTime: '12 min read',
     coverEmoji: '🌍',
@@ -146,9 +146,9 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'countries-that-require-a-visa-for-us-citizens-2026',
-    title: 'Countries That Require a Visa for US Citizens (2026) + How to Get Each',
+    title: '13 Countries That Still Require a US Visa (2026)',
     date: '2026-07-02',
-    excerpt: 'The notable countries Americans still need a visa, eVisa or authorisation for in 2026 — grouped by type, with how to get each. Always confirm before booking.',
+    excerpt: 'From China to Saudi Arabia — the 13 destinations Americans still need a visa, eVisa or authorisation for in 2026, and how to get each.',
     category: 'Visa Guides',
     readTime: '13 min read',
     coverEmoji: '🛂',
@@ -170,9 +170,9 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'do-us-citizens-need-a-visa-for-europe-2026-etias',
-    title: 'Do US Citizens Need a Visa for Europe in 2026? ETIAS & Schengen Explained',
+    title: 'Do US Citizens Need a Europe Visa? No (2026)',
     date: '2026-07-02',
-    excerpt: 'No — US citizens don\'t need a visa for short Europe trips in 2026. But ETIAS (a visa-waiver authorisation) is coming, and EES is already live. Here\'s the truth.',
+    excerpt: 'No — US citizens don\'t need a visa for short Europe trips in 2026. Here\'s the 90/180 rule, EES, and the ETIAS change explained.',
     category: 'Visa Guides',
     readTime: '13 min read',
     coverEmoji: '🇪🇺',
@@ -194,9 +194,9 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'visa-free-countries-for-uk-citizens-2026',
-    title: 'Visa-Free Countries for UK Citizens (2026 Guide)',
+    title: '180+ Visa-Free Countries for UK Citizens (2026)',
     date: '2026-07-02',
-    excerpt: 'How a UK passport\'s roughly 180+ visa-free destinations work in 2026 — regional breakdown, the ETIAS change, and what to confirm before you fly.',
+    excerpt: 'See where a UK passport gets visa-free entry in 2026 — plus the ETIAS change coming to Europe. Confirm your route before you book.',
     category: 'Travel Tips',
     readTime: '13 min read',
     coverEmoji: '🌍',
@@ -242,9 +242,9 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'countries-that-require-a-visa-for-uk-citizens-2026',
-    title: 'Countries That Require a Visa for UK Citizens (2026) + How to Apply',
+    title: '10 Countries That Still Require a UK Visa (2026)',
     date: '2026-07-02',
-    excerpt: 'The notable countries where British passport holders need a visa, eVisa or authorisation in advance in 2026 — grouped by type, with confirm-first how-to guidance.',
+    excerpt: 'From China to Saudi Arabia — the 10 destinations Britons still need a visa, eVisa or authorisation for in 2026, and how to apply.',
     category: 'Visa Guides',
     readTime: '13 min read',
     coverEmoji: '🛂',
@@ -266,9 +266,9 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'do-uk-citizens-need-a-visa-for-europe-2026-etias',
-    title: 'Do UK Citizens Need a Visa for Europe in 2026? ETIAS & Schengen Explained',
+    title: 'Do UK Citizens Need a Europe Visa? No (2026)',
     date: '2026-07-02',
-    excerpt: 'In 2026 UK citizens need no visa for short Schengen trips. Here\'s how the 90/180 rule, the new EES border and the coming ETIAS authorisation actually work.',
+    excerpt: 'No — UK citizens don\'t need a visa for short Europe trips in 2026. Here\'s the 90/180 rule, EES, and the ETIAS change explained.',
     category: 'Visa Guides',
     readTime: '13 min read',
     coverEmoji: '🇪🇺',
@@ -290,9 +290,9 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'do-indian-citizens-need-etias-for-europe-2026',
-    title: 'Do Indian Citizens Need ETIAS for Europe in 2026? Schengen Visa Explained',
+    title: 'Do Indians Need ETIAS for Europe? No (2026)',
     date: '2026-07-02',
-    excerpt: 'No — Indians can\'t use ETIAS. In 2026 you still need a Schengen Type C visa for Europe. Here\'s what actually applies, honestly, confirm-first.',
+    excerpt: 'No — Indians can\'t use ETIAS. You still need a Schengen visa for Europe in 2026. Here\'s exactly what applies, honestly explained.',
     category: 'Visa Guides',
     readTime: '13 min read',
     coverEmoji: '🇪🇺',
@@ -362,9 +362,9 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'countries-indians-can-visit-with-a-us-visa-2026',
-    title: 'Countries Indians Can Visit With a US Visa in 2026 (Visa-Free & Easy Entry)',
+    title: '12 Countries Indians Can Enter With a US Visa (2026)',
     date: '2026-07-02',
-    excerpt: 'A valid US visa can unlock easier entry to Mexico, Turkey, Georgia and more for Indian passports in 2026 — conditional, confirm-first before you fly.',
+    excerpt: 'Mexico, Turkey and 10 more — where a valid US visa gets Indian passport holders easier entry in 2026. Confirm-first, country by country.',
     category: 'Travel Tips',
     readTime: '13 min read',
     coverEmoji: '🎫',
@@ -482,10 +482,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'visa-free-countries-for-indonesia-passport-holders-2026',
-    title: 'Visa-Free Countries for Indonesian Passport Holders (2026 Guide)',
+    title: 'Visa-Free Countries for Indonesians: ASEAN + More (2026)',
     date: '2026-06-27',
     excerpt:
-      'An honest, up-to-date explainer on how visa-free access works for an Indonesian passport, which regions it opens, and how to confirm the current rule.',
+      'How far an Indonesian passport goes visa-free in 2026 — easiest across ASEAN, plus e-Visa and visa-on-arrival options beyond it.',
     category: 'Travel Tips',
     readTime: '10 min read',
     coverEmoji: '🗺️',
@@ -506,10 +506,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'visa-free-countries-for-vietnam-passport-holders-2026',
-    title: 'Visa-Free Countries for Vietnamese Passport Holders (2026 Guide)',
+    title: 'Visa-Free Countries for Vietnamese: ASEAN + More (2026)',
     date: '2026-06-27',
     excerpt:
-      'How visa-free access works for a Vietnamese passport, the regions it commonly opens, and how to confirm the current rule before you book.',
+      'How far a Vietnamese passport goes visa-free in 2026 — easiest across ASEAN, plus growing e-Visa and visa-on-arrival access.',
     category: 'Travel Tips',
     readTime: '10 min read',
     coverEmoji: '🗺️',
@@ -530,10 +530,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'visa-free-countries-for-kenya-passport-holders-2026',
-    title: 'Visa-Free Countries for Kenyan Passport Holders (2026 Guide)',
+    title: 'Visa-Free Countries for Kenyans: Africa + More (2026)',
     date: '2026-06-27',
     excerpt:
-      'A clear, honest guide to how visa-free travel works for Kenyan passport holders in 2026 — which regions open up, and how to confirm the current rule.',
+      'How far a Kenyan passport goes visa-free in 2026 — easiest across East Africa, plus Asian and island e-Visa destinations.',
     category: 'Travel Tips',
     readTime: '10 min read',
     coverEmoji: '🗺️',
@@ -554,10 +554,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'visa-free-countries-for-ghana-passport-holders-2026',
-    title: 'Visa-Free Countries for Ghanaian Passport Holders (2026 Guide)',
+    title: 'Visa-Free Countries for Ghanaians: West Africa + More (2026)',
     date: '2026-06-27',
     excerpt:
-      'How a Ghanaian passport opens West Africa via ECOWAS, plus wider-Africa, island and e-Visa access — and how to confirm every rule before you book.',
+      'How a Ghanaian passport opens travel in 2026 — easy ECOWAS access across West Africa, plus wider-Africa, island and e-Visa options.',
     category: 'Travel Tips',
     readTime: '10 min read',
     coverEmoji: '🗺️',
@@ -3926,10 +3926,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: 'france-student-visa-financial-requirements-2026-proof-of-funds-explained',
-    title: 'France Student Visa Financial Requirements 2026: Proof of Funds Explained',
+    title: 'France Student Visa: €615/Month Proof of Funds (2026)',
     date: '2026-06-27',
     excerpt:
-      'How much money do you need for a France student visa in 2026, what counts as proof of funds, and how to show it — explained clearly with the latest figures.',
+      'The exact monthly figure France requires for a student visa in 2026, what counts as proof of funds, and how to show it correctly.',
     category: 'Visa Guides',
     readTime: '11 min read',
     coverEmoji: '🇫🇷',

@@ -1,7 +1,7 @@
 ---
-title: "France Student Visa Financial Requirements 2026: Proof of Funds Explained"
+title: "France Student Visa: €615/Month Proof of Funds (2026)"
 date: "2026-06-27"
-excerpt: "How much money do you need for a France student visa in 2026, what counts as proof of funds, and how to show it — explained clearly with the latest figures."
+excerpt: "The exact monthly figure France requires for a student visa in 2026, what counts as proof of funds, and how to show it correctly."
 category: "Visa Guides"
 readTime: "11 min read"
 coverEmoji: "🇫🇷"

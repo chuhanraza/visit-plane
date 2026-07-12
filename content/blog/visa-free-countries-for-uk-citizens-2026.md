@@ -1,7 +1,7 @@
 ---
-title: "Visa-Free Countries for UK Citizens (2026 Guide)"
+title: "180+ Visa-Free Countries for UK Citizens (2026)"
 date: "2026-07-02"
-excerpt: "How a UK passport's roughly 180+ visa-free destinations work in 2026 — regional breakdown, the ETIAS change, and what to confirm before you fly."
+excerpt: "See where a UK passport gets visa-free entry in 2026 — plus the ETIAS change coming to Europe. Confirm your route before you book."
 category: "Travel Tips"
 readTime: "13 min read"
 coverEmoji: "🌍"

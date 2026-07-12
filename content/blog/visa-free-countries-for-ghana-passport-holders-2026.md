@@ -1,7 +1,7 @@
 ---
-title: "Visa-Free Countries for Ghanaian Passport Holders (2026 Guide)"
+title: "Visa-Free Countries for Ghanaians: West Africa + More (2026)"
 date: "2026-06-27"
-excerpt: "How a Ghanaian passport opens West Africa via ECOWAS, plus wider-Africa, island and e-Visa access — and how to confirm every rule before you book."
+excerpt: "How a Ghanaian passport opens travel in 2026 — easy ECOWAS access across West Africa, plus wider-Africa, island and e-Visa options."
 category: "Travel Tips"
 readTime: "10 min read"
 coverEmoji: "🗺️"

@@ -1,7 +1,7 @@
 ---
-title: "Do US Citizens Need a Visa for Europe in 2026? ETIAS & Schengen Explained"
+title: "Do US Citizens Need a Europe Visa? No (2026)"
 date: "2026-07-02"
-excerpt: "No — US citizens don't need a visa for short Europe trips in 2026. But ETIAS (a visa-waiver authorisation) is coming, and EES is already live. Here's the truth."
+excerpt: "No — US citizens don't need a visa for short Europe trips in 2026. Here's the 90/180 rule, EES, and the ETIAS change explained."
 category: "Visa Guides"
 readTime: "13 min read"
 coverEmoji: "🇪🇺"

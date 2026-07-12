@@ -1,7 +1,7 @@
 ---
-title: "Visa-Free Countries for US Citizens (2026 Guide)"
+title: "180+ Visa-Free Countries for US Citizens (2026)"
 date: "2026-07-02"
-excerpt: "How a US passport unlocks roughly 180+ destinations visa-free or on arrival in 2026 — plus the new ETIAS change coming to Europe. Confirm before you fly."
+excerpt: "See where a US passport gets visa-free entry in 2026 — plus the ETIAS change coming to Europe. Confirm your route before you book."
 category: "Travel Tips"
 readTime: "12 min read"
 coverEmoji: "🌍"

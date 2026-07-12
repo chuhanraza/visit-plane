@@ -1,7 +1,7 @@
 ---
-title: "Countries Indians Can Visit With a US Visa in 2026 (Visa-Free & Easy Entry)"
+title: "12 Countries Indians Can Enter With a US Visa (2026)"
 date: "2026-07-02"
-excerpt: "A valid US visa can unlock easier entry to Mexico, Turkey, Georgia and more for Indian passports in 2026 — conditional, confirm-first before you fly."
+excerpt: "Mexico, Turkey and 10 more — where a valid US visa gets Indian passport holders easier entry in 2026. Confirm-first, country by country."
 category: "Travel Tips"
 readTime: "13 min read"
 coverEmoji: "🎫"
