@@ -19,9 +19,16 @@ const withSerwist = (cfg) => cfg; // passthrough — PWA disabled, no functional
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Never let lint warnings/errors block a production deploy. Type-checking still
-  // runs and must pass — this only relaxes ESLint during `next build`.
-  eslint: { ignoreDuringBuilds: true },
+  // `eslint.ignoreDuringBuilds` was REMOVED in Next.js 16 along with `next lint`
+  // (see node_modules/next/dist/docs/.../config/03-eslint.md, "next lint removal":
+  // "the eslint option in your Next config file is no longer needed and can be
+  // safely removed" — it produced an "Unrecognized key(s)" warning and, per
+  // node_modules/next/dist/build/index.js, was never read at all). This isn't a
+  // regression of the original intent: `next build` on this version doesn't run
+  // ESLint as part of the build in the first place (confirmed empirically: a
+  // local `next build` shows no lint/eslint step in its output at all), so lint
+  // errors/warnings cannot block a production build, with or without this key.
+  // Type-checking is unaffected and still runs.
 
   images: {
     remotePatterns: [
