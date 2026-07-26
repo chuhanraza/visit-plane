@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, type MouseEvent } from 'react'
 
 // ── Reading Progress Bar ───────────────────────────────────────────────────────
 export function ReadingProgressBar() {
@@ -87,35 +87,77 @@ export function TableOfContents({ contentHtml }: { contentHtml: string }) {
   return (
     <nav
       aria-label="Table of contents"
-      className="sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto rounded-2xl border border-gray-100 bg-white p-5 shadow-sm"
+      className="sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_2px_12px_-4px_rgba(15,23,42,0.08)]"
     >
-      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+      <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">
         Contents
       </p>
-      <ul className="space-y-1">
+      <ul className="space-y-0.5 border-l-2 border-gray-100">
         {headings.map((h) => (
           <li key={h.id}>
             <button
               onClick={() => handleClick(h.id)}
-              className={`w-full text-left text-sm transition-colors duration-150 ${
-                h.level === 3 ? 'pl-4' : ''
+              className={`-ml-0.5 w-full border-l-2 py-1.5 text-left text-sm transition-colors duration-150 ${
+                h.level === 3 ? 'pl-7' : 'pl-3.5'
               } ${
                 activeId === h.id
-                  ? 'font-semibold text-[#10B981]'
-                  : 'text-gray-500 hover:text-[#1A1A1A]'
+                  ? 'border-[#10B981] font-semibold text-[#10B981]'
+                  : 'border-transparent text-gray-500 hover:text-[#1A1A1A]'
               }`}
             >
-              <span
-                className={`mr-2 inline-block h-1 w-1 rounded-full align-middle ${
-                  activeId === h.id ? 'bg-[#10B981]' : 'bg-gray-300'
-                }`}
-              />
               {h.text}
             </button>
           </li>
         ))}
       </ul>
     </nav>
+  )
+}
+
+// ── Mobile Table of Contents (collapsed accordion) ──────────────────────────────
+// Desktop gets the always-visible sticky sidebar (TableOfContents above); on
+// mobile that costs precious vertical space above the fold, so it's collapsed
+// by default and rendered as a <details> — zero JS needed to open/close it.
+export function MobileTableOfContents({ contentHtml }: { contentHtml: string }) {
+  const headings = useMemo(() => extractHeadings(contentHtml), [contentHtml])
+
+  if (headings.length < 3) return null
+
+  const handleClick = (e: MouseEvent, id: string) => {
+    e.preventDefault()
+    const el = document.getElementById(id)
+    if (el) {
+      const offset = 70
+      const top = el.getBoundingClientRect().top + window.scrollY - offset
+      window.scrollTo({ top, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <details className="group mb-8 rounded-xl border border-gray-200 bg-white xl:hidden">
+      <summary className="flex cursor-pointer select-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-[#1A1A1A]">
+        <span className="flex items-center gap-2">
+          <svg className="h-4 w-4 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+          Table of Contents
+        </span>
+        <span className="text-gray-400 transition-transform group-open:rotate-180">▾</span>
+      </summary>
+      <ul className="space-y-1 border-t border-gray-100 px-4 py-3">
+        {headings.map((h) => (
+          <li key={h.id}>
+            <a
+              href={`#${h.id}`}
+              onClick={(e) => handleClick(e, h.id)}
+              className={`block py-1.5 text-sm text-gray-600 hover:text-[#10B981] ${h.level === 3 ? 'pl-4' : ''}`}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
   )
 }
 
