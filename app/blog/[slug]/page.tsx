@@ -7,6 +7,7 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import { remark } from 'remark'
+import remarkGfm from 'remark-gfm'
 import remarkHtml from 'remark-html'
 import { ReadingProgressBar, TableOfContents, MobileTableOfContents, SocialShare } from './BlogPostClient'
 import {
@@ -108,7 +109,7 @@ async function getPostContent(slug: string): Promise<string> {
     const filePath = path.join(process.cwd(), 'content', 'blog', `${slug}.md`)
     const raw = fs.readFileSync(filePath, 'utf-8')
     const { content } = matter(raw)
-    const result = await remark().use(remarkHtml).process(content)
+    const result = await remark().use(remarkGfm).use(remarkHtml).process(content)
     // Inject sequential IDs into h2/h3 tags for TOC scroll-spy
     let idx = 0
     const html = result.toString().replace(/<(h[23])([^>]*)>/g, (_match, tag, rest) => {
@@ -400,9 +401,12 @@ export default async function BlogPostPage({
             <Byline updatedISO={post.date} readTime={post.readTime} />
 
             {/* ── AT A GLANCE — quick-facts card ─────────────────────────── */}
-            <div className="mb-10 rounded-2xl border border-[#10B981]/20 bg-gradient-to-br from-[#F0FDF9] to-white p-5 shadow-sm">
-              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#059669]">✈️ At a glance</p>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+            <div className="mb-10 overflow-hidden rounded-2xl border border-[#10B981]/25 bg-gradient-to-br from-[#F0FDF9] to-white shadow-[0_8px_24px_-8px_rgba(16,185,129,0.25)]">
+              <div className="flex items-center gap-2 border-b border-[#10B981]/15 bg-[#10B981]/[0.06] px-5 py-2.5">
+                <span className="text-sm">✈️</span>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#059669]">At a glance</p>
+              </div>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-4 p-5 sm:grid-cols-4">
                 <div>
                   <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Route</p>
                   <p className="text-sm font-bold text-[#0f1419]">{post.coverEmoji} {post.passportCountry} → {post.destinationCountry}</p>
@@ -420,9 +424,11 @@ export default async function BlogPostPage({
                   <p className="text-sm font-bold text-[#0f1419]">{new Date(post.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
                 </div>
               </div>
-              <Link href={post.visaLink} className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#059669] hover:underline">
-                Check full {post.passportCountry} → {post.destinationCountry} requirements →
-              </Link>
+              <div className="px-5 pb-5">
+                <Link href={post.visaLink} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#059669] hover:underline">
+                  Check full {post.passportCountry} → {post.destinationCountry} requirements →
+                </Link>
+              </div>
             </div>
 
             {/* ── Article body — rich prose, with inline photos between sections ── */}
