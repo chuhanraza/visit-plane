@@ -8,7 +8,7 @@ import path from 'path'
 import matter from 'gray-matter'
 import { remark } from 'remark'
 import remarkHtml from 'remark-html'
-import { ReadingProgressBar, TableOfContents, SocialShare } from './BlogPostClient'
+import { ReadingProgressBar, TableOfContents, MobileTableOfContents, SocialShare } from './BlogPostClient'
 import {
   getBlogHeroImage,
   getBlogHeroSrcSet,
@@ -389,7 +389,12 @@ export default async function BlogPostPage({
         <div className="flex gap-12 xl:gap-16">
 
           {/* ── Main article ────────────────────────────────────────────── */}
-          <article className="min-w-0 flex-1">
+          {/* max-w-[720px] caps the reading measure at ~68-75ch — beyond that,
+              eye-tracking research (Bringhurst / NN-g) shows line length hurts
+              legibility and return-sweep accuracy on wide desktop viewports. */}
+          <article className="min-w-0 max-w-[720px] flex-1">
+            {/* Mobile-only collapsible TOC — desktop uses the sticky sidebar aside below */}
+            <MobileTableOfContents contentHtml={contentHtml} />
 
             {/* Author byline — real, accountable human (E-E-A-T) */}
             <Byline updatedISO={post.date} readTime={post.readTime} />

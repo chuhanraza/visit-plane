@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, type MouseEvent } from 'react'
 
 // ── Reading Progress Bar ───────────────────────────────────────────────────────
 export function ReadingProgressBar() {
@@ -116,6 +116,53 @@ export function TableOfContents({ contentHtml }: { contentHtml: string }) {
         ))}
       </ul>
     </nav>
+  )
+}
+
+// ── Mobile Table of Contents (collapsed accordion) ──────────────────────────────
+// Desktop gets the always-visible sticky sidebar (TableOfContents above); on
+// mobile that costs precious vertical space above the fold, so it's collapsed
+// by default and rendered as a <details> — zero JS needed to open/close it.
+export function MobileTableOfContents({ contentHtml }: { contentHtml: string }) {
+  const headings = useMemo(() => extractHeadings(contentHtml), [contentHtml])
+
+  if (headings.length < 3) return null
+
+  const handleClick = (e: MouseEvent, id: string) => {
+    e.preventDefault()
+    const el = document.getElementById(id)
+    if (el) {
+      const offset = 70
+      const top = el.getBoundingClientRect().top + window.scrollY - offset
+      window.scrollTo({ top, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <details className="group mb-8 rounded-xl border border-gray-200 bg-white xl:hidden">
+      <summary className="flex cursor-pointer select-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-[#1A1A1A]">
+        <span className="flex items-center gap-2">
+          <svg className="h-4 w-4 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+          Table of Contents
+        </span>
+        <span className="text-gray-400 transition-transform group-open:rotate-180">▾</span>
+      </summary>
+      <ul className="space-y-1 border-t border-gray-100 px-4 py-3">
+        {headings.map((h) => (
+          <li key={h.id}>
+            <a
+              href={`#${h.id}`}
+              onClick={(e) => handleClick(e, h.id)}
+              className={`block py-1.5 text-sm text-gray-600 hover:text-[#10B981] ${h.level === 3 ? 'pl-4' : ''}`}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
   )
 }
 
