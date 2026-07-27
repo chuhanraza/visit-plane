@@ -205,20 +205,30 @@
 .blog-prose blockquote p { margin: 0; }
 .blog-prose blockquote strong { color: var(--vp-stamp); }
 
-/* Tables — display:block lets a wide table scroll horizontally on its own
-   axis instead of overflowing the page (no wrapper markup needed, since the
-   HTML comes from remark and can't be wrapped in a scroll <div> at parse time). */
-.blog-prose table {
-  display: block;
+/* Tables — wrapped in .blog-table-scroll (see getPostContent() in page.tsx)
+   so a wide table scrolls horizontally within its own container. Custom
+   ::-webkit-scrollbar rules force a classic, always-visible scrollbar instead
+   of relying on macOS/iOS's auto-hiding overlay one — without this, a cut-off
+   column reads as missing data instead of "scroll for more". */
+.blog-table-scroll {
+  position: relative;
   max-width: 100%;
-  width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  border-collapse: collapse;
   margin: 1.8rem 0;
-  font-size: 0.96rem;
   border: 1px solid var(--vp-hairline);
   border-radius: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--vp-stamp) var(--vp-paper);
+}
+.blog-table-scroll::-webkit-scrollbar { height: 8px; }
+.blog-table-scroll::-webkit-scrollbar-track { background: var(--vp-paper); }
+.blog-table-scroll::-webkit-scrollbar-thumb { background: var(--vp-stamp); border-radius: 4px; }
+.blog-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 0.96rem;
 }
 .blog-prose thead, .blog-prose tbody, .blog-prose tr { width: 100%; }
 .blog-prose th, .blog-prose td { white-space: nowrap; }

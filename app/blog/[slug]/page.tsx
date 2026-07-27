@@ -112,9 +112,16 @@ async function getPostContent(slug: string): Promise<string> {
     const result = await remark().use(remarkGfm).use(remarkHtml).process(content)
     // Inject sequential IDs into h2/h3 tags for TOC scroll-spy
     let idx = 0
-    const html = result.toString().replace(/<(h[23])([^>]*)>/g, (_match, tag, rest) => {
+    let html = result.toString().replace(/<(h[23])([^>]*)>/g, (_match, tag, rest) => {
       return `<${tag}${rest} id="heading-${idx++}">`
     })
+    // Wrap tables in their own scroll container — a bare <table> with
+    // overflow-x:auto relies on the browser's native scrollbar for the
+    // "there's more" cue, which macOS/iOS hide as an overlay until the user
+    // scrolls. The wrapper gets a forced-visible custom scrollbar instead
+    // (see .blog-table-scroll in globals.css) so wide tables never read as
+    // silently truncated.
+    html = html.replace(/<table>/g, '<div class="blog-table-scroll"><table>').replace(/<\/table>/g, '</table></div>')
     return html
   } catch {
     return '<p>Content not available.</p>'
