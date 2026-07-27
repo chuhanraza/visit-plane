@@ -56,6 +56,19 @@
   --accent-cyan:    #06B6D4;
   --border-soft:    #E2E8F0;
   --shadow-soft:    0 4px 24px rgba(15, 20, 25, 0.06);
+
+  /* ── Blog editorial tokens — "boarding pass, not brochure" ──────────────
+     Warm paper + ink-navy stamp + a deepened, restrained green. See
+     app/globals.css .blog-prose block + the .vp-boarding-pass card for the
+     signature treatment. Brand green (--accent-green) stays for site chrome;
+     these are scoped to the blog reading experience. */
+  --vp-ink:      #14201B;
+  --vp-body:     #3F4A44;
+  --vp-muted:    #7C8983;
+  --vp-paper:    #FBFAF5;
+  --vp-hairline: #E3E0D3;
+  --vp-green:    #047857;
+  --vp-stamp:    #1E3A5F;
 }
 
 @theme inline {
@@ -73,7 +86,7 @@
 .blog-prose {
   font-size: 1.125rem;          /* 18px */
   line-height: 1.85;
-  color: #374151;
+  color: var(--vp-body);
   letter-spacing: -0.003em;
 }
 .blog-prose > :first-child { margin-top: 0; }
@@ -83,9 +96,9 @@
 
 /* Lead paragraph: larger + drop cap */
 .blog-prose > p:first-of-type {
-  font-size: 1.28rem;
+  font-size: 1.25rem;
   line-height: 1.7;
-  color: #1f2937;
+  color: var(--vp-ink);
 }
 .blog-prose > p:first-of-type::first-letter {
   float: left;
@@ -93,44 +106,56 @@
   line-height: 0.82;
   font-weight: 800;
   margin: 0.38rem 0.6rem 0 0;
-  color: #10B981;
+  color: var(--vp-green);
 }
 
 /* Headings — stronger section separation: generous top margin reads as a
-   deliberate new chapter (TPG/Wirecutter pattern) rather than a subhead. */
+   deliberate new chapter (TPG/Wirecutter pattern) rather than a subhead.
+   Thin accent rule (not a heavy color block) keeps the hierarchy calm. */
 .blog-prose h2 {
-  font-size: 2rem;
-  line-height: 1.2;
+  font-size: 1.85rem;
+  line-height: 1.22;
   font-weight: 800;
-  letter-spacing: -0.022em;
-  color: #0a0f1a;
-  margin: 3.5rem 0 1.25rem;
-  padding-left: 1rem;
-  border-left: 5px solid #10B981;
+  letter-spacing: -0.02em;
+  color: var(--vp-ink);
+  margin: 3.25rem 0 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--vp-hairline);
+  position: relative;
+}
+.blog-prose h2::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 2.5rem;
+  height: 2px;
+  background: var(--vp-green);
 }
 .blog-prose h2, .blog-prose h3, .blog-prose h4 {
   scroll-margin-top: 90px;   /* so TOC jumps aren't hidden under sticky bar */
 }
 .blog-prose h3 {
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: #111827;
+  letter-spacing: -0.01em;
+  color: var(--vp-ink);
   margin: 2rem 0 0.75rem;
 }
-.blog-prose h4 { font-size: 1.12rem; font-weight: 700; color: #111827; margin: 1.5rem 0 0.5rem; }
+.blog-prose h4 { font-size: 1.08rem; font-weight: 700; color: var(--vp-ink); margin: 1.5rem 0 0.5rem; }
 
 /* Links */
 .blog-prose a {
-  color: #059669;
+  color: var(--vp-green);
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 1.5px solid rgba(16, 185, 129, 0.35);
+  border-bottom: 1.5px solid rgba(4, 120, 87, 0.3);
   transition: border-color 0.15s, color 0.15s;
 }
-.blog-prose a:hover { color: #047857; border-bottom-color: #10B981; }
+.blog-prose a:hover { color: #035c41; border-bottom-color: var(--vp-green); }
 
 /* Strong */
-.blog-prose strong { color: #0f1419; font-weight: 700; }
+.blog-prose strong { color: var(--vp-ink); font-weight: 700; }
 
 /* Lists with custom markers */
 .blog-prose ul { list-style: none; margin: 0 0 1.5rem; padding: 0; }
@@ -144,12 +169,12 @@
   position: absolute;
   left: 0;
   top: 0;
-  color: #10B981;
+  color: var(--vp-green);
   font-weight: 800;
 }
 .blog-prose ol { margin: 0 0 1.5rem; padding-left: 1.4rem; }
 .blog-prose ol > li { margin: 0.55rem 0; padding-left: 0.35rem; }
-.blog-prose ol > li::marker { color: #059669; font-weight: 700; }
+.blog-prose ol > li::marker { color: var(--vp-green); font-weight: 700; }
 
 /* Blockquote → Key Takeaway / callout card — a soft shadow (not a heavier
    border) is what reads as "designed component" vs. "text with a line next
@@ -158,24 +183,27 @@
   position: relative;
   margin: 2.2rem 0;
   padding: 1.35rem 1.4rem 1.35rem 3.25rem;
-  background: linear-gradient(135deg, #F0FDF9 0%, #ECFDF5 100%);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  border-left: 4px solid #10B981;
-  border-radius: 0 16px 16px 0;
-  box-shadow: 0 4px 16px -4px rgba(16, 185, 129, 0.15);
-  color: #134e4a;
-  font-size: 1.08rem;
+  background: var(--vp-paper);
+  border: 1px solid var(--vp-hairline);
+  border-left: 3px solid var(--vp-stamp);
+  border-radius: 0 14px 14px 0;
+  box-shadow: 0 4px 16px -6px rgba(20, 32, 27, 0.1);
+  color: var(--vp-ink);
+  font-size: 1.06rem;
   line-height: 1.7;
 }
 .blog-prose blockquote::before {
-  content: "💡";
+  content: "";
   position: absolute;
-  left: 1rem;
-  top: 1.05rem;
-  font-size: 1.15rem;
+  left: 1.35rem;
+  top: 1.5rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vp-green);
 }
 .blog-prose blockquote p { margin: 0; }
-.blog-prose blockquote strong { color: #065f46; }
+.blog-prose blockquote strong { color: var(--vp-stamp); }
 
 /* Tables — display:block lets a wide table scroll horizontally on its own
    axis instead of overflowing the page (no wrapper markup needed, since the
@@ -188,34 +216,131 @@
   -webkit-overflow-scrolling: touch;
   border-collapse: collapse;
   margin: 1.8rem 0;
-  font-size: 0.98rem;
-  border: 1px solid #E5E7EB;
+  font-size: 0.96rem;
+  border: 1px solid var(--vp-hairline);
   border-radius: 12px;
 }
 .blog-prose thead, .blog-prose tbody, .blog-prose tr { width: 100%; }
 .blog-prose th, .blog-prose td { white-space: nowrap; }
 .blog-prose th {
-  background: #F0FDF9;
-  color: #065f46;
+  background: var(--vp-paper);
+  color: var(--vp-ink);
   font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   text-align: left;
   padding: 0.7rem 0.9rem;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid var(--vp-hairline);
 }
-.blog-prose td { padding: 0.7rem 0.9rem; border-bottom: 1px solid #F1F5F9; }
+.blog-prose td { padding: 0.7rem 0.9rem; border-bottom: 1px solid #F1EFE6; color: var(--vp-body); }
 .blog-prose tr:last-child td { border-bottom: none; }
+.blog-prose tbody tr:nth-child(even) td { background: rgba(251, 250, 245, 0.6); }
 
-/* Images + hr */
+/* Images + hr — the hr picks up the ticket/boarding-pass perforation motif
+   (see .vp-boarding-pass) so the signature idea reads as one system rather
+   than a single decoration bolted on in isolation. */
 .blog-prose img { border-radius: 16px; box-shadow: var(--shadow-soft); margin: 1.8rem 0; }
-.blog-prose hr { border: none; border-top: 1px solid #E5E7EB; margin: 2.5rem 0; }
+.blog-prose hr {
+  border: none;
+  height: 1px;
+  margin: 3rem 0;
+  background-image: repeating-linear-gradient(to right, var(--vp-hairline) 0 6px, transparent 6px 12px);
+}
 
 /* Mobile tuning */
 @media (max-width: 640px) {
   .blog-prose { font-size: 1.0625rem; }
   .blog-prose h2 { font-size: 1.5rem; }
-  .blog-prose h3 { font-size: 1.2rem; }
-  .blog-prose > p:first-of-type { font-size: 1.15rem; }
+  .blog-prose h3 { font-size: 1.18rem; }
+  .blog-prose > p:first-of-type { font-size: 1.13rem; }
   .blog-prose > p:first-of-type::first-letter { font-size: 2.8rem; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Signature element — the boarding-pass "At a glance" quick-facts card.
+   Ticket-stub layout: route stub | perforated divider | flight-style details,
+   with a faint barcode strip along the bottom. Pure CSS — no images, no new
+   assets, zero effect on LCP/CLS.
+   ───────────────────────────────────────────────────────────────────────── */
+.vp-boarding-pass {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--vp-paper);
+  border: 1px solid var(--vp-hairline);
+  border-radius: 18px;
+  box-shadow: 0 10px 28px -14px rgba(20, 32, 27, 0.22);
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .vp-boarding-pass { flex-direction: row; }
+}
+
+.vp-boarding-pass__stub {
+  flex-shrink: 0;
+  padding: 1.35rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+}
+@media (min-width: 640px) {
+  .vp-boarding-pass__stub { width: 15rem; }
+}
+
+.vp-boarding-pass__divider {
+  position: relative;
+  flex-shrink: 0;
+  border-top: none;
+  border-bottom: 1px dashed var(--vp-hairline);
+}
+@media (min-width: 640px) {
+  .vp-boarding-pass__divider {
+    width: 0;
+    border-bottom: none;
+    border-left: 1px dashed var(--vp-hairline);
+  }
+}
+/* Perforation notches — semicircles cut into the divider, matching the page
+   background so they read as punched holes, not painted circles. */
+.vp-boarding-pass__divider::before,
+.vp-boarding-pass__divider::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--vp-hairline);
+}
+.vp-boarding-pass__divider::before { top: -9px; left: -9px; }
+.vp-boarding-pass__divider::after { bottom: -9px; left: -9px; }
+@media (min-width: 640px) {
+  .vp-boarding-pass__divider::before { top: -9px; left: -9px; }
+  .vp-boarding-pass__divider::after { top: auto; bottom: -9px; left: -9px; }
+}
+
+.vp-boarding-pass__details {
+  flex: 1;
+  min-width: 0;
+  padding: 1.35rem 1.5rem;
+}
+
+.vp-toc-item:hover { color: var(--vp-ink); }
+
+.vp-tag-pill { background: var(--vp-paper); color: var(--vp-body); }
+.vp-tag-pill:hover { background: var(--vp-green); color: #fff; }
+
+.vp-boarding-pass__barcode {
+  height: 5px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--vp-stamp) 0 2px, transparent 2px 5px,
+    var(--vp-stamp) 5px 6px, transparent 6px 10px,
+    var(--vp-stamp) 10px 13px, transparent 13px 16px
+  );
+  opacity: 0.35;
 }
 
 body {

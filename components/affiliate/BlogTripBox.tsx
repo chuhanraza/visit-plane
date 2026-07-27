@@ -89,10 +89,10 @@ export default function BlogTripBox({
   ]
 
   return (
-    <div className="mt-12 rounded-2xl border border-[#14B8A6]/20 bg-[#F0FDFA] p-6">
+    <div className="mt-12 rounded-2xl p-6" style={{ border: '1px solid var(--vp-hairline)', background: 'var(--vp-paper)' }}>
       <div className="mb-4 flex items-center gap-2">
         <span className="text-lg">✅</span>
-        <h3 className="text-base font-bold text-[#1F2937]">
+        <h3 className="text-base font-bold" style={{ color: 'var(--vp-ink)' }}>
           Recommended for this trip
         </h3>
       </div>
@@ -102,20 +102,20 @@ export default function BlogTripBox({
           <div
             key={card.label}
             className={`flex items-start justify-between gap-4 rounded-xl border bg-white p-4 ${
-              card.highlight
-                ? 'border-red-200 bg-red-50/40'
-                : 'border-gray-100'
+              card.highlight ? 'border-red-200 bg-red-50/40' : ''
             }`}
+            style={card.highlight ? undefined : { borderColor: 'var(--vp-hairline)' }}
           >
             <div className="flex items-start gap-3 min-w-0">
               <span className="mt-0.5 shrink-0 text-xl">{card.icon}</span>
               <div className="min-w-0">
-                <p className={`text-sm font-semibold leading-snug ${
-                  card.highlight ? 'text-red-700' : 'text-[#1F2937]'
-                }`}>
+                <p
+                  className="text-sm font-semibold leading-snug"
+                  style={{ color: card.highlight ? '#B91C1C' : 'var(--vp-ink)' }}
+                >
                   {card.label}
                 </p>
-                <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+                <p className="mt-0.5 text-xs leading-relaxed" style={{ color: 'var(--vp-muted)' }}>
                   {card.description}
                 </p>
               </div>
@@ -124,8 +124,9 @@ export default function BlogTripBox({
               href={card.href}
               rel="nofollow sponsored"
               className={`inline-flex min-h-[44px] shrink-0 items-center rounded-lg px-4 py-2 text-xs font-bold text-white transition hover:opacity-90 active:scale-95 sm:min-h-0 sm:px-3 ${
-                card.highlight ? 'bg-red-500' : 'bg-[#14B8A6]'
+                card.highlight ? 'bg-red-500' : ''
               }`}
+              style={card.highlight ? undefined : { background: 'var(--vp-stamp)' }}
             >
               {card.cta}
             </a>
@@ -133,7 +134,7 @@ export default function BlogTripBox({
         ))}
       </div>
 
-      <p className="mt-4 text-[10px] text-gray-400 text-center">
+      <p className="mt-4 text-center text-[10px]" style={{ color: 'var(--vp-muted)' }}>
         Affiliate links — VisitPlane may earn a commission at no extra cost to you.
         We only recommend services with ≥4★ Trustpilot ratings.
       </p>

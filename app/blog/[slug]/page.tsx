@@ -400,35 +400,42 @@ export default async function BlogPostPage({
             {/* Author byline — real, accountable human (E-E-A-T) */}
             <Byline updatedISO={post.date} readTime={post.readTime} />
 
-            {/* ── AT A GLANCE — quick-facts card ─────────────────────────── */}
-            <div className="mb-10 overflow-hidden rounded-2xl border border-[#10B981]/25 bg-gradient-to-br from-[#F0FDF9] to-white shadow-[0_8px_24px_-8px_rgba(16,185,129,0.25)]">
-              <div className="flex items-center gap-2 border-b border-[#10B981]/15 bg-[#10B981]/[0.06] px-5 py-2.5">
-                <span className="text-sm">✈️</span>
-                <p className="text-xs font-bold uppercase tracking-widest text-[#059669]">At a glance</p>
-              </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-4 p-5 sm:grid-cols-4">
-                <div>
-                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Route</p>
-                  <p className="text-sm font-bold text-[#0f1419]">{post.coverEmoji} {post.passportCountry} → {post.destinationCountry}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Guide type</p>
-                  <p className="text-sm font-bold text-[#0f1419]">{post.category}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Read time</p>
-                  <p className="text-sm font-bold text-[#0f1419]">{post.readTime}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Updated</p>
-                  <p className="text-sm font-bold text-[#0f1419]">{new Date(post.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
-                </div>
-              </div>
-              <div className="px-5 pb-5">
-                <Link href={post.visaLink} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#059669] hover:underline">
-                  Check full {post.passportCountry} → {post.destinationCountry} requirements →
+            {/* ── AT A GLANCE — boarding-pass quick-facts card (signature element) ── */}
+            <div className="mb-10 vp-boarding-pass">
+              <div className="vp-boarding-pass__stub">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: 'var(--vp-muted)' }}>Route</p>
+                <p className="text-lg font-extrabold leading-tight tabular-nums" style={{ color: 'var(--vp-ink)' }}>
+                  {post.passportCountry} <span style={{ color: 'var(--vp-green)' }}>→</span> {post.destinationCountry}
+                </p>
+                <Link
+                  href={post.visaLink}
+                  className="mt-1 inline-flex items-center gap-1 text-xs font-semibold hover:underline"
+                  style={{ color: 'var(--vp-green)' }}
+                >
+                  Full requirements →
                 </Link>
               </div>
+
+              <div className="vp-boarding-pass__divider" aria-hidden="true" />
+
+              <div className="vp-boarding-pass__details">
+                <div className="grid grid-cols-3 gap-x-5 gap-y-3">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: 'var(--vp-muted)' }}>Guide type</p>
+                    <p className="text-sm font-bold" style={{ color: 'var(--vp-ink)' }}>{post.category}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: 'var(--vp-muted)' }}>Read time</p>
+                    <p className="text-sm font-bold tabular-nums" style={{ color: 'var(--vp-ink)' }}>{post.readTime}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: 'var(--vp-muted)' }}>Updated</p>
+                    <p className="text-sm font-bold tabular-nums" style={{ color: 'var(--vp-ink)' }}>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="vp-boarding-pass__barcode" aria-hidden="true" />
             </div>
 
             {/* ── Article body — rich prose, with inline photos between sections ── */}
@@ -475,49 +482,54 @@ export default async function BlogPostPage({
 
             {/* ── MID-ARTICLE CTA CARD ──────────────────────────────────── */}
             <div
-              className="mt-12 overflow-hidden rounded-3xl p-8 text-center text-white shadow-xl"
-              style={{ background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #0d9488 100%)' }}
+              className="relative mt-12 overflow-hidden rounded-3xl p-8 text-center text-white shadow-xl"
+              style={{ background: 'var(--vp-ink)' }}
             >
-              <div className="mb-2 text-4xl">🛫</div>
+              <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: 'var(--vp-green)' }} />
               <p className="text-xl font-bold leading-tight">{post.ctaTitle}</p>
-              <p className="mt-2 text-sm text-white/80">
+              <p className="mx-auto mt-2 max-w-sm text-sm text-white/65">
                 Get instant visa requirements, fees, and processing times — completely free.
               </p>
               <Link
                 href={post.visaLink}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-[#0d9488] shadow-lg transition hover:scale-105 hover:shadow-xl"
+                className="mt-6 inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-105"
+                style={{ background: 'var(--vp-green)' }}
               >
                 Check Visa Requirements →
               </Link>
             </div>
 
             {/* ── INTERNAL VISA LINKS ───────────────────────────────────── */}
-            <div className="mt-12 rounded-2xl border border-[#10B981]/20 bg-[#F0FDF9] p-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#059669] mb-3">
-                📋 Check Visa Requirements
+            <div className="mt-12 rounded-2xl p-6" style={{ border: '1px solid var(--vp-hairline)', background: 'var(--vp-paper)' }}>
+              <p className="mb-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--vp-stamp)' }}>
+                Check Visa Requirements
               </p>
               <div className="flex flex-wrap gap-2">
                 <Link
                   href={post.visaLink}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#10B981] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#059669] transition"
+                  className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+                  style={{ background: 'var(--vp-green)' }}
                 >
                   {post.passportCountry} → {post.destinationCountry} Requirements →
                 </Link>
                 <Link
                   href={`/visa-free-countries-for-${post.passportCountry.toLowerCase().replace(/\s+/g, '-')}-passport`}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#10B981] px-4 py-2 text-sm font-semibold text-[#10B981] hover:bg-[#10B981]/10 transition"
+                  className="inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition hover:bg-white"
+                  style={{ borderColor: 'var(--vp-green)', color: 'var(--vp-green)' }}
                 >
                   All Visa-Free for {post.passportCountry} →
                 </Link>
                 <Link
                   href={`/visa-requirements-for-${post.passportCountry.toLowerCase().replace(/\s+/g, '-')}-citizens`}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-600 hover:border-[#10B981]/40 transition"
+                  className="inline-flex items-center gap-1.5 rounded-full border bg-white px-4 py-2 text-sm font-semibold transition"
+                  style={{ borderColor: 'var(--vp-hairline)', color: 'var(--vp-body)' }}
                 >
                   Full Requirements Matrix →
                 </Link>
                 <Link
                   href="/checklist"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-600 hover:border-[#10B981]/40 transition"
+                  className="inline-flex items-center gap-1.5 rounded-full border bg-white px-4 py-2 text-sm font-semibold transition"
+                  style={{ borderColor: 'var(--vp-hairline)', color: 'var(--vp-body)' }}
                 >
                   Document Checklist →
                 </Link>
@@ -527,18 +539,19 @@ export default async function BlogPostPage({
             {/* ── FAQ SECTION ───────────────────────────────────────────────── */}
             {post.faqs && post.faqs.length > 0 && (
               <div className="mt-14">
-                <h2 className="text-2xl font-bold text-[#1A1A1A] mb-6">Frequently Asked Questions</h2>
+                <h2 className="mb-6 text-2xl font-bold" style={{ color: 'var(--vp-ink)' }}>Frequently Asked Questions</h2>
                 <div className="space-y-3">
                   {post.faqs.map(({ q, a }) => (
                     <details
                       key={q}
-                      className="group rounded-xl border border-gray-200 bg-white open:shadow-sm transition-shadow"
+                      className="group rounded-xl bg-white open:shadow-sm transition-shadow"
+                      style={{ border: '1px solid var(--vp-hairline)' }}
                     >
                       <summary className="flex cursor-pointer items-start justify-between gap-4 px-5 py-4">
-                        <span className="font-semibold text-[#1A1A1A] text-sm leading-snug">{q}</span>
+                        <span className="text-sm font-semibold leading-snug" style={{ color: 'var(--vp-ink)' }}>{q}</span>
                         <span className="mt-0.5 shrink-0 text-gray-400 group-open:rotate-180 transition-transform">▾</span>
                       </summary>
-                      <p className="px-5 pb-5 text-sm text-gray-500 leading-relaxed border-t border-gray-100 pt-3">
+                      <p className="border-t px-5 pb-5 pt-3 text-sm leading-relaxed" style={{ borderColor: 'var(--vp-hairline)', color: 'var(--vp-body)' }}>
                         {a}
                       </p>
                     </details>
@@ -549,12 +562,12 @@ export default async function BlogPostPage({
 
             {/* ── TAGS ──────────────────────────────────────────────────────── */}
             <div className="mt-12 flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Tags:</span>
+              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--vp-muted)' }}>Tags:</span>
               {getPostTags(post).map((tag) => (
                 <Link
                   key={tag}
                   href={`/blog/tag/${toSlug(tag)}`}
-                  className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-[#10B981]/10 hover:text-[#10B981]"
+                  className="vp-tag-pill rounded-full px-3 py-1.5 text-xs font-medium transition"
                 >
                   #{tag}
                 </Link>
@@ -599,30 +612,30 @@ export default async function BlogPostPage({
             <SocialShare title={post.title} slug={slug} />
 
             {/* ── ABOUT VISITPLANE — brand + internal links ─────────────────── */}
-            <div className="mt-12 rounded-2xl border border-gray-100 bg-[#F9FAFB] p-6">
+            <div className="mt-12 rounded-2xl p-6" style={{ border: '1px solid var(--vp-hairline)', background: 'var(--vp-paper)' }}>
               <div className="flex items-start gap-4">
-                <div className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#10B981] to-[#059669] text-2xl text-white shadow-sm">
+                <div className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl text-2xl text-white shadow-sm" style={{ background: 'var(--vp-stamp)' }}>
                   ✈️
                 </div>
                 <div className="min-w-0">
-                  <p className="text-base font-bold text-[#0f1419]">About VisitPlane</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-gray-600">
-                    <strong className="text-[#0f1419]">VisitPlane</strong> is a free visa-requirements
+                  <p className="text-base font-bold" style={{ color: 'var(--vp-ink)' }}>About VisitPlane</p>
+                  <p className="mt-1.5 text-sm leading-relaxed" style={{ color: 'var(--vp-body)' }}>
+                    <strong style={{ color: 'var(--vp-ink)' }}>VisitPlane</strong> is a free visa-requirements
                     platform covering 197 countries. The VisitPlane Editorial team verifies every
                     route against official embassy and government sources, so you get accurate,
                     up-to-date guidance — no signup required. Explore more VisitPlane tools below.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <Link href={post.visaLink} className="rounded-full bg-[#10B981] px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#059669]">
+                    <Link href={post.visaLink} className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-white transition hover:opacity-90" style={{ background: 'var(--vp-green)' }}>
                       {post.passportCountry} → {post.destinationCountry} requirements →
                     </Link>
-                    <Link href="/wizard" className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-600 transition hover:border-[#10B981]/40">
+                    <Link href="/wizard" className="rounded-full border bg-white px-3.5 py-1.5 text-xs font-semibold transition" style={{ borderColor: 'var(--vp-hairline)', color: 'var(--vp-body)' }}>
                       VisitPlane Visa Wizard
                     </Link>
-                    <Link href="/passport-strength" className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-600 transition hover:border-[#10B981]/40">
+                    <Link href="/passport-strength" className="rounded-full border bg-white px-3.5 py-1.5 text-xs font-semibold transition" style={{ borderColor: 'var(--vp-hairline)', color: 'var(--vp-body)' }}>
                       Passport Strength
                     </Link>
-                    <Link href="/destinations" className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-600 transition hover:border-[#10B981]/40">
+                    <Link href="/destinations" className="rounded-full border bg-white px-3.5 py-1.5 text-xs font-semibold transition" style={{ borderColor: 'var(--vp-hairline)', color: 'var(--vp-body)' }}>
                       All destinations
                     </Link>
                   </div>
@@ -631,10 +644,10 @@ export default async function BlogPostPage({
             </div>
 
             {/* ── BRAND TAGLINE ────────────────────────────────────────────── */}
-            <p className="mt-12 border-t border-gray-100 pt-8 text-center text-sm text-gray-400">
-              <strong className="text-[#10B981]">VisitPlane</strong> — visa requirements, decoded
+            <p className="mt-12 border-t pt-8 text-center text-sm" style={{ borderColor: 'var(--vp-hairline)', color: 'var(--vp-muted)' }}>
+              <strong style={{ color: 'var(--vp-green)' }}>VisitPlane</strong> — visa requirements, decoded
               in seconds. Free, accurate, always updated.{' '}
-              <Link href="/destinations" className="font-semibold text-[#10B981] hover:underline">
+              <Link href="/destinations" className="font-semibold hover:underline" style={{ color: 'var(--vp-green)' }}>
                 Check your visa requirements →
               </Link>
             </p>

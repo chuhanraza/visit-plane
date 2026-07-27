@@ -21,8 +21,8 @@ export function ReadingProgressBar() {
   return (
     <div className="fixed left-0 right-0 top-0 z-[60] h-1 bg-gray-200/60">
       <div
-        className="h-full bg-[#10B981] transition-[width] duration-100 ease-linear"
-        style={{ width: `${progress}%` }}
+        className="h-full transition-[width] duration-100 ease-linear"
+        style={{ width: `${progress}%`, background: 'var(--vp-green)' }}
       />
     </div>
   )
@@ -87,23 +87,25 @@ export function TableOfContents({ contentHtml }: { contentHtml: string }) {
   return (
     <nav
       aria-label="Table of contents"
-      className="sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_2px_12px_-4px_rgba(15,23,42,0.08)]"
+      className="sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto rounded-2xl p-5"
+      style={{ border: '1px solid var(--vp-hairline)', background: '#fff', boxShadow: '0 2px 12px -6px rgba(20,32,27,0.1)' }}
     >
-      <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">
+      <p className="mb-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--vp-muted)' }}>
         Contents
       </p>
-      <ul className="space-y-0.5 border-l-2 border-gray-100">
+      <ul className="space-y-0.5 border-l-2" style={{ borderColor: 'var(--vp-hairline)' }}>
         {headings.map((h) => (
           <li key={h.id}>
             <button
               onClick={() => handleClick(h.id)}
-              className={`-ml-0.5 w-full border-l-2 py-1.5 text-left text-sm transition-colors duration-150 ${
+              className={`vp-toc-item -ml-0.5 w-full border-l-2 py-1.5 text-left text-sm transition-colors duration-150 ${
                 h.level === 3 ? 'pl-7' : 'pl-3.5'
-              } ${
-                activeId === h.id
-                  ? 'border-[#10B981] font-semibold text-[#10B981]'
-                  : 'border-transparent text-gray-500 hover:text-[#1A1A1A]'
               }`}
+              style={
+                activeId === h.id
+                  ? { borderColor: 'var(--vp-stamp)', color: 'var(--vp-stamp)', fontWeight: 600 }
+                  : { borderColor: 'transparent', color: 'var(--vp-muted)' }
+              }
             >
               {h.text}
             </button>
@@ -134,23 +136,24 @@ export function MobileTableOfContents({ contentHtml }: { contentHtml: string }) 
   }
 
   return (
-    <details className="group mb-8 rounded-xl border border-gray-200 bg-white xl:hidden">
-      <summary className="flex cursor-pointer select-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-[#1A1A1A]">
+    <details className="group mb-8 rounded-xl bg-white xl:hidden" style={{ border: '1px solid var(--vp-hairline)' }}>
+      <summary className="flex cursor-pointer select-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold" style={{ color: 'var(--vp-ink)' }}>
         <span className="flex items-center gap-2">
-          <svg className="h-4 w-4 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="h-4 w-4" style={{ color: 'var(--vp-green)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M4 6h16M4 12h16M4 18h7" />
           </svg>
           Table of Contents
         </span>
         <span className="text-gray-400 transition-transform group-open:rotate-180">▾</span>
       </summary>
-      <ul className="space-y-1 border-t border-gray-100 px-4 py-3">
+      <ul className="space-y-1 border-t px-4 py-3" style={{ borderColor: 'var(--vp-hairline)' }}>
         {headings.map((h) => (
           <li key={h.id}>
             <a
               href={`#${h.id}`}
               onClick={(e) => handleClick(e, h.id)}
-              className={`block py-1.5 text-sm text-gray-600 hover:text-[#10B981] ${h.level === 3 ? 'pl-4' : ''}`}
+              className={`vp-toc-item block py-1.5 text-sm ${h.level === 3 ? 'pl-4' : ''}`}
+              style={{ color: 'var(--vp-body)' }}
             >
               {h.text}
             </a>
