@@ -37,6 +37,14 @@ const nextConfig = {
       { protocol: 'https', hostname: 'plus.unsplash.com' },
       { protocol: 'https', hostname: 'source.unsplash.com' },
     ],
+    // Next 16 requires local next/image sources to be allow-listed once any
+    // localPatterns entry exists. The wildcard preserves every existing local
+    // image (logos, static assets — no query string); /api/photo additionally
+    // needs its query string allowed since it's consumed on the blog index.
+    localPatterns: [
+      { pathname: '/**' },
+      { pathname: '/api/photo', search: '*' },
+    ],
   },
 
   // ── Programmatic-SEO URL rewrites ────────────────────────────────────────────

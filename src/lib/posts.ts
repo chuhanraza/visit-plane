@@ -24338,3 +24338,41 @@ export function getRelatedPosts(slug: string, limit = 3): BlogPost[] {
     .slice(0, limit)
     .map(({ post }) => post)
 }
+
+/**
+ * Relevance-ranked keyword search across title, excerpt, passport/destination
+ * countries, and derived tags. Used by /search — a plain in-memory scan is
+ * fine at this scale (a few thousand short strings, runs once per request).
+ */
+export function searchPosts(query: string, limit = 60): BlogPost[] {
+  const terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean)
+  if (terms.length === 0) return []
+
+  const scored = blogPosts.map((post) => {
+    const title = post.title.toLowerCase()
+    const excerpt = post.excerpt.toLowerCase()
+    const passport = post.passportCountry.toLowerCase()
+    const destination = post.destinationCountry.toLowerCase()
+    const tags = getPostTags(post).join(' ').toLowerCase()
+
+    let score = 0
+    for (const term of terms) {
+      if (title.startsWith(term)) score += 5
+      else if (title.includes(term)) score += 3
+      if (passport.includes(term) || destination.includes(term)) score += 2
+      if (tags.includes(term)) score += 1.5
+      if (excerpt.includes(term)) score += 1
+    }
+    return { post, score }
+  })
+
+  return scored
+    .filter((s) => s.score > 0)
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        new Date(b.post.date).getTime() - new Date(a.post.date).getTime(),
+    )
+    .slice(0, limit)
+    .map((s) => s.post)
+}
