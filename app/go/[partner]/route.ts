@@ -38,6 +38,56 @@ function isBotUserAgent(ua: string): boolean {
   return ua === '' || BOT_UA_RE.test(ua)
 }
 
+// ─── Referer validation ─────────────────────────────────────────────────────
+// Distributed bot campaigns rotate User-Agent strings through pools of
+// legitimate-looking browser UAs, which defeats BOT_UA_RE entirely (see
+// supabase/migrations/20260802_affiliate_clicks_fraud_detection.sql for the
+// campaign this was built to catch: ~1,000 IPs, ~49 rotating UAs, all
+// evading the UA regex). A same-origin Referer is much harder for a
+// script to fake consistently while still looking organic, so it's used as
+// a second, independent signal. This never blocks the redirect — only the
+// human-click classification below changes.
+const ALLOWED_REFERER_ORIGINS = new Set([
+  'https://visitplane.com',
+  'https://www.visitplane.com',
+])
+type RefererStatus = 'same_origin' | 'missing' | 'foreign'
+function classifyReferer(refererHeader: string | null): RefererStatus {
+  if (!refererHeader) return 'missing'
+  try {
+    return ALLOWED_REFERER_ORIGINS.has(new URL(refererHeader).origin) ? 'same_origin' : 'foreign'
+  } catch {
+    return 'foreign'
+  }
+}
+
+// ─── App-level rate limiting ────────────────────────────────────────────────
+// Real users don't click affiliate links repeatedly — this catches
+// distributed bots (rotating IPs individually stay under most per-IP
+// limits, but a single IP firing >5 /go/* clicks in 60s is never a human).
+// Reuses affiliate_clicks + the (user_ip_hash, clicked_at) index added in
+// the same migration above instead of standing up a separate store.
+const RATE_LIMIT_WINDOW_SECONDS = 60
+const RATE_LIMIT_MAX_CLICKS = 5
+const UNKNOWN_IP_HASH = createHash('sha256').update('unknown').digest('hex').slice(0, 16)
+async function isRateLimited(
+  supabase: ReturnType<typeof getSupabase>,
+  ipHash: string
+): Promise<boolean> {
+  if (ipHash === UNKNOWN_IP_HASH) return false
+  const since = new Date(Date.now() - RATE_LIMIT_WINDOW_SECONDS * 1000).toISOString()
+  const { count, error } = await supabase
+    .from('affiliate_clicks')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_ip_hash', ipHash)
+    .gte('clicked_at', since)
+  if (error) {
+    console.error('[affiliate-click] rate-limit check failed:', error.message)
+    return false // fail open — a DB hiccup must never misclassify or delay
+  }
+  return (count ?? 0) >= RATE_LIMIT_MAX_CLICKS
+}
+
 // ─── Valid partner slugs ──────────────────────────────────────────────────────
 const VALID_PARTNERS = new Set(Object.keys(AFFILIATE_PARTNERS))
 
@@ -119,12 +169,29 @@ export async function GET(
   //    delay the redirect by more than ~1s, and wrapped in try/catch so any
   //    logging failure — including a thrown client-init error — can never
   //    break or delay the redirect itself. ───────────────────────────────────
+  //
+  //    Classification (is_suspected_fraud + fraud_reason) never blocks the
+  //    redirect below — it only changes how the click is counted:
+  //      - referer_mismatch:      Referer present but not our own origin
+  //      - unverified_no_referer: no Referer at all (privacy browsers, some
+  //                               in-app browsers — plausibly real, but not
+  //                               confirmed, so it's excluded from the
+  //                               "verified human" count rather than
+  //                               hard-blocked or miscounted as one)
+  //      - rate_limit_exceeded:   >5 clicks from this IP hash in 60s
   if (!dntRequested && !isBot) {
     try {
       const supabase = getSupabase()
-      const insert = supabase
-        .from('affiliate_clicks')
-        .insert({
+      const logClick = async () => {
+        const refererStatus = classifyReferer(req.headers.get('referer'))
+        const rateLimited = await isRateLimited(supabase, userIpHash)
+
+        let fraudReason: string | null = null
+        if (rateLimited) fraudReason = 'rate_limit_exceeded'
+        else if (refererStatus === 'foreign') fraudReason = 'referer_mismatch'
+        else if (refererStatus === 'missing') fraudReason = 'unverified_no_referer'
+
+        const { error } = await supabase.from('affiliate_clicks').insert({
           partner,
           placement,
           route_passport: routePassport || null,
@@ -135,11 +202,14 @@ export async function GET(
           user_session_id: userSessionId,
           user_ip_hash: userIpHash,
           user_agent: userAgent,
+          is_suspected_fraud: fraudReason !== null,
+          fraud_reason: fraudReason,
         })
-        .then(({ error }) => {
-          if (error) console.error('[affiliate-click] DB error:', error.message)
-        })
-      await Promise.race([insert, new Promise(r => setTimeout(r, 1000))])
+        if (error) console.error('[affiliate-click] DB error:', error.message)
+      }
+      // Rate-limit check + insert together, capped at ~1s total so a DB
+      // hiccup on either step can never delay the redirect noticeably.
+      await Promise.race([logClick(), new Promise(r => setTimeout(r, 1000))])
     } catch (err) {
       console.error('[affiliate-click] logging failed:', err)
     }
