@@ -96,6 +96,56 @@ export default function ContactPage() {
         </div>
       </section>
 
+      {/* BUSINESS INFORMATION */}
+      <section className="pb-12">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+            className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8"
+          >
+            <h2 className="mb-4 text-lg font-bold text-[#0f0c29]">Business Information</h2>
+            <p className="mb-5 text-sm leading-relaxed text-gray-500">
+              VisitPlane is operated by <strong className="font-semibold text-[#0f0c29]">Relian Trading</strong>, a
+              business providing visa and travel information for travelers worldwide, generating
+              revenue through affiliate partnerships with travel insurance, flight booking, and
+              visa-processing providers.
+            </p>
+            <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">Trading Name</dt>
+                <dd className="mt-1 text-sm text-[#0f0c29]">Relian Trading</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">Founder</dt>
+                <dd className="mt-1 text-sm text-[#0f0c29]">Muhammad Hamad Ashraf, Founder</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">Business Email</dt>
+                <dd className="mt-1 text-sm">
+                  <a href="mailto:reliantrading@gmail.com" className="font-semibold text-teal-500 hover:text-teal-600 transition">
+                    reliantrading@gmail.com
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">Business Phone</dt>
+                <dd className="mt-1 text-sm">
+                  <a href="tel:+923334602602" className="font-semibold text-teal-500 hover:text-teal-600 transition">
+                    +92 333 4602602
+                  </a>
+                </dd>
+              </div>
+              <div className="sm:col-span-2">
+                <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">Business Address</dt>
+                <dd className="mt-1 text-sm text-[#0f0c29]">
+                  Allama Iqbal Colony Moh, Chah Tarkhana Cantt, Sialkot, Sialkot, 51310, Pakistan
+                </dd>
+              </div>
+            </dl>
+          </motion.div>
+        </div>
+      </section>
+
       {/* CONTACT CARDS */}
       <section className="pb-12">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
