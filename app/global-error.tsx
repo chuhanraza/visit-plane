@@ -14,6 +14,23 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     console.error(error)
+    // Fire-and-forget server-side capture — same sink as app/error.tsx.
+    // Never awaited, never allowed to affect the UI.
+    try {
+      fetch('/api/log-client-error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: error.message,
+          stack: error.stack,
+          digest: error.digest,
+          path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        }),
+        keepalive: true,
+      }).catch(() => {})
+    } catch {
+      // never let logging break the error boundary
+    }
   }, [error])
 
   return (

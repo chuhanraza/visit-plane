@@ -16,6 +16,24 @@ export default function Error({
   useEffect(() => {
     // Surface the error for diagnostics; no PII is logged.
     console.error(error)
+    // Fire-and-forget server-side capture so we have a stack trace to query
+    // later, without needing wrangler tail running at the exact moment this
+    // fires. Never awaited, never allowed to affect the UI.
+    try {
+      fetch('/api/log-client-error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: error.message,
+          stack: error.stack,
+          digest: error.digest,
+          path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        }),
+        keepalive: true,
+      }).catch(() => {})
+    } catch {
+      // never let logging break the error boundary
+    }
   }, [error])
 
   return (
