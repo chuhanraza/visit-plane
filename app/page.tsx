@@ -247,13 +247,6 @@ function ShieldCheck({ className = 'h-4 w-4' }: { className?: string }) {
     </svg>
   )
 }
-function PlaneIcon({ className = 'h-4 w-4' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5Z" />
-    </svg>
-  )
-}
 function CheckIcon({ className = 'h-4 w-4' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -441,10 +434,12 @@ export default function HomePage() {
                   type="button"
                   onClick={handleCheck}
                   disabled={!canSubmit}
-                  className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#16C95C] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#12B350] disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[var(--accent-green)] px-7 py-3.5 text-base font-bold text-white transition hover:bg-emerald-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
                 >
-                  <PlaneIcon className="h-4 w-4" />
                   {t('hero.checkButton')}
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M13 6l6 6-6 6" />
+                  </svg>
                 </button>
               </div>
 

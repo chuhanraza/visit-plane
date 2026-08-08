@@ -446,7 +446,7 @@ export default function CountrySelect({
   return (
     <div ref={containerRef} className={`relative ${className}`}>
       {label && (
-        <label className={`block text-xs font-bold tracking-widest uppercase mb-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+        <label className={`block text-sm font-bold mb-2 ${isDark ? 'text-gray-300' : 'text-[#0F1419]'}`}>
           {label}
         </label>
       )}
@@ -471,23 +471,23 @@ export default function CountrySelect({
           'group',
         ].join(' ')}
       >
-        {/* Left: name */}
-        <span className={`text-base font-semibold truncate ${value ? triggerText : triggerPlaceholder}`}>
-          {value || placeholder}
-        </span>
-
-        {/* Right: flag + chevron */}
-        <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-          <span className="text-2xl leading-none">
+        {/* Left: flag + name */}
+        <span className="flex items-center gap-2.5 min-w-0">
+          <span className="text-xl leading-none flex-shrink-0">
             {selectedCountry ? selectedCountry.flag : '🌍'}
           </span>
-          <svg
-            className={`w-4 h-4 transition-transform duration-200 ${isDark ? 'text-gray-400' : 'text-gray-400'} ${isOpen ? 'rotate-180' : ''}`}
-            fill="none" viewBox="0 0 24 24" stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
+          <span className={`text-base font-semibold truncate ${value ? triggerText : triggerPlaceholder}`}>
+            {value || placeholder}
+          </span>
+        </span>
+
+        {/* Right: chevron */}
+        <svg
+          className={`w-4 h-4 flex-shrink-0 ml-2 transition-transform duration-200 ${isDark ? 'text-gray-400' : 'text-gray-400'} ${isOpen ? 'rotate-180' : ''}`}
+          fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
       {/* ── DROPDOWN ── */}
