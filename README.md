@@ -29,7 +29,31 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Deploy — Cloudflare Workers (canonical)
+
+![Deploy to Cloudflare](https://github.com/chuhanraza/visit-plane/actions/workflows/deploy-cloudflare.yml/badge.svg?branch=main)
+
+**Production (visitplane.com) is served from Cloudflare Workers, not Vercel.** The only supported
+deploy path is:
+
+```
+push to `main` → GitHub Actions (.github/workflows/deploy-cloudflare.yml) → npm run cf:build → wrangler deploy
+```
+
+Do **not** run `wrangler deploy` manually from a laptop, and do not treat any other branch (e.g.
+`cloudflare-migration`) as deployable — either one causes the live Worker to silently diverge from
+what's in git. To force a redeploy without a new commit, trigger the workflow manually instead:
+
+```bash
+gh workflow run deploy-cloudflare.yml
+```
+
+The workflow needs one repo secret, `CLOUDFLARE_API_TOKEN` (Settings → Secrets and variables →
+Actions). Supabase/Resend/etc secrets are already provisioned on the Worker itself via
+`wrangler secret put` and are not re-supplied by CI.
+
+The "Deploy on Vercel" section below is stale template boilerplate — this project no longer
+auto-deploys via Vercel.
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
