@@ -1,14 +1,19 @@
 # Deploys visitplane.com to Cloudflare Workers on every push to main.
 # Restores the "push = live" pipeline (previously handled by Vercel).
 #
-# Requires one repo secret (Settings → Secrets and variables → Actions):
-#   CLOUDFLARE_API_TOKEN  — scoped token (Edit Cloudflare Workers template).
+# Requires repo secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN         — scoped token (Edit Cloudflare Workers template).
 #     See the PR/commit description that introduced this workflow for the
 #     exact token-creation steps.
-#
-# Does NOT need Supabase/Resend/etc secrets — those were already pushed to
-# the Worker itself via `wrangler secret put` and persist across deploys
-# without being re-supplied by CI.
+#   NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY — NOT covered by
+#     `wrangler secret put`. Server-only secrets (service-role key, Resend,
+#     etc.) live on the Worker at runtime and persist across deploys without
+#     CI re-supplying them — but NEXT_PUBLIC_* vars are inlined into the
+#     client JS bundle by `npm run cf:build` itself, so they must be present
+#     in THIS job's environment during the build step or the homepage ships
+#     a client bundle with `supabaseUrl: undefined`, throwing "supabaseUrl is
+#     required." for real visitors (see app/error.tsx capture in error_log,
+#     and the postmortem in the commit that added these lines).
 name: Deploy to Cloudflare
 
 on:
@@ -39,6 +44,9 @@ jobs:
         run: npm ci
 
       - name: Build (OpenNext for Cloudflare)
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: npm run cf:build
 
       - name: Deploy to Cloudflare Workers
