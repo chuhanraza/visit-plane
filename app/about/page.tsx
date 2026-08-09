@@ -216,7 +216,6 @@ export default function AboutPage() {
               Check Visa Requirements <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </motion.div>
-          <p className="mt-4 text-[10px] text-gray-300">bridge-check 2026-08-09</p>
         </div>
       </section>
     </div>
