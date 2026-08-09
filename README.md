@@ -33,6 +33,12 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ![Deploy to Cloudflare](https://github.com/chuhanraza/visit-plane/actions/workflows/deploy-cloudflare.yml/badge.svg?branch=main)
 
+> **`main` is the ONLY working branch.** All work — human or AI — happens on `main`, or on a
+> short-lived feature branch that gets merged back into `main` the same day. Do not create
+> long-lived parallel branches (the `cloudflare-migration` branch that used to exist here caused
+> repeated "is this live or not" confusion and was deleted for exactly this reason). Pushing to
+> `main` is the only way anything goes live — see the deploy path below.
+
 **Production (visitplane.com) is served from Cloudflare Workers, not Vercel.** The only supported
 deploy path is:
 
@@ -40,9 +46,9 @@ deploy path is:
 push to `main` → GitHub Actions (.github/workflows/deploy-cloudflare.yml) → npm run cf:build → wrangler deploy
 ```
 
-Do **not** run `wrangler deploy` manually from a laptop, and do not treat any other branch (e.g.
-`cloudflare-migration`) as deployable — either one causes the live Worker to silently diverge from
-what's in git. To force a redeploy without a new commit, trigger the workflow manually instead:
+Do **not** run `wrangler deploy` manually from a laptop, and do not treat any other branch as
+deployable — either one causes the live Worker to silently diverge from what's in git. To force a
+redeploy without a new commit, trigger the workflow manually instead:
 
 ```bash
 gh workflow run deploy-cloudflare.yml
