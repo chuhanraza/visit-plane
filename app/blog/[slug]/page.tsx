@@ -104,10 +104,27 @@ export async function generateMetadata({
 }
 
 // ── Markdown loader ───────────────────────────────────────────────────────────
-async function getPostContent(slug: string): Promise<string> {
+// fs.readFileSync only works where a real filesystem exists (Vercel/local
+// build). On Cloudflare Workers there is none, so we fall back to reading the
+// same markdown via the Workers ASSETS binding — the file is duplicated into
+// public/blog-content/ at build time specifically so that binding can serve it.
+async function readPostMarkdown(slug: string): Promise<string> {
   try {
     const filePath = path.join(process.cwd(), 'content', 'blog', `${slug}.md`)
-    const raw = fs.readFileSync(filePath, 'utf-8')
+    return fs.readFileSync(filePath, 'utf-8')
+  } catch {
+    const { getCloudflareContext } = await import('@opennextjs/cloudflare')
+    const { env } = getCloudflareContext()
+    if (!env.ASSETS) throw new Error('no filesystem and no ASSETS binding available')
+    const res = await env.ASSETS.fetch(`https://assets.local/blog-content/${slug}.md`)
+    if (!res.ok) throw new Error(`ASSETS fetch failed: ${res.status}`)
+    return res.text()
+  }
+}
+
+async function getPostContent(slug: string): Promise<string> {
+  try {
+    const raw = await readPostMarkdown(slug)
     const { content } = matter(raw)
     const result = await remark().use(remarkGfm).use(remarkHtml).process(content)
     // Inject sequential IDs into h2/h3 tags for TOC scroll-spy

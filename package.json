@@ -8,9 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "cf:build": "opennextjs-cloudflare build",
-    "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "sync:blog-content": "node scripts/sync-blog-content.mjs",
+    "cf:build": "npm run sync:blog-content && opennextjs-cloudflare build",
+    "cf:preview": "npm run sync:blog-content && opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "cf:deploy": "npm run sync:blog-content && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf:typegen": "wrangler types"
   },
   "dependencies": {
