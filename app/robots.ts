@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: ['/', '/api/photo', '/api/og'],
         // Block internal/utility routes from crawl budget
         disallow: [
           '/api/',
@@ -17,13 +17,13 @@ export default function robots(): MetadataRoute.Robots {
       {
         // Allow Google to crawl everything it needs for indexing
         userAgent: 'Googlebot',
-        allow: '/',
+        allow: ['/', '/api/photo', '/api/og'],
         disallow: ['/api/', '/_next/'],
       },
       {
         // Allow Bing to crawl everything it needs for indexing
         userAgent: 'Bingbot',
-        allow: '/',
+        allow: ['/', '/api/photo', '/api/og'],
         disallow: ['/api/', '/_next/'],
       },
       // Advisory block for aggressive/non-essential crawlers (SEO scrapers,
