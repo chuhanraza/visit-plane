@@ -272,7 +272,7 @@ export default async function BlogPostPage({
     description: post.excerpt,
     datePublished: post.date,
     dateModified: post.date,
-    image: `https://www.visitplane.com/api/og?title=${encodeURIComponent(post.title)}&category=${encodeURIComponent(post.category)}&emoji=${encodeURIComponent(post.coverEmoji)}`,
+    image: `https://www.visitplane.com${heroImg}`,
     url: canonicalUrl,
     mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
     articleSection: post.category,
