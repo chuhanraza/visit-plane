@@ -6,7 +6,7 @@ import { writeAudit } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
 
-const FLAGS = ['payments_enabled', 'email_broadcasts_enabled'] as const
+const FLAGS = ['payments_enabled', 'email_broadcasts_enabled', 'winback_enabled', 'confirm_nudge_enabled'] as const
 const Schema = z.object({ key: z.enum(FLAGS), value: z.coerce.boolean() })
 
 export async function POST(req: NextRequest) {

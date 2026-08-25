@@ -25,12 +25,12 @@ export default function FlowsManager({ flows, broadcastsEnabled }: { flows: Flow
     const res = await fetch('/api/admin/flows', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, steps, triggerType: trigger }) })
     setBusy(false)
     if (res.ok) { setName(''); setTrigger('lead.created'); setSteps([{ delay_minutes: 0, subject: '', body: '' }]); setAdding(false); router.refresh() }
-    else alert((await res.json().catch(() => ({}))).error || 'Failed')
+    else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Failed')
   }
 
   async function act(op: string, extra: Record<string, unknown> = {}) {
     const res = await fetch('/api/admin/flows', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op, ...extra }) })
-    const j = await res.json().catch(() => ({}))
+    const j = (await res.json().catch(() => ({}))) as any
     if (res.ok) { if (op === 'run') alert(j.enabled ? `Worker ran — enrolled ${j.enrolled}, sent ${j.sent}, completed ${j.completed}` : 'Broadcasts are OFF — enable email_broadcasts_enabled in Settings to send.'); router.refresh() }
     else alert(j.error || 'Failed')
   }

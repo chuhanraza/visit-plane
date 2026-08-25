@@ -15,6 +15,8 @@ export default async function AdminSettings() {
   const flags = [
     { key: 'payments_enabled', label: 'Payments enabled', value: settings.payments_enabled === true, hint: 'Master switch for live payment processing (kept OFF).' },
     { key: 'email_broadcasts_enabled', label: 'Email broadcasts', value: settings.email_broadcasts_enabled === true, hint: 'Allow real marketing broadcasts from the Email module.' },
+    { key: 'winback_enabled', label: 'Win-back emails', value: settings.winback_enabled === true, hint: 'One-time re-engagement email to subscribers confirmed 14+ days ago with no activity since (kept OFF until reviewed).' },
+    { key: 'confirm_nudge_enabled', label: 'Confirm nudge emails', value: settings.confirm_nudge_enabled === true, hint: 'One-time reminder to subscribers who never confirmed their opt-in (kept OFF until reviewed).' },
   ]
 
   return (

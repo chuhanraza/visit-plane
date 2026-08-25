@@ -75,7 +75,7 @@ export function AdminInvoiceActions({ invoiceId, status }: { invoiceId: string; 
     const res = await fetch(`/api/admin/invoices/${invoiceId}/pay`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action }),
     })
-    const json = await res.json().catch(() => ({}))
+    const json = (await res.json().catch(() => ({}))) as any
     setBusy(false)
     if (res.ok) { if (json.note) setMsg(json.note); router.refresh() } else setMsg(json.error || 'Failed')
   }

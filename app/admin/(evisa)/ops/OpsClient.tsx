@@ -13,7 +13,7 @@ export default function OpsClient({ rules, metrics }: { rules: AlertRule[]; metr
   async function act(payload: Record<string, unknown>) {
     setBusy(true)
     const res = await fetch('/api/admin/alerts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-    const j = await res.json().catch(() => ({}))
+    const j = (await res.json().catch(() => ({}))) as any
     setBusy(false)
     if (res.ok) { if (payload.op === 'evaluate') alert(`Evaluated ${j.evaluated} rule(s); ${j.triggered.length} triggered.`); router.refresh() }
     else alert(j.error || 'Failed')

@@ -77,7 +77,7 @@ export default function GeneratePage() {
         },
         body: JSON.stringify(body),
       })
-      const data = await res.json()
+      const data = (await res.json()) as Result
       setResult(data)
     } catch (err) {
       setResult({ success: false, error: String(err) })

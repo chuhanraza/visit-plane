@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Not signed in' }, { status: 401 })
 
   // 2. Validate body
-  const body = await req.json().catch(() => null)
+  const body = (await req.json().catch(() => null)) as Record<string, unknown> | null
   if (!body || typeof body.serviceId !== 'string') {
     return NextResponse.json({ error: 'serviceId is required' }, { status: 400 })
   }

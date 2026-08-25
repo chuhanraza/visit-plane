@@ -319,6 +319,10 @@ export default function CountrySelect({
   const containerRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
+  // The field itself is the search box — while open, its value IS the query.
+  // While closed, it shows the selected country's name (or the placeholder).
+  const fieldValue = isOpen ? search : value
+
   const isDark = variant === 'dark'
 
   // Build the working country list: use `options` prop if provided, else full
@@ -407,25 +411,14 @@ export default function CountrySelect({
     : 'border-[#10B981] ring-2 ring-[#10B981]/20'
 
   const triggerText = isDark ? 'text-white' : 'text-[#0F1419]'
-  const triggerPlaceholder = isDark ? 'text-gray-400' : 'text-gray-500'
 
   const dropdownBg = isDark
     ? 'bg-[#0f0c29] border-white/10 shadow-2xl shadow-black/50'
     : 'bg-white border-gray-200 shadow-2xl shadow-gray-200/80'
 
-  const searchAreaBg = isDark ? 'bg-[#16122f] border-white/10' : 'bg-gray-50 border-gray-200'
-  const searchInputBg = isDark
-    ? 'bg-white/5 border-white/10 focus-within:border-teal-500'
-    : 'bg-white border-gray-300 focus-within:border-teal-500'
-  const searchIconColor = isDark ? 'text-gray-400' : 'text-gray-400'
-  const searchInputText = isDark
-    ? 'text-white placeholder-gray-500'
-    : 'text-[#0f0c29] placeholder-gray-400'
-  const countText = isDark ? 'text-gray-500' : 'text-gray-400'
-
   const itemBase = isDark
-    ? 'border-white/5 text-white hover:bg-teal-500/10'
-    : 'border-[#E2E8F0] text-[#0F1419] hover:bg-[#F1F5F9]'
+    ? 'text-white hover:bg-teal-500/10'
+    : 'text-[#0F1419] hover:bg-[#F1F5F9]'
 
   const itemSelected = isDark
     ? 'bg-teal-500/20 text-teal-400'
@@ -451,44 +444,38 @@ export default function CountrySelect({
         </label>
       )}
 
-      {/* ── TRIGGER BUTTON ── */}
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={() => {
-          if (!disabled) {
-            setIsOpen(prev => !prev)
-            setSearch('')
-          }
-        }}
+      {/* ── FIELD (directly typable — no separate search box) ── */}
+      <div
         className={[
-          'w-full flex items-center justify-between',
+          'w-full flex items-center gap-2.5',
           isDark ? 'px-4 py-3' : 'px-4 py-[14px] min-h-[56px] text-base',
           'rounded-xl border transition-all duration-200',
           triggerBase,
           isOpen ? triggerOpen : '',
-          disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-          'group',
+          disabled ? 'opacity-50 cursor-not-allowed' : '',
         ].join(' ')}
       >
-        {/* Left: flag + name */}
-        <span className="flex items-center gap-2.5 min-w-0">
-          <span className="text-xl leading-none flex-shrink-0">
-            {selectedCountry ? selectedCountry.flag : '🌍'}
-          </span>
-          <span className={`text-base font-semibold truncate ${value ? triggerText : triggerPlaceholder}`}>
-            {value || placeholder}
-          </span>
+        <span className="text-xl leading-none flex-shrink-0">
+          {selectedCountry ? selectedCountry.flag : '🌍'}
         </span>
-
-        {/* Right: chevron */}
+        <input
+          ref={inputRef}
+          type="text"
+          disabled={disabled}
+          value={fieldValue}
+          placeholder={placeholder}
+          onFocus={() => { if (!disabled) { setIsOpen(true); setSearch('') } }}
+          onChange={e => { setSearch(e.target.value); if (!isOpen) setIsOpen(true) }}
+          onKeyDown={handleKeyDown}
+          className={`flex-1 min-w-0 bg-transparent outline-none text-base font-semibold truncate ${triggerText} placeholder:font-semibold ${isDark ? 'placeholder:text-gray-400' : 'placeholder:text-gray-500'} disabled:cursor-not-allowed`}
+        />
         <svg
-          className={`w-4 h-4 flex-shrink-0 ml-2 transition-transform duration-200 ${isDark ? 'text-gray-400' : 'text-gray-400'} ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 text-gray-400 ${isOpen ? 'rotate-180' : ''}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
-      </button>
+      </div>
 
       {/* ── DROPDOWN ── */}
       {isOpen && (
@@ -497,41 +484,6 @@ export default function CountrySelect({
           'border rounded-2xl overflow-hidden',
           dropdownBg,
         ].join(' ')}>
-
-          {/* Search bar */}
-          <div className={`p-3 border-b ${searchAreaBg}`}>
-            <div className={`flex items-center gap-2 rounded-xl px-3 py-2 border transition-colors ${searchInputBg}`}>
-              <svg className={`w-4 h-4 flex-shrink-0 ${searchIconColor}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                ref={inputRef}
-                type="text"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Type to search countries..."
-                className={`flex-1 bg-transparent text-sm outline-none font-medium ${searchInputText}`}
-              />
-              {search && (
-                <button
-                  type="button"
-                  onClick={() => setSearch('')}
-                  className={`${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-400 hover:text-gray-700'} transition-colors`}
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
-            <p className={`text-xs mt-2 px-1 ${countText}`}>
-              {search
-                ? `${filtered.length} ${filtered.length === 1 ? 'country' : 'countries'} found`
-                : `${countryPool.length} countries`}
-            </p>
-          </div>
 
           {/* Countries list */}
           <div ref={listRef} className={isDark ? 'max-h-[min(16rem,45vh)] overflow-y-auto' : 'max-h-[min(320px,45vh)] overflow-y-auto'}>
@@ -552,33 +504,20 @@ export default function CountrySelect({
                     onMouseEnter={() => setHighlightedIndex(index)}
                     onClick={() => selectCountry(country.name)}
                     className={[
-                      'w-full flex items-center justify-between',
+                      'w-full flex items-center gap-3',
                       'px-4 py-3 transition-colors duration-100',
-                      'border-b last:border-0',
                       itemBase,
                       isSelected ? itemSelected : '',
                       !isSelected && isHighlighted ? itemHighlighted : '',
                       'group',
                     ].join(' ')}
                   >
-                    {/* Left: checkmark + name */}
-                    <div className="flex items-center gap-3 min-w-0">
-                      {isSelected ? (
-                        <svg className={`w-4 h-4 flex-shrink-0 ${isDark ? 'text-teal-400' : 'text-emerald-600'}`}
-                          fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      ) : (
-                        <div className="w-4 flex-shrink-0" />
-                      )}
-                      <span className={`text-base font-semibold truncate ${itemNameHover} transition-colors`}>
-                        {search ? highlightMatch(country.name, search, isDark) : country.name}
-                      </span>
-                    </div>
-
-                    {/* Right: flag */}
-                    <span className="text-2xl flex-shrink-0 ml-3 leading-none">
+                    {/* Left: flag + name */}
+                    <span className="text-xl flex-shrink-0 leading-none">
                       {country.flag}
+                    </span>
+                    <span className={`text-base font-semibold truncate text-left ${itemNameHover} transition-colors`}>
+                      {search ? highlightMatch(country.name, search, isDark) : country.name}
                     </span>
                   </button>
                 )

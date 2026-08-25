@@ -83,7 +83,7 @@ async function handle(req: NextRequest, raw: Record<string, unknown>) {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
   return handle(req, body as Record<string, unknown>)
 }
 

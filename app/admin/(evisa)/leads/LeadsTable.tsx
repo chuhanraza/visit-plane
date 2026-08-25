@@ -62,13 +62,13 @@ export default function LeadsTable({
       const a = document.createElement('a'); a.href = url; a.download = 'leads-selected.csv'; a.click(); URL.revokeObjectURL(url)
       return
     }
-    if (res.ok) { setSel(new Set()); setTag(''); router.refresh() } else alert((await res.json().catch(() => ({}))).error || 'Bulk action failed')
+    if (res.ok) { setSel(new Set()); setTag(''); router.refresh() } else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Bulk action failed')
   }
 
   async function saveView() {
     const name = window.prompt('Name this view:'); if (!name) return
     const res = await fetch('/api/admin/leads/views', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, config: { q: filters.q || undefined, source: filters.source || undefined, status: filters.status || undefined } }) })
-    if (res.ok) router.refresh(); else alert((await res.json().catch(() => ({}))).error || 'Save failed')
+    if (res.ok) router.refresh(); else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Save failed')
   }
   async function delView(id: string) {
     if (!confirm('Delete this view?')) return
@@ -191,7 +191,7 @@ function LeadDrawer({ lead, onClose, onSaved }: { lead: LeadRow; onClose: () => 
 
   useEffect(() => {
     let alive = true
-    fetch(`/api/admin/leads/${lead.id}/timeline`).then(r => r.json()).then(j => { if (alive) setTimeline(j.timeline ?? []) }).catch(() => { if (alive) setTimeline([]) })
+    fetch(`/api/admin/leads/${lead.id}/timeline`).then(r => r.json() as Promise<any>).then(j => { if (alive) setTimeline(j.timeline ?? []) }).catch(() => { if (alive) setTimeline([]) })
     return () => { alive = false }
   }, [lead.id])
 
@@ -206,7 +206,7 @@ function LeadDrawer({ lead, onClose, onSaved }: { lead: LeadRow; onClose: () => 
       }),
     })
     if (res.ok) onSaved()
-    else { const j = await res.json().catch(() => ({})); setErr(j.error || 'Save failed'); setSaving(false) }
+    else { const j = (await res.json().catch(() => ({}))) as any; setErr(j.error || 'Save failed'); setSaving(false) }
   }
 
   async function eraseGdpr() {
@@ -214,8 +214,8 @@ function LeadDrawer({ lead, onClose, onSaved }: { lead: LeadRow; onClose: () => 
     const res = await fetch(`/api/admin/leads/${lead.id}/gdpr`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirm: true }),
     })
-    if (res.ok) { const j = await res.json(); alert(`Erased: ${j.subscribersDeleted} lead, ${j.eventsDeleted} events; ${j.ordersAnonymized + j.conversionsAnonymized} records anonymized.`); onSaved() }
-    else alert((await res.json().catch(() => ({}))).error || 'Erase failed')
+    if (res.ok) { const j = (await res.json()) as any; alert(`Erased: ${j.subscribersDeleted} lead, ${j.eventsDeleted} events; ${j.ordersAnonymized + j.conversionsAnonymized} records anonymized.`); onSaved() }
+    else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Erase failed')
   }
 
   const Row = ({ k, v }: { k: string; v: React.ReactNode }) => (

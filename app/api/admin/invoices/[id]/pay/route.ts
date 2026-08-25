@@ -17,8 +17,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await ctx.params
-  const body = await req.json().catch(() => ({}))
-  const action = body.action
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
+  const action = body.action as string
   if (!['paid', 'unpaid', 'refund'].includes(action)) return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
 
   const svc = getServiceClient()

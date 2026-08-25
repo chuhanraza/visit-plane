@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, skipped: 'dnt' })
   }
 
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
   const event = typeof body.event === 'string' && ALLOWED.has(body.event) ? body.event : 'page.view'
   const page = cleanPath(body.page)
   if (!page || !MONEY_PAGE_RE.test(page)) {

@@ -29,7 +29,7 @@ export default function EpcEditor({
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ epc: payload }),
       })
-      if (!res.ok) { const j = await res.json().catch(() => ({})); setMsg(j.error || 'Save failed') }
+      if (!res.ok) { const j = (await res.json().catch(() => ({}))) as any; setMsg(j.error || 'Save failed') }
       else { setMsg('Saved'); router.refresh() }
     } catch { setMsg('Save failed') }
     finally { setSaving(false) }

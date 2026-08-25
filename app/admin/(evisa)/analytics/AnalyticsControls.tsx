@@ -16,7 +16,7 @@ export function SaveViewButton({ from, to }: { from: string; to: string }) {
     })
     setBusy(false)
     if (res.ok) router.refresh()
-    else alert((await res.json().catch(() => ({}))).error || 'Save failed')
+    else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Save failed')
   }
   return (
     <button onClick={save} disabled={busy} className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 rounded-lg text-gray-200 text-sm">
@@ -40,7 +40,7 @@ export function DigestControl({ config }: { config: { enabled: boolean; frequenc
     if (!recipient) { setMsg('Enter a recipient first'); return }
     setMsg('Sending…')
     const res = await fetch('/api/admin/digest', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'send', recipient }) })
-    const j = await res.json().catch(() => ({}))
+    const j = (await res.json().catch(() => ({}))) as any
     setMsg(j.sent ? 'Digest sent.' : `Not sent (${j.reason || 'error'}).`)
   }
 

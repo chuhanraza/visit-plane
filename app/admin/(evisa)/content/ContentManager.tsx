@@ -120,7 +120,7 @@ function EditDrawer({ page, onClose, onSaved }: { page: ContentRow; onClose: () 
       body: JSON.stringify({ title: title.trim() || null, meta_description: meta.trim() || null, h1: h1.trim() || null }),
     })
     if (res.ok) onSaved()
-    else { setErr((await res.json().catch(() => ({}))).error || 'Save failed'); setSaving(false) }
+    else { setErr(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Save failed'); setSaving(false) }
   }
 
   const inp = 'w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200'

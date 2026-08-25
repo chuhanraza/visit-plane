@@ -1,7 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "visitplane",
-  "main": ".open-next/worker.js",
+  // Thin wrapper (outside .open-next/, which is fully regenerated on every
+  // build) that re-exports the OpenNext fetch handler unchanged and adds a
+  // `scheduled` export for the daily cron trigger below. See worker-entry.ts.
+  "main": "worker-entry.ts",
   // 2026-07-08 satisfies both the fs auto-enable date (2025-09-15+) and the
   // child_process module-stub auto-enable date (2026-03-17+) — see
   // app/api/visa/run-pipeline/route.ts for why the latter doesn't actually
@@ -15,6 +18,10 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "routes": [
+    { "pattern": "visitplane.com", "custom_domain": true },
+    { "pattern": "www.visitplane.com", "custom_domain": true }
+  ],
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
@@ -35,5 +42,15 @@
 
   "observability": {
     "enabled": true
+  },
+
+  // Daily at 08:00 UTC — matches the cadence the old Vercel cron used for
+  // /api/cron/flows (see vercel.json, now dead weight post-migration). Fires
+  // worker-entry.ts's `scheduled` handler, which hits /api/cron/flows (the
+  // existing welcome-sequence worker — dormant since the Cloudflare move,
+  // since Vercel crons don't reach this deployment) and the new
+  // /api/cron/lifecycle (win-back + confirm-nudge tracks) in one tick.
+  "triggers": {
+    "crons": ["0 8 * * *"]
   }
 }

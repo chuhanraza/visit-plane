@@ -72,7 +72,7 @@ export default function WizardClient({ initialAnswers }: Props) {
       try {
         const res = await fetch('/api/geo')
         if (!res.ok) return
-        const data = await res.json()
+        const data = (await res.json()) as { countryName?: string }
         if (data?.countryName) apply(data.countryName)
       } catch { /* ignore — user picks manually */ }
     })()
@@ -140,7 +140,7 @@ export default function WizardClient({ initialAnswers }: Props) {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(a),
       })
-      const aiData = await aiRes.json()
+      const aiData = (await aiRes.json()) as { insight?: string }
       if (aiData.insight) setAiInsight(aiData.insight)
     } catch {
       // AI failure — result card already showing, just skip AI section

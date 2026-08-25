@@ -16,7 +16,7 @@ function siteUrl(req: NextRequest) {
  * paid. When enabled, it returns a Stripe Checkout URL.
  */
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
   const orderId = String(body.orderId ?? '')
   if (!orderId) return NextResponse.json({ error: 'orderId required' }, { status: 400 })
 

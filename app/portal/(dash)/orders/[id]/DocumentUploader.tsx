@@ -30,7 +30,7 @@ export default function DocumentUploader({ orderId, requiredDocs, existing }: {
       fd.append('file', file)
       fd.append('docType', docType)
       const res = await fetch(`/api/orders/${orderId}/documents`, { method: 'POST', body: fd })
-      const json = await res.json()
+      const json = (await res.json()) as any
       if (!res.ok) throw new Error(json.error || 'Upload failed')
       router.refresh()
     } catch (e) {

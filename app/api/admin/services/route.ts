@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   const actor = await requirePermissionApi('orders', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
   const parsed = parseServiceBody(body)
   if ('error' in parsed) return NextResponse.json({ error: parsed.error }, { status: 422 })
 

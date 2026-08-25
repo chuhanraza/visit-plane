@@ -23,7 +23,7 @@ export default function EmailComposer({ segments, broadcastsEnabled, savedSegmen
     const res = await fetch('/api/admin/email/broadcast', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
     })
-    const j = await res.json().catch(() => ({}))
+    const j = (await res.json().catch(() => ({}))) as any
     setBusy(false)
     if (res.ok) {
       setResult(j.test
