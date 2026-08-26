@@ -20,6 +20,8 @@ import {
   CATEGORY_COLORS,
 } from '@/utils/blogPhotos'
 import BlogTripBox from '@/components/affiliate/BlogTripBox'
+import DestinationCardList from '@/components/blog/DestinationCardList'
+import { DESTINATION_LIST_ITEMS, DESTINATION_LIST_MARKER } from '@/src/lib/destinationListItems'
 import AffiliateDisclosure from '@/components/affiliate/AffiliateDisclosure'
 import BlogEmailCapture from '@/components/blog/BlogEmailCapture'
 import BlogBreadcrumb from '@/components/blog/BlogBreadcrumb'
@@ -104,10 +106,27 @@ export async function generateMetadata({
 }
 
 // ── Markdown loader ───────────────────────────────────────────────────────────
-async function getPostContent(slug: string): Promise<string> {
+// fs.readFileSync only works where a real filesystem exists (Vercel/local
+// build). On Cloudflare Workers there is none, so we fall back to reading the
+// same markdown via the Workers ASSETS binding — the file is duplicated into
+// public/blog-content/ at build time specifically so that binding can serve it.
+async function readPostMarkdown(slug: string): Promise<string> {
   try {
     const filePath = path.join(process.cwd(), 'content', 'blog', `${slug}.md`)
-    const raw = fs.readFileSync(filePath, 'utf-8')
+    return fs.readFileSync(filePath, 'utf-8')
+  } catch {
+    const { getCloudflareContext } = await import('@opennextjs/cloudflare')
+    const { env } = getCloudflareContext()
+    if (!env.ASSETS) throw new Error('no filesystem and no ASSETS binding available')
+    const res = await env.ASSETS.fetch(`https://assets.local/blog-content/${slug}.md`)
+    if (!res.ok) throw new Error(`ASSETS fetch failed: ${res.status}`)
+    return res.text()
+  }
+}
+
+async function getPostContent(slug: string): Promise<string> {
+  try {
+    const raw = await readPostMarkdown(slug)
     const { content } = matter(raw)
     const result = await remark().use(remarkGfm).use(remarkHtml).process(content)
     // Inject sequential IDs into h2/h3 tags for TOC scroll-spy
@@ -166,6 +185,22 @@ function splitAtHeadings(html: string, fractions: number[]): string[] {
   return parts
 }
 
+// Finds the index of the <h2> immediately following the section whose
+// heading text contains `markerText` — i.e. the cut point right after that
+// section ends. Returns html.length if the marker section runs to the end
+// of the article, or null if the marker heading isn't present at all (posts
+// without destination cards, or the marker got edited away).
+function findCutAfterMarkerSection(html: string, markerText: string): number | null {
+  const headingRe = /<h2[^>]*>([\s\S]*?)<\/h2>/gi
+  let m: RegExpExecArray | null
+  let foundMarker = false
+  while ((m = headingRe.exec(html)) !== null) {
+    if (foundMarker) return m.index
+    if (m[1].replace(/<[^>]+>/g, '').includes(markerText)) foundMarker = true
+  }
+  return foundMarker ? html.length : null
+}
+
 // ── Icons ─────────────────────────────────────────────────────────────────────
 function ArrowRight({ className = 'h-4 w-4' }: { className?: string }) {
   return (
@@ -207,7 +242,15 @@ export default async function BlogPostPage({
     limit: 6,
     min: 3,
   })
-  const parts = splitAtHeadings(contentHtml, [0.33, 0.66])
+  // Destination-card posts (15-cheapest-countries template): the numbered
+  // country list has been replaced in the markdown by a single
+  // "Your Cheapest Picks, Ranked" marker heading — cut the rendered HTML
+  // right after that section so DestinationCardList can render in its place.
+  const destinationItems = DESTINATION_LIST_ITEMS[slug]
+  const markerCut = destinationItems ? findCutAfterMarkerSection(contentHtml, DESTINATION_LIST_MARKER) : null
+  const preCardsHtml = markerCut !== null ? contentHtml.slice(0, markerCut) : null
+  const bodyHtml = markerCut !== null ? contentHtml.slice(markerCut) : contentHtml
+  const parts = splitAtHeadings(bodyHtml, preCardsHtml !== null ? [0.5] : [0.33, 0.66])
 
   // High-intent pages get the lead-magnet capture (checklist download) in place
   // of the generic newsletter — still exactly one capture block per page.
@@ -444,6 +487,14 @@ export default async function BlogPostPage({
 
               <div className="vp-boarding-pass__barcode" aria-hidden="true" />
             </div>
+
+            {/* ── Destination cards (15-cheapest-countries template only) ─── */}
+            {preCardsHtml !== null && (
+              <>
+                <div className="blog-prose max-w-none" dangerouslySetInnerHTML={{ __html: preCardsHtml }} />
+                <DestinationCardList slug={slug} />
+              </>
+            )}
 
             {/* ── Article body — rich prose, with inline photos between sections ── */}
             <div className="blog-prose max-w-none" dangerouslySetInnerHTML={{ __html: parts[0] }} />

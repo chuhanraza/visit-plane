@@ -22,6 +22,8 @@ const NAV: { href: string; label: string; mod: Module }[] = [
   { href: '/admin/content', label: 'Content', mod: 'content' },
   { href: '/admin/email', label: 'Email', mod: 'email' },
   { href: '/admin/marketing', label: 'Marketing', mod: 'marketing' },
+  { href: '/admin/social', label: 'Social', mod: 'social' },
+  { href: '/admin/destination-photos', label: 'Destination Photos', mod: 'content' },
   { href: '/admin/customers', label: 'Customers', mod: 'orders' },
   { href: '/admin/invoices', label: 'Invoices', mod: 'revenue' },
   { href: '/admin/services', label: 'Services', mod: 'orders' },
