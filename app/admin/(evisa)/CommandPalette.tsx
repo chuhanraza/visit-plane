@@ -50,7 +50,7 @@ export default function CommandPalette() {
     const t = setTimeout(async () => {
       try {
         const res = await fetch(`/api/admin/search?q=${encodeURIComponent(term)}`)
-        const j = await res.json()
+        const j = (await res.json()) as any
         setHits(j.hits ?? []); setSel(0)
       } catch { setHits([]) }
     }, 180)

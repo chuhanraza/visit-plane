@@ -54,7 +54,7 @@ export function useUserCountry(): UserCountry {
     }, 2000)
 
     fetch('/api/geo', { signal: controller.signal })
-      .then((r) => r.json())
+      .then((r) => r.json() as Promise<{ countryCode?: string; countryName?: string }>)
       .then((result) => {
         clearTimeout(timeoutId)
         if (!result?.countryName) {
@@ -64,7 +64,7 @@ export function useUserCountry(): UserCountry {
           return
         }
         const countryData = {
-          countryCode: result.countryCode,
+          countryCode: result.countryCode ?? '',
           countryName: result.countryName,
           timestamp: Date.now(),
         }

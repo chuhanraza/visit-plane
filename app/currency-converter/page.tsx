@@ -34,7 +34,7 @@ export default function CurrencyConverterPage() {
       for (const base of [...new Set(PAIRS.map(([f]) => f))]) {
         try {
           const res = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${base.toLowerCase()}.json`)
-          const data = await res.json()
+          const data = (await res.json()) as any
           const d = data[base.toLowerCase()]
           PAIRS.filter(([f]) => f === base).forEach(([f, t]) =>
             setPairRates(p => ({ ...p, [`${f}-${t}`]: d[t.toLowerCase()] }))
@@ -49,7 +49,7 @@ export default function CurrencyConverterPage() {
     setLoading(true); setError(''); setResult(null); setRate(null); setUpdated('')
     try {
       const res = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${fromCur.toLowerCase()}.json`)
-      const data = await res.json()
+      const data = (await res.json()) as any
       const r = data[fromCur.toLowerCase()][toCur.toLowerCase()]
       if (!r) throw new Error('Rate not found')
       setRate(r); setResult(parseFloat(amount) * r); setUpdated(data.date)

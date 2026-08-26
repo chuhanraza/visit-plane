@@ -27,7 +27,7 @@ export default function NotificationBell() {
   const load = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/notifications')
-      const j = await res.json()
+      const j = (await res.json()) as any
       setActivity(j.activity ?? []); setUnread(j.unread ?? 0); setLoaded(true)
     } catch { setLoaded(true) }
   }, [])

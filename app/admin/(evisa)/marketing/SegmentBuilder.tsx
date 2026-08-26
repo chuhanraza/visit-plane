@@ -29,7 +29,7 @@ export default function SegmentBuilder({ sources, metrics }: { sources: string[]
   async function doPreview() {
     setBusy(true); setPreview(null)
     const res = await fetch('/api/admin/segments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'preview', definition: { match, conditions } }) })
-    const j = await res.json(); setBusy(false)
+    const j = (await res.json()) as any; setBusy(false)
     if (res.ok) setPreview({ count: j.count, sample: j.sample }); else alert(j.error || 'Preview failed')
   }
 
@@ -38,7 +38,7 @@ export default function SegmentBuilder({ sources, metrics }: { sources: string[]
     setBusy(true)
     const res = await fetch('/api/admin/segments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, definition: { match, conditions } }) })
     setBusy(false)
-    if (res.ok) { setName(''); setPreview(null); router.refresh() } else alert((await res.json().catch(() => ({}))).error || 'Save failed')
+    if (res.ok) { setName(''); setPreview(null); router.refresh() } else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Save failed')
   }
 
   return (

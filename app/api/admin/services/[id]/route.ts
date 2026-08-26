@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await ctx.params
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
 
   // Allow a lightweight active-only toggle, or a full update.
   const svc = getServiceClient()

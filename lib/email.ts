@@ -1,13 +1,14 @@
 import { Resend } from 'resend'
 
 const FROM = 'VisitPlane <orders@visitplane.com>'
+const FROM_ALERTS = 'VisitPlane <alerts@visitplane.com>'
 
 function siteUrl() {
   return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://www.visitplane.com'
 }
 
 /** Low-level send. Degrades safely: no RESEND_API_KEY => logs and returns, never throws. */
-async function send(to: string, subject: string, html: string): Promise<{ sent: boolean }> {
+async function send(to: string, subject: string, html: string, from: string = FROM): Promise<{ sent: boolean }> {
   const key = process.env.RESEND_API_KEY
   if (!key) {
     console.warn(`[email] RESEND_API_KEY not set — skipping "${subject}" to ${to}`)
@@ -15,7 +16,7 @@ async function send(to: string, subject: string, html: string): Promise<{ sent: 
   }
   try {
     const resend = new Resend(key)
-    await resend.emails.send({ from: FROM, to, subject, html })
+    await resend.emails.send({ from, to, subject, html })
     return { sent: true }
   } catch (e) {
     console.error('[email] send failed:', (e as Error).message)
@@ -119,6 +120,16 @@ function broadcastShell(title: string, bodyHtml: string, unsubscribeUrl: string)
  */
 export function sendBroadcastEmail(to: string, subject: string, bodyHtml: string, unsubscribeUrl: string) {
   return send(to, subject, broadcastShell(subject, bodyHtml, unsubscribeUrl))
+}
+
+/**
+ * Send fully custom HTML from alerts@ instead of orders@ — for lifecycle
+ * emails (e.g. the confirm-reminder) that are variants of the original
+ * alerts@ confirmation email and reuse its own visual template verbatim
+ * rather than the orders@ broadcast shell.
+ */
+export function sendAlertsEmail(to: string, subject: string, html: string) {
+  return send(to, subject, html, FROM_ALERTS)
 }
 
 /** Internal operator email (no unsubscribe footer) — e.g. report digests. */

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   if (!actor) return NextResponse.json({ error: 'Forbidden — only the owner can manage staff' }, { status: 403 })
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? null
 
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
   const op = body?.op === 'remove' ? 'remove' : 'add'
 
   if (op === 'remove') {

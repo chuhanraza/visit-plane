@@ -136,7 +136,7 @@ export default function MockClient({
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ question_id: q.id, user_answer: text }),
       })
-      const data = await res.json()
+      const data = (await res.json()) as any
       if (!res.ok || !data.ok) {
         setError(data.error ?? 'Scoring failed. Try again.')
         setScoring(false)
@@ -386,7 +386,7 @@ export default function MockClient({
           resultUrl,
         }),
       })
-      const data = await res.json()
+      const data = (await res.json()) as any
       if (!res.ok || !data.ok) { setEmailStatus('error'); setEmailMsg(data.error ?? 'Failed to send.'); return }
       setEmailStatus('sent'); setEmailMsg(data.message ?? 'Sent!')
     } catch { setEmailStatus('error'); setEmailMsg('Network error.') }

@@ -43,7 +43,7 @@ export async function extractMRZWithGemini(
     });
     if (!res.ok) return { success: false, error: `Gemini ${res.status}: ${(await res.text()).slice(0,200)}` };
 
-    const json = await res.json();
+    const json = (await res.json()) as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
     const text = (json?.candidates?.[0]?.content?.parts?.[0]?.text ?? '') as string;
 
     if (text.includes('MRZ_NOT_VISIBLE'))

@@ -25,7 +25,7 @@ export default function DevConsole({ keys, endpoints, deliveries }: {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: f.get('name'), scopes }),
     })
-    const j = await res.json()
+    const j = (await res.json()) as any
     if (res.ok) { setNewKey(j.key); router.refresh(); (e.target as HTMLFormElement).reset() }
     else alert(j.error || 'Failed')
   }
@@ -45,7 +45,7 @@ export default function DevConsole({ keys, endpoints, deliveries }: {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: f.get('url'), events, description: f.get('description') || null }),
     })
-    const j = await res.json()
+    const j = (await res.json()) as any
     if (res.ok) { setNewSecret(j.secret); router.refresh(); (e.target as HTMLFormElement).reset() }
     else alert(j.error || 'Failed')
   }
@@ -58,13 +58,13 @@ export default function DevConsole({ keys, endpoints, deliveries }: {
 
   async function testHook(id: string) {
     const res = await fetch('/api/admin/dev/webhooks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'test', id }) })
-    const j = await res.json().catch(() => ({}))
+    const j = (await res.json().catch(() => ({}))) as any
     alert(res.ok ? 'Test event delivered ✓' : `Test failed: ${j.error || 'error'}`)
     router.refresh()
   }
   async function redeliver(deliveryId: string) {
     const res = await fetch('/api/admin/dev/webhooks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'redeliver', deliveryId }) })
-    const j = await res.json().catch(() => ({}))
+    const j = (await res.json().catch(() => ({}))) as any
     alert(res.ok ? 'Redelivered ✓' : `Redelivery failed: ${j.error || 'error'}`)
     router.refresh()
   }

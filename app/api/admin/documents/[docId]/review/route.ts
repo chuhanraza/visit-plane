@@ -10,8 +10,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ docId: str
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { docId } = await ctx.params
-  const body = await req.json().catch(() => ({}))
-  const status = body.status
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
+  const status = body.status as string
   if (!['approved', 'rejected', 'pending'].includes(status)) {
     return NextResponse.json({ error: 'Invalid review status' }, { status: 400 })
   }

@@ -16,7 +16,7 @@ const CreateSchema = z.object({ name: z.string().trim().min(1).max(80), steps: z
 export async function POST(req: NextRequest) {
   const actor = await requirePermissionApi('marketing', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? null
 
   if (body?.op === 'toggle') {

@@ -10,7 +10,10 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = getServiceClient()
-    const body = await req.json()
+    const body = (await req.json()) as {
+      visa_req_id?: string; passport_iso?: string; destination_iso?: string; purpose?: string
+      what_is_wrong?: string; corrected_value?: string; source_url?: string
+    }
     const { visa_req_id, passport_iso, destination_iso, purpose, what_is_wrong, corrected_value, source_url } = body
 
     if (!what_is_wrong || typeof what_is_wrong !== 'string') {

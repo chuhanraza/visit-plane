@@ -19,7 +19,7 @@ export function AdminAllowlist({ admins }: { admins: AdminRow[] }) {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ op: 'add', email, note: note || null, role }),
     })
-    const j = await res.json().catch(() => ({}))
+    const j = (await res.json().catch(() => ({}))) as any
     setBusy(false)
     if (res.ok) { setEmail(''); setNote(''); setMsg('Admin added.'); router.refresh() }
     else setMsg(j.error || 'Failed')
@@ -32,7 +32,7 @@ export function AdminAllowlist({ admins }: { admins: AdminRow[] }) {
       body: JSON.stringify({ op: 'remove', user_id: userId }),
     })
     if (res.ok) router.refresh()
-    else alert((await res.json().catch(() => ({}))).error || 'Failed')
+    else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Failed')
   }
 
   return (
@@ -81,7 +81,7 @@ export function FeatureFlags({ flags }: { flags: { key: string; label: string; v
     })
     setBusy('')
     if (res.ok) router.refresh()
-    else alert((await res.json().catch(() => ({}))).error || 'Failed')
+    else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Failed')
   }
 
   return (

@@ -35,7 +35,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   const actor = await requirePermissionApi('leads', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await ctx.params
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
   if (body?.confirm !== true) return NextResponse.json({ error: 'Confirmation required' }, { status: 400 })
 
   const email = await emailForId(id)

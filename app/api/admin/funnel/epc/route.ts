@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   const actor = await requirePermissionApi('revenue', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
   const parsed = z.object({ epc: z.record(z.string(), z.coerce.number().min(0).max(10000)) }).safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: 'Invalid EPC payload' }, { status: 400 })
 

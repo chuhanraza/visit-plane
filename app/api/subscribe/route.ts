@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Too many attempts — try again later.' }, { status: 429 })
     }
 
-    const body = await req.json().catch(() => ({}))
+    const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
     const { email, passport, destination, captured_from, consent, lead_magnet } = body as Record<string, string | boolean>
 
     if (!email || !EMAIL_RE.test(String(email))) {

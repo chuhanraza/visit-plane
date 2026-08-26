@@ -40,7 +40,7 @@ export default function OrderBuilder({ services }: { services: ServiceRecord[] }
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ serviceId, travelers }),
       })
-      const json = await res.json()
+      const json = (await res.json()) as any
       if (!res.ok) throw new Error(json.error || 'Could not place order')
       router.push(`/portal/orders/${json.orderId}?placed=1`)
     } catch (e) {

@@ -15,7 +15,7 @@ const RevokeSchema = z.object({ op: z.literal('revoke'), id: z.string().uuid() }
 export async function POST(req: NextRequest) {
   const actor = await requirePermissionApi('developers', 'edit')
   if (!actor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await req.json().catch(() => ({}))
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? null
 
   if (body?.op === 'revoke') {

@@ -12,7 +12,7 @@ export default function PayButton({ orderId }: { orderId: string }) {
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId }),
       })
-      const json = await res.json()
+      const json = (await res.json()) as any
       if (!res.ok) throw new Error(json.error || 'Could not start payment')
       if (json.mode === 'stripe' && json.url) { window.location.href = json.url; return }
       setMsg(json.message || 'We will confirm your payment manually.')

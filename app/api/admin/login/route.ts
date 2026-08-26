@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const { password } = await req.json().catch(() => ({ password: '' }))
+  const { password } = (await req.json().catch(() => ({ password: '' }))) as { password?: string }
 
   if (!process.env.ADMIN_SECRET || password !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: 'Wrong password' }, { status: 401 })

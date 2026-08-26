@@ -20,7 +20,7 @@ export default function TemplateEditor({ templates }: { templates: EmailTemplate
     setBusy(true)
     const res = await fetch('/api/admin/templates', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) })
     setBusy(false)
-    if (res.ok) { setDraft(null); router.refresh() } else alert((await res.json().catch(() => ({}))).error || 'Save failed')
+    if (res.ok) { setDraft(null); router.refresh() } else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Save failed')
   }
   async function del(id: string) {
     if (!confirm('Delete this template?')) return

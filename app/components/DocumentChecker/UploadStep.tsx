@@ -284,7 +284,7 @@ export default function UploadStep({ docSpec, country, onResult, onError }: Prop
       return
     }
 
-    const data = await res.json()
+    const data = (await res.json()) as any
 
     if (res.status === 429) {
       setPhase('error')

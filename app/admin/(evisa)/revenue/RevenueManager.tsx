@@ -24,7 +24,7 @@ export default function RevenueManager({
       body: JSON.stringify({ status }),
     })
     if (res.ok) router.refresh()
-    else alert((await res.json().catch(() => ({}))).error || 'Status change failed')
+    else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Status change failed')
   }
 
   return (
@@ -116,7 +116,7 @@ function NewOrderForm({ partners, onCreated }: { partners: { slug: string; name:
     }
     const res = await fetch('/api/admin/revenue', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
     if (res.ok) onCreated()
-    else { setErr((await res.json().catch(() => ({}))).error || 'Create failed'); setSaving(false) }
+    else { setErr(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Create failed'); setSaving(false) }
   }
 
   const inp = 'bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 w-full'

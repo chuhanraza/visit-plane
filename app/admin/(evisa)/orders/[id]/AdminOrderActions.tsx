@@ -21,7 +21,7 @@ export default function AdminOrderActions({ orderId, current }: { orderId: strin
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: to, note, notify }),
       })
-      const json = await res.json()
+      const json = (await res.json()) as any
       if (!res.ok) throw new Error(json.error || 'Failed')
       setNote(''); router.refresh()
     } catch (e) { setMsg((e as Error).message) } finally { setBusy(false) }

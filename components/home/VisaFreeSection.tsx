@@ -55,7 +55,7 @@ export default function VisaFreeSection() {
     let cancelled = false
     setStatus('loading')
     fetch(`/api/visa-free-reliable?passport=${encodeURIComponent(passport)}`)
-      .then((r) => r.json())
+      .then((r) => r.json() as Promise<Partial<ReliableVisaFreeResponse>>)
       .then((data) => {
         if (cancelled) return
         const list: ReliableDestination[] = Array.isArray(data?.destinations) ? data.destinations : []

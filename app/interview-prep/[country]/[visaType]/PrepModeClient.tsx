@@ -115,7 +115,7 @@ export default function PrepModeClient({
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ question_id: q.id, user_answer: text }),
       })
-      const data = await res.json()
+      const data = (await res.json()) as any
       if (!res.ok || !data.ok) {
         setAns(q.id, { loading: false, error: data.error ?? 'Something went wrong.' })
         return

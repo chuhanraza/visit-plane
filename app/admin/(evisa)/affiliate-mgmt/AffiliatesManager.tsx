@@ -16,7 +16,7 @@ export default function AffiliatesManager({ partners, conversions }: { partners:
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
     })
     if (res.ok) { setEditing(null); setAdding(false); router.refresh() }
-    else alert((await res.json().catch(() => ({}))).error || 'Save failed')
+    else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Save failed')
   }
 
   return (
@@ -165,7 +165,7 @@ function ConversionForm({ partners, onSaved }: { partners: PartnerPerf[]; onSave
       }),
     })
     if (res.ok) { form.reset(); onSaved() }
-    else { setErr((await res.json().catch(() => ({}))).error || 'Failed'); setSaving(false) }
+    else { setErr(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Failed'); setSaving(false) }
   }
   return (
     <form onSubmit={submit} className="bg-gray-900 border border-gray-800 rounded-2xl p-4 grid sm:grid-cols-3 lg:grid-cols-4 gap-2 items-end">

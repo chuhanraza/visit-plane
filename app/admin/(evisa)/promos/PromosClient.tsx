@@ -20,7 +20,7 @@ export default function PromosClient({ promos }: { promos: PromoRow[] }) {
     const res = await fetch('/api/admin/promos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
     setBusy(false)
     if (res.ok) { setAdding(false); router.refresh() }
-    else alert((await res.json().catch(() => ({}))).error || 'Failed')
+    else alert(((await res.json().catch(() => ({}))) as { error?: string }).error || 'Failed')
   }
 
   async function create(e: React.FormEvent<HTMLFormElement>) {

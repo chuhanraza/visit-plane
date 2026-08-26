@@ -47,7 +47,7 @@ export default function ServicesManager({ initial }: { initial: ServiceRecord[] 
       method: isNew ? 'POST' : 'PATCH', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(draftToBody(draft)),
     })
-    const json = await res.json().catch(() => ({}))
+    const json = (await res.json().catch(() => ({}))) as any
     setBusy(false)
     if (res.ok) { setEditing(null); router.refresh() } else setMsg(json.error || 'Save failed')
   }
@@ -59,7 +59,7 @@ export default function ServicesManager({ initial }: { initial: ServiceRecord[] 
   async function remove(s: ServiceRecord) {
     if (!confirm(`Delete "${s.country_name} — ${s.visa_type}"? If it's used by orders it will be deactivated instead.`)) return
     const res = await fetch(`/api/admin/services/${s.id}`, { method: 'DELETE' })
-    const json = await res.json().catch(() => ({}))
+    const json = (await res.json().catch(() => ({}))) as any
     if (json.note) alert(json.note)
     router.refresh()
   }

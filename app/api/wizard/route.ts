@@ -78,7 +78,7 @@ Tone: friendly travel advisor. Use emoji sparingly. Total response under 250 wor
         console.error(`Gemini ${model} error: ${res.status} ${await res.text().catch(() => '')}`)
         continue // try next model
       }
-      const data = await res.json()
+      const data = (await res.json()) as { candidates?: { content?: { parts?: { text?: string }[] } }[] }
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
       if (text) return text
     } catch (e) {
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
 
   let passport = '', destination = '', purpose = '', duration = '', travelDate = ''
   try {
-    const body = await req.json()
+    const body = (await req.json()) as { passport?: string; destination?: string; purpose?: string; duration?: string; travelDate?: string }
     passport = body.passport ?? ''
     destination = body.destination ?? ''
     purpose = body.purpose ?? 'Tourism'

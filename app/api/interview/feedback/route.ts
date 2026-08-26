@@ -63,7 +63,7 @@ async function callGemini(prompt: string): Promise<string | null> {
         console.error(`Gemini ${model} error: ${res.status} ${await res.text().catch(() => '')}`)
         continue
       }
-      const data = await res.json()
+      const data = (await res.json()) as { candidates?: { content?: { parts?: { text?: string }[] } }[] }
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
       if (text) return text
     } catch (e) {
@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
   let question_id = ''
   let user_answer = ''
   try {
-    const body = await req.json()
+    const body = (await req.json()) as Record<string, unknown>
     question_id = String(body.question_id ?? '')
     user_answer = String(body.user_answer ?? '').trim()
   } catch {
