@@ -23,67 +23,9 @@ We deliberately mix regions so there's something reachable whether you're on the
 
 > **Key takeaway:** The cheapest trip isn't just the cheapest country — it's the cheapest *combination* of flight, daily cost and entry hassle. A slightly pricier destination with a cheap direct flight can beat a "cheaper" country that costs a fortune to reach.
 
-## The 15 Cheapest Countries for Americans in 2026
+## Your Cheapest Picks, Ranked
 
-### 1. Mexico
-
-The default answer for a reason. Flights from almost every US city are cheap and frequent, US dollars stretch far outside the resort zones, and Americans enter **visa-free** for tourism. Skip Cancún's resort strip for Oaxaca, Mérida or Mexico City and your daily budget drops dramatically while the food gets better. Unbeatable value-to-effort ratio.
-
-### 2. Guatemala
-
-Central America's best-kept budget secret. Antigua's colonial streets, Lake Atitlán's volcanoes and Tikal's ruins cost a fraction of pricier neighbours. Entry is **visa-free** for US citizens for short tourism, and flights via a US hub are reasonable. Guesthouses and local comedores keep daily spending very low.
-
-### 3. Colombia
-
-Medellín and Bogotá offer big-city energy at small-city prices, with the Caribbean coast and coffee region within easy reach. Americans visit **visa-free** for tourism, and direct flights from Miami, Houston and other hubs are short and often cheap. Excellent value for a full, varied trip.
-
-### 4. Vietnam
-
-Southeast Asia's value champion. Street food for pocket change, comfortable rooms for very little, and staggering scenery from Ha Long Bay to the Mekong. The catch: US citizens typically need an **eVisa** arranged online in advance — easy, but don't skip it. The long-haul flight is the main cost; once there, your money goes remarkably far.
-
-### 5. Thailand
-
-The template for cheap, easy travel. Americans get **visa-free** entry for short tourism, English is widely used, and the tourism infrastructure is superb. Bangkok, Chiang Mai and the islands each offer a different flavour of low-cost travel. Daily costs are low outside the flashiest resorts.
-
-### 6. Indonesia
-
-Bali gets the headlines, but Indonesia's real value is in Java, Lombok and beyond. Entry is usually via a **visa-on-arrival** for US citizens for short tourism — quick to sort at the airport. Food, transport and accommodation are inexpensive, and the diving and volcano scenery are world-class.
-
-### 7. Philippines
-
-Thousands of islands, warm English-speaking hospitality, and prices that make a beach trip genuinely affordable. Americans typically enter **visa-free** for short tourism. The internal flights and ferries between islands are cheap, so island-hopping doesn't blow the budget.
-
-### 8. India
-
-Astonishing value and variety — from the Himalayas to Kerala's backwaters — at some of the lowest daily costs anywhere. US citizens need an **eVisa**, applied for online before travel; treat this as mandatory. Once inside, trains, food and guesthouses cost very little, making long, rich trips affordable.
-
-### 9. Türkiye
-
-The bridge between Europe and Asia, and a value standout thanks to a favourable exchange rate. Istanbul, Cappadocia and the Mediterranean coast deliver a lot for the money. Americans should **confirm the current entry rule** — Türkiye has used both visa-free and eVisa arrangements over time — before booking.
-
-### 10. Portugal
-
-The most affordable Western European country, and proof this list isn't only developing nations. Lisbon, Porto and the Algarve cost noticeably less than France or Italy. Americans enter **visa-free** under the Schengen 90/180 rule — though remember Europe's ETIAS authorisation is [coming later in 2026](/blog/do-us-citizens-need-a-visa-for-europe-2026-etias).
-
-### 11. Albania
-
-The Balkans' rising value star. A stunning Adriatic coastline at a fraction of Croatia's prices, plus mountains and Ottoman-era towns inland. Americans enjoy generous **visa-free** access. Flights route via a European hub, but daily costs are among the lowest in Europe.
-
-### 12. Georgia
-
-The country, not the state — and one of the best-value destinations on Earth right now. Tbilisi's food and wine scene is remarkable and cheap, the Caucasus mountains are jaw-dropping, and US citizens get exceptionally generous **visa-free** stays. Getting there takes effort, but your money goes extraordinarily far.
-
-### 13. Morocco
-
-North Africa within easy reach of Europe. Marrakech's souks, the Sahara and the coast offer huge contrast at low cost. US citizens enjoy **visa-free** short stays. Riads and local food keep budgets down, and it pairs neatly with a European trip.
-
-### 14. Bolivia
-
-South America's cheapest country to travel, with the surreal Uyuni salt flats, the Andes and the Amazon. Daily costs are rock-bottom. Entry rules for US citizens have varied, so **confirm the current requirement** before you book — this is one to verify carefully rather than assume.
-
-### 15. Peru
-
-Machu Picchu anchors a trip, but Peru's food scene, Amazon and Pacific coast make it far more than one ruin. Americans enter **visa-free** for tourism. Outside the Inca Trail's fixed costs, daily spending is low, and flights from the US are reasonable.
+Ranked by total value — visa cost and hassle, flight reality, and daily spending, combined. Tap a card for the full picture on each destination. As always: confirm your exact entry rule on the [Visa Wizard](/wizard) before booking anything non-refundable.
 
 ## A Quick Value Comparison
 

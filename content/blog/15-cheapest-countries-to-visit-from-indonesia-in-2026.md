@@ -21,87 +21,9 @@ This guide ranks 15 destinations by genuine value — the combination of low on-
 
 > **Key takeaway:** "Cheap" depends on two things — how little you spend per day once you land, and how cheaply you get there. Indonesians win on both for nearby ASEAN countries, but should always confirm the visa for each specific route before paying for anything non-refundable.
 
-## Quick Comparison
+## Your Cheapest Picks, Ranked
 
-| # | Country | Why it is good value | Daily budget feel |
-|---|---------|----------------------|-------------------|
-| 1 | Malaysia | Short cheap flights, familiar food, easy travel | Very low |
-| 2 | Thailand | Backpacker classic, brilliant street food | Very low |
-| 3 | Vietnam | Long, cheap coastline north to south | Very low |
-| 4 | Singapore | Pricey beds, but free sights and hawker meals | Mid |
-| 5 | Cambodia | Angkor on a shoestring | Very low |
-| 6 | Laos | Slow, scenic, gentle on the wallet | Very low |
-| 7 | Philippines | Island-hopping value, English everywhere | Low |
-| 8 | Sri Lanka | Beaches, hills and trains for very little | Very low |
-| 9 | India | Vast, varied, famously cheap | Very low |
-| 10 | Turkey | Big-hitter sights at fair prices | Low |
-| 11 | Hong Kong | Costly hotels, but free skyline and transit | Mid |
-| 12 | Timor-Leste | Off-grid, raw, untouristed | Low |
-| 13 | Brunei | Calm, clean, short hop from Borneo | Low |
-| 14 | Nepal | Himalaya trekking for a song | Very low |
-| 15 | Maldives | Local islands make paradise affordable | Low-mid |
-
-## The List
-
-### 1. Malaysia
-
-Malaysia is the obvious starting point: flights from Jakarta to Kuala Lumpur are some of the cheapest international tickets you will ever see, often booked weeks out for the price of a nice dinner. The food is familiar yet exciting, signage and language overlap with Bahasa, and your rupiah covers comfortable mid-range beds with ease. From KL you can press on overland into Thailand or across to Borneo. Check the current rules for your passport on the [Indonesia to Malaysia route](/visa/Indonesia/Malaysia) before you go.
-
-### 2. Thailand
-
-The original Southeast Asian budget legend still delivers. Cheap street food, dorms and guesthouses, brilliant transport and a beach for every mood make Thailand a place where a modest daily budget buys a full, fun day. Bangkok is a direct, frequently discounted flight from Jakarta, and from there the south, Chiang Mai and the islands are all within easy reach. Confirm your entry conditions with the [Visa Wizard](/wizard) first.
-
-### 3. Vietnam
-
-Vietnam packs an extraordinary amount of country into a low daily spend — think bowls of pho for pocket change, sleeper trains and buses linking a 1,600-kilometre coastline, and mid-range rooms that feel like a splurge but barely dent the budget. Hanoi, Hoi An and Ho Chi Minh City each justify the trip on their own. Flights from Jakarta are reasonable, especially in shoulder season, and the visa situation is worth checking carefully on the [Wizard](/wizard).
-
-### 4. Singapore
-
-Singapore is the priciest neighbour on this list, but it earns its place because so much of the best stuff is free or cheap: Gardens by the Bay light shows, Marina Bay walks, world-class hawker centres where a plate costs less than a coffee back home, and one of the planet's best public transport systems. Treat it as a polished two-or-three-day add-on to a Malaysia trip rather than a long stay, and your daily budget stays sane. Confirm the route on the [Wizard](/wizard).
-
-### 5. Cambodia
-
-Cambodia is where shoestring travel and a genuine wonder of the world collide. The temples of Angkor anchor any trip, but the wider country — Phnom Penh, the riverside towns, the sleepy coast — runs on very low daily costs. US dollars circulate widely alongside the local riel, which makes budgeting easy, and overland buses from Thailand or Vietnam are cheap. Always check the latest entry requirements on the [Visa Wizard](/wizard).
-
-### 6. Laos
-
-Landlocked, laid-back Laos rewards travellers who slow down. Luang Prabang's temples and night market, the Mekong's long river journeys and the karst landscapes around Vang Vieng all come at gentle, very low prices. It is the quietest of the mainland ASEAN countries and one of the cheapest once you arrive, though you will usually route in overland or via a connecting flight. Verify the current visa position for your passport on the [Wizard](/wizard).
-
-### 7. Philippines
-
-For an Indonesian island-lover, the Philippines feels both familiar and fresh: thousands of islands, superb diving and beaches, and widespread English that makes getting around painless. Domestic budget flights and ferries keep island-hopping affordable, and outside the resort enclaves daily costs stay low. Direct flights from Jakarta and Bali pop up regularly. Check what your passport needs on the [Visa Wizard](/wizard) before locking in dates.
-
-### 8. Sri Lanka
-
-Sri Lanka is one of the best-value trips within easy reach of Indonesia. A small island packs in beaches, tea-country hills, ancient cities and wildlife safaris, all linked by famously cheap (and gloriously scenic) trains. Guesthouse stays, rice-and-curry feasts and tuk-tuk rides keep the daily spend genuinely low. Flights usually route via a hub, so factor that in — and confirm the visa on the [Wizard](/wizard).
-
-### 9. India
-
-Few countries stretch a budget like India. From Rajasthan's forts to Kerala's backwaters and the Himalayan foothills, the variety is endless and the on-the-ground costs are among the lowest anywhere — cheap thalis, cheap trains, cheap beds. It rewards travellers who give it time and patience. Flights from Jakarta connect via regional hubs, and the visa process deserves early attention, so start with the [Visa Wizard](/wizard).
-
-### 10. Turkey
-
-Turkey is the long-haul value pick that still punches above its price. Istanbul's mosques and bazaars, Cappadocia's balloons and the Aegean coast deliver bucket-list moments without European price tags, and a weak lira means meals, transport and mid-range stays feel like a bargain. Flights are longer and pricier than the ASEAN options, but the daily costs once there make up ground fast. Confirm your entry route on the [Wizard](/wizard).
-
-### 11. Hong Kong
-
-Hong Kong, like Singapore, has expensive hotels but a surprising amount of free spectacle: the Victoria Harbour skyline, the Peak walks, buzzing street markets and some of the world's best cheap dim sum and noodle joints. The Octopus card makes its superb transit effortless. Keep stays short and lean on local eateries and your budget holds up well. Always check the current arrangement for your passport on the [Visa Wizard](/wizard).
-
-### 12. Timor-Leste
-
-For the adventurous, Timor-Leste is one of the region's last genuinely untouristed frontiers — and it is right on Indonesia's doorstep, reachable overland from West Timor or on a short flight. Expect raw landscapes, world-class diving off Atauro Island and very few other visitors. Infrastructure is basic and some costs are higher than mainland ASEAN, but the experience is priceless. Check the crossing and visa details on the [Wizard](/wizard).
-
-### 13. Brunei
-
-Tiny, tidy and calm, Brunei makes an easy, good-value stop if you are already exploring Borneo. The opulent mosques, the stilt-village water world of Kampong Ayer and the pristine rainforest of Ulu Temburong are the draws, and a short hop from Sabah or Sarawak keeps flights cheap. It is quiet rather than cheap-cheap, but day-to-day spending stays low. Confirm requirements on the [Visa Wizard](/wizard).
-
-### 14. Nepal
-
-Nepal offers arguably the best adventure-per-dollar on the planet. Teahouse trekking in the Annapurna or Everest regions, the temples and chaos of Kathmandu, and lakeside Pokhara all come at very low daily costs, with guides and porters affordable too. Flights route via a hub from Indonesia, but once you land the mountains cost remarkably little. Sort the visa early using the [Wizard](/wizard).
-
-### 15. Maldives
-
-The Maldives no longer means a five-figure honeymoon. By staying on local inhabited islands rather than private resorts, budget travellers get the same turquoise water, snorkelling and sandbanks for a fraction of the price, eating at local cafés and taking public ferries between atolls. It is the priciest of the "cheap" picks but astonishing value for what you see. Check the route on the [Visa Wizard](/wizard).
+Ranked by total value — visa cost and hassle, flight reality, and daily spending, combined. Tap a card for the full picture on each destination. As always: confirm your exact entry rule on the [Visa Wizard](/wizard) before booking anything non-refundable.
 
 ## How These Trips Stay Cheap
 

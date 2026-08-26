@@ -21,90 +21,9 @@ On VisitPlane, we verify every route against official sources. Visa rules differ
 
 > **Key takeaway:** These fifteen destinations offer the lowest overall travel costs from the Philippines in 2026. Always verify the current visa rule for your Filipino passport before booking — our [Visa Wizard](/wizard) does it in seconds.
 
-## Quick Comparison
+## Your Cheapest Picks, Ranked
 
-| # | Country | Why it is good value | Daily budget feel |
-|---|---|---|---|
-| 1 | Thailand | Cheap street food, transport, beaches | Very low |
-| 2 | Malaysia | Low-cost hub, islands, cities | Low |
-| 3 | Indonesia | Bali guesthouses, cheap eats | Very low |
-| 4 | Vietnam | Outstanding street-food value | Very low |
-| 5 | Cambodia | Very low day-to-day costs | Very low |
-| 6 | Singapore | Pricey beds, but many free attractions | Mid |
-| 7 | India | Vast, varied, very affordable | Very low |
-| 8 | Sri Lanka | Compact, affordable island | Very low |
-| 9 | UAE | Free beaches, frequent flight deals | Mid |
-| 10 | Turkey | Europe-lite at a fraction of the price | Low |
-| 11 | Georgia | Very low cost, dramatic scenery | Very low |
-| 12 | Maldives | Local-island guesthouses | Low-mid |
-| 13 | Qatar | Free attractions, stopover deals | Mid |
-| 14 | Kenya | Safari and beaches, off-peak value | Mid |
-| 15 | Morocco | Souks, coast, and desert on a budget | Low |
-
-"Daily budget feel" is a rough guide to on-the-ground spending, not flight cost. Use it to shortlist, then compare live fares from Manila or Cebu.
-
-## The List
-
-### 1. Thailand
-
-Thailand is a perennial favourite for value — cheap street food, inexpensive transport, and beaches, temples, and mountains for every budget.
-
-### 2. Malaysia
-
-Malaysia delivers modern cities, rainforests, and island beaches at gentle prices, with Kuala Lumpur an affordable, well-connected hub.
-
-### 3. Indonesia
-
-Indonesia — Bali especially — is one of the best-value destinations anywhere, with affordable stays, low-cost food, and stunning landscapes.
-
-### 4. Vietnam
-
-Vietnam offers extraordinary value, from street food and cheap transport to dramatic scenery in Halong Bay and beyond.
-
-### 5. Cambodia
-
-Cambodia pairs the awe of Angkor Wat with very low day-to-day costs and a warm welcome.
-
-### 6. Singapore
-
-Singapore is pricier than its neighbours, but free gardens, hawker-centre food, and efficient transport keep it enjoyable on a budget.
-
-### 7. India
-
-India is vast, varied, and famously affordable, from the Himalayas to tropical beaches, with cheap trains and food.
-
-### 8. Sri Lanka
-
-Sri Lanka packs beaches, tea-country hills, ancient cities, and wildlife into a compact, very affordable island.
-
-### 9. United Arab Emirates
-
-The UAE offers free beaches, striking architecture, and frequent flight deals as a stopover; with planning, even a luxury-feeling trip is affordable.
-
-### 10. Turkey
-
-Turkey is superb value — Istanbul's bazaars, Cappadocia's balloons, and the Aegean coast for less than comparable European trips.
-
-### 11. Georgia
-
-Georgia offers dramatic mountains, ancient wine country, and charming Tbilisi at very low cost, with famous hospitality.
-
-### 12. Maldives
-
-The Maldives, once luxury-only, is now accessible via guesthouse stays on local islands — turquoise water without a five-star price.
-
-### 13. Qatar
-
-Qatar's Doha offers striking museums, souqs, and waterfronts, with free attractions and stopover deals keeping a short visit affordable.
-
-### 14. Kenya
-
-Kenya brings world-famous safaris, beaches, and vibrant Nairobi, with budget safaris making an iconic African trip attainable.
-
-### 15. Morocco
-
-Morocco's medinas, mountains, and deserts come at gentle prices, with atmospheric riad stays and rich culture.
-
+Ranked by total value — visa cost and hassle, flight reality, and daily spending, combined. Tap a card for the full picture on each destination. As always: confirm your exact entry rule on the [Visa Wizard](/wizard) before booking anything non-refundable.
 
 ## How to Choose the Right One for You
 

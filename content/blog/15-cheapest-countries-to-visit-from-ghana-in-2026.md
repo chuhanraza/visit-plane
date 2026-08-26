@@ -21,87 +21,9 @@ This guide ranks destinations by overall value — how far your money goes once 
 
 > **Key takeaway:** Your cheapest holidays as a Ghanaian traveller are often your nearest ones. Lead with the ECOWAS neighbours you can reach overland from Accra, carry CFA francs for the francophone stops, and confirm current entry rules before you commit to anything non-refundable.
 
-## Quick Comparison
+## Your Cheapest Picks, Ranked
 
-| # | Country | Why it is good value | Daily budget feel |
-|---|---------|----------------------|-------------------|
-| 1 | Togo | Overland from Accra, low local costs | Very low |
-| 2 | Benin | Cheap coastal corridor stop | Very low |
-| 3 | Côte d'Ivoire | Reachable by road, strong food scene | Low |
-| 4 | Senegal | Regional flight hub, vibrant culture | Low |
-| 5 | The Gambia | Compact, affordable beach breaks | Very low |
-| 6 | Sierra Leone | Beaches with few crowds, low prices | Low |
-| 7 | Burkina Faso | Inexpensive Sahelian culture | Very low |
-| 8 | Nigeria | Huge cities, budget eating and stays | Low |
-| 9 | Morocco | Royal Air Maroc hub, value medinas | Low |
-| 10 | Kenya | Safari and coast on a range of budgets | Low |
-| 11 | Rwanda | Clean, safe, walkable Kigali | Low |
-| 12 | Mauritius | Beaches and nature, splurge-worthy | Mid |
-| 13 | Ethiopia | Historic sites, low ground costs | Very low |
-| 14 | Egypt | World-class history, cheap on the ground | Low |
-| 15 | United Arab Emirates | Stopover shopping and city life | Mid |
-
-## The List
-
-### 1. Togo
-
-Togo is the easiest international trip a Ghanaian traveller can make. Lomé sits right on the border, a few hours from Accra by STC coach or shared taxi, and the capital's beachfront, markets, and relaxed pace make it a popular weekend escape. Local prices are very low, especially for street food and small guesthouses, so a couple of days here barely dents your budget.
-
-### 2. Benin
-
-Continuing east along the coastal corridor, Benin rewards travellers with Ouidah's history, the stilt village of Ganvié, and the buzz of Cotonou. You can reach it overland from Accra via Lomé in a single long day of road travel. Daily costs stay very low, and carrying CFA francs makes everything from moto-taxis to market meals simpler.
-
-### 3. Côte d'Ivoire
-
-Abidjan is West Africa's most cosmopolitan city, with a skyline, lagoons, and a food scene worth the trip on its own. It is reachable by road from Accra heading west, or by a quick regional flight if you would rather skip the long drive. Prices run a touch higher than in Togo or Benin but still represent strong value, and CFA francs are the currency here too.
-
-### 4. Senegal
-
-Dakar is a cultural heavyweight and a major regional flight hub, making Senegal an easy add-on or standalone trip. Expect lively music, Atlantic seafood, and the haunting history of Gorée Island. Costs are low to moderate depending on how you travel, and the city rewards visitors who eat locally and use shared transport.
-
-### 5. The Gambia
-
-Tiny, English-speaking, and built around the river that gives it its name, The Gambia is one of West Africa's most affordable beach destinations. It is usually reached by a regional flight rather than overland, but once there your money goes a very long way on guesthouses, fresh fish, and birdwatching trips. The compact size means little time or money wasted on internal transport.
-
-### 6. Sierra Leone
-
-Freetown's peninsula beaches are among the most beautiful and least crowded on the continent, and prices on the ground are low. Getting there typically means a regional flight, so factor airfare into the budget, but accommodation and food remain inexpensive once you arrive. It is a rewarding pick for travellers who want coastline without the crowds.
-
-### 7. Burkina Faso
-
-Burkina Faso offers Sahelian culture, craft markets, and a famously warm welcome at very low daily costs. That said, security conditions in parts of the country have been volatile, so check your government's latest travel advice before planning any route and stay flexible. Where travel is appropriate, the cultural depth and low prices make it memorable.
-
-### 8. Nigeria
-
-Nigeria is enormous, energetic, and surprisingly affordable once you know where to look. Lagos anchors the eastern end of the Accra–Lomé–Cotonou–Lagos corridor and can be reached overland, though many travellers prefer the short flight. Budget eating, local transport, and mid-range guesthouses keep costs reasonable in a country that delivers nightlife, music, and business energy in equal measure.
-
-### 9. Morocco
-
-Morocco is where West Africa meets the Mediterranean, and Royal Air Maroc's Accra–Casablanca route makes it an accessible long-haul-feeling trip without the long haul. Marrakech, Fez, and the Atlas Mountains offer value-packed medinas, cheap mint tea, and affordable riads if you avoid peak season. Ground costs are low once you are there, even if the flight is the main expense.
-
-### 10. Kenya
-
-Kenya scales to almost any budget, from backpacker hostels in Nairobi to beach guesthouses in Mombasa and Diani. Safari is the headline draw, and while premium lodges are pricey, group tours and public conservancies keep it within reach. Day-to-day costs for food and local transport are low, making it a flexible value destination.
-
-### 11. Rwanda
-
-Kigali is famously clean, safe, and walkable, which makes Rwanda an easy and pleasant trip even for first-time solo travellers. Gorilla trekking is a splurge, but the country also offers lakes, hills, and culture at modest cost. Everyday spending on meals and transport is low, and the orderly feel of the capital is a genuine draw.
-
-### 12. Mauritius
-
-Mauritius is the one frank splurge on this list, but it earns its place. Turquoise lagoons, hiking, and a blend of Indian, African, and French cultures make it a standout, and self-catering apartments plus local markets can bring the daily feel down to mid-range. Flights are the big cost, so hunt for deals and travel in shoulder season.
-
-### 13. Ethiopia
-
-Ethiopia delivers some of the continent's most extraordinary history — the rock churches of Lalibela, the castles of Gondar — at remarkably low ground costs. Addis Ababa is a major aviation hub, which can make flights competitive. Food, especially the communal injera spread, is cheap and excellent, and a little money goes a long way across the country.
-
-### 14. Egypt
-
-Egypt pairs world-famous history with genuinely low on-the-ground prices. The pyramids, the Nile, and the temples of Luxor and Aswan can be experienced on a modest budget if you eat locally and use trains and domestic flights wisely. The flight from Accra is the main outlay; once there, meals, sites, and transport are affordable.
-
-### 15. United Arab Emirates
-
-The UAE is the classic Gulf value trip for Ghanaian travellers — a popular shopping and stopover destination where free attractions, public beaches, and the metro keep costs down between the glitzier splurges. Dubai and Abu Dhabi reward travellers who balance a few paid experiences with plenty of free ones. Budget for the flight and accommodation; the experience itself can be surprisingly affordable.
+Ranked by total value — visa cost and hassle, flight reality, and daily spending, combined. Tap a card for the full picture on each destination. As always: confirm your exact entry rule on the [Visa Wizard](/wizard) before booking anything non-refundable.
 
 ## How These Trips Stay Cheap
 

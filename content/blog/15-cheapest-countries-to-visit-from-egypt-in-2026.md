@@ -15,68 +15,9 @@ On VisitPlane, we verify every route against official sources. Visa rules differ
 
 > **Key takeaway:** These fifteen destinations offer the lowest overall travel costs from Egypt in 2026. Always verify the current visa rule for your Egyptian passport before booking — our [Visa Wizard](/wizard) does it in seconds.
 
-## The List
+## Your Cheapest Picks, Ranked
 
-### 1. Turkey
-
-Turkey is superb value — Istanbul's bazaars, Cappadocia's balloons, and the Aegean coast for less than comparable European trips.
-
-### 2. Georgia
-
-Georgia offers dramatic mountains, ancient wine country, and charming Tbilisi at very low cost, with famous hospitality.
-
-### 3. Azerbaijan
-
-Azerbaijan blends the striking capital Baku with mountains and ancient sites, all at modest prices.
-
-### 4. Jordan
-
-Jordan packs Petra, Wadi Rum's deserts, and the Dead Sea into a compact, friendly country at reasonable cost.
-
-### 5. United Arab Emirates
-
-The UAE offers free beaches, striking architecture, and frequent flight deals as a stopover; with planning, even a luxury-feeling trip is affordable.
-
-### 6. Morocco
-
-Morocco's medinas, mountains, and deserts come at gentle prices, with atmospheric riad stays and rich culture.
-
-### 7. Kenya
-
-Kenya brings world-famous safaris, beaches, and vibrant Nairobi, with budget safaris making an iconic African trip attainable.
-
-### 8. Ethiopia
-
-Ethiopia offers ancient churches, dramatic highlands, and a unique culture at low cost — rewarding and affordable.
-
-### 9. Thailand
-
-Thailand is a perennial favourite for value — cheap street food, inexpensive transport, and beaches, temples, and mountains for every budget.
-
-### 10. Malaysia
-
-Malaysia delivers modern cities, rainforests, and island beaches at gentle prices, with Kuala Lumpur an affordable, well-connected hub.
-
-### 11. Indonesia
-
-Indonesia — Bali especially — is one of the best-value destinations anywhere, with affordable stays, low-cost food, and stunning landscapes.
-
-### 12. Sri Lanka
-
-Sri Lanka packs beaches, tea-country hills, ancient cities, and wildlife into a compact, very affordable island.
-
-### 13. India
-
-India is vast, varied, and famously affordable, from the Himalayas to tropical beaches, with cheap trains and food.
-
-### 14. Maldives
-
-The Maldives, once luxury-only, is now accessible via guesthouse stays on local islands — turquoise water without a five-star price.
-
-### 15. Qatar
-
-Qatar's Doha offers striking museums, souqs, and waterfronts, with free attractions and stopover deals keeping a short visit affordable.
-
+Ranked by total value — visa cost and hassle, flight reality, and daily spending, combined. Tap a card for the full picture on each destination. As always: confirm your exact entry rule on the [Visa Wizard](/wizard) before booking anything non-refundable.
 
 ## How to Choose the Right One for You
 

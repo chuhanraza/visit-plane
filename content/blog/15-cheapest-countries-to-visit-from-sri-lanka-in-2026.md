@@ -15,64 +15,9 @@ On VisitPlane, we verify every route against official sources. Visa rules differ
 
 > **Key takeaway:** These fifteen destinations offer the lowest overall travel costs from Sri Lanka in 2026. Always verify the current visa rule for your Sri Lankan passport before booking — our [Visa Wizard](/wizard) does it in seconds.
 
-## The List
+## Your Cheapest Picks, Ranked
 
-### 1. Thailand
-
-Thailand is a perennial favourite for value — cheap, delicious street food, inexpensive transport, and beaches, temples, and mountains to suit every budget. Bangkok, Chiang Mai, and the southern islands offer world-class experiences at a fraction of Western prices.
-
-### 2. Malaysia
-
-Malaysia delivers modern cities, rainforests, and island beaches at gentle prices. Kuala Lumpur is an affordable, well-connected hub, and food across the country is both excellent and cheap, making it easy to travel well on a modest budget.
-
-### 3. Indonesia
-
-Indonesia — and Bali in particular — is one of the best-value destinations anywhere, with affordable villas, low-cost food, and a wealth of beaches, temples, and rice-terrace landscapes. Even comfortable mid-range travel costs far less than in the West.
-
-### 4. Vietnam
-
-Vietnam offers extraordinary value, from street food and cheap local transport to dramatic scenery in Halong Bay and the highlands. Cities like Hanoi and Ho Chi Minh City are affordable, vibrant, and rich in history.
-
-### 5. Cambodia
-
-Cambodia pairs the awe of Angkor Wat with low day-to-day costs. Food, guesthouses, and local transport are inexpensive, and the warm welcome makes it an easy, rewarding budget destination.
-
-### 6. India
-
-India is vast, varied, and famously affordable, from the Himalayas to tropical beaches. Trains and local food cost little, and a modest budget stretches a long way across its many regions and cultures.
-
-### 7. Maldives
-
-The Maldives is best known for luxury, but guesthouse stays on local islands have made it surprisingly accessible — turquoise water and white sand without a five-star price tag, especially outside peak season.
-
-### 8. Azerbaijan
-
-Azerbaijan blends a striking modern capital, Baku, with mountains and ancient sites, all at modest prices. It's an increasingly popular, good-value gateway between Europe and Asia.
-
-### 9. Georgia
-
-Georgia offers dramatic mountains, ancient wine country, and the charming capital Tbilisi at very low cost. Generous hospitality and affordable food and lodging make it a standout value destination.
-
-### 10. Turkey
-
-Turkey is superb value, especially with a favourable exchange rate — Istanbul's bazaars and mosques, Cappadocia's balloons, and the Aegean coast all cost less than comparable European trips. Food and transport are inexpensive.
-
-### 11. United Arab Emirates
-
-The UAE — Dubai and Abu Dhabi — is pricier than some neighbours but offers free beaches, striking architecture, and frequent flight deals as a stopover. With planning, even a luxury-feeling trip can be done affordably.
-
-### 12. Nepal
-
-Nepal is a budget traveller's dream — the Himalayas, vibrant Kathmandu, and some of the world's great trekking, all at low cost. Guesthouses and local food are inexpensive, and the scenery is priceless.
-
-### 13. Kenya
-
-Kenya brings world-famous safaris, beaches, and vibrant Nairobi. While top lodges are costly, budget safaris and coastal stays make an iconic African trip more affordable than many assume.
-
-### 14. Singapore
-
-Singapore is more expensive than its neighbours, but free gardens, hawker-centre food, and efficient transport let budget travellers enjoy this gleaming city-state without overspending.
-
+Ranked by total value — visa cost and hassle, flight reality, and daily spending, combined. Tap a card for the full picture on each destination. As always: confirm your exact entry rule on the [Visa Wizard](/wizard) before booking anything non-refundable.
 
 ## How to Use This List
 

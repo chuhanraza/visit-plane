@@ -15,68 +15,9 @@ On VisitPlane, we verify every route against official sources. Visa rules differ
 
 > **Key takeaway:** These fifteen destinations offer the lowest overall travel costs from India in 2026. Whatever you choose, confirm the current visa rule for your passport before booking — our [Visa Wizard](/wizard) does it in seconds.
 
-## The List
+## Your Cheapest Picks, Ranked
 
-### 1. Thailand
-
-Thailand is superb value, with cheap street food, easy transport, and beaches, temples, and mountains for every budget.
-
-### 2. Malaysia
-
-Malaysia pairs modern cities, rainforests, and islands at gentle prices, with Kuala Lumpur a well-connected hub.
-
-### 3. Indonesia
-
-Indonesia — Bali especially — offers affordable stays, low-cost food, and stunning landscapes.
-
-### 4. Vietnam
-
-Vietnam delivers extraordinary value, from street food to the scenery of Halong Bay.
-
-### 5. Cambodia
-
-Cambodia pairs Angkor Wat with very low day-to-day costs.
-
-### 6. Sri Lanka
-
-Sri Lanka packs beaches, hills, ancient cities, and wildlife into a compact, affordable island.
-
-### 7. Nepal
-
-Nepal offers the Himalayas, vibrant Kathmandu, and world-class trekking at low cost.
-
-### 8. Maldives
-
-The Maldives is accessible via local-island guesthouses — turquoise water without a five-star price.
-
-### 9. Turkey
-
-Turkey is excellent value — Istanbul, Cappadocia, and the Aegean coast for less than comparable European trips.
-
-### 10. Azerbaijan
-
-Azerbaijan blends striking Baku with mountains and ancient sites at modest prices.
-
-### 11. Georgia
-
-Georgia offers dramatic mountains, wine country, and charming Tbilisi at very low cost.
-
-### 12. United Arab Emirates
-
-The UAE offers free beaches, striking architecture, and frequent flight deals.
-
-### 13. Qatar
-
-Qatar's Doha offers museums, souqs, and waterfronts, with free attractions and stopover deals.
-
-### 14. Kenya
-
-Kenya brings world-famous safaris, beaches, and vibrant Nairobi.
-
-### 15. Egypt
-
-Egypt offers the pyramids, the Nile, and Red Sea resorts at low cost.
-
+Ranked by total value — visa cost and hassle, flight reality, and daily spending, combined. Tap a card for the full picture on each destination. As always: confirm your exact entry rule on the [Visa Wizard](/wizard) before booking anything non-refundable.
 
 ## How to Choose the Right One for You
 
