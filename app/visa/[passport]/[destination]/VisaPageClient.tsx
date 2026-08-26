@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import type { OfficialSource } from '@/data/officialSources'
-import VisaHeroCard from '@/components/visa/VisaHeroCard'
+import VisaHeroCard, { type HeroPhoto } from '@/components/visa/VisaHeroCard'
 import DocumentChecklist from '@/components/visa/DocumentChecklist'
 import ApplicationSteps from '@/components/visa/ApplicationSteps'
 import TravelReadinessGrid from '@/components/visa/TravelReadinessGrid'
@@ -69,6 +69,7 @@ interface Props {
   relatedDestinations?: string[]
   otherPassports?: string[]
   conflictingStatus?: boolean
+  heroPhoto?: HeroPhoto | null
 }
 
 // ─── Sticky CTA bar (mobile, appears after hero scroll) ────────────────────
@@ -136,6 +137,7 @@ export default function VisaPageClient({
   relatedDestinations = [],
   otherPassports = [],
   conflictingStatus = false,
+  heroPhoto = null,
 }: Props) {
   const [showChecker, setShowChecker] = useState(false)
   const [stickyVisible, setStickyVisible] = useState(false)
@@ -279,6 +281,7 @@ export default function VisaPageClient({
           passportFlag={passportFlag}
           destinationName={destinationName}
           destinationFlag={destinationFlag}
+          heroPhoto={heroPhoto}
           onApplyClick={handleApply}
           onDownloadChecklist={handleDownloadChecklist}
         />

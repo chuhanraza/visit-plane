@@ -1,0 +1,987 @@
+{
+  "AD": {
+    "primary_query": "Andorra landscape landmark travel photography",
+    "fallback_query": "Andorra scenic travel destination",
+    "landmark_caption": "Andorra"
+  },
+  "AE": {
+    "primary_query": "Burj Khalifa Dubai skyline dusk",
+    "fallback_query": "Dubai Marina skyline waterfront night",
+    "landmark_caption": "Burj Khalifa, Dubai"
+  },
+  "AF": {
+    "primary_query": "Afghanistan landscape landmark travel photography",
+    "fallback_query": "Afghanistan scenic travel destination",
+    "landmark_caption": "Afghanistan"
+  },
+  "AG": {
+    "primary_query": "Antigua and Barbuda landscape landmark travel photography",
+    "fallback_query": "Antigua and Barbuda scenic travel destination",
+    "landmark_caption": "Antigua and Barbuda"
+  },
+  "AL": {
+    "primary_query": "Albania landscape landmark travel photography",
+    "fallback_query": "Albania scenic travel destination",
+    "landmark_caption": "Albania"
+  },
+  "AM": {
+    "primary_query": "Armenia landscape landmark travel photography",
+    "fallback_query": "Armenia scenic travel destination",
+    "landmark_caption": "Armenia"
+  },
+  "AO": {
+    "primary_query": "Angola landscape landmark travel photography",
+    "fallback_query": "Angola scenic travel destination",
+    "landmark_caption": "Angola"
+  },
+  "AR": {
+    "primary_query": "Iguazu Falls Argentina Brazil border",
+    "fallback_query": "Perito Moreno glacier Patagonia Argentina",
+    "landmark_caption": "Iguazú Falls"
+  },
+  "AT": {
+    "primary_query": "Hallstatt lakeside village mountains Austria",
+    "fallback_query": "Vienna Schonbrunn palace gardens",
+    "landmark_caption": "Hallstatt"
+  },
+  "AU": {
+    "primary_query": "Sydney Opera House Harbour Bridge aerial",
+    "fallback_query": "Great Barrier Reef aerial turquoise ocean",
+    "landmark_caption": "Sydney Opera House"
+  },
+  "AZ": {
+    "primary_query": "Azerbaijan landscape landmark travel photography",
+    "fallback_query": "Azerbaijan scenic travel destination",
+    "landmark_caption": "Azerbaijan"
+  },
+  "BA": {
+    "primary_query": "Bosnia and Herzegovina landscape landmark travel photography",
+    "fallback_query": "Bosnia and Herzegovina scenic travel destination",
+    "landmark_caption": "Bosnia and Herzegovina"
+  },
+  "BB": {
+    "primary_query": "Barbados landscape landmark travel photography",
+    "fallback_query": "Barbados scenic travel destination",
+    "landmark_caption": "Barbados"
+  },
+  "BD": {
+    "primary_query": "Bangladesh landscape landmark travel photography",
+    "fallback_query": "Bangladesh scenic travel destination",
+    "landmark_caption": "Bangladesh"
+  },
+  "BE": {
+    "primary_query": "Grand Place Brussels architecture night",
+    "fallback_query": "Bruges canals medieval town",
+    "landmark_caption": "Grand Place, Brussels"
+  },
+  "BF": {
+    "primary_query": "Burkina Faso landscape landmark travel photography",
+    "fallback_query": "Burkina Faso scenic travel destination",
+    "landmark_caption": "Burkina Faso"
+  },
+  "BG": {
+    "primary_query": "Bulgaria landscape landmark travel photography",
+    "fallback_query": "Bulgaria scenic travel destination",
+    "landmark_caption": "Bulgaria"
+  },
+  "BH": {
+    "primary_query": "Bahrain landscape landmark travel photography",
+    "fallback_query": "Bahrain scenic travel destination",
+    "landmark_caption": "Bahrain"
+  },
+  "BI": {
+    "primary_query": "Burundi landscape landmark travel photography",
+    "fallback_query": "Burundi scenic travel destination",
+    "landmark_caption": "Burundi"
+  },
+  "BJ": {
+    "primary_query": "Benin landscape landmark travel photography",
+    "fallback_query": "Benin scenic travel destination",
+    "landmark_caption": "Benin"
+  },
+  "BN": {
+    "primary_query": "Brunei landscape landmark travel photography",
+    "fallback_query": "Brunei scenic travel destination",
+    "landmark_caption": "Brunei"
+  },
+  "BO": {
+    "primary_query": "Bolivia landscape landmark travel photography",
+    "fallback_query": "Bolivia scenic travel destination",
+    "landmark_caption": "Bolivia"
+  },
+  "BR": {
+    "primary_query": "Christ the Redeemer Rio de Janeiro Corcovado",
+    "fallback_query": "Copacabana beach Sugarloaf Mountain aerial",
+    "landmark_caption": "Christ the Redeemer, Rio de Janeiro"
+  },
+  "BS": {
+    "primary_query": "Bahamas landscape landmark travel photography",
+    "fallback_query": "Bahamas scenic travel destination",
+    "landmark_caption": "Bahamas"
+  },
+  "BT": {
+    "primary_query": "Bhutan landscape landmark travel photography",
+    "fallback_query": "Bhutan scenic travel destination",
+    "landmark_caption": "Bhutan"
+  },
+  "BW": {
+    "primary_query": "Botswana landscape landmark travel photography",
+    "fallback_query": "Botswana scenic travel destination",
+    "landmark_caption": "Botswana"
+  },
+  "BY": {
+    "primary_query": "Belarus landscape landmark travel photography",
+    "fallback_query": "Belarus scenic travel destination",
+    "landmark_caption": "Belarus"
+  },
+  "BZ": {
+    "primary_query": "Belize landscape landmark travel photography",
+    "fallback_query": "Belize scenic travel destination",
+    "landmark_caption": "Belize"
+  },
+  "CA": {
+    "primary_query": "Niagara Falls Canada aerial",
+    "fallback_query": "Lake Louise Banff Alberta mountains",
+    "landmark_caption": "Niagara Falls"
+  },
+  "CD": {
+    "primary_query": "Democratic Republic of the Congo landscape landmark travel photography",
+    "fallback_query": "Democratic Republic of the Congo scenic travel destination",
+    "landmark_caption": "Democratic Republic of the Congo"
+  },
+  "CF": {
+    "primary_query": "Central African Republic landscape landmark travel photography",
+    "fallback_query": "Central African Republic scenic travel destination",
+    "landmark_caption": "Central African Republic"
+  },
+  "CG": {
+    "primary_query": "Republic of the Congo landscape landmark travel photography",
+    "fallback_query": "Republic of the Congo scenic travel destination",
+    "landmark_caption": "Republic of the Congo"
+  },
+  "CH": {
+    "primary_query": "Matterhorn Zermatt mountain Switzerland",
+    "fallback_query": "Lake Lucerne Swiss Alps village",
+    "landmark_caption": "The Matterhorn, Zermatt"
+  },
+  "CI": {
+    "primary_query": "Côte d'Ivoire landscape landmark travel photography",
+    "fallback_query": "Côte d'Ivoire scenic travel destination",
+    "landmark_caption": "Côte d'Ivoire"
+  },
+  "CL": {
+    "primary_query": "Torres del Paine Patagonia Chile mountains",
+    "fallback_query": "Easter Island Moai statues sunset",
+    "landmark_caption": "Torres del Paine"
+  },
+  "CM": {
+    "primary_query": "Cameroon landscape landmark travel photography",
+    "fallback_query": "Cameroon scenic travel destination",
+    "landmark_caption": "Cameroon"
+  },
+  "CN": {
+    "primary_query": "Great Wall of China mountains autumn",
+    "fallback_query": "Shanghai skyline Bund river night",
+    "landmark_caption": "The Great Wall of China"
+  },
+  "CO": {
+    "primary_query": "Colombia landscape landmark travel photography",
+    "fallback_query": "Colombia scenic travel destination",
+    "landmark_caption": "Colombia"
+  },
+  "CR": {
+    "primary_query": "Costa Rica landscape landmark travel photography",
+    "fallback_query": "Costa Rica scenic travel destination",
+    "landmark_caption": "Costa Rica"
+  },
+  "CU": {
+    "primary_query": "Cuba landscape landmark travel photography",
+    "fallback_query": "Cuba scenic travel destination",
+    "landmark_caption": "Cuba"
+  },
+  "CV": {
+    "primary_query": "Cabo Verde landscape landmark travel photography",
+    "fallback_query": "Cabo Verde scenic travel destination",
+    "landmark_caption": "Cabo Verde"
+  },
+  "CY": {
+    "primary_query": "Cyprus landscape landmark travel photography",
+    "fallback_query": "Cyprus scenic travel destination",
+    "landmark_caption": "Cyprus"
+  },
+  "CZ": {
+    "primary_query": "Prague Castle Charles Bridge sunset",
+    "fallback_query": "Cesky Krumlov medieval town river",
+    "landmark_caption": "Prague Castle & Charles Bridge"
+  },
+  "DE": {
+    "primary_query": "Brandenburg Gate Berlin dusk",
+    "fallback_query": "Neuschwanstein Castle Bavaria mountains",
+    "landmark_caption": "Brandenburg Gate, Berlin"
+  },
+  "DJ": {
+    "primary_query": "Djibouti landscape landmark travel photography",
+    "fallback_query": "Djibouti scenic travel destination",
+    "landmark_caption": "Djibouti"
+  },
+  "DK": {
+    "primary_query": "Nyhavn Copenhagen colorful harbor",
+    "fallback_query": "Copenhagen waterfront skyline",
+    "landmark_caption": "Nyhavn, Copenhagen"
+  },
+  "DM": {
+    "primary_query": "Dominica landscape landmark travel photography",
+    "fallback_query": "Dominica scenic travel destination",
+    "landmark_caption": "Dominica"
+  },
+  "DO": {
+    "primary_query": "Dominican Republic landscape landmark travel photography",
+    "fallback_query": "Dominican Republic scenic travel destination",
+    "landmark_caption": "Dominican Republic"
+  },
+  "DZ": {
+    "primary_query": "Algeria landscape landmark travel photography",
+    "fallback_query": "Algeria scenic travel destination",
+    "landmark_caption": "Algeria"
+  },
+  "EC": {
+    "primary_query": "Ecuador landscape landmark travel photography",
+    "fallback_query": "Ecuador scenic travel destination",
+    "landmark_caption": "Ecuador"
+  },
+  "EE": {
+    "primary_query": "Estonia landscape landmark travel photography",
+    "fallback_query": "Estonia scenic travel destination",
+    "landmark_caption": "Estonia"
+  },
+  "EG": {
+    "primary_query": "Great Pyramids of Giza desert sunset",
+    "fallback_query": "Nile river felucca Luxor ruins",
+    "landmark_caption": "Pyramids of Giza"
+  },
+  "ER": {
+    "primary_query": "Eritrea landscape landmark travel photography",
+    "fallback_query": "Eritrea scenic travel destination",
+    "landmark_caption": "Eritrea"
+  },
+  "ES": {
+    "primary_query": "Spain landscape landmark travel photography",
+    "fallback_query": "Spain scenic travel destination",
+    "landmark_caption": "Spain"
+  },
+  "ET": {
+    "primary_query": "Ethiopia landscape landmark travel photography",
+    "fallback_query": "Ethiopia scenic travel destination",
+    "landmark_caption": "Ethiopia"
+  },
+  "FI": {
+    "primary_query": "Finland landscape landmark travel photography",
+    "fallback_query": "Finland scenic travel destination",
+    "landmark_caption": "Finland"
+  },
+  "FJ": {
+    "primary_query": "Fiji landscape landmark travel photography",
+    "fallback_query": "Fiji scenic travel destination",
+    "landmark_caption": "Fiji"
+  },
+  "FM": {
+    "primary_query": "Micronesia landscape landmark travel photography",
+    "fallback_query": "Micronesia scenic travel destination",
+    "landmark_caption": "Micronesia"
+  },
+  "FR": {
+    "primary_query": "Eiffel Tower Paris dusk lights",
+    "fallback_query": "Paris cityscape Seine river",
+    "landmark_caption": "Eiffel Tower, Paris"
+  },
+  "GA": {
+    "primary_query": "Gabon landscape landmark travel photography",
+    "fallback_query": "Gabon scenic travel destination",
+    "landmark_caption": "Gabon"
+  },
+  "GB": {
+    "primary_query": "Big Ben Elizabeth Tower London Westminster",
+    "fallback_query": "Tower Bridge London Thames sunset",
+    "landmark_caption": "Big Ben, London"
+  },
+  "GD": {
+    "primary_query": "Grenada landscape landmark travel photography",
+    "fallback_query": "Grenada scenic travel destination",
+    "landmark_caption": "Grenada"
+  },
+  "GE": {
+    "primary_query": "Georgia landscape landmark travel photography",
+    "fallback_query": "Georgia scenic travel destination",
+    "landmark_caption": "Georgia"
+  },
+  "GH": {
+    "primary_query": "Ghana landscape landmark travel photography",
+    "fallback_query": "Ghana scenic travel destination",
+    "landmark_caption": "Ghana"
+  },
+  "GM": {
+    "primary_query": "The Gambia landscape landmark travel photography",
+    "fallback_query": "The Gambia scenic travel destination",
+    "landmark_caption": "The Gambia"
+  },
+  "GN": {
+    "primary_query": "Guinea landscape landmark travel photography",
+    "fallback_query": "Guinea scenic travel destination",
+    "landmark_caption": "Guinea"
+  },
+  "GQ": {
+    "primary_query": "Equatorial Guinea landscape landmark travel photography",
+    "fallback_query": "Equatorial Guinea scenic travel destination",
+    "landmark_caption": "Equatorial Guinea"
+  },
+  "GR": {
+    "primary_query": "Santorini Oia blue dome church sea sunset",
+    "fallback_query": "Acropolis Parthenon Athens ancient ruins",
+    "landmark_caption": "Oia Blue Dome Church, Santorini"
+  },
+  "GT": {
+    "primary_query": "Guatemala landscape landmark travel photography",
+    "fallback_query": "Guatemala scenic travel destination",
+    "landmark_caption": "Guatemala"
+  },
+  "GW": {
+    "primary_query": "Guinea-Bissau landscape landmark travel photography",
+    "fallback_query": "Guinea-Bissau scenic travel destination",
+    "landmark_caption": "Guinea-Bissau"
+  },
+  "GY": {
+    "primary_query": "Guyana landscape landmark travel photography",
+    "fallback_query": "Guyana scenic travel destination",
+    "landmark_caption": "Guyana"
+  },
+  "HK": {
+    "primary_query": "Hong Kong landscape landmark travel photography",
+    "fallback_query": "Hong Kong scenic travel destination",
+    "landmark_caption": "Hong Kong"
+  },
+  "HN": {
+    "primary_query": "Honduras landscape landmark travel photography",
+    "fallback_query": "Honduras scenic travel destination",
+    "landmark_caption": "Honduras"
+  },
+  "HR": {
+    "primary_query": "Dubrovnik old town walls Adriatic sea",
+    "fallback_query": "Plitvice lakes waterfalls Croatia",
+    "landmark_caption": "Dubrovnik Old Town"
+  },
+  "HT": {
+    "primary_query": "Haiti landscape landmark travel photography",
+    "fallback_query": "Haiti scenic travel destination",
+    "landmark_caption": "Haiti"
+  },
+  "HU": {
+    "primary_query": "Hungarian Parliament Budapest Danube night",
+    "fallback_query": "Buda Castle hill Budapest",
+    "landmark_caption": "Hungarian Parliament Building, Budapest"
+  },
+  "ID": {
+    "primary_query": "Bali rice terraces Ubud Indonesia",
+    "fallback_query": "Borobudur temple sunrise mist Java",
+    "landmark_caption": "Tegallalang Rice Terraces, Bali"
+  },
+  "IE": {
+    "primary_query": "Cliffs of Moher Ireland coastline",
+    "fallback_query": "Dublin colorful doors Georgian street",
+    "landmark_caption": "Cliffs of Moher"
+  },
+  "IL": {
+    "primary_query": "Jerusalem Old City Western Wall",
+    "fallback_query": "Tel Aviv beach skyline Mediterranean",
+    "landmark_caption": "The Old City, Jerusalem"
+  },
+  "IN": {
+    "primary_query": "Taj Mahal Agra sunrise reflection pool",
+    "fallback_query": "Varanasi ghats Ganges river sunset",
+    "landmark_caption": "Taj Mahal, Agra"
+  },
+  "IQ": {
+    "primary_query": "Iraq landscape landmark travel photography",
+    "fallback_query": "Iraq scenic travel destination",
+    "landmark_caption": "Iraq"
+  },
+  "IR": {
+    "primary_query": "Iran landscape landmark travel photography",
+    "fallback_query": "Iran scenic travel destination",
+    "landmark_caption": "Iran"
+  },
+  "IS": {
+    "primary_query": "Hallgrimskirkja church Reykjavik",
+    "fallback_query": "Reynisfjara black sand beach basalt",
+    "landmark_caption": "Hallgrímskirkja, Reykjavík"
+  },
+  "IT": {
+    "primary_query": "Colosseum Rome exterior golden hour",
+    "fallback_query": "Amalfi coast Positano cliffside village",
+    "landmark_caption": "The Colosseum, Rome"
+  },
+  "JM": {
+    "primary_query": "Jamaica landscape landmark travel photography",
+    "fallback_query": "Jamaica scenic travel destination",
+    "landmark_caption": "Jamaica"
+  },
+  "JO": {
+    "primary_query": "Petra Treasury Al-Khazneh canyon Jordan",
+    "fallback_query": "Wadi Rum red desert dunes rock formations",
+    "landmark_caption": "Al-Khazneh (The Treasury), Petra"
+  },
+  "JP": {
+    "primary_query": "Mount Fuji Chureito Pagoda cherry blossoms",
+    "fallback_query": "Kyoto traditional temple bamboo forest",
+    "landmark_caption": "Mount Fuji & Chureito Pagoda"
+  },
+  "KE": {
+    "primary_query": "Maasai Mara safari wildlife savanna Kenya",
+    "fallback_query": "Amboseli elephants Kilimanjaro backdrop",
+    "landmark_caption": "Maasai Mara Safari"
+  },
+  "KG": {
+    "primary_query": "Kyrgyzstan landscape landmark travel photography",
+    "fallback_query": "Kyrgyzstan scenic travel destination",
+    "landmark_caption": "Kyrgyzstan"
+  },
+  "KH": {
+    "primary_query": "Angkor Wat stone temple reflection sunrise Cambodia",
+    "fallback_query": "Ta Prohm temple banyan tree roots Siem Reap",
+    "landmark_caption": "Angkor Wat, Siem Reap"
+  },
+  "KI": {
+    "primary_query": "Kiribati landscape landmark travel photography",
+    "fallback_query": "Kiribati scenic travel destination",
+    "landmark_caption": "Kiribati"
+  },
+  "KM": {
+    "primary_query": "Comoros landscape landmark travel photography",
+    "fallback_query": "Comoros scenic travel destination",
+    "landmark_caption": "Comoros"
+  },
+  "KN": {
+    "primary_query": "Saint Kitts and Nevis landscape landmark travel photography",
+    "fallback_query": "Saint Kitts and Nevis scenic travel destination",
+    "landmark_caption": "Saint Kitts and Nevis"
+  },
+  "KP": {
+    "primary_query": "North Korea landscape landmark travel photography",
+    "fallback_query": "North Korea scenic travel destination",
+    "landmark_caption": "North Korea"
+  },
+  "KR": {
+    "primary_query": "Gyeongbokgung Palace Seoul traditional",
+    "fallback_query": "Seoul skyline Han river night",
+    "landmark_caption": "Gyeongbokgung Palace, Seoul"
+  },
+  "KW": {
+    "primary_query": "Kuwait landscape landmark travel photography",
+    "fallback_query": "Kuwait scenic travel destination",
+    "landmark_caption": "Kuwait"
+  },
+  "KZ": {
+    "primary_query": "Kazakhstan landscape landmark travel photography",
+    "fallback_query": "Kazakhstan scenic travel destination",
+    "landmark_caption": "Kazakhstan"
+  },
+  "LA": {
+    "primary_query": "Laos landscape landmark travel photography",
+    "fallback_query": "Laos scenic travel destination",
+    "landmark_caption": "Laos"
+  },
+  "LB": {
+    "primary_query": "Lebanon landscape landmark travel photography",
+    "fallback_query": "Lebanon scenic travel destination",
+    "landmark_caption": "Lebanon"
+  },
+  "LC": {
+    "primary_query": "Saint Lucia landscape landmark travel photography",
+    "fallback_query": "Saint Lucia scenic travel destination",
+    "landmark_caption": "Saint Lucia"
+  },
+  "LI": {
+    "primary_query": "Liechtenstein landscape landmark travel photography",
+    "fallback_query": "Liechtenstein scenic travel destination",
+    "landmark_caption": "Liechtenstein"
+  },
+  "LK": {
+    "primary_query": "Sigiriya rock fortress Sri Lanka",
+    "fallback_query": "Ella tea plantations mountains Sri Lanka",
+    "landmark_caption": "Sigiriya Rock Fortress"
+  },
+  "LR": {
+    "primary_query": "Liberia landscape landmark travel photography",
+    "fallback_query": "Liberia scenic travel destination",
+    "landmark_caption": "Liberia"
+  },
+  "LS": {
+    "primary_query": "Lesotho landscape landmark travel photography",
+    "fallback_query": "Lesotho scenic travel destination",
+    "landmark_caption": "Lesotho"
+  },
+  "LT": {
+    "primary_query": "Lithuania landscape landmark travel photography",
+    "fallback_query": "Lithuania scenic travel destination",
+    "landmark_caption": "Lithuania"
+  },
+  "LU": {
+    "primary_query": "Luxembourg landscape landmark travel photography",
+    "fallback_query": "Luxembourg scenic travel destination",
+    "landmark_caption": "Luxembourg"
+  },
+  "LV": {
+    "primary_query": "Latvia landscape landmark travel photography",
+    "fallback_query": "Latvia scenic travel destination",
+    "landmark_caption": "Latvia"
+  },
+  "LY": {
+    "primary_query": "Libya landscape landmark travel photography",
+    "fallback_query": "Libya scenic travel destination",
+    "landmark_caption": "Libya"
+  },
+  "MA": {
+    "primary_query": "Chefchaouen blue city streets Morocco",
+    "fallback_query": "Jemaa el-Fnaa Marrakech medina evening",
+    "landmark_caption": "Chefchaouen, the Blue City"
+  },
+  "MC": {
+    "primary_query": "Monaco landscape landmark travel photography",
+    "fallback_query": "Monaco scenic travel destination",
+    "landmark_caption": "Monaco"
+  },
+  "MD": {
+    "primary_query": "Moldova landscape landmark travel photography",
+    "fallback_query": "Moldova scenic travel destination",
+    "landmark_caption": "Moldova"
+  },
+  "ME": {
+    "primary_query": "Montenegro landscape landmark travel photography",
+    "fallback_query": "Montenegro scenic travel destination",
+    "landmark_caption": "Montenegro"
+  },
+  "MG": {
+    "primary_query": "Madagascar landscape landmark travel photography",
+    "fallback_query": "Madagascar scenic travel destination",
+    "landmark_caption": "Madagascar"
+  },
+  "MH": {
+    "primary_query": "Marshall Islands landscape landmark travel photography",
+    "fallback_query": "Marshall Islands scenic travel destination",
+    "landmark_caption": "Marshall Islands"
+  },
+  "MK": {
+    "primary_query": "North Macedonia landscape landmark travel photography",
+    "fallback_query": "North Macedonia scenic travel destination",
+    "landmark_caption": "North Macedonia"
+  },
+  "ML": {
+    "primary_query": "Mali landscape landmark travel photography",
+    "fallback_query": "Mali scenic travel destination",
+    "landmark_caption": "Mali"
+  },
+  "MM": {
+    "primary_query": "Myanmar landscape landmark travel photography",
+    "fallback_query": "Myanmar scenic travel destination",
+    "landmark_caption": "Myanmar"
+  },
+  "MN": {
+    "primary_query": "Mongolia landscape landmark travel photography",
+    "fallback_query": "Mongolia scenic travel destination",
+    "landmark_caption": "Mongolia"
+  },
+  "MR": {
+    "primary_query": "Mauritania landscape landmark travel photography",
+    "fallback_query": "Mauritania scenic travel destination",
+    "landmark_caption": "Mauritania"
+  },
+  "MT": {
+    "primary_query": "Malta landscape landmark travel photography",
+    "fallback_query": "Malta scenic travel destination",
+    "landmark_caption": "Malta"
+  },
+  "MU": {
+    "primary_query": "Mauritius landscape landmark travel photography",
+    "fallback_query": "Mauritius scenic travel destination",
+    "landmark_caption": "Mauritius"
+  },
+  "MV": {
+    "primary_query": "Maldives overwater bungalows turquoise lagoon",
+    "fallback_query": "Maldives aerial atoll white sand beach",
+    "landmark_caption": "Maldives Overwater Villas"
+  },
+  "MW": {
+    "primary_query": "Malawi landscape landmark travel photography",
+    "fallback_query": "Malawi scenic travel destination",
+    "landmark_caption": "Malawi"
+  },
+  "MX": {
+    "primary_query": "Chichen Itza El Castillo pyramid Yucatan Mexico",
+    "fallback_query": "Tulum Caribbean beach turquoise ocean ruins",
+    "landmark_caption": "El Castillo, Chichén Itzá"
+  },
+  "MY": {
+    "primary_query": "Malaysia landscape landmark travel photography",
+    "fallback_query": "Malaysia scenic travel destination",
+    "landmark_caption": "Malaysia"
+  },
+  "MZ": {
+    "primary_query": "Mozambique landscape landmark travel photography",
+    "fallback_query": "Mozambique scenic travel destination",
+    "landmark_caption": "Mozambique"
+  },
+  "NA": {
+    "primary_query": "Namibia landscape landmark travel photography",
+    "fallback_query": "Namibia scenic travel destination",
+    "landmark_caption": "Namibia"
+  },
+  "NE": {
+    "primary_query": "Niger landscape landmark travel photography",
+    "fallback_query": "Niger scenic travel destination",
+    "landmark_caption": "Niger"
+  },
+  "NG": {
+    "primary_query": "Nigeria landscape landmark travel photography",
+    "fallback_query": "Nigeria scenic travel destination",
+    "landmark_caption": "Nigeria"
+  },
+  "NI": {
+    "primary_query": "Nicaragua landscape landmark travel photography",
+    "fallback_query": "Nicaragua scenic travel destination",
+    "landmark_caption": "Nicaragua"
+  },
+  "NL": {
+    "primary_query": "Amsterdam canals houseboats evening",
+    "fallback_query": "Keukenhof tulip fields Netherlands",
+    "landmark_caption": "Amsterdam Canals"
+  },
+  "NO": {
+    "primary_query": "Geirangerfjord Norway aerial dramatic cliffs",
+    "fallback_query": "Lofoten islands Norway mountains sea",
+    "landmark_caption": "Geirangerfjord"
+  },
+  "NP": {
+    "primary_query": "Everest Himalaya mountain peaks snow",
+    "fallback_query": "Swayambhunath Stupa Kathmandu",
+    "landmark_caption": "Mount Everest, Himalayas"
+  },
+  "NR": {
+    "primary_query": "Nauru landscape landmark travel photography",
+    "fallback_query": "Nauru scenic travel destination",
+    "landmark_caption": "Nauru"
+  },
+  "NZ": {
+    "primary_query": "Milford Sound New Zealand fjord mountains",
+    "fallback_query": "Queenstown lake mountains autumn",
+    "landmark_caption": "Milford Sound"
+  },
+  "OM": {
+    "primary_query": "Oman landscape landmark travel photography",
+    "fallback_query": "Oman scenic travel destination",
+    "landmark_caption": "Oman"
+  },
+  "PA": {
+    "primary_query": "Panama landscape landmark travel photography",
+    "fallback_query": "Panama scenic travel destination",
+    "landmark_caption": "Panama"
+  },
+  "PE": {
+    "primary_query": "Machu Picchu ancient Inca ruins mountains",
+    "fallback_query": "Sacred Valley Andes mountains Peru",
+    "landmark_caption": "Machu Picchu, Cusco"
+  },
+  "PG": {
+    "primary_query": "Papua New Guinea landscape landmark travel photography",
+    "fallback_query": "Papua New Guinea scenic travel destination",
+    "landmark_caption": "Papua New Guinea"
+  },
+  "PH": {
+    "primary_query": "Philippines landscape landmark travel photography",
+    "fallback_query": "Philippines scenic travel destination",
+    "landmark_caption": "Philippines"
+  },
+  "PK": {
+    "primary_query": "Pakistan landscape landmark travel photography",
+    "fallback_query": "Pakistan scenic travel destination",
+    "landmark_caption": "Pakistan"
+  },
+  "PL": {
+    "primary_query": "Wawel Castle Krakow river",
+    "fallback_query": "Warsaw old town square colorful",
+    "landmark_caption": "Wawel Castle, Kraków"
+  },
+  "PS": {
+    "primary_query": "Palestine landscape landmark travel photography",
+    "fallback_query": "Palestine scenic travel destination",
+    "landmark_caption": "Palestine"
+  },
+  "PT": {
+    "primary_query": "Belem Tower Lisbon river Portugal",
+    "fallback_query": "Porto Douro river colorful houses",
+    "landmark_caption": "Belém Tower, Lisbon"
+  },
+  "PW": {
+    "primary_query": "Palau landscape landmark travel photography",
+    "fallback_query": "Palau scenic travel destination",
+    "landmark_caption": "Palau"
+  },
+  "PY": {
+    "primary_query": "Paraguay landscape landmark travel photography",
+    "fallback_query": "Paraguay scenic travel destination",
+    "landmark_caption": "Paraguay"
+  },
+  "QA": {
+    "primary_query": "Qatar landscape landmark travel photography",
+    "fallback_query": "Qatar scenic travel destination",
+    "landmark_caption": "Qatar"
+  },
+  "RO": {
+    "primary_query": "Bran Castle Transylvania Romania",
+    "fallback_query": "Bucharest Palace of Parliament",
+    "landmark_caption": "Bran Castle, Transylvania"
+  },
+  "RS": {
+    "primary_query": "Serbia landscape landmark travel photography",
+    "fallback_query": "Serbia scenic travel destination",
+    "landmark_caption": "Serbia"
+  },
+  "RU": {
+    "primary_query": "Red Square Saint Basils Cathedral Moscow",
+    "fallback_query": "Hermitage Saint Petersburg river palace",
+    "landmark_caption": "Saint Basil's Cathedral, Moscow"
+  },
+  "RW": {
+    "primary_query": "Rwanda landscape landmark travel photography",
+    "fallback_query": "Rwanda scenic travel destination",
+    "landmark_caption": "Rwanda"
+  },
+  "SA": {
+    "primary_query": "AlUla desert canyon rock formations Saudi Arabia",
+    "fallback_query": "Diriyah historic mudbrick village Riyadh",
+    "landmark_caption": "AlUla, Saudi Arabia"
+  },
+  "SB": {
+    "primary_query": "Solomon Islands landscape landmark travel photography",
+    "fallback_query": "Solomon Islands scenic travel destination",
+    "landmark_caption": "Solomon Islands"
+  },
+  "SC": {
+    "primary_query": "Seychelles landscape landmark travel photography",
+    "fallback_query": "Seychelles scenic travel destination",
+    "landmark_caption": "Seychelles"
+  },
+  "SD": {
+    "primary_query": "Sudan landscape landmark travel photography",
+    "fallback_query": "Sudan scenic travel destination",
+    "landmark_caption": "Sudan"
+  },
+  "SE": {
+    "primary_query": "Stockholm Gamla Stan old town skyline",
+    "fallback_query": "Stockholm archipelago aerial",
+    "landmark_caption": "Gamla Stan, Stockholm"
+  },
+  "SG": {
+    "primary_query": "Singapore landscape landmark travel photography",
+    "fallback_query": "Singapore scenic travel destination",
+    "landmark_caption": "Singapore"
+  },
+  "SI": {
+    "primary_query": "Slovenia landscape landmark travel photography",
+    "fallback_query": "Slovenia scenic travel destination",
+    "landmark_caption": "Slovenia"
+  },
+  "SK": {
+    "primary_query": "Slovakia landscape landmark travel photography",
+    "fallback_query": "Slovakia scenic travel destination",
+    "landmark_caption": "Slovakia"
+  },
+  "SL": {
+    "primary_query": "Sierra Leone landscape landmark travel photography",
+    "fallback_query": "Sierra Leone scenic travel destination",
+    "landmark_caption": "Sierra Leone"
+  },
+  "SM": {
+    "primary_query": "San Marino landscape landmark travel photography",
+    "fallback_query": "San Marino scenic travel destination",
+    "landmark_caption": "San Marino"
+  },
+  "SN": {
+    "primary_query": "Senegal landscape landmark travel photography",
+    "fallback_query": "Senegal scenic travel destination",
+    "landmark_caption": "Senegal"
+  },
+  "SO": {
+    "primary_query": "Somalia landscape landmark travel photography",
+    "fallback_query": "Somalia scenic travel destination",
+    "landmark_caption": "Somalia"
+  },
+  "SR": {
+    "primary_query": "Suriname landscape landmark travel photography",
+    "fallback_query": "Suriname scenic travel destination",
+    "landmark_caption": "Suriname"
+  },
+  "SS": {
+    "primary_query": "South Sudan landscape landmark travel photography",
+    "fallback_query": "South Sudan scenic travel destination",
+    "landmark_caption": "South Sudan"
+  },
+  "ST": {
+    "primary_query": "São Tomé & Príncipe landscape landmark travel photography",
+    "fallback_query": "São Tomé & Príncipe scenic travel destination",
+    "landmark_caption": "São Tomé & Príncipe"
+  },
+  "SV": {
+    "primary_query": "El Salvador landscape landmark travel photography",
+    "fallback_query": "El Salvador scenic travel destination",
+    "landmark_caption": "El Salvador"
+  },
+  "SY": {
+    "primary_query": "Syria landscape landmark travel photography",
+    "fallback_query": "Syria scenic travel destination",
+    "landmark_caption": "Syria"
+  },
+  "SZ": {
+    "primary_query": "Swaziland landscape landmark travel photography",
+    "fallback_query": "Swaziland scenic travel destination",
+    "landmark_caption": "Swaziland"
+  },
+  "TD": {
+    "primary_query": "Chad landscape landmark travel photography",
+    "fallback_query": "Chad scenic travel destination",
+    "landmark_caption": "Chad"
+  },
+  "TG": {
+    "primary_query": "Togo landscape landmark travel photography",
+    "fallback_query": "Togo scenic travel destination",
+    "landmark_caption": "Togo"
+  },
+  "TH": {
+    "primary_query": "Wat Arun temple Bangkok river dusk",
+    "fallback_query": "Phi Phi islands Thailand turquoise bay",
+    "landmark_caption": "Wat Arun, Bangkok"
+  },
+  "TJ": {
+    "primary_query": "Tajikistan landscape landmark travel photography",
+    "fallback_query": "Tajikistan scenic travel destination",
+    "landmark_caption": "Tajikistan"
+  },
+  "TL": {
+    "primary_query": "Timor-Leste landscape landmark travel photography",
+    "fallback_query": "Timor-Leste scenic travel destination",
+    "landmark_caption": "Timor-Leste"
+  },
+  "TM": {
+    "primary_query": "Turkmenistan landscape landmark travel photography",
+    "fallback_query": "Turkmenistan scenic travel destination",
+    "landmark_caption": "Turkmenistan"
+  },
+  "TN": {
+    "primary_query": "Tunisia landscape landmark travel photography",
+    "fallback_query": "Tunisia scenic travel destination",
+    "landmark_caption": "Tunisia"
+  },
+  "TO": {
+    "primary_query": "Tonga landscape landmark travel photography",
+    "fallback_query": "Tonga scenic travel destination",
+    "landmark_caption": "Tonga"
+  },
+  "TR": {
+    "primary_query": "Cappadocia hot air balloons sunrise Turkey",
+    "fallback_query": "Hagia Sophia Istanbul Bosphorus skyline",
+    "landmark_caption": "Cappadocia Hot Air Balloons"
+  },
+  "TT": {
+    "primary_query": "Trinidad and Tobago landscape landmark travel photography",
+    "fallback_query": "Trinidad and Tobago scenic travel destination",
+    "landmark_caption": "Trinidad and Tobago"
+  },
+  "TV": {
+    "primary_query": "Tuvalu landscape landmark travel photography",
+    "fallback_query": "Tuvalu scenic travel destination",
+    "landmark_caption": "Tuvalu"
+  },
+  "TW": {
+    "primary_query": "Taiwan landscape landmark travel photography",
+    "fallback_query": "Taiwan scenic travel destination",
+    "landmark_caption": "Taiwan"
+  },
+  "TZ": {
+    "primary_query": "Tanzania landscape landmark travel photography",
+    "fallback_query": "Tanzania scenic travel destination",
+    "landmark_caption": "Tanzania"
+  },
+  "UA": {
+    "primary_query": "Saint Sophia Cathedral Kyiv",
+    "fallback_query": "Lviv old town square Ukraine",
+    "landmark_caption": "Saint Sophia Cathedral, Kyiv"
+  },
+  "UG": {
+    "primary_query": "Uganda landscape landmark travel photography",
+    "fallback_query": "Uganda scenic travel destination",
+    "landmark_caption": "Uganda"
+  },
+  "US": {
+    "primary_query": "Statue of Liberty New York skyline",
+    "fallback_query": "Manhattan skyline dusk aerial",
+    "landmark_caption": "Statue of Liberty, New York"
+  },
+  "UY": {
+    "primary_query": "Uruguay landscape landmark travel photography",
+    "fallback_query": "Uruguay scenic travel destination",
+    "landmark_caption": "Uruguay"
+  },
+  "UZ": {
+    "primary_query": "Uzbekistan landscape landmark travel photography",
+    "fallback_query": "Uzbekistan scenic travel destination",
+    "landmark_caption": "Uzbekistan"
+  },
+  "VC": {
+    "primary_query": "Saint Vincent and the Grenadines landscape landmark travel photography",
+    "fallback_query": "Saint Vincent and the Grenadines scenic travel destination",
+    "landmark_caption": "Saint Vincent and the Grenadines"
+  },
+  "VE": {
+    "primary_query": "Venezuela landscape landmark travel photography",
+    "fallback_query": "Venezuela scenic travel destination",
+    "landmark_caption": "Venezuela"
+  },
+  "VN": {
+    "primary_query": "Ha Long Bay limestone karst emerald water Vietnam",
+    "fallback_query": "Hoi An ancient town lantern street evening",
+    "landmark_caption": "Ha Long Bay"
+  },
+  "VU": {
+    "primary_query": "Vanuatu landscape landmark travel photography",
+    "fallback_query": "Vanuatu scenic travel destination",
+    "landmark_caption": "Vanuatu"
+  },
+  "WS": {
+    "primary_query": "Samoa landscape landmark travel photography",
+    "fallback_query": "Samoa scenic travel destination",
+    "landmark_caption": "Samoa"
+  },
+  "XK": {
+    "primary_query": "Kosovo landscape landmark travel photography",
+    "fallback_query": "Kosovo scenic travel destination",
+    "landmark_caption": "Kosovo"
+  },
+  "YE": {
+    "primary_query": "Yemen landscape landmark travel photography",
+    "fallback_query": "Yemen scenic travel destination",
+    "landmark_caption": "Yemen"
+  },
+  "ZA": {
+    "primary_query": "Table Mountain Cape Town aerial cableway",
+    "fallback_query": "Kruger national park safari savanna",
+    "landmark_caption": "Table Mountain, Cape Town"
+  },
+  "ZM": {
+    "primary_query": "Zambia landscape landmark travel photography",
+    "fallback_query": "Zambia scenic travel destination",
+    "landmark_caption": "Zambia"
+  },
+  "ZW": {
+    "primary_query": "Zimbabwe landscape landmark travel photography",
+    "fallback_query": "Zimbabwe scenic travel destination",
+    "landmark_caption": "Zimbabwe"
+  }
+}

@@ -6,12 +6,22 @@ import { getCuratedDestinationFee } from '@/lib/data/destinationFees'
 import { useLocalCurrency } from '@/hooks/useLocalCurrency'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+export interface HeroPhoto {
+  imageUrl: string
+  landmarkCaption: string | null
+  photographerName: string | null
+  photographerUrl: string | null
+  focalPointX: number
+  focalPointY: number
+}
+
 interface VisaHeroCardProps {
   visaRecord: VisaRecord | null
   passportName: string
   passportFlag: string
   destinationName: string
   destinationFlag: string
+  heroPhoto?: HeroPhoto | null
   onApplyClick?: () => void
   onDownloadChecklist?: () => void
 }
@@ -99,6 +109,18 @@ function resolveSmartProcessing(record: VisaRecord, visaType: string): string {
 function resolveValidity(record: VisaRecord): string {
   return (record.validity ?? record.stay_duration ?? '').toString().trim() || 'Varies'
 }
+// The `destinations` table is 100% `data_confidence = 'unverified'` with
+// `official_source_url` empty on 99.99% of rows (see visa-data-review.md §3) —
+// the "cross-checked with official sources" badge was previously shown
+// unconditionally, which is a false claim on this YMYL page. Only call a row
+// verified when the row itself says so AND actually carries a source + date.
+function resolveVerification(record: VisaRecord): { verified: boolean; sourceUrl: string } {
+  const confidence = (record.data_confidence ?? '').toString().trim().toLowerCase()
+  const sourceUrl = (record.official_source_url ?? '').toString().trim()
+  const hasDate = !!record.last_verified
+  const verified = !!confidence && confidence !== 'unverified' && !!sourceUrl && hasDate
+  return { verified, sourceUrl }
+}
 function parseUsd(feeStr: string): number | null {
   const match = feeStr.match(/\$(\d+(?:\.\d+)?)/)
   return match ? parseFloat(match[1]) : null
@@ -111,6 +133,7 @@ export default function VisaHeroCard({
   passportFlag,
   destinationName,
   destinationFlag,
+  heroPhoto = null,
   onApplyClick,
   onDownloadChecklist,
 }: VisaHeroCardProps) {
@@ -156,10 +179,14 @@ export default function VisaHeroCard({
   const applyUrl = resolveApplyUrl(visaRecord, destinationName)
   const lastVerified = visaRecord.last_verified
     ? new Date(visaRecord.last_verified as string).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-    : '26 May 2026'
+    : null
+  const { verified: isSourceVerified, sourceUrl } = resolveVerification(visaRecord)
   const isFree = /free|no visa/i.test(visaType)
   const isArrival = /arrival/i.test(visaType)
-  const applyLabel = isFree ? 'No visa needed' : isArrival ? 'On arrival' : 'Apply online'
+  // No field in the source data records HOW to apply (online / VFS / in-person
+  // embassy) — "Apply online" was a hardcoded, unverified assumption. Keep the
+  // copy non-committal unless the route is genuinely free or arrival-based.
+  const applyLabel = isFree ? 'No visa needed' : isArrival ? 'On arrival' : 'Check process'
 
   // Verdict-first page H1 (the "instant answer" pattern that wins featured
   // snippets — e.g. Sherpa's "You need a visa for Türkiye if you have a
@@ -180,7 +207,29 @@ export default function VisaHeroCard({
   ]
 
   return (
-    <section id="visa-hero" aria-label="Visa requirement summary" className="mx-auto max-w-4xl px-4 pb-2 pt-6 sm:px-6">
+    <section id="visa-hero" aria-label="Visa requirement summary" className={`mx-auto max-w-4xl px-4 pb-2 pt-6 sm:px-6 ${heroPhoto ? 'lg:max-w-6xl' : ''}`}>
+      {/* Mobile hero banner — compact, only when a reviewed photo exists. No
+          placeholder box otherwise, so the null case (every route today)
+          renders identically to before this photo feature existed. */}
+      {heroPhoto && (
+        <div className="mb-4 overflow-hidden rounded-2xl lg:hidden" style={{ height: 150 }}>
+          <div className="relative h-full w-full">
+            <img
+              src={heroPhoto.imageUrl}
+              alt={heroPhoto.landmarkCaption ?? `${destinationName} destination photo`}
+              className="h-full w-full object-cover"
+              style={{ objectPosition: `${heroPhoto.focalPointX * 100}% ${heroPhoto.focalPointY * 100}%` }}
+              loading="eager"
+            />
+            {heroPhoto.landmarkCaption && (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2">
+                <p className="text-xs font-semibold text-white drop-shadow">{heroPhoto.landmarkCaption}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Route indicator */}
       <div className="mb-6 flex items-center justify-center gap-3 sm:gap-5">
         <div className="flex items-center gap-2.5">
@@ -194,6 +243,7 @@ export default function VisaHeroCard({
         </div>
       </div>
 
+      <div className={heroPhoto ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-6' : ''}>
       {/* Answer card */}
       <div className="overflow-hidden rounded-3xl border border-gray-200/80 bg-white shadow-[0_24px_60px_-30px_rgba(15,23,42,0.25)]">
         {/* Status header */}
@@ -264,10 +314,58 @@ export default function VisaHeroCard({
         {/* Reviewed footer */}
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-gray-100 bg-gray-50/60 px-5 py-3 text-xs text-gray-500 sm:px-7">
           <span className={`flex h-5 w-5 items-center justify-center rounded-full ${tone.chip}`}><IShield /></span>
-          <span className="font-medium">Last reviewed {lastVerified}</span>
-          <span className="text-gray-300">·</span>
-          <span className="font-semibold text-teal-700">cross-checked with official sources</span>
+          {isSourceVerified ? (
+            <>
+              <span className="font-medium">Last reviewed {lastVerified}</span>
+              <span className="text-gray-300">·</span>
+              <span className="font-semibold text-teal-700">cross-checked with official sources</span>
+            </>
+          ) : (
+            <>
+              <span className="font-medium">
+                Not yet independently verified by VisitPlane — always confirm current requirements with the official embassy or VFS source before booking non-refundable travel.
+              </span>
+              {sourceUrl && (
+                <a href={sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-teal-700 underline decoration-teal-300 underline-offset-2">
+                  Official source ↗
+                </a>
+              )}
+            </>
+          )}
         </div>
+      </div>
+
+      {/* Desktop hero photo — sits alongside the answer card, never above it,
+          so the status/cost/CTA block keeps its current above-the-fold
+          position. Only rendered once a photo has cleared admin review. */}
+      {heroPhoto && (
+        <div className="hidden overflow-hidden rounded-3xl border border-gray-200/80 shadow-[0_24px_60px_-30px_rgba(15,23,42,0.25)] lg:block">
+          <div className="relative h-full min-h-[280px] w-full">
+            <img
+              src={heroPhoto.imageUrl}
+              alt={heroPhoto.landmarkCaption ?? `${destinationName} destination photo`}
+              className="h-full w-full object-cover"
+              style={{ objectPosition: `${heroPhoto.focalPointX * 100}% ${heroPhoto.focalPointY * 100}%` }}
+              loading="eager"
+            />
+            {heroPhoto.landmarkCaption && (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-3">
+                <p className="text-sm font-semibold text-white drop-shadow">{heroPhoto.landmarkCaption}</p>
+                {heroPhoto.photographerName && (
+                  <p className="mt-0.5 text-[11px] text-white/70">
+                    Photo:{' '}
+                    {heroPhoto.photographerUrl ? (
+                      <a href={heroPhoto.photographerUrl} target="_blank" rel="noopener noreferrer nofollow" className="underline decoration-white/40 underline-offset-2 hover:text-white">
+                        {heroPhoto.photographerName}
+                      </a>
+                    ) : heroPhoto.photographerName}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       </div>
     </section>
   )
