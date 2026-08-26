@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import { blogPosts, getAllCategories, toSlug, type BlogPost } from '@/src/lib/posts'
@@ -66,13 +65,14 @@ function FeaturedCard({ post }: { post: BlogPost }) {
       style={{ border: '1px solid var(--vp-hairline)' }}
     >
       <div className="relative aspect-[16/9] sm:aspect-[21/9]">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={getBlogCardImage(post.slug)}
           alt=""
-          fill
-          priority
-          sizes="(max-width: 768px) 100vw, 1152px"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/5" />
       </div>
@@ -118,12 +118,13 @@ function IndexPostCard({ post }: { post: BlogPost }) {
       style={{ border: '1px solid var(--vp-hairline)' }}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={getBlogCardImage(post.slug)}
           alt=""
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
         />
         <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/45 to-transparent" />
         <span
