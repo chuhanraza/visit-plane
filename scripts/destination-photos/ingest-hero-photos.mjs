@@ -2,10 +2,59 @@
 // Hotlinks Unsplash/Pexels CDN URLs — never downloads/rehosts. Every insert lands
 // with is_active = false; only a human approving in /admin/destination-photos
 // (see app/api/admin/destination-photos/[id]/status/route.ts) can make it live.
-// Requires SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, and at least one of
-// UNSPLASH_ACCESS_KEY / PEXELS_API_KEY in the environment.
+// Requires SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, and UNSPLASH_ACCESS_KEY
+// (PEXELS_API_KEY optional, used only as a fallback) in the environment.
+// Missing/malformed keys? Run `node scripts/setup-local-env.mjs` to set them up.
 import { createClient } from '@supabase/supabase-js';
 import { readFile } from 'node:fs/promises';
+
+if (process.argv.includes('--help')) {
+  console.log(
+    'Usage: node scripts/destination-photos/ingest-hero-photos.mjs [--dry-run] [--only=CODE1,CODE2]\n\n' +
+      'Requires SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, UNSPLASH_ACCESS_KEY\n' +
+      '(PEXELS_API_KEY optional) in the environment.\n' +
+      'Not set up yet? Run: node scripts/setup-local-env.mjs'
+  );
+  process.exit(0);
+}
+
+function isPlausibleJwt(v) {
+  const parts = (v || '').split('.');
+  return typeof v === 'string' && v.startsWith('eyJ') && parts.length === 3 && parts.every((p) => p.length > 0);
+}
+
+function validateEnv() {
+  const problems = [];
+  const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, UNSPLASH_ACCESS_KEY } = process.env;
+
+  if (!SUPABASE_URL) {
+    problems.push('SUPABASE_URL is missing');
+  } else if (!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(SUPABASE_URL)) {
+    problems.push(`SUPABASE_URL ("${SUPABASE_URL}") doesn't look like https://<project-ref>.supabase.co`);
+  }
+
+  if (!SUPABASE_SERVICE_ROLE_KEY) {
+    problems.push('SUPABASE_SERVICE_ROLE_KEY is missing');
+  } else if (!isPlausibleJwt(SUPABASE_SERVICE_ROLE_KEY)) {
+    problems.push('SUPABASE_SERVICE_ROLE_KEY is set but is not a valid JWT (expected "eyJ..." with 3 segments)');
+  }
+
+  if (!UNSPLASH_ACCESS_KEY) {
+    problems.push('UNSPLASH_ACCESS_KEY is missing');
+  } else if (UNSPLASH_ACCESS_KEY.length < 20) {
+    problems.push('UNSPLASH_ACCESS_KEY is set but too short to be real — looks like a placeholder');
+  }
+
+  if (problems.length > 0) {
+    console.error('❌ Cannot start ingestion — environment is not configured correctly:\n');
+    for (const p of problems) console.error(`   - ${p}`);
+    console.error('\nFix: run `node scripts/setup-local-env.mjs` in your own terminal to set these up.');
+    console.error('(Not running the search loop — a bad env here used to silently report "no_results".)');
+    process.exit(1);
+  }
+}
+
+validateEnv();
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 const DRY_RUN = process.argv.includes('--dry-run');
