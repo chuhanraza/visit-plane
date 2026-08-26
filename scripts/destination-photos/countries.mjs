@@ -22,7 +22,7 @@ export const COUNTRIES = [
   { code: 'AL', name: 'Albania', region: 'Europe', avgDailyCostUsd: 45 },
   { code: 'AZ', name: 'Azerbaijan', region: 'Caucasus', avgDailyCostUsd: 45 },
   { code: 'BB', name: 'Barbados', region: 'Caribbean', avgDailyCostUsd: 110 },
-  { code: 'BJ', name: 'Benin', region: 'West Africa', avgDailyCostUsd: 35, searchQuery: 'Benin country West Africa Cotonou Ganvié travel landmark' },
+  { code: 'BJ', name: 'Benin', region: 'West Africa', avgDailyCostUsd: 35, searchQuery: 'Benin West Africa Cotonou travel landmark' },
   { code: 'BT', name: 'Bhutan', region: 'South Asia', avgDailyCostUsd: 65 },
   { code: 'BO', name: 'Bolivia', region: 'South America', avgDailyCostUsd: 35 },
   { code: 'BW', name: 'Botswana', region: 'Southern Africa', avgDailyCostUsd: 60 },
