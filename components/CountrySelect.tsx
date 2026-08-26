@@ -264,12 +264,17 @@ function resolveCountryRecord(name: string) {
   return null
 }
 
+// Strips zero-width/invisible formatting characters (not caught by .trim(),
+// which only strips real Unicode whitespace) before collapsing to a dedup
+// key — otherwise "Germany" and "Germany​" pass as distinct entries.
+const dedupeKey = (s: string) => s.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().toLowerCase()
+
 /** Build a searchable, flag-resolved, de-duplicated pool from raw names. */
 function buildCountryPool(names: string[]): PoolItem[] {
   const seen = new Set<string>()
   const pool: PoolItem[] = []
   for (const name of names) {
-    const k = name.trim().toLowerCase()
+    const k = dedupeKey(name)
     if (!k || seen.has(k)) continue
     seen.add(k)
     const rec = resolveCountryRecord(name)
@@ -437,7 +442,7 @@ export default function CountrySelect({
   // ────────────────────────────────────────────────────────────────────────────
 
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
+    <div ref={containerRef} className={`relative min-w-0 ${className}`}>
       {label && (
         <label className={`block text-sm font-bold mb-2 ${isDark ? 'text-gray-300' : 'text-[#0F1419]'}`}>
           {label}
@@ -499,7 +504,7 @@ export default function CountrySelect({
                 const isHighlighted = index === highlightedIndex
                 return (
                   <button
-                    key={country.code}
+                    key={`${country.code}-${country.name}-${index}`}
                     type="button"
                     onMouseEnter={() => setHighlightedIndex(index)}
                     onClick={() => selectCountry(country.name)}
