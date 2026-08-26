@@ -6,12 +6,22 @@ import { getCuratedDestinationFee } from '@/lib/data/destinationFees'
 import { useLocalCurrency } from '@/hooks/useLocalCurrency'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+export interface HeroPhoto {
+  imageUrl: string
+  landmarkCaption: string | null
+  photographerName: string | null
+  photographerUrl: string | null
+  focalPointX: number
+  focalPointY: number
+}
+
 interface VisaHeroCardProps {
   visaRecord: VisaRecord | null
   passportName: string
   passportFlag: string
   destinationName: string
   destinationFlag: string
+  heroPhoto?: HeroPhoto | null
   onApplyClick?: () => void
   onDownloadChecklist?: () => void
 }
@@ -123,6 +133,7 @@ export default function VisaHeroCard({
   passportFlag,
   destinationName,
   destinationFlag,
+  heroPhoto = null,
   onApplyClick,
   onDownloadChecklist,
 }: VisaHeroCardProps) {
@@ -196,7 +207,29 @@ export default function VisaHeroCard({
   ]
 
   return (
-    <section id="visa-hero" aria-label="Visa requirement summary" className="mx-auto max-w-4xl px-4 pb-2 pt-6 sm:px-6">
+    <section id="visa-hero" aria-label="Visa requirement summary" className={`mx-auto max-w-4xl px-4 pb-2 pt-6 sm:px-6 ${heroPhoto ? 'lg:max-w-6xl' : ''}`}>
+      {/* Mobile hero banner — compact, only when a reviewed photo exists. No
+          placeholder box otherwise, so the null case (every route today)
+          renders identically to before this photo feature existed. */}
+      {heroPhoto && (
+        <div className="mb-4 overflow-hidden rounded-2xl lg:hidden" style={{ height: 150 }}>
+          <div className="relative h-full w-full">
+            <img
+              src={heroPhoto.imageUrl}
+              alt={heroPhoto.landmarkCaption ?? `${destinationName} destination photo`}
+              className="h-full w-full object-cover"
+              style={{ objectPosition: `${heroPhoto.focalPointX * 100}% ${heroPhoto.focalPointY * 100}%` }}
+              loading="eager"
+            />
+            {heroPhoto.landmarkCaption && (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2">
+                <p className="text-xs font-semibold text-white drop-shadow">{heroPhoto.landmarkCaption}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Route indicator */}
       <div className="mb-6 flex items-center justify-center gap-3 sm:gap-5">
         <div className="flex items-center gap-2.5">
@@ -210,6 +243,7 @@ export default function VisaHeroCard({
         </div>
       </div>
 
+      <div className={heroPhoto ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-6' : ''}>
       {/* Answer card */}
       <div className="overflow-hidden rounded-3xl border border-gray-200/80 bg-white shadow-[0_24px_60px_-30px_rgba(15,23,42,0.25)]">
         {/* Status header */}
@@ -299,6 +333,39 @@ export default function VisaHeroCard({
             </>
           )}
         </div>
+      </div>
+
+      {/* Desktop hero photo — sits alongside the answer card, never above it,
+          so the status/cost/CTA block keeps its current above-the-fold
+          position. Only rendered once a photo has cleared admin review. */}
+      {heroPhoto && (
+        <div className="hidden overflow-hidden rounded-3xl border border-gray-200/80 shadow-[0_24px_60px_-30px_rgba(15,23,42,0.25)] lg:block">
+          <div className="relative h-full min-h-[280px] w-full">
+            <img
+              src={heroPhoto.imageUrl}
+              alt={heroPhoto.landmarkCaption ?? `${destinationName} destination photo`}
+              className="h-full w-full object-cover"
+              style={{ objectPosition: `${heroPhoto.focalPointX * 100}% ${heroPhoto.focalPointY * 100}%` }}
+              loading="eager"
+            />
+            {heroPhoto.landmarkCaption && (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-3">
+                <p className="text-sm font-semibold text-white drop-shadow">{heroPhoto.landmarkCaption}</p>
+                {heroPhoto.photographerName && (
+                  <p className="mt-0.5 text-[11px] text-white/70">
+                    Photo:{' '}
+                    {heroPhoto.photographerUrl ? (
+                      <a href={heroPhoto.photographerUrl} target="_blank" rel="noopener noreferrer nofollow" className="underline decoration-white/40 underline-offset-2 hover:text-white">
+                        {heroPhoto.photographerName}
+                      </a>
+                    ) : heroPhoto.photographerName}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       </div>
     </section>
   )

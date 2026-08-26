@@ -147,6 +147,36 @@ async function fetchRelatedDestinations(passportName: string, excludeDestination
   return unique
 }
 
+// Best-effort lookup of the one admin-approved "hero_iconic" photo for this
+// destination country, if any. Returns null for the vast majority of routes
+// today (0 photos have cleared review yet) — VisaHeroCard renders identically
+// to before this feature when heroPhoto is null.
+async function fetchHeroPhoto(destinationName: string): Promise<import('@/components/visa/VisaHeroCard').HeroPhoto | null> {
+  const supabase = getSupabase()
+  const { data: country } = await supabase
+    .from('destination_photo_countries')
+    .select('id')
+    .ilike('country_name', destinationName)
+    .maybeSingle()
+  if (!country) return null
+  const { data: photo } = await supabase
+    .from('destination_photos')
+    .select('image_url, landmark_caption, photographer_name, photographer_url, focal_point_x, focal_point_y')
+    .eq('destination_id', country.id)
+    .eq('role', 'hero_iconic')
+    .eq('is_active', true)
+    .maybeSingle()
+  if (!photo) return null
+  return {
+    imageUrl: photo.image_url,
+    landmarkCaption: photo.landmark_caption,
+    photographerName: photo.photographer_name,
+    photographerUrl: photo.photographer_url,
+    focalPointX: photo.focal_point_x ?? 0.5,
+    focalPointY: photo.focal_point_y ?? 0.5,
+  }
+}
+
 async function fetchAllVisaTypes(passportName: string, destinationName: string): Promise<VisaRecord[]> {
   const supabase = getSupabase()
   const { data, error } = await supabase
@@ -293,14 +323,16 @@ export default async function VisaResultPage({
   // Secondary, best-effort fetches — never block the page or affect the status code.
   let relatedDestinations: string[] = []
   let otherPassports: string[] = []
+  let heroPhoto: Awaited<ReturnType<typeof fetchHeroPhoto>> = null
   try {
-    ;[relatedDestinations, otherPassports] = await Promise.all([
+    ;[relatedDestinations, otherPassports, heroPhoto] = await Promise.all([
       fetchRelatedDestinations(passportName, destinationName),
       fetchOtherPassports(destinationName, passportName),
+      fetchHeroPhoto(destinationName),
     ])
   } catch (err) {
     console.error('[VisaResultPage] related-data fetch error for', passportName, '→', destinationName, err)
-    // relatedDestinations / otherPassports stay as empty arrays.
+    // relatedDestinations / otherPassports / heroPhoto stay at their defaults.
   }
 
   const passportFlag    = resolveFlag(passportSlug,    passportName)
@@ -445,6 +477,7 @@ export default async function VisaResultPage({
         relatedDestinations={relatedDestinations}
         otherPassports={otherPassports}
         conflictingStatus={conflictingStatus}
+        heroPhoto={heroPhoto}
       />
 
     </div>
