@@ -343,7 +343,7 @@ export default async function VisaResultPage({
     step: [
       { '@type': 'HowToStep', name: 'Check eligibility', text: `Confirm you hold a ${passportName} passport and meet the entry requirements for ${destinationName}.` },
       { '@type': 'HowToStep', name: 'Gather documents',  text: 'Collect all required documents including valid passport, photos, application form, bank statements, and supporting documents.' },
-      { '@type': 'HowToStep', name: 'Submit application', text: `Apply online through the official ${destinationName} eVisa portal or immigration authority website.` },
+      { '@type': 'HowToStep', name: 'Submit application', text: `Submit your application through the official ${destinationName} immigration authority — this may be an online eVisa portal, a VFS/visa centre appointment, or an in-person embassy visit depending on the destination.` },
       { '@type': 'HowToStep', name: 'Pay visa fee',       text: `Pay the visa application fee using a credit or debit card through the official portal.` },
       { '@type': 'HowToStep', name: 'Receive approval',   text: 'Wait for your visa approval email. Processing typically takes 3–5 business days.' },
       { '@type': 'HowToStep', name: 'Travel',             text: `Present your approved visa (printed or digital) at immigration on arrival in ${destinationName}.` },
