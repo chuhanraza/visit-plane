@@ -88,6 +88,12 @@ function resolveSteps(record: VisaRecord, passportName: string, destinationName:
   const feeDisplay = feeResolved ?? 'check official portal'
   const processing = (record.processing_time ?? '3–5 business days').toString()
   const applyInfo  = resolveApplyInfo(destinationName, record)
+  // No field in the source data records the application METHOD (online eVisa
+  // portal vs. VFS centre vs. in-person embassy visit) — asserting "Apply
+  // online" for every route was a hardcoded, unverified assumption and is
+  // wrong for routes that actually require an in-person visit. Keep the copy
+  // non-committal; link to a real source when one is known.
+  const hasKnownPortal = !!applyInfo.url
 
   if (isFree) {
     return [
@@ -126,11 +132,13 @@ function resolveSteps(record: VisaRecord, passportName: string, destinationName:
     },
     {
       num: 3,
-      emoji: '🌐',
-      title: 'Apply online',
-      summary: applyInfo.label,
-      detail: `Create an account and fill out the application form carefully. ${applyInfo.altLabel ?? ''} Double-check every field before submitting — errors can delay processing.`,
-      link: { href: applyInfo.url, label: `Open application portal →` },
+      emoji: '📝',
+      title: 'Submit your application',
+      summary: hasKnownPortal
+        ? applyInfo.label
+        : 'Requirements and application steps vary — confirm the process (online, VFS centre, or in-person embassy visit) with the destination\'s embassy or VFS site',
+      detail: `Follow the official process for this visa — it may be an online portal, a VFS/visa centre appointment, or an in-person embassy visit depending on the destination. ${applyInfo.altLabel ?? ''} Double-check every requirement before submitting — errors or the wrong process can delay your application.`,
+      link: hasKnownPortal ? { href: applyInfo.url, label: `Open application portal →` } : undefined,
     },
     {
       num: 4,

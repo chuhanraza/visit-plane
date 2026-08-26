@@ -99,6 +99,18 @@ function resolveSmartProcessing(record: VisaRecord, visaType: string): string {
 function resolveValidity(record: VisaRecord): string {
   return (record.validity ?? record.stay_duration ?? '').toString().trim() || 'Varies'
 }
+// The `destinations` table is 100% `data_confidence = 'unverified'` with
+// `official_source_url` empty on 99.99% of rows (see visa-data-review.md §3) —
+// the "cross-checked with official sources" badge was previously shown
+// unconditionally, which is a false claim on this YMYL page. Only call a row
+// verified when the row itself says so AND actually carries a source + date.
+function resolveVerification(record: VisaRecord): { verified: boolean; sourceUrl: string } {
+  const confidence = (record.data_confidence ?? '').toString().trim().toLowerCase()
+  const sourceUrl = (record.official_source_url ?? '').toString().trim()
+  const hasDate = !!record.last_verified
+  const verified = !!confidence && confidence !== 'unverified' && !!sourceUrl && hasDate
+  return { verified, sourceUrl }
+}
 function parseUsd(feeStr: string): number | null {
   const match = feeStr.match(/\$(\d+(?:\.\d+)?)/)
   return match ? parseFloat(match[1]) : null
@@ -156,10 +168,14 @@ export default function VisaHeroCard({
   const applyUrl = resolveApplyUrl(visaRecord, destinationName)
   const lastVerified = visaRecord.last_verified
     ? new Date(visaRecord.last_verified as string).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-    : '26 May 2026'
+    : null
+  const { verified: isSourceVerified, sourceUrl } = resolveVerification(visaRecord)
   const isFree = /free|no visa/i.test(visaType)
   const isArrival = /arrival/i.test(visaType)
-  const applyLabel = isFree ? 'No visa needed' : isArrival ? 'On arrival' : 'Apply online'
+  // No field in the source data records HOW to apply (online / VFS / in-person
+  // embassy) — "Apply online" was a hardcoded, unverified assumption. Keep the
+  // copy non-committal unless the route is genuinely free or arrival-based.
+  const applyLabel = isFree ? 'No visa needed' : isArrival ? 'On arrival' : 'Check process'
 
   // Verdict-first page H1 (the "instant answer" pattern that wins featured
   // snippets — e.g. Sherpa's "You need a visa for Türkiye if you have a
@@ -264,9 +280,24 @@ export default function VisaHeroCard({
         {/* Reviewed footer */}
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-gray-100 bg-gray-50/60 px-5 py-3 text-xs text-gray-500 sm:px-7">
           <span className={`flex h-5 w-5 items-center justify-center rounded-full ${tone.chip}`}><IShield /></span>
-          <span className="font-medium">Last reviewed {lastVerified}</span>
-          <span className="text-gray-300">·</span>
-          <span className="font-semibold text-teal-700">cross-checked with official sources</span>
+          {isSourceVerified ? (
+            <>
+              <span className="font-medium">Last reviewed {lastVerified}</span>
+              <span className="text-gray-300">·</span>
+              <span className="font-semibold text-teal-700">cross-checked with official sources</span>
+            </>
+          ) : (
+            <>
+              <span className="font-medium">
+                Not yet independently verified by VisitPlane — always confirm current requirements with the official embassy or VFS source before booking non-refundable travel.
+              </span>
+              {sourceUrl && (
+                <a href={sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-teal-700 underline decoration-teal-300 underline-offset-2">
+                  Official source ↗
+                </a>
+              )}
+            </>
+          )}
         </div>
       </div>
     </section>
