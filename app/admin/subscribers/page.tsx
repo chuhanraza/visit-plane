@@ -8,38 +8,25 @@
 import Link             from 'next/link'
 import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin/guard'
-import { getServiceClient } from '@/lib/supabase/admin'
+import { fetchAllSubscribers, fetchFilteredSubscribers, hasActiveFilters, type SubscriberFilters } from '@/lib/admin/subscribers'
 
 export const metadata: Metadata = { title: 'Subscribers — VisitPlane Admin' }
 export const dynamic = 'force-dynamic'
 
-// ── Data helpers ──────────────────────────────────────────────────
-
-interface Subscriber {
-  email:             string
-  route_passport:    string | null
-  route_destination: string | null
-  captured_at:       string
-  captured_from:     string
-  confirmed_at:      string | null
-  unsubscribed_at:   string | null
-}
-
-async function fetchAll(): Promise<Subscriber[]> {
-  const { data, error } = await getServiceClient()
-    .from('email_subscribers')
-    .select('email,route_passport,route_destination,captured_at,captured_from,confirmed_at,unsubscribed_at')
-    .order('captured_at', { ascending: false })
-  if (error) { console.error(error); return [] }
-  return (data ?? []) as Subscriber[]
-}
-
 // ── Page ──────────────────────────────────────────────────────────
 
-export default async function SubscribersPage() {
+export default async function SubscribersPage({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
   await requireAdmin('/admin/login?from=/admin/subscribers')
 
-  const all = await fetchAll()
+  const sp = await searchParams
+  const filters: SubscriberFilters = { q: sp.q, confirmed: sp.confirmed, unsub: sp.unsub, passport: sp.passport }
+  const filtersActive = hasActiveFilters(filters)
+
+  // Stats/charts always reflect the FULL unfiltered dataset — filters only
+  // narrow the table below and the CSV export, per the existing page's intent.
+  const all = await fetchAllSubscribers()
+  const filtered = filtersActive ? await fetchFilteredSubscribers(filters) : all
+  const passportOptions = Array.from(new Set(all.map(s => s.route_passport).filter(Boolean))).sort() as string[]
 
   const total        = all.length
   const confirmed    = all.filter(s => s.confirmed_at).length
@@ -81,21 +68,10 @@ export default async function SubscribersPage() {
   const dailyEntries = Object.entries(dailyMap)
   const maxDaily = Math.max(...dailyEntries.map(([, v]) => v), 1)
 
-  // CSV export data (base64-encoded for client download)
-  const csvRows = [
-    ['email','passport','destination','captured_from','captured_at','confirmed_at','unsubscribed_at'],
-    ...all.map(s => [
-      s.email,
-      s.route_passport ?? '',
-      s.route_destination ?? '',
-      s.captured_from ?? '',
-      s.captured_at ?? '',
-      s.confirmed_at ?? '',
-      s.unsubscribed_at ?? '',
-    ]),
-  ]
-  const csvContent = csvRows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n')
-  const csvB64 = Buffer.from(csvContent).toString('base64')
+  const exportQuery = new URLSearchParams(
+    Object.entries(filters).filter(([, v]) => v) as [string, string][]
+  ).toString()
+  const exportHref = `/api/admin/export-subscribers${exportQuery ? `?${exportQuery}` : ''}`
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
@@ -116,15 +92,12 @@ export default async function SubscribersPage() {
             <h1 className="text-2xl font-bold">Email Subscribers</h1>
             <p className="text-gray-400 text-sm mt-1">All 3 capture points: homepage, visa pages, exit intent</p>
           </div>
-          <form action="/api/admin/export-subscribers" method="GET">
-            <button
-              type="button"
-              className="rounded-xl bg-gray-800 border border-gray-700 px-5 py-2.5 text-sm font-semibold hover:bg-gray-700 transition"
-              id="csv-export-btn"
-            >
-              ↓ Export CSV
-            </button>
-          </form>
+          <a
+            href={exportHref}
+            className="rounded-xl bg-gray-800 border border-gray-700 px-5 py-2.5 text-sm font-semibold hover:bg-gray-700 transition"
+          >
+            ↓ Export CSV{filtersActive ? ' (filtered)' : ''}
+          </a>
         </div>
 
         {/* ── Stats ──────────────────────────────────────────── */}
@@ -206,10 +179,52 @@ export default async function SubscribersPage() {
           </div>
         )}
 
+        {/* ── Search & filters ──────────────────────────────────── */}
+        <form action="/admin/subscribers" method="GET" className="bg-gray-900 border border-gray-800 rounded-2xl p-5 flex flex-wrap items-end gap-3">
+          <div className="flex-1 min-w-[220px]">
+            <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1.5" htmlFor="q">Search email</label>
+            <input
+              id="q" name="q" type="text" defaultValue={sp.q ?? ''} placeholder="name@example.com"
+              className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-teal-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1.5" htmlFor="confirmed">Confirmation</label>
+            <select id="confirmed" name="confirmed" defaultValue={sp.confirmed ?? ''} className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-teal-500">
+              <option value="">Any</option>
+              <option value="yes">Confirmed</option>
+              <option value="no">Unconfirmed</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1.5" htmlFor="unsub">Subscription</label>
+            <select id="unsub" name="unsub" defaultValue={sp.unsub ?? ''} className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-teal-500">
+              <option value="">Any</option>
+              <option value="no">Active</option>
+              <option value="yes">Unsubscribed</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1.5" htmlFor="passport">Passport</label>
+            <select id="passport" name="passport" defaultValue={sp.passport ?? ''} className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-teal-500">
+              <option value="">Any</option>
+              {passportOptions.map(p => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+          <button type="submit" className="rounded-lg bg-teal-600 hover:bg-teal-500 px-5 py-2 text-sm font-semibold transition">
+            Filter
+          </button>
+          {filtersActive && (
+            <Link href="/admin/subscribers" className="text-gray-400 hover:text-white text-sm px-2 py-2">Clear</Link>
+          )}
+        </form>
+
         {/* ── Subscriber table ────────────────────────────────── */}
         <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-800">
-            <h2 className="text-sm font-semibold text-gray-300">Recent Subscribers</h2>
+            <h2 className="text-sm font-semibold text-gray-300">
+              {filtersActive ? 'Matching Subscribers' : 'Recent Subscribers'}
+            </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -220,12 +235,17 @@ export default async function SubscribersPage() {
                   <th className="px-4 py-3">Source</th>
                   <th className="px-4 py-3">Signed up</th>
                   <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Tags</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {all.slice(0, 100).map(s => (
+                {filtered.slice(0, 100).map(s => (
                   <tr key={s.email} className="hover:bg-gray-800/40 transition">
-                    <td className="px-6 py-3 text-gray-200 font-mono text-xs">{s.email}</td>
+                    <td className="px-6 py-3 text-gray-200 font-mono text-xs">
+                      <Link href={`/admin/subscribers/${encodeURIComponent(s.email)}`} className="hover:text-teal-400 hover:underline">
+                        {s.email}
+                      </Link>
+                    </td>
                     <td className="px-4 py-3 text-gray-400 text-xs">
                       {s.route_passport && s.route_destination
                         ? `${s.route_passport} → ${s.route_destination}`
@@ -248,37 +268,28 @@ export default async function SubscribersPage() {
                         <span className="inline-flex items-center gap-1 rounded-full bg-amber-950 border border-amber-800 px-2 py-0.5 text-[11px] text-amber-400">Pending</span>
                       )}
                     </td>
+                    <td className="px-4 py-3 text-gray-400 text-xs">
+                      {(s.admin_tags ?? []).length > 0 ? (s.admin_tags ?? []).join(', ') : <span className="text-gray-700">—</span>}
+                    </td>
                   </tr>
                 ))}
-                {all.length === 0 && (
+                {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-gray-600">
-                      No subscribers yet. Submissions will appear here.
+                    <td colSpan={6} className="px-6 py-12 text-center text-gray-600">
+                      {filtersActive ? 'No subscribers match these filters.' : 'No subscribers yet. Submissions will appear here.'}
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
-            {all.length > 100 && (
+            {filtered.length > 100 && (
               <p className="px-6 py-3 text-xs text-gray-600 border-t border-gray-800">
-                Showing 100 of {all.length} — export CSV for full list
+                Showing 100 of {filtered.length} — export CSV for full list
               </p>
             )}
           </div>
         </div>
       </div>
-
-      {/* CSV export script */}
-      <script dangerouslySetInnerHTML={{ __html: `
-        document.getElementById('csv-export-btn')?.addEventListener('click', function() {
-          const a = document.createElement('a');
-          a.href = 'data:text/csv;base64,${csvB64}';
-          a.download = 'visitplane_subscribers_${new Date().toISOString().slice(0,10)}.csv';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        });
-      `}} />
     </div>
   )
 }
