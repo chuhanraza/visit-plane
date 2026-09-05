@@ -35,8 +35,53 @@ async function hitRoute(env: Env, path: string) {
   }
 }
 
+// Cloudflare-billing root cause: open-next.config.ts intentionally runs with
+// the no-op "dummy" incremental cache (no R2/KV binding — see that file), so
+// `export const revalidate` in the ISR pages (visa pairs, /seo/*, /blog,
+// /destinations) never persists a rendered page between requests. Verified
+// live: every request to /visa/[passport]/[destination] came back
+// `x-nextjs-cache: MISS` with a fresh 2-4s Supabase-backed render, even though
+// the response already carries a correct `cache-control: s-maxage=2592000`.
+// Cloudflare's edge never cached it either — no `cf-cache-status` header was
+// present, meaning nothing in front of this Worker was reading that header.
+// This wraps the existing handler with Cloudflare's built-in per-zone Cache
+// API (`caches.default`, free, no R2/KV/card, distinct from the incremental
+// cache above) so a response the app already marked shareable is served from
+// the edge on repeat requests instead of re-invoking the Worker. Gated on the
+// ORIGIN response's own Cache-Control (never on the route) so force-dynamic /
+// admin / API responses — which already emit `private, no-store` — are
+// untouched; verified live against /admin/login, /portal/login, /order and
+// /api routes before shipping this.
+function isEdgeCacheable(response: Response): boolean {
+  if (response.status !== 200) return false
+  if (response.headers.has('set-cookie')) return false
+  const cacheControl = response.headers.get('cache-control') ?? ''
+  if (!cacheControl) return false
+  if (/private|no-store/i.test(cacheControl)) return false
+  return /s-maxage/i.test(cacheControl)
+}
+
 export default {
-  fetch: opennextHandler.fetch,
+  async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+    const isGet = request.method === 'GET'
+    // @ts-ignore — `caches.default` is a Workers-runtime global, not in the
+    // standard lib.dom typings this project's tsconfig pulls in.
+    const cache: Cache = caches.default
+    const cacheKey = new Request(request.url, request)
+
+    if (isGet) {
+      const cached = await cache.match(cacheKey)
+      if (cached) return cached
+    }
+
+    const response: Response = await opennextHandler.fetch(request, env, ctx)
+
+    if (isGet && isEdgeCacheable(response)) {
+      ctx.waitUntil(cache.put(cacheKey, response.clone()))
+    }
+
+    return response
+  },
   async scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     // Revives the existing (dormant since the Vercel->Cloudflare migration)
     // welcome-sequence flow worker, plus the new lifecycle re-engagement
