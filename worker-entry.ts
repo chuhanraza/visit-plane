@@ -61,8 +61,63 @@ function isEdgeCacheable(response: Response): boolean {
   return /s-maxage/i.test(cacheControl)
 }
 
+// ── Billing circuit-breaker: cheap maintenance short-circuit ────────────────
+// The /api/cron/billing-guard route (run every 15 min via the second cron
+// trigger below) is the only writer of ops_circuit_breaker_state.maintenance_active,
+// and only when BILLING_GUARD_ARMED=true — see that route for the full design
+// note. This block is only the READ side: it must stay cheap (no per-request
+// Supabase round-trip) since it runs before every single request, including
+// ones the maintenance page itself would need to short-circuit on. It reads
+// the flag straight from Supabase (not KV — KV's 100k reads/day free-tier
+// ceiling is realistic to blow through at this site's crawler-driven traffic,
+// which would hard-fail every request with an error, the opposite of what a
+// circuit breaker should ever cause) and caches the result at the edge via
+// the same `caches.default` this file already uses for page responses, so
+// Supabase is hit at most once per colo per MAINTENANCE_FLAG_TTL_SECONDS.
+const MAINTENANCE_FLAG_CACHE_KEY = new Request('https://internal.visitplane.workers.dev/__billing-guard-flag')
+const MAINTENANCE_FLAG_TTL_SECONDS = 30
+
+const MAINTENANCE_HTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VisitPlane — brief maintenance</title><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f3f4f6;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#111827}main{max-width:420px;padding:32px;text-align:center}h1{font-size:18px;margin:0 0 8px}p{font-size:14px;color:#4b5563;line-height:1.6;margin:0}</style></head><body><main><h1>VisitPlane is briefly paused for maintenance</h1><p>We'll be back shortly. Thanks for your patience.</p></main></body></html>`
+
+async function isMaintenanceActive(env: Env, ctx: ExecutionContext): Promise<boolean> {
+  // @ts-expect-error — `caches.default` is a Workers-runtime global.
+  const cache: Cache = caches.default
+  const cached = await cache.match(MAINTENANCE_FLAG_CACHE_KEY)
+  if (cached) {
+    const body = await cached.json<{ active: boolean }>()
+    return body.active === true
+  }
+
+  const supabaseUrl = (env as unknown as { NEXT_PUBLIC_SUPABASE_URL?: string }).NEXT_PUBLIC_SUPABASE_URL
+  const serviceKey = (env as unknown as { SUPABASE_SERVICE_ROLE_KEY?: string }).SUPABASE_SERVICE_ROLE_KEY
+  if (!supabaseUrl || !serviceKey) return false // not configured — fail open, never block traffic on a config gap
+
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/ops_circuit_breaker_state?select=maintenance_active&id=eq.1`,
+      { headers: { apikey: serviceKey, authorization: `Bearer ${serviceKey}` } },
+    )
+    if (!res.ok) return false // fail open — a flag-check failure must never itself take the site down
+    const rows = (await res.json()) as { maintenance_active: boolean }[]
+    const active = rows?.[0]?.maintenance_active === true
+
+    const cacheResponse = new Response(JSON.stringify({ active }), {
+      headers: { 'content-type': 'application/json', 'cache-control': `s-maxage=${MAINTENANCE_FLAG_TTL_SECONDS}` },
+    })
+    ctx.waitUntil(cache.put(MAINTENANCE_FLAG_CACHE_KEY, cacheResponse))
+    return active
+  } catch (e) {
+    console.error('[billing-guard] flag check failed, failing open:', (e as Error).message)
+    return false
+  }
+}
+
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+    if (await isMaintenanceActive(env, ctx)) {
+      return new Response(MAINTENANCE_HTML, { status: 503, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'retry-after': '300' } })
+    }
+
     const isGet = request.method === 'GET'
     // @ts-ignore — `caches.default` is a Workers-runtime global, not in the
     // standard lib.dom typings this project's tsconfig pulls in.
@@ -82,7 +137,12 @@ export default {
 
     return response
   },
-  async scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+    if (event.cron === '*/15 * * * *') {
+      // Billing circuit-breaker check — see /api/cron/billing-guard.
+      ctx.waitUntil(hitRoute(env, '/api/cron/billing-guard'))
+      return
+    }
     // Revives the existing (dormant since the Vercel->Cloudflare migration)
     // welcome-sequence flow worker, plus the new lifecycle re-engagement
     // tracks — one daily trigger, two independent route handlers.

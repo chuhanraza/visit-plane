@@ -40,13 +40,33 @@
     "enabled": true
   },
 
-  // Daily at 08:00 UTC — matches the cadence the old Vercel cron used for
-  // /api/cron/flows (see vercel.json, now dead weight post-migration). Fires
-  // worker-entry.ts's `scheduled` handler, which hits /api/cron/flows (the
-  // existing welcome-sequence worker — dormant since the Cloudflare move,
-  // since Vercel crons don't reach this deployment) and the new
-  // /api/cron/lifecycle (win-back + confirm-nudge tracks) in one tick.
+  // ── Billing circuit-breaker config (see app/api/cron/billing-guard) ────────
+  // Plain vars only — nothing here is sensitive. The one genuinely new secret,
+  // CLOUDFLARE_BILLING_API_TOKEN (a *separate*, Billing:Read-only token — the
+  // existing deploy/wrangler credential has no billing scope and can't be
+  // reused), does not exist yet and must be created by hand in the Cloudflare
+  // dashboard, then set with `wrangler secret put CLOUDFLARE_BILLING_API_TOKEN`.
+  // BILLING_GUARD_ARMED defaults to "false" (dry-run/alert-only) deliberately —
+  // per the safety requirement, arming is a separate, manual step, never a
+  // default. Flipping it to "true" requires editing this file and redeploying
+  // (or `wrangler secret put` if changed to a secret) — not a toggle a bug in
+  // application code could ever flip on its own.
+  "vars": {
+    "CLOUDFLARE_ACCOUNT_ID": "1068890dae6e2dde22dd81bdbf199830",
+    "BILLING_GUARD_ARMED": "false",
+    "BILLING_GUARD_THRESHOLD_USD": "0.50",
+    "BILLING_GUARD_ALERT_EMAIL": "relianmfg@gmail.com"
+  },
+
+  // 08:00 UTC daily: matches the cadence the old Vercel cron used for
+  // /api/cron/flows (see vercel.json, now dead weight post-migration) — hits
+  // /api/cron/flows (dormant welcome-sequence worker) and the newer
+  // /api/cron/lifecycle (win-back + confirm-nudge tracks).
+  // */15 * * * *: billing circuit-breaker check (see worker-entry.ts
+  // `scheduled`, branches on event.cron) — frequent enough to catch a runaway
+  // cost trend within ~15 minutes, cheap enough (one Billable Usage API call)
+  // to be negligible cost itself.
   "triggers": {
-    "crons": ["0 8 * * *"]
+    "crons": ["0 8 * * *", "*/15 * * * *"]
   }
 }
