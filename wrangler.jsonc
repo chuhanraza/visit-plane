@@ -53,7 +53,7 @@
   // application code could ever flip on its own.
   "vars": {
     "CLOUDFLARE_ACCOUNT_ID": "1068890dae6e2dde22dd81bdbf199830",
-    "BILLING_GUARD_ARMED": "false",
+    "BILLING_GUARD_ARMED": "true",
     "BILLING_GUARD_THRESHOLD_USD": "0.50",
     "BILLING_GUARD_ALERT_EMAIL": "relianmfg@gmail.com"
   },

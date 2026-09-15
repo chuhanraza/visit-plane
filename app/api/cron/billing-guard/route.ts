@@ -91,10 +91,11 @@ export async function GET(req: NextRequest) {
 
   const { data: state } = await svc
     .from('ops_circuit_breaker_state')
-    .select('maintenance_active')
+    .select('maintenance_active, last_decision')
     .eq('id', 1)
     .maybeSingle()
   const currentlyActive = state?.maintenance_active === true
+  const previousDecision = state?.last_decision ?? null
 
   const usage = await fetchCycleUsageCostUsd()
   if ('error' in usage) {
@@ -122,11 +123,13 @@ export async function GET(req: NextRequest) {
       last_cycle_cost_usd: usage.costUsd,
       last_checked_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      last_decision: decision,
     }).eq('id', 1)
   } else {
     await svc.from('ops_circuit_breaker_state').update({
       last_cycle_cost_usd: usage.costUsd,
       last_checked_at: new Date().toISOString(),
+      last_decision: decision,
     }).eq('id', 1)
   }
 
@@ -135,7 +138,11 @@ export async function GET(req: NextRequest) {
     metadata: { decision, cycleCostUsd: usage.costUsd, threshold, armed, rawUsage: usage.raw },
   })
 
-  if (alertEmail && (decision === 'tripped' || decision === 'would_trip' || decision === 'cleared')) {
+  // Only alert on a decision CHANGE (pass->would_trip, would_trip->pass, a fresh
+  // tripped/cleared, etc.) — not on every identical repeat result. Without this,
+  // an ongoing would-trip or tripped state re-emails every 15 min indefinitely.
+  const decisionChanged = decision !== previousDecision
+  if (alertEmail && decisionChanged && (decision === 'tripped' || decision === 'would_trip' || decision === 'cleared')) {
     const subject = decision === 'tripped'
       ? `🔴 VisitPlane maintenance mode TRIPPED — usage cost $${usage.costUsd.toFixed(2)}`
       : decision === 'would_trip'
