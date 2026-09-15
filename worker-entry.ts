@@ -74,7 +74,7 @@ function isEdgeCacheable(response: Response): boolean {
 // circuit breaker should ever cause) and caches the result at the edge via
 // the same `caches.default` this file already uses for page responses, so
 // Supabase is hit at most once per colo per MAINTENANCE_FLAG_TTL_SECONDS.
-const MAINTENANCE_FLAG_CACHE_KEY = new Request('https://internal.visitplane.workers.dev/__billing-guard-flag')
+const MAINTENANCE_FLAG_CACHE_KEY = new Request('https://internal.visitplane.workers.dev/__billing-guard-flag-v2')
 const MAINTENANCE_FLAG_TTL_SECONDS = 30
 
 const MAINTENANCE_HTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VisitPlane — brief maintenance</title><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f3f4f6;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#111827}main{max-width:420px;padding:32px;text-align:center}h1{font-size:18px;margin:0 0 8px}p{font-size:14px;color:#4b5563;line-height:1.6;margin:0}</style></head><body><main><h1>VisitPlane is briefly paused for maintenance</h1><p>We'll be back shortly. Thanks for your patience.</p></main></body></html>`
@@ -85,6 +85,7 @@ async function isMaintenanceActive(env: Env, ctx: ExecutionContext): Promise<boo
   const cached = await cache.match(MAINTENANCE_FLAG_CACHE_KEY)
   if (cached) {
     const body = await cached.json<{ active: boolean }>()
+    console.log(`[billing-guard] flag cache hit active=${body.active}`)
     return body.active === true
   }
 
@@ -97,9 +98,13 @@ async function isMaintenanceActive(env: Env, ctx: ExecutionContext): Promise<boo
       `${supabaseUrl}/rest/v1/ops_circuit_breaker_state?select=maintenance_active&id=eq.1`,
       { headers: { apikey: serviceKey, authorization: `Bearer ${serviceKey}` } },
     )
-    if (!res.ok) return false // fail open — a flag-check failure must never itself take the site down
+    if (!res.ok) {
+      console.error(`[billing-guard] flag fetch failed: ${res.status} ${await res.text()}`)
+      return false // fail open — a flag-check failure must never itself take the site down
+    }
     const rows = (await res.json()) as { maintenance_active: boolean }[]
     const active = rows?.[0]?.maintenance_active === true
+    console.log(`[billing-guard] flag fetch ok rows=${rows?.length ?? 0} active=${active}`)
 
     const cacheResponse = new Response(JSON.stringify({ active }), {
       headers: { 'content-type': 'application/json', 'cache-control': `s-maxage=${MAINTENANCE_FLAG_TTL_SECONDS}` },
