@@ -21,18 +21,27 @@ export const maxDuration = 30
  *
  * Cost source: Cloudflare's Billable Usage API
  * (GET /accounts/{id}/billable-usage, requires a Billing:Read-scoped token —
- * see CLOUDFLARE_BILLING_API_TOKEN below). It reports one row per service
- * line for the current billing period; the flat $5/mo Workers Paid
+ * see CLOUDFLARE_BILLING_API_TOKEN below). It returns one row PER CHARGE
+ * PERIOD (usually daily) per service, not one row per service — see the
+ * summing note in fetchCycleUsageCostUsd below. The flat $5/mo Workers Paid
  * subscription itself is its own line (not usage), so it's excluded by name
  * from the sum — everything else is "usage cost" per the task definition.
  * If Cloudflare renames/adds a flat-fee line this exclusion list needs a
  * matching update (logged in metadata.rawUsage below so a human can verify).
+ *
+ * SCOPE CAVEAT: this endpoint is account-wide — it has no per-Worker-script
+ * filter, only ServiceName/ServiceFamilyName product buckets (e.g. "Workers
+ * Standard"). If other Workers projects (e.g. relian-emergency, deploy-now)
+ * share this Cloudflare account, their usage is included in this total and
+ * cannot be excluded from this endpoint alone.
  */
 
 const FLAT_FEE_SERVICE_NAMES = new Set(['Workers Paid', 'Workers Standard'])
 
 interface BillableUsageRow {
   ServiceName: string
+  ChargePeriodStart?: string
+  ChargePeriodEnd?: string
   ContractedCost?: number
   CumulatedContractedCost?: number
 }
@@ -58,8 +67,17 @@ async function fetchCycleUsageCostUsd(): Promise<{ costUsd: number; raw: Billabl
   const body = (await res.json()) as { success: boolean; result?: BillableUsageRow[]; errors?: unknown }
   if (!body.success || !body.result) return { error: `Cloudflare billable-usage API: ${JSON.stringify(body.errors ?? body)}` }
 
+  // Cloudflare returns ONE ROW PER CHARGE PERIOD (typically daily) per service —
+  // e.g. 15 rows for a service 15 days into the cycle, not one row per service.
+  // `ContractedCost` is that single day's cost (periods don't overlap, so it's
+  // always safe to sum across rows). `CumulatedContractedCost` is a *running
+  // total* from billing-period start through that row's charge period — summing
+  // IT across rows re-adds every prior day on top of itself each time, inflating
+  // the true cost by roughly the number of elapsed days (this was the bug: a
+  // ~16x overcount 15 days into the cycle matches this exactly). Never sum
+  // CumulatedContractedCost across multiple rows for the same service.
   const usageRows = body.result.filter((r) => !FLAT_FEE_SERVICE_NAMES.has(r.ServiceName))
-  const costUsd = usageRows.reduce((sum, r) => sum + (r.CumulatedContractedCost ?? r.ContractedCost ?? 0), 0)
+  const costUsd = usageRows.reduce((sum, r) => sum + (r.ContractedCost ?? 0), 0)
   return { costUsd, raw: body.result }
 }
 
