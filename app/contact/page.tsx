@@ -44,10 +44,9 @@ const CONTACT_CARDS = [
 // free form at https://formspree.io (email: hello@visitplane.com)
 const FORMSPREE_URL = 'https://formspree.io/f/meedvaee'
 
-// Founder photo slot. Drop the real file at public/founder-hamad.jpg
-// (square, 800x800 px, JPG/WebP, under 200 KB), then set this to
-// '/founder-hamad.jpg'. While null, an initials placeholder renders instead.
-const FOUNDER_PHOTO_SRC: string | null = null
+// Founder photo (public/founder-hamad.jpg, square 800x800 JPG). Set to null to
+// fall back to the initials placeholder.
+const FOUNDER_PHOTO_SRC: string | null = '/founder-hamad.jpg'
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
