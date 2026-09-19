@@ -36,6 +36,9 @@
   // (bots blocked at the edge, revalidate lengthened to 30 days on the
   // heaviest templates).
 
+  // Per-deploy version id, used by worker-entry.ts to key the edge page cache.
+  "version_metadata": { "binding": "CF_VERSION_METADATA" },
+
   "observability": {
     "enabled": true
   },

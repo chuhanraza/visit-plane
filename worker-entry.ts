@@ -127,7 +127,14 @@ export default {
     // @ts-ignore — `caches.default` is a Workers-runtime global, not in the
     // standard lib.dom typings this project's tsconfig pulls in.
     const cache: Cache = caches.default
-    const cacheKey = new Request(request.url, request)
+    // Key the edge cache per deployment. Prerendered HTML embeds this build's
+    // hashed JS chunk URLs, and old chunks disappear on the next deploy — a
+    // URL-only key kept serving year-long-cached HTML pointing at 404 chunks,
+    // so pages never hydrated and framer-motion content stayed opacity:0.
+    const deployId = (env as unknown as { CF_VERSION_METADATA?: { id?: string } }).CF_VERSION_METADATA?.id ?? 'nover'
+    const keyUrl = new URL(request.url)
+    keyUrl.searchParams.set('__deploy', deployId)
+    const cacheKey = new Request(keyUrl.toString(), request)
 
     if (isGet) {
       const cached = await cache.match(cacheKey)
