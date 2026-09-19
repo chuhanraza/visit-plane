@@ -44,6 +44,11 @@ const CONTACT_CARDS = [
 // free form at https://formspree.io (email: hello@visitplane.com)
 const FORMSPREE_URL = 'https://formspree.io/f/meedvaee'
 
+// Founder photo slot. Drop the real file at public/founder-hamad.jpg
+// (square, 800x800 px, JPG/WebP, under 200 KB), then set this to
+// '/founder-hamad.jpg'. While null, an initials placeholder renders instead.
+const FOUNDER_PHOTO_SRC: string | null = null
+
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
@@ -110,7 +115,42 @@ export default function ContactPage() {
               revenue through affiliate partnerships with travel insurance, flight booking, and
               visa-processing providers.
             </p>
+            <div className="mb-6 flex items-center gap-4">
+              {FOUNDER_PHOTO_SRC ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={FOUNDER_PHOTO_SRC}
+                  alt="Muhammad Hamad Ashraf, Founder of VisitPlane"
+                  width={96}
+                  height={96}
+                  className="h-24 w-24 rounded-2xl border border-gray-100 object-cover"
+                />
+              ) : (
+                <div
+                  aria-hidden="true"
+                  className="flex h-24 w-24 items-center justify-center rounded-2xl border border-gray-100 bg-teal-500/10 text-2xl font-extrabold text-teal-500"
+                >
+                  MH
+                </div>
+              )}
+              <div>
+                <p className="text-sm font-bold text-[#0f0c29]">Muhammad Hamad Ashraf</p>
+                <p className="text-xs text-gray-500">Founder, Relian Trading — operator of VisitPlane</p>
+              </div>
+            </div>
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">Website Name</dt>
+                <dd className="mt-1 text-sm text-[#0f0c29]">VisitPlane</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">Website URL</dt>
+                <dd className="mt-1 text-sm">
+                  <a href="https://www.visitplane.com" className="font-semibold text-teal-500 hover:text-teal-600 transition">
+                    https://www.visitplane.com
+                  </a>
+                </dd>
+              </div>
               <div>
                 <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">Trading Name</dt>
                 <dd className="mt-1 text-sm text-[#0f0c29]">Relian Trading</dd>
