@@ -177,7 +177,10 @@ export default function ContactPage() {
               <div className="sm:col-span-2">
                 <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">Business Address</dt>
                 <dd className="mt-1 text-sm text-[#0f0c29]">
-                  Allama Iqbal Colony Moh, Chah Tarkhana Cantt, Sialkot, Sialkot, 51310, Pakistan
+                  <span className="block">MUHAMMAD ASHRAF KHAN</span>
+                  <span className="block">WALAYAT KHAN</span>
+                  <span className="block">NARGATE STREET</span>
+                  <span className="block">SIALKOT</span>
                 </dd>
               </div>
             </dl>
