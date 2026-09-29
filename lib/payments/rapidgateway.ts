@@ -1,6 +1,7 @@
 /**
  * RapidGateway (Pakistan) Hosted Redirect Checkout client. PKR only.
  *
+ * NOTE: MERCHANT_ID must be numeric (sandbox rejects non-numeric); '1000' is the sandbox placeholder.
  * SANDBOX → LIVE SWITCH: set RAPIDGATEWAY_MODE=live in Vercel. That is the only change
  * needed — it flips the path segment below from /sandbox/ to /rapid/ (and requires the
  * live client id / secret / merchant id / signing salt). Nothing else is hardcoded.
@@ -32,7 +33,7 @@ export function gatewayCredentials() {
   const sandbox = RAPIDGATEWAY_MODE === 'sandbox'
   const clientId = process.env.RAPIDGATEWAY_CLIENT_ID || (sandbox ? 'client' : '')
   const clientSecret = process.env.RAPIDGATEWAY_CLIENT_SECRET || (sandbox ? 'secret' : '')
-  const merchantId = process.env.RAPIDGATEWAY_MERCHANT_ID || (sandbox ? 'SANDBOX_MERCHANT' : '')
+  const merchantId = process.env.RAPIDGATEWAY_MERCHANT_ID || (sandbox ? '1000' : '')
   const usingDefaults = !process.env.RAPIDGATEWAY_CLIENT_ID || !process.env.RAPIDGATEWAY_CLIENT_SECRET
   return { clientId, clientSecret, merchantId, usingDefaults }
 }
