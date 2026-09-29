@@ -58,7 +58,8 @@
     "CLOUDFLARE_ACCOUNT_ID": "1068890dae6e2dde22dd81bdbf199830",
     "BILLING_GUARD_ARMED": "false",
     "BILLING_GUARD_THRESHOLD_USD": "0.50",
-    "BILLING_GUARD_ALERT_EMAIL": "relianmfg@gmail.com"
+    "BILLING_GUARD_ALERT_EMAIL": "relianmfg@gmail.com",
+    "RAPIDGATEWAY_MERCHANT_ID": "1899"
   },
 
   // 08:00 UTC daily: matches the cadence the old Vercel cron used for
