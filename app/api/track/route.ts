@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   const cookieHeader = req.headers.get('cookie') ?? ''
   const m = cookieHeader.match(/vp_sid=([^;]+)/)
   const session = m ? m[1] : `anon_${Date.now()}_${randomBytes(4).toString('hex')}`
-  const country = (req.headers.get('x-vercel-ip-country') || '').slice(0, 2).toUpperCase() || null
+  const country = (req.headers.get('cf-ipcountry') || req.headers.get('x-vercel-ip-country') || '').slice(0, 2).toUpperCase() || null
 
   await recordEvent({
     metric: event,

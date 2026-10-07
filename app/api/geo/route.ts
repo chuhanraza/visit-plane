@@ -70,7 +70,7 @@ const COUNTRY_NAMES: Record<string, string> = {
 export async function GET(request: NextRequest) {
   // Vercel provides country code automatically
   // via x-vercel-ip-country header - 100% FREE!
-  const countryCode = request.headers.get('x-vercel-ip-country') || 'US'
+  const countryCode = request.headers.get('cf-ipcountry') || request.headers.get('x-vercel-ip-country') || 'US'
   const countryName = COUNTRY_NAMES[countryCode] || 'United States'
 
   return NextResponse.json({

@@ -11,6 +11,8 @@ import { CommandPaletteProvider } from "@/components/layout/CommandPaletteContex
 import LazyExitIntent from "@/components/LazyExitIntent";
 import FunnelBeacon from "@/components/FunnelBeacon";
 import PWAProvider from "@/components/PWAProvider";
+import CookieConsent from "@/components/layout/CookieConsent";
+import { CONSENT_DEFAULT_SCRIPT } from "@/lib/consent";
 import { getAuthor } from "@/lib/data/authors";
 import "./globals.css";
 
@@ -246,6 +248,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
         />
+        <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />
       </head>
       <body className="min-h-full flex flex-col bg-[#FAFAFA]">
         <NextIntlClientProvider locale="en" messages={enMessages}>
@@ -257,6 +260,7 @@ export default function RootLayout({
           </CommandPaletteProvider>
         </NextIntlClientProvider>
         <GoogleTagManager gtmId="GTM-PE2H5RR8HK" />
+        <CookieConsent />
         {/* Capture Point 3 — Exit Intent Modal (desktop only). Lazy: keeps
             framer-motion out of every page's critical JS (mobile 3G LCP). */}
         <LazyExitIntent />

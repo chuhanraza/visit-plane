@@ -153,7 +153,7 @@ export async function GET(
 
   // ── Source page (explicit ?source= wins, else Referer) + country (Vercel geo) ─
   const sourcePage = cleanSourcePage(searchParams.get('source') ?? req.headers.get('referer'))
-  const country = (req.headers.get('x-vercel-ip-country') || '').slice(0, 2).toUpperCase() || null
+  const country = (req.headers.get('cf-ipcountry') || req.headers.get('x-vercel-ip-country') || '').slice(0, 2).toUpperCase() || null
 
   // ── Respect Do-Not-Track / Global Privacy Control — same rule as /api/track.
   //    Skips the click log only; the redirect below always happens regardless. ─
