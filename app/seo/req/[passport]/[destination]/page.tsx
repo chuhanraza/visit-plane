@@ -10,6 +10,7 @@
  * ISR: revalidated every 30 days
  */
 import Link from 'next/link'
+import { clampTitle, clampDesc } from '@/lib/seo/clamp'
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -256,8 +257,8 @@ export async function generateMetadata({
   const destinationName = destinationCountry?.name ?? destinationSlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
   const year = new Date().getFullYear()
 
-  const title = `Visa Requirements for ${passportName} Citizens Traveling to ${destinationName} (${year})`
-  const description = `Complete ${year} visa guide for ${passportName} passport holders visiting ${destinationName}. Exact fees, processing times, required documents, application steps, and official sources. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`
+  const title = clampTitle(`${passportName} to ${destinationName} Visa Requirements (${year})`)
+  const description = clampDesc(`Complete ${year} visa guide for ${passportName} passport holders visiting ${destinationName}. Exact fees, processing times, required documents, application steps, and official sources. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`)
   // Canonicalise to the RESOLVED forms (nationality + destination slug — the
   // exact forms the sitemap emits), not the raw slug echo: the lookups accept
   // several slug variants (country-name slugs, case variants), and echoing them

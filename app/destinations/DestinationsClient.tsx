@@ -194,6 +194,7 @@ export default function DestinationsClient() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pb-2">
           <VisaDataDisclaimer variant="compact" />
         </div>
+        <h2 className="sr-only">Visa requirements by country for {passport} passport holders</h2>
 
         {/* ── Sticky filter bar ───────────────────────────────────────── */}
         <div className="sticky top-16 z-30 border-b border-gray-200/70 bg-[#FAFAFA]/95 backdrop-blur-xl">

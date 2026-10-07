@@ -11,6 +11,7 @@
  *   2. destinations table (legacy, for page existence check + SEO hero)
  */
 import Link from 'next/link'
+import { clampTitle, clampDesc } from '@/lib/seo/clamp'
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -137,8 +138,8 @@ export async function generateMetadata({
   const passportName    = resolveCountry(passportSlug)
   const destinationName = resolveCountry(destinationSlug)
 
-  const title       = `${passportName} to ${destinationName} Visa Requirements 2026 — Complete Guide`
-  const description = `Everything a ${passportName} passport holder needs to know before visiting ${destinationName}: visa type, fee, processing time, required documents, and how to apply. Updated May 2026.`
+  const title       = clampTitle(`${passportName} to ${destinationName} Visa Requirements 2026`)
+  const description = clampDesc(`Everything a ${passportName} passport holder needs to know before visiting ${destinationName}: visa type, fee, processing time, required documents, and how to apply. Updated May 2026.`)
   // Lowercased: lookups are case-insensitive, so an uppercase URL variant would
   // otherwise self-canonicalise as a duplicate.
   const canonical   = `https://www.visitplane.com/${passportSlug.toLowerCase()}-to-${destinationSlug.toLowerCase()}-visa-requirements`

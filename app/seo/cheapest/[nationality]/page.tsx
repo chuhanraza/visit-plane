@@ -7,6 +7,7 @@
  * Count: 197 pages
  */
 import Link from 'next/link'
+import { clampTitle, clampDesc } from '@/lib/seo/clamp'
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -82,8 +83,8 @@ export async function generateMetadata({
   if (!country) return { title: 'Cheapest Visa Destinations | VisitPlane' }
 
   const year = new Date().getFullYear()
-  const title = `Cheapest Visa Destinations for ${country.name} Passport Holders (${year})`
-  const description = `Top 30 cheapest countries to visit on a ${country.name} passport, sorted by visa fee. Includes free-entry destinations, cheap visa on arrival, and affordable eVisa options. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`
+  const title = clampTitle(`Cheapest Visas for ${country.name} Passport Holders (${year})`)
+  const description = clampDesc(`Top 30 cheapest countries to visit on a ${country.name} passport, sorted by visa fee. Includes free-entry destinations, cheap visa on arrival, and affordable eVisa options. Updated ${new Date().toLocaleString('en', { month: 'long', year: 'numeric' })}.`)
   // Resolved country slug = the form the sitemap emits; the lookup also accepts
   // nationality-adjective slugs, which would otherwise self-canonicalise.
   const canonical = `https://www.visitplane.com/cheapest-visas-from-${country.slug}-passport`

@@ -68,7 +68,9 @@ function FeaturedCard({ post }: { post: BlogPost }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={getBlogCardImage(post.slug)}
-          alt=""
+          alt={post.title}
+          width={1200}
+          height={514}
           fetchPriority="high"
           loading="eager"
           decoding="async"
@@ -121,7 +123,9 @@ function IndexPostCard({ post }: { post: BlogPost }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={getBlogCardImage(post.slug)}
-          alt=""
+          alt={post.title}
+          width={800}
+          height={600}
           loading="lazy"
           decoding="async"
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"

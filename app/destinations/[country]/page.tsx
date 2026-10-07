@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { clampTitle, clampDesc } from '@/lib/seo/clamp'
 import { ALL_COUNTRIES } from '../data'
 import DestinationCountryClient from './DestinationCountryClient'
 import TripEssentials from '@/components/affiliate/TripEssentials'
@@ -36,8 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const c = findCountry(slug)
   const name = c?.name ?? decodeURIComponent(slug)
 
-  const title       = `${name} Visa Requirements by Passport — All Nationalities | VisitPlane`
-  const description = `${name} visa requirements for every nationality. Check whether your passport is visa-free, needs an eVisa, visa on arrival, or a full visa for ${name}. Updated 2026.`
+  const title       = clampTitle(`${name} Visa Requirements by Passport (2026)`)
+  const description = clampDesc(`${name} visa requirements for every nationality. Check whether your passport is visa-free, needs an eVisa, visa on arrival, or a full visa for ${name}. Updated 2026.`)
   const canonical   = `https://www.visitplane.com/destinations/${encodeURIComponent(slug)}`
 
   return {

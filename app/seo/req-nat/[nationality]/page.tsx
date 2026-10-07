@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { clampTitle, clampDesc } from '@/lib/seo/clamp'
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -84,8 +85,8 @@ export async function generateMetadata({
   const country = NATIONALITY_TO_COUNTRY[nationality.toLowerCase()]
   if (!country) return { title: 'Visa Requirements | VisitPlane' }
 
-  const title       = `Visa Requirements for ${country} Citizens — All 197 Countries (2026)`
-  const description = `Complete visa requirements matrix for ${country} citizens. Find out which countries require a visa, which are visa-free, and where you can get a visa on arrival or eVisa. Updated May 2026.`
+  const title       = clampTitle(`${country} Citizens Visa Requirements: 197 Countries (2026)`)
+  const description = clampDesc(`Complete visa requirements matrix for ${country} citizens. Find out which countries require a visa, which are visa-free, and where you can get a visa on arrival or eVisa. Updated May 2026.`)
   const canonical   = `https://www.visitplane.com/visa-requirements-for-${nationality.toLowerCase()}-citizens`
 
   return {

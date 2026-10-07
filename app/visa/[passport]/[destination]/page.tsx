@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { clampTitle, clampDesc } from '@/lib/seo/clamp'
 import type { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { hasConflictingStatus } from '@/lib/visa/detectConflict'
@@ -244,8 +245,8 @@ export async function generateMetadata({
 
   // ≤60 chars: no "| VisitPlane" suffix (it truncated ~90% of these titles in
   // SERPs) and short names for long countries. Keyword phrase kept intact.
-  const title       = `${titleName(destinationName)} Visa Requirements for ${titleName(passportName)} Citizens (2026)`
-  const description = `${passportName} passport holders visiting ${destinationName}: ${visaType}${feeText}${procText}. Complete document checklist, step-by-step application guide, and official sources. Updated June 2026.`
+  const title       = clampTitle(`${titleName(destinationName)} Visa Requirements for ${titleName(passportName)} Citizens (2026)`)
+  const description = clampDesc(`${passportName} passport holders visiting ${destinationName}: ${visaType}${feeText}${procText}. Complete document checklist, step-by-step application guide, and official sources. Updated June 2026.`)
   const canonical   = `https://www.visitplane.com/visa/${encodeURIComponent(passportSlug)}/${encodeURIComponent(destinationSlug)}`
 
   return {
