@@ -21,9 +21,7 @@ function urlEntry(
   return `  <url>
     <loc>${loc}</loc>
     <lastmod>${lastmod}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-  </url>`
+      </url>`
 }
 
 /**
@@ -31,7 +29,9 @@ function urlEntry(
  * tag landing pages. Referenced from robots.txt alongside the main sitemap.
  */
 export async function GET() {
-  const now = new Date().toISOString()
+  const now = new Date(
+    Math.max(...blogPosts.map((p) => new Date(p.date).getTime()).filter((n) => !Number.isNaN(n))),
+  ).toISOString()
 
   // Sprint 5 content prune: omit noindexed clones and 301-redirected duplicates.
   const posts = blogPosts

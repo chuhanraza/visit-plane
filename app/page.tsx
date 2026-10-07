@@ -381,7 +381,7 @@ export default function HomePage() {
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex justify-end" style={{ marginBottom: '16px' }}>
             <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
               <CheckIcon className="h-3 w-3 text-emerald-500" />
-              Official-source verified
+              Sources linked on every page
             </div>
           </motion.div>
 
@@ -619,7 +619,7 @@ export default function HomePage() {
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { icon: '🌍', title: '197 countries covered', desc: 'Every passport and destination in one free place.' },
-                { icon: '🏛️', title: 'Official-source verified', desc: 'Checked against government immigration sites, embassy pages and the IATA Travel Centre.' },
+                { icon: '🏛️', title: 'Official sources linked', desc: 'Every guide points to the government, embassy or IATA source so you can confirm before you travel.' },
                 { icon: '🔓', title: '100% free, no signup', desc: 'No paywalls, no account, no spam. Just the information you came for.' },
                 { icon: '📝', title: 'A real, named editor', desc: 'Edited and kept current by an accountable person — not an anonymous content farm.' },
               ].map((f, i) => (
@@ -751,7 +751,7 @@ export default function HomePage() {
               <div className="relative">
                 <div className="mb-4 text-4xl">✈️</div>
                 <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Check your visa requirements now</h2>
-                <p className="mx-auto mt-4 max-w-md text-sm text-white/70">197 countries. Official-source verified. Always free, no sign-up needed.</p>
+                <p className="mx-auto mt-4 max-w-md text-sm text-white/70">197 countries. Official sources linked. Always free, no sign-up needed.</p>
                 <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <Link href="/destinations" className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-emerald-700 shadow-xl transition hover:-translate-y-0.5 hover:shadow-2xl">
                     Check Visa Requirements <ArrowRight className="h-4 w-4" />

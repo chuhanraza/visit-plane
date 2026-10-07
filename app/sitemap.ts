@@ -1,10 +1,6 @@
 import { MetadataRoute } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { blogPosts, getAllCategories, getAllTags, toSlug as postTaxonomySlug } from '@/src/lib/posts'
 import { COUNTRIES, TOP_50_ROUTES, BY_ISO3 } from '@/lib/seo/countries'
-import { getSitemapPriority } from '@/lib/seo/internalLinks'
-import { noindexedPostSet } from '@/lib/data/noindexedPosts'
-import { redirectedSlugSet } from '@/lib/data/blogRedirectSlugs'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -144,83 +140,59 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // ── Static pages ────────────────────────────────────────────────────────────
   const staticPages: MetadataRoute.Sitemap = [
-    { url: base,                              lastModified: LASTMOD, changeFrequency: 'daily',   priority: 1.0 },
-    { url: `${base}/about`,                   lastModified: LASTMOD, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${base}/blog`,                    lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/passport-strength`,       lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/visa-free-map`,           lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/compare`,                 lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/checklist`,               lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/embassy-finder`,          lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/cost-calculator`,         lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/processing-times`,        lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/visa-tracker`,            lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.8 },
-    { url: `${base}/visa-checker`,            lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/destinations`,            lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${base}/itinerary-generator`,     lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.8 },
-    { url: `${base}/currency-converter`,      lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.8 },
-    { url: `${base}/travel-insurance`,        lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.8 },
-    { url: `${base}/interview-prep`,          lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.8 },
-    { url: `${base}/visa-vault`,              lastModified: LASTMOD, changeFrequency: 'weekly',  priority: 0.8 },
+    { url: base,                              lastModified: LASTMOD },
+    { url: `${base}/about`,                   lastModified: LASTMOD },
+    { url: `${base}/blog`,                    lastModified: LASTMOD },
+    { url: `${base}/passport-strength`,       lastModified: LASTMOD },
+    { url: `${base}/visa-free-map`,           lastModified: LASTMOD },
+    { url: `${base}/compare`,                 lastModified: LASTMOD },
+    { url: `${base}/checklist`,               lastModified: LASTMOD },
+    { url: `${base}/embassy-finder`,          lastModified: LASTMOD },
+    { url: `${base}/cost-calculator`,         lastModified: LASTMOD },
+    { url: `${base}/processing-times`,        lastModified: LASTMOD },
+    { url: `${base}/visa-tracker`,            lastModified: LASTMOD },
+    { url: `${base}/visa-checker`,            lastModified: LASTMOD },
+    { url: `${base}/destinations`,            lastModified: LASTMOD },
+    { url: `${base}/itinerary-generator`,     lastModified: LASTMOD },
+    { url: `${base}/currency-converter`,      lastModified: LASTMOD },
+    { url: `${base}/travel-insurance`,        lastModified: LASTMOD },
+    { url: `${base}/interview-prep`,          lastModified: LASTMOD },
+    { url: `${base}/visa-vault`,              lastModified: LASTMOD },
     // NOTE: /passport-scanner is intentionally excluded — robots.txt Disallows it
     // (on-device camera tool), so listing it created a crawl-block/sitemap conflict.
-    { url: `${base}/how-it-works`,            lastModified: LASTMOD, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/how-it-works`,            lastModified: LASTMOD },
     // NOTE: /visa-requirements is intentionally excluded — that route 307-redirects
     // to the homepage, so listing it would put a non-canonical redirect URL in the
     // sitemap. The visa checker lives on `/` (already listed at priority 1.0).
-    { url: `${base}/faq`,                     lastModified: LASTMOD, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/faq`,                     lastModified: LASTMOD },
 
     // ── Visa Data & Research hub (original, citable datasets) ───────────────
-    { url: `${base}/visa-data`,                                  lastModified: LASTMOD, changeFrequency: 'weekly', priority: 0.85 },
-    { url: `${base}/visa-data/visa-cost-index`,                  lastModified: LASTMOD, changeFrequency: 'weekly', priority: 0.85 },
-    { url: `${base}/visa-data/passport-power`,                   lastModified: LASTMOD, changeFrequency: 'weekly', priority: 0.85 },
-    { url: `${base}/visa-data/document-requirements-index`,      lastModified: LASTMOD, changeFrequency: 'weekly', priority: 0.85 },
-    { url: `${base}/contact`,                 lastModified: LASTMOD, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${base}/privacy`,                 lastModified: LASTMOD, changeFrequency: 'yearly',  priority: 0.3 },
-    { url: `${base}/terms`,                   lastModified: LASTMOD, changeFrequency: 'yearly',  priority: 0.3 },
+    { url: `${base}/visa-data`,                                  lastModified: LASTMOD },
+    { url: `${base}/visa-data/visa-cost-index`,                  lastModified: LASTMOD },
+    { url: `${base}/visa-data/passport-power`,                   lastModified: LASTMOD },
+    { url: `${base}/visa-data/document-requirements-index`,      lastModified: LASTMOD },
+    { url: `${base}/editorial-standards`, lastModified: LASTMOD },
+    { url: `${base}/wizard`, lastModified: LASTMOD },
+    { url: `${base}/authors/muhammad-hamad-ashraf`, lastModified: LASTMOD },
+    { url: `${base}/premium-report`, lastModified: LASTMOD },
+    { url: `${base}/contact`,                 lastModified: LASTMOD },
+    { url: `${base}/privacy`,                 lastModified: LASTMOD },
+    { url: `${base}/terms`,                   lastModified: LASTMOD },
   ]
 
-  // ── Blog post pages ─────────────────────────────────────────────────────────
-  // Sprint 5 content prune: exclude noindexed dead clones and 301-redirected
-  // merge duplicates. Sitemap lists only LIVE + LIVE_DEEPEN_QUEUE pages.
-  const blogPages: MetadataRoute.Sitemap = blogPosts
-    .filter((post) => !noindexedPostSet.has(post.slug) && !redirectedSlugSet.has(post.slug))
-    .map((post) => ({
-      url: `${base}/blog/${post.slug}`,
-      lastModified: new Date(post.date),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    }))
-
-  // ── Blog category + tag landing pages ────────────────────────────────────────
-  const blogTaxonomyPages: MetadataRoute.Sitemap = [
-    ...getAllCategories().map((c) => ({
-      url: `${base}/blog/category/${postTaxonomySlug(c)}`,
-      lastModified: LASTMOD,
-      changeFrequency: 'weekly' as const,
-      priority: 0.6,
-    })),
-    ...getAllTags().map((t) => ({
-      url: `${base}/blog/tag/${t.slug}`,
-      lastModified: LASTMOD,
-      changeFrequency: 'weekly' as const,
-      priority: 0.5,
-    })),
-  ]
+  // Blog posts + taxonomy pages are listed in /sitemap-blog.xml only.
 
   // ── Dynamic visa + programmatic SEO pages ───────────────────────────────────
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
     const data = await fetchAllDestinationRows()
 
-    if (data.length === 0) return [...staticPages, ...blogPages, ...blogTaxonomyPages]
+    if (data.length === 0) return [...staticPages]
 
     // Legacy visa pages: /visa/{passport}/{destination}
     const visaPages: MetadataRoute.Sitemap = data.map((row) => ({
       url: `${base}/visa/${encodeURIComponent(row.passport_country)}/${encodeURIComponent(row.country_name)}`,
       lastModified: LASTMOD,
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
     }))
 
     // Unique passport countries from legacy data (for old templates)
@@ -238,8 +210,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return [{
         url:             `${base}/visa-requirements-for-${pp.nationality}-citizens-to-${dest.slug}`,
         lastModified:    LASTMOD,
-        changeFrequency: 'weekly' as const,
-        priority:        getSitemapPriority(1, passportIso, destIso),
       }]
     })
 
@@ -255,8 +225,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const template1Full: MetadataRoute.Sitemap = (publishedT1 ?? []).map((row) => ({
       url:             `${base}/${row.url_slug}`,
       lastModified:    new Date(row.updated_at),
-      changeFrequency: 'weekly' as const,
-      priority:        0.85,
     }))
 
     // T2/T3 pages notFound() when the passport has zero `destinations` rows, so
@@ -271,8 +239,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .map((c) => ({
         url:             `${base}/visa-free-countries-for-${c.nationality}-passport`,
         lastModified:    LASTMOD,
-        changeFrequency: 'weekly' as const,
-        priority:        getSitemapPriority(2, c.iso3),
       }))
 
     // Template 3: /cheapest-visas-from-{slug}-passport
@@ -281,8 +247,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .map((c) => ({
         url:             `${base}/cheapest-visas-from-${c.slug}-passport`,
         lastModified:    LASTMOD,
-        changeFrequency: 'weekly' as const,
-        priority:        getSitemapPriority(3, c.iso3),
       }))
 
     // Template 4: /{destination}-visa-guide-for-{nationality}
@@ -295,8 +259,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return [{
         url:             `${base}/${dest.slug}-visa-guide-for-${pp.nationality}`,
         lastModified:    LASTMOD,
-        changeFrequency: 'weekly' as const,
-        priority:        getSitemapPriority(4, passportIso, destIso),
       }]
     })
 
@@ -312,8 +274,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const template4Full: MetadataRoute.Sitemap = (publishedT4 ?? []).map((row) => ({
       url:             `${base}/${row.url_slug}`,
       lastModified:    new Date(row.updated_at),
-      changeFrequency: 'weekly' as const,
-      priority:        0.9,
     }))
 
     // Legacy old templates (kept for backwards compat)
@@ -325,31 +285,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .map((passport) => ({
         url: `${base}/visa-requirements-for-${getNationality(passport)}-citizens`,
         lastModified: LASTMOD,
-        changeFrequency: 'monthly' as const,
-        priority: 0.75,
-      }))
-
-    const oldTemplateDPages: MetadataRoute.Sitemap = legacyPassports
-      .filter((passport) => NATIONALITY_MAP[passport.toLowerCase()] !== undefined)
-      .map((passport) => ({
-        url: `${base}/cheapest-visa-from-${getNationality(passport)}-passport`,
-        lastModified: LASTMOD,
-        changeFrequency: 'monthly' as const,
-        priority: 0.7,
       }))
 
     const destinationHubPages: MetadataRoute.Sitemap = legacyDests.map((dest) => ({
       url: `${base}/destinations/${encodeURIComponent(dest)}`,
       lastModified: LASTMOD,
-      changeFrequency: 'monthly' as const,
-      priority: 0.75,
     }))
 
     // Deduplicate by URL
     const allPages = [
       ...staticPages,
-      ...blogPages,
-      ...blogTaxonomyPages,
       ...template1Pages,
       ...template1Full,
       ...template2Pages,
@@ -358,7 +303,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...template4Full,
       ...visaPages,
       ...oldTemplateAPages,
-      ...oldTemplateDPages,
       ...destinationHubPages,
     ]
 
@@ -371,6 +315,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return deduped
   } catch {
-    return [...staticPages, ...blogPages, ...blogTaxonomyPages]
+    return [...staticPages]
   }
 }

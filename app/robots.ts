@@ -10,7 +10,6 @@ export default function robots(): MetadataRoute.Robots {
         // Block internal/utility routes from crawl budget
         disallow: [
           '/api/',
-          '/_next/',
           '/passport-scanner', // App-like page, not SEO content
         ],
       },
@@ -18,13 +17,13 @@ export default function robots(): MetadataRoute.Robots {
         // Allow Google to crawl everything it needs for indexing
         userAgent: 'Googlebot',
         allow: ['/', '/api/photo', '/api/og'],
-        disallow: ['/api/', '/_next/'],
+        disallow: ['/api/', '/passport-scanner'],
       },
       {
         // Allow Bing to crawl everything it needs for indexing
         userAgent: 'Bingbot',
         allow: ['/', '/api/photo', '/api/og'],
-        disallow: ['/api/', '/_next/'],
+        disallow: ['/api/', '/passport-scanner'],
       },
       // Advisory block for aggressive/non-essential crawlers (SEO scrapers,
       // AI training/browsing bots) — polite bots honor this; rude ones don't,
@@ -38,6 +37,5 @@ export default function robots(): MetadataRoute.Robots {
       'https://www.visitplane.com/sitemap.xml',
       'https://www.visitplane.com/sitemap-blog.xml',
     ],
-    host: 'https://www.visitplane.com',
   }
 }

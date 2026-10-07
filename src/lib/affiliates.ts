@@ -337,7 +337,7 @@ export function isInsuranceRequired(destinationName: string): boolean {
 }
 
 // ─── Destination → airport code mapping ──────────────────────────────────────
-export function getAirportCode(destinationName: string): { city: string; code: string } {
+export function getAirportCode(destinationName: string): { city: string; code: string | null } {
   const d = destinationName.toLowerCase()
   if (d.includes('uae') || d.includes('united arab')) return { city: 'Dubai', code: 'DXB' }
   if (d.includes('turkey') || d.includes('türkiye')) return { city: 'Istanbul', code: 'IST' }
@@ -354,5 +354,5 @@ export function getAirportCode(destinationName: string): { city: string; code: s
   if (d.includes('singapore')) return { city: 'Singapore', code: 'SIN' }
   if (d.includes('maldives')) return { city: 'Malé', code: 'MLE' }
   if (d.includes('qatar')) return { city: 'Doha', code: 'DOH' }
-  return { city: destinationName, code: 'XXX' }
+  return { city: destinationName, code: null }
 }
