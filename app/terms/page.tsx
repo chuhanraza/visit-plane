@@ -10,7 +10,7 @@ const sections = [
   },
   {
     title: '2. What VisitPlane Is',
-    body: `VisitPlane is a free, independent informational platform for checking visa requirements, entry conditions, and travel document guidance. We aggregate publicly available information from official government and embassy sources. We are not a travel agency, visa processing service, embassy, consulate, or government authority. We do not submit visa applications, collect passport data, or provide legally binding travel advice.`,
+    body: `VisitPlane is an independent informational platform (free to use, with one optional paid report) for checking visa requirements, entry conditions, and travel document guidance. We aggregate publicly available information from official government and embassy sources. We are not a travel agency, visa processing service, embassy, consulate, or government authority. We do not submit visa applications, collect passport data, or provide legally binding travel advice.`,
   },
   {
     title: '3. Accuracy of Information',
@@ -41,19 +41,23 @@ const sections = [
     body: `Your use of VisitPlane is also governed by our Privacy Policy, available at visitplane.com/privacy. The short version: we collect almost no personal data. We do not require an account, we do not sell your data, and we do not run advertising. Please review our Privacy Policy for full details.`,
   },
   {
-    title: '10. No Advertising',
-    body: `VisitPlane does not display advertising and does not allow third-party advertisers to place content, cookies, or tracking technologies on this site. We do not receive payment from any entity in exchange for influencing the visa information we provide. Our information is not sponsored.`,
+    title: '10. Affiliate Links & Independence',
+    body: `VisitPlane does not display banner or network advertising. Some pages link to third-party services such as travel insurance or flights; if you buy through one of these links we may earn a commission at no extra cost to you. These links are marked, and nobody pays us to change the visa information we publish. Our visa information is not sponsored.`,
   },
   {
-    title: '11. Modifications to the Service',
+    title: '11. Paid Premium Visa Report',
+    body: `VisitPlane offers an optional one-time Premium Visa Report for Rs 2,000 (PKR), covering one passport and destination pair. Payment is processed by our payment provider RapidGateway; we do not see or store your card or wallet details. The report unlocks only after RapidGateway confirms your payment. It is guidance based on our visa data, not legal or immigration advice, and it does not guarantee a visa or entry. Refunds are covered in our Refund Policy at visitplane.com/refund-policy.`,
+  },
+  {
+    title: '12. Modifications to the Service',
     body: `We reserve the right to modify, suspend, or discontinue any part of the Service at any time without notice. We are not liable to you or any third party for any modification, suspension, or discontinuation of the Service.`,
   },
   {
-    title: '12. Governing Law',
+    title: '13. Governing Law',
     body: `These Terms are governed by applicable law. If any provision is found to be invalid or unenforceable, the remaining provisions remain in full force. These Terms constitute the entire agreement between you and VisitPlane regarding your use of the Service.`,
   },
   {
-    title: '13. Contact',
+    title: '14. Contact',
     body: `Questions about these Terms? Email legal@visitplane.com or use our Contact page. We aim to respond within 48 hours.`,
   },
 ]
@@ -82,7 +86,7 @@ export default function TermsPage() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.16 }}
             className="mt-4 text-sm text-gray-400"
           >
-            Last updated: May 27, 2026 · Effective immediately
+            Last updated: October 8, 2026 · Effective immediately
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.22 }}
