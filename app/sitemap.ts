@@ -175,6 +175,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/wizard`, lastModified: LASTMOD },
     { url: `${base}/authors/muhammad-hamad-ashraf`, lastModified: LASTMOD },
     { url: `${base}/premium-report`, lastModified: LASTMOD },
+    { url: `${base}/refund-policy`, lastModified: LASTMOD },
     { url: `${base}/contact`,                 lastModified: LASTMOD },
     { url: `${base}/privacy`,                 lastModified: LASTMOD },
     { url: `${base}/terms`,                   lastModified: LASTMOD },

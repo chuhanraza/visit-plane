@@ -6,15 +6,19 @@ import { motion } from 'framer-motion'
 const sections = [
   {
     title: '1. Who We Are',
-    body: `VisitPlane is a free, independent visa information tool. We are not a travel agency, visa processing service, or government authority. We provide informational content to help travelers understand visa requirements — we do not process applications, handle payments, or store personal travel documents of any kind.`,
+    body: `VisitPlane is an independent visa information tool. We are not a travel agency, visa processing service, or government authority. We provide informational content to help travelers understand visa requirements — we do not process visa applications or store personal travel documents. We do sell one optional paid report (see section 3A).`,
   },
   {
     title: '2. What We Collect',
-    body: `We collect very little. We do not require an account, so we never collect your name, email, or passport details just for you to use the site. The only personal data we may receive is: (1) information you voluntarily submit through our contact form — your name, email, and message; and (2) standard analytics data collected automatically by our analytics provider (see section 4), such as pages visited, browser type, and general geographic region. We do not collect or store your passport country or destination searches beyond the current session.`,
+    body: `We collect very little. We do not require an account, so we never collect your name, email, or passport details just for you to use the site. The only personal data we may receive is: (1) information you voluntarily submit through our contact form — your name, email, and message; and (2) standard analytics data collected automatically by our analytics provider (see section 4), such as pages visited, browser type, and general geographic region. Free searches are not linked to an identity. If you buy the Premium Visa Report we also collect the data described in section 3A.`,
   },
   {
     title: '3. Contact Form Data',
     body: `When you submit our contact form, your name, email address, and message are sent to us via Formspree (our form handling provider) and delivered to our inbox. We use this information solely to respond to your inquiry. We do not add you to any mailing list, share your contact details with third parties, or retain your message longer than necessary to address your question.`,
+  },
+  {
+    title: '3A. Premium Report Purchases',
+    body: `If you buy the Premium Visa Report we collect your email address, Pakistani mobile number, the passport and destination you chose, and the order amount and status. We use these only to take payment, deliver your report, and handle support or refund requests. Payment is handled by RapidGateway; your card or wallet details go to RapidGateway and are never seen or stored by us. We keep order records as long as needed for accounting and dispute handling.`,
   },
   {
     title: '4. Analytics',
@@ -26,15 +30,15 @@ const sections = [
   },
   {
     title: '6. Third-Party Services',
-    body: `We use Supabase as our database provider to store and serve visa requirement data. We use Vercel to host the application. We use Formspree to handle contact form submissions. Each of these providers has its own privacy policy. We have chosen providers with strong data privacy practices, but we encourage you to review their policies if you have specific concerns.`,
+    body: `We use Supabase as our database provider to store and serve visa requirement data. We use Cloudflare to host and deliver the application, RapidGateway to process payments for the Premium Visa Report, and Resend to send transactional email. We use Formspree to handle contact form submissions. Each of these providers has its own privacy policy. We have chosen providers with strong data privacy practices, but we encourage you to review their policies if you have specific concerns.`,
   },
   {
-    title: '7. No Advertising',
-    body: `We do not run advertising on VisitPlane. We do not sell your data to advertisers. We do not allow third-party advertising networks to place cookies or tracking pixels on this site. Our goal is to provide useful information, not to monetize your attention.`,
+    title: '7. Advertising & Affiliate Links',
+    body: `We do not run banner advertising on VisitPlane and we do not sell your data to advertisers. Some pages contain affiliate links to partners such as travel insurance or flight providers; if you click one, the partner may set its own cookies and we may earn a commission. We do not allow third-party advertising networks to place tracking pixels on this site. Our goal is to provide useful information, not to monetize your attention.`,
   },
   {
     title: '8. Data Security',
-    body: `We implement appropriate technical measures to protect the limited data we do collect. Contact form submissions are transmitted over HTTPS and delivered directly to our inbox. We do not store payment information because we never charge for anything. No method of internet transmission is 100% secure, but we take reasonable precautions.`,
+    body: `We implement appropriate technical measures to protect the limited data we do collect. Contact form submissions are transmitted over HTTPS and delivered directly to our inbox. We do not store card or wallet details; payments are handled by RapidGateway. No method of internet transmission is 100% secure, but we take reasonable precautions.`,
   },
   {
     title: '9. Your Rights',
@@ -74,7 +78,7 @@ export default function PrivacyPage() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.16 }}
             className="mt-4 text-sm text-gray-400"
           >
-            Last updated: May 27, 2026 · Effective immediately
+            Last updated: October 8, 2026 · Effective immediately
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.22 }}

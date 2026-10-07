@@ -92,6 +92,19 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Baseline security headers for every route. CSP is deliberately NOT
+        // enforced yet (GTM/analytics/payment scripts) — Report-Only first.
+        source: '/:path*',
+        headers: [
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), payment=(self)' },
+          { key: 'Content-Security-Policy-Report-Only', value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" },
+        ],
+      },
+      {
         // Service worker — must NEVER be HTTP-cached
         source: '/sw.js',
         headers: [

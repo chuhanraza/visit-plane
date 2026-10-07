@@ -21,6 +21,7 @@ const PRODUCT_LINKS = [
   { label: 'Compare Visas',     href: '/compare'          },
   { label: 'Visa Data & Research', href: '/visa-data'     },
   { label: 'Blog',              href: '/blog'             },
+  { label: 'Premium Visa Report', href: '/premium-report' },
 ]
 
 const TRUST_LINKS = [
@@ -34,6 +35,7 @@ const TRUST_LINKS = [
 const LEGAL_LINKS = [
   { label: 'Privacy Policy',   href: '/privacy' },
   { label: 'Terms of Service', href: '/terms'   },
+  { label: 'Refund Policy',    href: '/refund-policy' },
   { label: 'Contact',          href: '/contact' },
 ]
 
