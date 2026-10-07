@@ -17,6 +17,22 @@ import { BLOCKED_BOT_UA_PATTERN } from '@/lib/security/botBlocklist';
 export const runtime = 'experimental-edge';
 
 export default async function middleware(request: NextRequest) {
+  // Canonical host: send the bare domain to www with a 301 so Google sees one
+  // site. /api/* (incl. the payment webhook) is excluded by the matcher below,
+  // so webhook deliveries to the apex are never redirected.
+  try {
+    const host = (request.headers.get('host') ?? '').toLowerCase().split(':')[0];
+    if (host === 'visitplane.com') {
+      const url = request.nextUrl.clone();
+      url.protocol = 'https:';
+      url.host = 'www.visitplane.com';
+      url.port = '';
+      return NextResponse.redirect(url, 301);
+    }
+  } catch {
+    // fail-open
+  }
+
   // Hard-block aggressive/non-essential crawlers before they ever reach an
   // ISR/SSR route — robots.txt is advisory only, and these bots (SEO
   // scrapers, AI training/browsing bots) were driving the bulk of our ISR
