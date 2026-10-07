@@ -77,7 +77,7 @@ function resolveCards(
       partner: 'wayaway' as AffiliatePartner,
       icon: '✈️',
       label: 'Flights',
-      tagline: `${passportName} → ${flightCity} (${airportCode})`,
+      tagline: `${passportName} → ${flightCity}${airportCode ? ` (${airportCode})` : ''}`,
       details: `Compare 700+ airlines. WayAway shows cashback-eligible fares — you can earn back up to 10% on your booking.`,
       price: 'Compare fares',
       buttonLabel: 'Search Flights →',

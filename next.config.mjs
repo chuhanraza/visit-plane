@@ -64,6 +64,7 @@ const nextConfig = {
     // statusCode 301 (not `permanent: true`, which emits 308) to match the SEO
     // recovery spec — classic Moved Permanently that consolidates link equity.
     return [
+      { source: '/cheapest-visa-from-:nationality-passport', destination: '/cheapest-visas-from-:nationality-passport', statusCode: 301 },
       // Orphan URL with no page — was serving a crawlable 500. Document Check
       // lives inside the visa flow, so send these visitors to the Wizard.
       { source: '/check-my-documents', destination: '/wizard', statusCode: 301 },
@@ -80,7 +81,6 @@ const nextConfig = {
       beforeFiles: [
         { source: '/visa-free-countries-for-:nationality-passport', destination: '/seo/visa-free/:nationality' },
         { source: '/cheapest-visas-from-:nationality-passport',     destination: '/seo/cheapest/:nationality' },
-        { source: '/cheapest-visa-from-:nationality-passport',      destination: '/seo/cheapest/:nationality' },
         { source: '/visa-requirements-for-:passport-citizens-to-:destination', destination: '/seo/req/:passport/:destination' },
         { source: '/visa-requirements-for-:nationality-citizens',   destination: '/seo/req-nat/:nationality' },
         { source: '/:passport-to-:destination-visa-requirements',   destination: '/seo/route/:passport/:destination' },
