@@ -10,6 +10,7 @@
  * ISR: revalidated every 30 days
  */
 import Link from 'next/link'
+import { clampTitle, clampDesc } from '@/lib/seo/clamp'
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -241,8 +242,8 @@ export async function generateMetadata({
   if (!destinationCountry || !passportCountry) return { title: 'Visa Guide | VisitPlane' }
 
   const year = new Date().getFullYear()
-  const title = `${destinationCountry.name} Visa Guide for ${passportCountry.nounPlural} (${year}) — Complete Handbook`
-  const description = `Everything ${passportCountry.nounPlural} need to know about getting a ${destinationCountry.name} visa in ${year}: types, fees, documents, application walkthrough, real timelines, and what to do if rejected.`
+  const title = clampTitle(`${destinationCountry.name} Visa Guide for ${passportCountry.nounPlural} (${year})`)
+  const description = clampDesc(`Everything ${passportCountry.nounPlural} need to know about getting a ${destinationCountry.name} visa in ${year}: types, fees, documents, application walkthrough, real timelines, and what to do if rejected.`)
   // Canonicalise to the RESOLVED forms (the sitemap emits destination slug +
   // nationality adjective) — the lookup also accepts plural noun slugs
   // ("pakistanis"), which would otherwise self-canonicalise as duplicates.
