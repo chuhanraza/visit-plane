@@ -9,7 +9,7 @@ export default function SupportLetterPage() {
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Visa support letter generator</h1>
         <p className="mt-3 max-w-2xl text-base text-gray-600">
-          Choose a letter, fill in the form on the left, and watch it appear on the right as you type. Download it as a PDF when it reads right.
+          Choose a letter (cover letter, employer NOC, invitation or sponsor), fill in facts on the left, and watch it appear on the right as you type. Facts, not stories: officers read these in minutes.
         </p>
 
         <div className="mt-8">

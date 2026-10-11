@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   LETTERS,
   buildLetter,
+  findRedFlags,
+  getNotices,
+  isVisible,
   blocksToText,
   countPlaceholders,
   type Block,
@@ -13,6 +16,8 @@ import {
   type Seg,
 } from '@/lib/letters/templates'
 import { downloadLetterPdf } from '@/lib/letters/pdf'
+
+const STORE_KEY = 'vp-letter-draft-v2'
 
 const inputCls =
   'mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20'
@@ -89,6 +94,7 @@ function Paper({ blocks }: { blocks: Block[] }) {
     >
       {blocks.map((b, i) => {
         if (b.kind === 'gap') return <div key={i} className="h-3" />
+        if (b.kind === 'h') return <p key={i} className="font-bold">{b.text}</p>
         if (b.kind === 'p') return <p key={i}><Segs segs={b.segs} /></p>
         if (b.kind === 'lines')
           return (
@@ -108,7 +114,9 @@ function Paper({ blocks }: { blocks: Block[] }) {
 
 export default function LetterBuilder() {
   const [type, setType] = useState<LetterType>('cover')
-  const [data, setData] = useState<Record<LetterType, Data>>({ cover: {}, invitation: {}, sponsor: {} })
+  const [data, setData] = useState<Record<LetterType, Data>>({ cover: {}, noc: {}, invitation: {}, sponsor: {} })
+  const [ack, setAck] = useState(false)
+  const [loaded, setLoaded] = useState(false)
   const [today, setToday] = useState('')
   const [pane, setPane] = useState<'form' | 'preview'>('form')
   const [busy, setBusy] = useState(false)
@@ -116,32 +124,55 @@ export default function LetterBuilder() {
 
   useEffect(() => {
     setToday(new Date().toISOString().slice(0, 10))
+    try {
+      const raw = sessionStorage.getItem(STORE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw) as Partial<Record<LetterType, Data>>
+        setData((prev) => ({ ...prev, ...parsed }))
+      }
+    } catch {
+      /* storage unavailable — start empty */
+    }
+    setLoaded(true)
   }, [])
+
+  useEffect(() => {
+    if (!loaded) return
+    try {
+      sessionStorage.setItem(STORE_KEY, JSON.stringify(data))
+    } catch {
+      /* ignore */
+    }
+  }, [data, loaded])
 
   const meta = LETTERS.find((l) => l.type === type)!
   const current = data[type]
   const blocks = useMemo(() => buildLetter(type, current, today), [type, current, today])
+  const notices = useMemo(() => getNotices(type, current), [type, current])
+  const flags = useMemo(() => findRedFlags(type, current), [type, current])
   const missing = useMemo(() => countPlaceholders(blocks), [blocks])
 
   const groups = useMemo(() => {
     const map = new Map<string, Field[]>()
-    meta.fields.forEach((f) => map.set(f.group, [...(map.get(f.group) ?? []), f]))
+    meta.fields.filter((f) => isVisible(f, current)).forEach((f) => map.set(f.group, [...(map.get(f.group) ?? []), f]))
     return [...map.entries()]
-  }, [meta])
+  }, [meta, current])
 
   const set = (id: string, val: string) =>
     setData((prev) => ({ ...prev, [type]: { ...prev[type], [id]: val } }))
 
   async function onPdf() {
+    if (!ack) return
     setBusy(true)
     try {
-      await downloadLetterPdf(blocks, `${meta.short.toLowerCase().replace(/\s+/g, '-')}.pdf`)
+      await downloadLetterPdf(blocks, `${meta.label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.pdf`)
     } finally {
       setBusy(false)
     }
   }
 
   async function onCopy() {
+    if (!ack) return
     try {
       await navigator.clipboard.writeText(blocksToText(blocks))
       setCopied(true)
@@ -156,21 +187,25 @@ export default function LetterBuilder() {
       <button
         type="button"
         onClick={onPdf}
-        disabled={busy}
-        className="min-h-[44px] rounded-lg bg-emerald-700 px-5 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:opacity-60"
+        disabled={busy || !ack}
+        className="min-h-[44px] rounded-lg bg-emerald-700 px-5 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {busy ? 'Preparing…' : 'Download PDF'}
       </button>
       <button
         type="button"
         onClick={onCopy}
-        className="min-h-[44px] rounded-lg border border-gray-300 bg-white px-4 text-sm font-semibold text-gray-800 transition hover:border-gray-400"
+        disabled={!ack}
+        className="disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] rounded-lg border border-gray-300 bg-white px-4 text-sm font-semibold text-gray-800 transition hover:border-gray-400"
       >
         {copied ? 'Copied ✓' : 'Copy text'}
       </button>
       <button
         type="button"
-        onClick={() => setData((prev) => ({ ...prev, [type]: {} }))}
+        onClick={() => {
+          setData((prev) => ({ ...prev, [type]: {} }))
+          setAck(false)
+        }}
         className="min-h-[44px] rounded-lg px-3 text-sm font-medium text-gray-600 underline-offset-2 hover:underline"
       >
         Clear form
@@ -181,7 +216,7 @@ export default function LetterBuilder() {
   return (
     <div>
       {/* Letter type */}
-      <div role="tablist" aria-label="Letter type" className="grid gap-3 sm:grid-cols-3">
+      <div role="tablist" aria-label="Letter type" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {LETTERS.map((l) => {
           const on = l.type === type
           return (
@@ -241,6 +276,28 @@ export default function LetterBuilder() {
 
         {/* RIGHT — live preview */}
         <div className={`${pane === 'preview' ? 'block' : 'hidden'} lg:sticky lg:top-20 lg:block`}>
+          {notices.length > 0 && (
+            <div className="mb-3 space-y-2">
+              {notices.map((n, i) => (
+                <p key={i} role="note" className={`rounded-lg border px-3 py-2 text-xs leading-relaxed ${n.level === 'warn' ? 'border-amber-300 bg-amber-50 text-amber-900' : 'border-sky-200 bg-sky-50 text-sky-900'}`}>
+                  {n.text}
+                </p>
+              ))}
+            </div>
+          )}
+          {flags.length > 0 && (
+            <div className="mb-3 space-y-2" aria-live="polite">
+              {flags.map((fl, i) => (
+                <p key={i} className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs leading-relaxed text-red-900">
+                  <strong>{fl.fieldLabel}:</strong> {fl.text}
+                </p>
+              ))}
+            </div>
+          )}
+          <label className="mb-3 flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-gray-700">
+            <input type="checkbox" className="mt-0.5 h-4 w-4 accent-emerald-700" checked={ack} onChange={(e) => setAck(e.target.checked)} />
+            <span>I understand this letter must exactly match my attached documents and does not replace mandatory government forms.</span>
+          </label>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm font-semibold text-gray-800" aria-live="polite">
               {missing === 0 ? 'Letter complete — read it once more before you sign.' : `${missing} field${missing === 1 ? '' : 's'} still to fill (highlighted in amber)`}
@@ -251,7 +308,7 @@ export default function LetterBuilder() {
             <Paper blocks={blocks} />
           </div>
           <p className="mt-3 text-xs leading-relaxed text-gray-500">
-            Your details stay in your browser. Nothing is uploaded or saved.
+            Nothing is uploaded. Your draft is kept in this browser tab only and is erased when you close it.
           </p>
         </div>
       </div>
