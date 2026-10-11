@@ -1,5 +1,6 @@
 import ToolBreadcrumb from '@/components/ToolBreadcrumb'
 import LetterBuilder from './LetterBuilder'
+import BlogEmailCapture from '@/components/blog/BlogEmailCapture'
 
 export default function SupportLetterPage() {
   return (
@@ -9,11 +10,20 @@ export default function SupportLetterPage() {
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Visa support letter generator</h1>
         <p className="mt-3 max-w-2xl text-base text-gray-600">
-          Choose a letter (cover letter, employer NOC, invitation or sponsor), fill in facts on the left, and watch it appear on the right as you type. Facts, not stories: officers read these in minutes.
+          Choose a letter (cover letter, employer NOC, invitation or sponsor), fill in facts on the left, and watch it appear on the right as you type. Free, no sign-up. Facts, not stories: officers read these in minutes.
         </p>
 
         <div className="mt-8">
           <LetterBuilder />
+        </div>
+
+        <div className="mt-12">
+          <BlogEmailCapture
+            capturedFrom="support-letter"
+            variant="inline"
+            title="Get free visa updates"
+            subtitle="Optional. Rule changes and checklists for the countries you apply to. The letter tool stays free either way."
+          />
         </div>
 
         <section className="mt-14 grid gap-6 border-t border-gray-200 pt-10 md:grid-cols-3">
