@@ -19,6 +19,7 @@ import { downloadLetterPdf } from '@/lib/letters/pdf'
 import { downloadLetterDocx } from '@/lib/letters/docx'
 
 const STORE_KEY = 'vp-letter-draft-v2'
+const ACK_KEY = 'vp-letter-ack-v1'
 
 const inputCls =
   'mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20'
@@ -131,6 +132,7 @@ export default function LetterBuilder() {
         const parsed = JSON.parse(raw) as Partial<Record<LetterType, Data>>
         setData((prev) => ({ ...prev, ...parsed }))
       }
+      if (sessionStorage.getItem(ACK_KEY) === '1') setAck(true)
     } catch {
       /* storage unavailable — start empty */
     }
@@ -145,6 +147,16 @@ export default function LetterBuilder() {
       /* ignore */
     }
   }, [data, loaded])
+
+  useEffect(() => {
+    if (!loaded) return
+    try {
+      if (ack) sessionStorage.setItem(ACK_KEY, '1')
+      else sessionStorage.removeItem(ACK_KEY)
+    } catch {
+      /* ignore */
+    }
+  }, [ack, loaded])
 
   const meta = LETTERS.find((l) => l.type === type)!
   const current = data[type]
