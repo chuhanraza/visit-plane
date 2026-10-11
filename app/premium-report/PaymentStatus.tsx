@@ -74,6 +74,7 @@ export default function PaymentStatus({ landedOn }: { landedOn: 'success' | 'fai
 
   const box = 'rounded-2xl border p-6'
   return (
+    <div className="min-h-[70vh] bg-[#FAFAFA] text-gray-900">
     <main className="mx-auto max-w-3xl px-4 py-10">
       {state === 'checking' && (
         <div className={`${box} border-blue-200 bg-blue-50`}>
@@ -138,5 +139,6 @@ export default function PaymentStatus({ landedOn }: { landedOn: 'success' | 'fai
         </div>
       )}
     </main>
+    </div>
   )
 }
