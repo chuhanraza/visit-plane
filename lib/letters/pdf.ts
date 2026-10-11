@@ -30,6 +30,11 @@ export async function downloadLetterPdf(blocks: Block[], filename: string): Prom
   for (const b of blocks) {
     if (b.kind === 'gap') {
       y += lineH * 0.7
+    } else if (b.kind === 'h') {
+      y += lineH * 0.3
+      doc.setFont('times', 'bold')
+      write(b.text)
+      doc.setFont('times', 'normal')
     } else if (b.kind === 'p') {
       write(segText(b.segs))
     } else if (b.kind === 'lines') {
