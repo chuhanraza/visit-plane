@@ -39,6 +39,7 @@ const INCLUDES = [
 
 export default function PremiumReportPage() {
   return (
+    <div className="min-h-[70vh] bg-[#FAFAFA] text-gray-900">
     <main className="mx-auto max-w-3xl px-4 py-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(PRODUCT_LD) }} />
       <h1 className="text-3xl font-bold text-gray-900">Premium Visa Report</h1>
@@ -67,5 +68,6 @@ export default function PremiumReportPage() {
         <Link className="underline" href="/refund-policy">Refund Policy</Link> · <Link className="underline" href="/terms">Terms</Link> · <Link className="underline" href="/privacy">Privacy</Link>
       </p>
     </main>
+    </div>
   )
 }

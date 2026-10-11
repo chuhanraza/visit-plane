@@ -44,6 +44,7 @@ const TOOLS = [
   { href: '/visa-tracker',        emoji: '📊', name: 'Visa Tracker',         desc: 'Track your applications',       col: 'right' },
   { href: '/interview-prep',      emoji: '🎤', name: 'Interview Prep',       desc: 'Practice your answers',         col: 'right' },
   { href: '/itinerary-generator', emoji: '✈️', name: 'Itinerary Generator',  desc: 'Flight & hotel PDF',            col: 'right' },
+  { href: '/support-letter',      emoji: '✉️', name: 'Support Letter',       desc: 'Cover, invitation, sponsor',    col: 'right' },
   { href: '/visa-vault',          emoji: '🔐', name: 'Visa Vault',           desc: 'Save your travel profile',      col: 'right' },
 ]
 

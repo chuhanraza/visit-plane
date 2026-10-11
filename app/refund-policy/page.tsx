@@ -18,6 +18,7 @@ const sections: [string, string][] = [
 
 export default function RefundPolicyPage() {
   return (
+    <div className="min-h-[70vh] bg-[#FAFAFA] text-gray-900">
     <main className="mx-auto max-w-3xl px-4 py-10">
       <h1 className="text-3xl font-bold text-gray-900">Refund Policy</h1>
       <p className="mt-2 text-sm text-gray-500">Last updated: October 8, 2026</p>
@@ -33,5 +34,6 @@ export default function RefundPolicyPage() {
         See also our <Link className="underline" href="/terms">Terms of Service</Link>, <Link className="underline" href="/privacy">Privacy Policy</Link> and the <Link className="underline" href="/premium-report">Premium Visa Report</Link> page.
       </p>
     </main>
+    </div>
   )
 }
