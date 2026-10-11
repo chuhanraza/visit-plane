@@ -11,6 +11,12 @@ export type LetterType = 'cover' | 'noc' | 'invitation' | 'sponsor'
 
 export type FieldKind = 'text' | 'textarea' | 'date' | 'select' | 'checks'
 
+export interface Cond {
+  id: string
+  in: string[]
+  orEmpty?: boolean
+}
+
 export interface Field {
   id: string
   label: string
@@ -23,7 +29,7 @@ export interface Field {
   /** Half-width on the desktop form grid. */
   half?: boolean
   /** Only show when another field has one of these values. */
-  showIf?: { id: string; in: string[]; orEmpty?: boolean }
+  showIf?: Cond | Cond[]
   /** Free text that is scanned for risky wording. */
   scan?: boolean
 }
@@ -73,6 +79,7 @@ const LETTER_DATE: Field = { id: 'letterDate', label: 'Letter date (leave empty 
 const COVER_FIELDS: Field[] = [
   { id: 'fullName', label: 'Full name (as in passport)', kind: 'text', placeholder: 'Ayesha Khan', group: 'Your details', half: true },
   { id: 'passportNo', label: 'Passport number', kind: 'text', placeholder: 'AB1234567', group: 'Your details', half: true },
+  { id: 'passportExpiry', label: 'Passport expiry date', kind: 'date', group: 'Your details', half: true },
   { id: 'cnic', label: 'National ID / CNIC (optional)', kind: 'text', placeholder: '35202-0000000-0', group: 'Your details', half: true },
   { id: 'nationality', label: 'Nationality', kind: 'text', placeholder: 'Pakistani', group: 'Your details', half: true },
   { id: 'address', label: 'Home address', kind: 'textarea', placeholder: 'House 1, Street 2, Lahore, Pakistan', group: 'Your details' },
@@ -87,6 +94,9 @@ const COVER_FIELDS: Field[] = [
   { id: 'longType', label: 'Visa type', kind: 'select', options: LONG_TYPES, group: 'The application', half: true, showIf: IS_LONG },
 
   { id: 'purpose', label: 'Purpose of travel', kind: 'text', placeholder: 'Tourism in Berlin and Munich', hint: 'One line. State the activity, not a story.', group: 'Trip', scan: true, showIf: IS_SHORT },
+  { id: 'eventName', label: 'Event or meeting', kind: 'text', placeholder: 'EICMA motorcycle exhibition, Milan', group: 'Trip', showIf: [IS_SHORT, { id: 'visaType', in: ['Business'] }] },
+  { id: 'eventHost', label: 'Inviting company or organiser (optional)', kind: 'text', placeholder: 'Example Srl, Milan (invitation attached)', group: 'Trip', showIf: [IS_SHORT, { id: 'visaType', in: ['Business'] }] },
+  { id: 'familyHost', label: 'Who you are visiting (name and relationship)', kind: 'text', placeholder: 'Daniel Schmidt, brother, German citizen', group: 'Trip', showIf: [IS_SHORT, { id: 'visaType', in: ['Family / friends visit'] }] },
   { id: 'arrival', label: 'Arrival date', kind: 'date', group: 'Trip', half: true, showIf: IS_SHORT },
   { id: 'departure', label: 'Departure date', kind: 'date', group: 'Trip', half: true, showIf: IS_SHORT },
   { id: 'itinerary', label: 'Where and when (one line per place)', kind: 'textarea', placeholder: 'Berlin, 1–5 Dec\nMunich, 6–10 Dec', hint: 'Dates must match your flight and hotel bookings.', group: 'Trip', showIf: IS_SHORT },
@@ -203,6 +213,7 @@ const SPONSOR_FIELDS: Field[] = [
   { id: 'arrival', label: 'Arrival date', kind: 'date', group: 'Applicant and trip', half: true },
   { id: 'departure', label: 'Departure date', kind: 'date', group: 'Applicant and trip', half: true },
 
+  { id: 'studyDetails', label: 'If the trip is for study: institution and programme (optional)', kind: 'text', placeholder: 'University of Example, MSc Data Science', group: 'Support' },
   { id: 'covers', label: 'What you will pay for', kind: 'checks', options: ['Flights', 'Accommodation', 'Daily living expenses', 'Travel insurance', 'Visa fees', 'Tuition fees'], group: 'Support' },
   { id: 'income', label: 'Your monthly income and savings', kind: 'text', placeholder: 'PKR 500,000 per month; savings PKR 3,000,000', hint: 'Only what your documents show.', group: 'Support', scan: true },
   { id: 'enclosures', label: 'Documents you are attaching', kind: 'checks', options: ['ID / passport copy', 'Bank statements, last 6 months', 'Salary slips or business income proof', 'Tax returns (FBR)', 'Employment letter', 'NADRA Family Registration Certificate (FRC)', 'Marriage certificate'], group: 'Support' },
@@ -223,8 +234,11 @@ const clean = (s: string | undefined): string => (s ?? '').trim()
 /** Whether a field is currently shown (its showIf condition holds). */
 export function isVisible(f: Field, d: Data): boolean {
   if (!f.showIf) return true
-  const val = clean(d[f.showIf.id])
-  return f.showIf.in.includes(val) || (!!f.showIf.orEmpty && val === '')
+  const conds = Array.isArray(f.showIf) ? f.showIf : [f.showIf]
+  return conds.every((c) => {
+    const val = clean(d[c.id])
+    return c.in.includes(val) || (!!c.orEmpty && val === '')
+  })
 }
 
 function v(d: Data, id: string, placeholder: string): Seg {
@@ -317,6 +331,7 @@ function buildCover(d: Data): Block[] {
   const visaPhrase = isLong ? `national long-stay ${longType ? lowerFirst(longType) + ' ' : ''}visa` : `${lowerFirst(visaType)} visa`
 
   const idLine: Seg[] = [t('Passport no. '), v(d, 'passportNo', 'passport number')]
+  if (clean(d.passportExpiry)) idLine.push(t(', valid until '), dateSeg(d, 'passportExpiry', 'expiry'))
   if (clean(d.cnic)) idLine.push(t(' | National ID '), t(clean(d.cnic)))
 
   const blocks: Block[] = [
@@ -328,11 +343,11 @@ function buildCover(d: Data): Block[] {
     gap,
     isLong
       ? p(t(`REQUEST FOR NATIONAL (D) ${longType ? longType.toUpperCase() + ' ' : ''}VISA — START DATE: `), dateSeg(d, 'startDate', 'START DATE'))
-      : p(t(`REQUEST FOR ${visaType.toUpperCase()} VISA — TRAVEL DATES: `), dateSeg(d, 'arrival', 'ARRIVAL'), t(' TO '), dateSeg(d, 'departure', 'DEPARTURE')),
+      : p(t(`${clean(d.region) === 'Canada' ? 'LETTER OF EXPLANATION — ' : ''}REQUEST FOR ${visaType.toUpperCase()} VISA — TRAVEL DATES: `), dateSeg(d, 'arrival', 'ARRIVAL'), t(' TO '), dateSeg(d, 'departure', 'DEPARTURE')),
     gap,
     p(t('Dear Visa Officer,')),
     gap,
-    p(t('I am '), v(d, 'fullName', 'Your full name'), t(', a citizen of '), v(d, 'nationality', 'nationality'), t(' who '), ...whoSegs, t('. I am applying for a '), t(`${visaPhrase} to `), v(d, 'destination', 'Destination country'), t('. ' + payer)),
+    p(t('I am '), v(d, 'fullName', 'Your full name'), t(', a '), v(d, 'nationality', 'nationality'), t(' national'), ...(employment ? [t(' who '), ...whoSegs] : []), t('. I am applying for a '), t(`${visaPhrase} to `), v(d, 'destination', 'Destination country'), t('. ' + payer)),
     gap,
     ...(isLong
       ? [
@@ -346,7 +361,14 @@ function buildCover(d: Data): Block[] {
         ]
       : [
           h('1. Purpose and itinerary'),
-          bullets([[t('Purpose: '), v(d, 'purpose', 'purpose of travel')], ...multiline(d, 'itinerary', 'Where and when').map((l) => [t('Stay: '), ...l]), [t('Accommodation: '), v(d, 'accommodation', 'accommodation')]]),
+          bullets([
+            [t('Purpose: '), v(d, 'purpose', 'purpose of travel')],
+            ...(visaType === 'Business' && clean(d.eventName) ? [[t('Event / meeting: '), t(clean(d.eventName))]] : []),
+            ...(visaType === 'Business' && clean(d.eventHost) ? [[t('Invited by: '), t(clean(d.eventHost))]] : []),
+            ...(visaType === 'Family / friends visit' && clean(d.familyHost) ? [[t('Visiting: '), t(clean(d.familyHost))]] : []),
+            ...multiline(d, 'itinerary', 'Where and when').map((l) => [t('Stay: '), ...l]),
+            [t('Accommodation: '), v(d, 'accommodation', 'accommodation')],
+          ]),
         ]),
     gap,
     h('2. Finances'),
@@ -557,6 +579,7 @@ function buildSponsor(d: Data): Block[] {
     bullets([
       [t('Destination: '), v(d, 'destination', 'destination')],
       [t('Purpose: '), v(d, 'purpose', 'purpose')],
+      ...(clean(d.studyDetails) ? [[t('Study: '), t(clean(d.studyDetails))]] : []),
       [t('Dates: '), dateSeg(d, 'arrival', 'arrival date'), t(' to '), dateSeg(d, 'departure', 'departure date')],
     ]),
     gap,
@@ -745,7 +768,22 @@ export function getConsistency(type: LetterType, d: Data): Notice[] {
       const arrival = clean(d.arrival)
       if (isoOk(arrival) && arrival < today) warn('The arrival date is in the past.')
       if (days > 90) warn(`This trip is ${days} days. Short-stay visas allow at most 90 days in any 180. Choose long stay if you will stay longer.`)
+      const expiry = clean(d.passportExpiry)
+      const dep = clean(d.departure)
+      const enc0 = checks(d, 'enclosures')
+      if (isoOk(expiry)) {
+        if (expiry < today) warn('Your passport has expired.')
+        else if (isoOk(dep)) {
+          const left = dayDiff(dep, expiry)
+          if (left < 90) warn(`Your passport expires ${left < 0 ? 'before you leave' : 'only ' + left + ' days after you leave'}. Schengen needs at least 3 months after departure, and many embassies ask for 6.`)
+          else if (left < 180) warn('Your passport has under 6 months left after your trip. Many embassies require 6 months. Check the checklist.')
+        }
+      }
+      if (days > 7 && !clean(d.itinerary)) warn('For a trip over a week, list where you will be on which dates.')
       if (region === 'Schengen (Europe)' && days > 0 && days <= 90 && !clean(d.accommodation)) warn('Add your accommodation. Schengen officers check it against your bookings.')
+      if (clean(d.accommodation) && !enc0.includes('Hotel booking') && !/host|family|friend|invit/i.test(clean(d.accommodation))) warn('You list accommodation but Hotel booking is not ticked under attached documents.')
+      if (days > 0 && !enc0.includes('Flight reservation')) warn('Flight reservation is not ticked. Most embassies expect one with the application.')
+      if (region === 'Schengen (Europe)' && days > 0 && !enc0.includes('Travel insurance')) warn('Schengen requires travel medical insurance (at least EUR 30,000). Tick it once you have it.')
     }
     const docs = checks(d, 'finDocs')
     const enc = checks(d, 'enclosures')
