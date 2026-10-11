@@ -23,7 +23,7 @@ export interface Field {
   /** Half-width on the desktop form grid. */
   half?: boolean
   /** Only show when another field has one of these values. */
-  showIf?: { id: string; in: string[] }
+  showIf?: { id: string; in: string[]; orEmpty?: boolean }
   /** Free text that is scanned for risky wording. */
   scan?: boolean
 }
@@ -60,6 +60,12 @@ export const REGIONS = ['Schengen (Europe)', 'United Kingdom', 'Canada', 'United
 
 const EMPLOYMENT = ['Employed', 'Self-employed / freelancer', 'Student', 'Homemaker', 'Retired']
 
+const SHORT = 'Short stay (up to 90 days)'
+const LONG = 'Long stay (national / D visa)'
+const IS_SHORT = { id: 'visaTerm', in: [SHORT], orEmpty: true }
+const IS_LONG = { id: 'visaTerm', in: [LONG] }
+const LONG_TYPES = ['Study', 'Employment', 'Family reunification', 'Research / au pair / volunteer']
+
 const LETTER_DATE: Field = { id: 'letterDate', label: 'Letter date (leave empty for today)', kind: 'date', group: 'Letter date' }
 
 // ─── Field sets ──────────────────────────────────────────────────────────────
@@ -76,13 +82,24 @@ const COVER_FIELDS: Field[] = [
   { id: 'region', label: 'Where are you applying?', kind: 'select', options: [...REGIONS], group: 'The application', half: true },
   { id: 'destination', label: 'Destination country', kind: 'text', placeholder: 'Germany', group: 'The application', half: true },
   { id: 'embassyCity', label: 'Embassy / consulate city', kind: 'text', placeholder: 'Islamabad', group: 'The application', half: true },
-  { id: 'visaType', label: 'Visa type', kind: 'select', options: ['Tourist', 'Business', 'Family / friends visit', 'Transit', 'Medical'], group: 'The application', half: true },
+  { id: 'visaTerm', label: 'Length of stay', kind: 'select', options: [SHORT, LONG], hint: 'Short stay (C) = a trip with a return date. Long stay (D) = study, work or family move.', group: 'The application', half: true },
+  { id: 'visaType', label: 'Visa type', kind: 'select', options: ['Tourist', 'Business', 'Family / friends visit', 'Transit', 'Medical'], group: 'The application', half: true, showIf: IS_SHORT },
+  { id: 'longType', label: 'Visa type', kind: 'select', options: LONG_TYPES, group: 'The application', half: true, showIf: IS_LONG },
 
-  { id: 'purpose', label: 'Purpose of travel', kind: 'text', placeholder: 'Tourism in Berlin and Munich', hint: 'One line. State the activity, not a story.', group: 'Trip', scan: true },
-  { id: 'arrival', label: 'Arrival date', kind: 'date', group: 'Trip', half: true },
-  { id: 'departure', label: 'Departure date', kind: 'date', group: 'Trip', half: true },
-  { id: 'itinerary', label: 'Where and when (one line per place)', kind: 'textarea', placeholder: 'Berlin, 1–5 Dec\nMunich, 6–10 Dec', hint: 'Dates must match your flight and hotel bookings.', group: 'Trip' },
-  { id: 'accommodation', label: 'Accommodation', kind: 'text', placeholder: 'Hotel Example, Berlin (booking attached)', group: 'Trip' },
+  { id: 'purpose', label: 'Purpose of travel', kind: 'text', placeholder: 'Tourism in Berlin and Munich', hint: 'One line. State the activity, not a story.', group: 'Trip', scan: true, showIf: IS_SHORT },
+  { id: 'arrival', label: 'Arrival date', kind: 'date', group: 'Trip', half: true, showIf: IS_SHORT },
+  { id: 'departure', label: 'Departure date', kind: 'date', group: 'Trip', half: true, showIf: IS_SHORT },
+  { id: 'itinerary', label: 'Where and when (one line per place)', kind: 'textarea', placeholder: 'Berlin, 1–5 Dec\nMunich, 6–10 Dec', hint: 'Dates must match your flight and hotel bookings.', group: 'Trip', showIf: IS_SHORT },
+  { id: 'accommodation', label: 'Accommodation', kind: 'text', placeholder: 'Hotel Example, Berlin (booking attached)', group: 'Trip', showIf: IS_SHORT },
+
+  { id: 'institution', label: 'University or employer in the destination country', kind: 'text', placeholder: 'Technical University of Munich', group: 'Long-stay plan', showIf: IS_LONG },
+  { id: 'programme', label: 'Programme, job title or project', kind: 'text', placeholder: 'MSc Data Engineering (2 years)', group: 'Long-stay plan', showIf: IS_LONG },
+  { id: 'startDate', label: 'Start date', kind: 'date', group: 'Long-stay plan', half: true, showIf: IS_LONG },
+  { id: 'endDate', label: 'End date (contract, semester or programme end)', kind: 'date', group: 'Long-stay plan', half: true, showIf: IS_LONG },
+  { id: 'longAccommodation', label: 'Where you will live', kind: 'text', placeholder: 'University dormitory (contract attached)', group: 'Long-stay plan', showIf: IS_LONG },
+  { id: 'longFunding', label: 'How you will fund your stay', kind: 'select', options: ['Blocked account', 'Scholarship', 'Salary from the destination employer', 'Family sponsor', 'My savings and income from home'], group: 'Long-stay plan', half: true, showIf: IS_LONG },
+  { id: 'longFundingDetail', label: 'Funding details (amount, provider)', kind: 'text', placeholder: 'EUR 11,904 in blocked account at Example Bank', group: 'Long-stay plan', half: true, showIf: IS_LONG },
+  { id: 'longDocs', label: 'Institutional documents attached', kind: 'checks', options: ['Admission / acceptance letter', 'Signed employment contract', 'Police clearance certificate', 'Apostilled marriage certificate', 'Apostilled birth certificate', 'Health insurance policy', 'Degree certificates and transcripts', 'Language certificate'], group: 'Long-stay plan', showIf: IS_LONG },
 
   { id: 'employment', label: 'Your work status', kind: 'select', options: EMPLOYMENT, group: 'Your situation at home' },
   { id: 'employer', label: 'Employer', kind: 'text', placeholder: 'Example Ltd, Lahore', group: 'Your situation at home', half: true, showIf: { id: 'employment', in: ['Employed'] } },
@@ -92,13 +109,17 @@ const COVER_FIELDS: Field[] = [
   { id: 'business', label: 'Business name and what it does', kind: 'text', placeholder: 'Khan Digital, web design', group: 'Your situation at home', half: true, showIf: { id: 'employment', in: ['Self-employed / freelancer'] } },
   { id: 'ntn', label: 'NTN / registration number', kind: 'text', placeholder: '1234567-8', group: 'Your situation at home', half: true, showIf: { id: 'employment', in: ['Self-employed / freelancer'] } },
   { id: 'bizSince', label: 'In business since', kind: 'text', placeholder: '2019', group: 'Your situation at home', half: true, showIf: { id: 'employment', in: ['Self-employed / freelancer'] } },
+  { id: 'bizModel', label: 'How the business earns money (one line)', kind: 'text', placeholder: 'Exports garments to B2B buyers in Europe', group: 'Your situation at home', showIf: { id: 'employment', in: ['Self-employed / freelancer'] } },
+  { id: 'bizScale', label: 'Size of the business', kind: 'text', placeholder: 'About 40 employees, 2 workshops in Sialkot', group: 'Your situation at home', half: true, showIf: { id: 'employment', in: ['Self-employed / freelancer'] } },
+  { id: 'bizDelegate', label: 'Who runs operations while you are away', kind: 'text', placeholder: 'Head of Production (daily operations); Sales Manager (clients)', group: 'Your situation at home', half: true, showIf: { id: 'employment', in: ['Self-employed / freelancer'] } },
+  { id: 'bizObligations', label: 'Work waiting for you on return (optional)', kind: 'text', placeholder: 'Two export orders ship in the second week after my return', group: 'Your situation at home', showIf: { id: 'employment', in: ['Self-employed / freelancer'] } },
   { id: 'school', label: 'Institution and programme', kind: 'text', placeholder: 'LUMS, BSc Computer Science, year 3', group: 'Your situation at home', showIf: { id: 'employment', in: ['Student'] } },
   { id: 'sponsorWho', label: 'Who supports you (name, relationship, job)', kind: 'text', placeholder: 'Imran Khan, husband, director at Example Traders', group: 'Your situation at home', showIf: { id: 'employment', in: ['Homemaker', 'Student', 'Retired'] } },
   { id: 'pension', label: 'Income source (pension, rent, savings)', kind: 'text', placeholder: 'Government pension, PKR 80,000 per month', group: 'Your situation at home', showIf: { id: 'employment', in: ['Retired'] } },
 
-  { id: 'funding', label: 'Who pays for the trip', kind: 'select', options: ['Myself', 'A sponsor (letter enclosed)', 'My employer'], group: 'Money', half: true },
+  { id: 'funding', label: 'Who pays for the trip', kind: 'select', options: ['Myself', 'A sponsor (letter enclosed)', 'My employer', 'My own company'], group: 'Money', half: true, showIf: IS_SHORT },
   { id: 'income', label: 'Monthly income (optional)', kind: 'text', placeholder: 'PKR 300,000', hint: 'Only what your documents show.', group: 'Money', half: true },
-  { id: 'finDocs', label: 'Financial documents attached', kind: 'checks', options: ['Bank statements, last 6 months', 'Bank statements stamped and signed by the branch', 'Salary slips, last 3 months', 'Tax returns (FBR)', 'Business registration', 'Sponsor letter and sponsor documents'], group: 'Money' },
+  { id: 'finDocs', label: 'Financial documents attached', kind: 'checks', options: ['Bank statements, last 6 months', 'Bank statements stamped and signed by the branch', 'Salary slips, last 3 months', 'Tax returns (FBR)', 'Business registration', 'Company bank statements, last 6 months', 'Business tax registration (NTN) and returns', 'Sponsor letter and sponsor documents'], group: 'Money' },
 
   { id: 'property', label: 'Property you own at home (optional)', kind: 'text', placeholder: '3-bedroom house, Lahore', group: 'Ties to home country', scan: true },
   { id: 'dependents', label: 'Family staying at home (optional)', kind: 'text', placeholder: 'Spouse and two children (school-age, enrolled in Lahore)', group: 'Ties to home country', scan: true },
@@ -109,6 +130,7 @@ const COVER_FIELDS: Field[] = [
 ]
 
 const NOC_FIELDS: Field[] = [
+  { id: 'issuer', label: 'Who is issuing this letter?', kind: 'select', options: ['Employer (HR or manager signs)', 'Business owner (self-issued, a partner or co-director signs)'], hint: 'Owners have no boss to write a NOC, so the company issues one for them.', group: 'Company' },
   { id: 'company', label: 'Company name', kind: 'text', placeholder: 'Example Ltd', group: 'Company', half: true },
   { id: 'companyAddress', label: 'Company address', kind: 'textarea', placeholder: 'Plot 5, Industrial Area, Lahore, Pakistan', group: 'Company' },
   { id: 'signerName', label: 'Signed by (name)', kind: 'text', placeholder: 'Sara Ahmed', group: 'Company', half: true },
@@ -129,7 +151,10 @@ const NOC_FIELDS: Field[] = [
   { id: 'leaveFrom', label: 'Leave from', kind: 'date', group: 'Leave', half: true },
   { id: 'leaveTo', label: 'Leave to', kind: 'date', group: 'Leave', half: true },
   { id: 'resume', label: 'Expected back at work on', kind: 'date', group: 'Leave', half: true },
-  { id: 'leaveType', label: 'Leave type', kind: 'select', options: ['Annual leave', 'Unpaid leave', 'Leave approved by management'], group: 'Leave', half: true },
+  { id: 'leaveType', label: 'Leave type', kind: 'select', options: ['Annual leave', 'Unpaid leave', 'Leave approved by management'], group: 'Leave', half: true, showIf: { id: 'issuer', in: ['Employer (HR or manager signs)'], orEmpty: true } },
+  { id: 'ownerCosts', label: 'Who pays for the trip', kind: 'select', options: ['The company pays all costs', 'The traveller pays personally'], group: 'Leave', half: true, showIf: { id: 'issuer', in: ['Business owner (self-issued, a partner or co-director signs)'] } },
+  { id: 'ownerDelegate', label: 'Who runs operations while the owner is away', kind: 'text', placeholder: 'Head of Production (daily operations); Marketing Director (clients)', group: 'Leave', showIf: { id: 'issuer', in: ['Business owner (self-issued, a partner or co-director signs)'] } },
+  { id: 'ownerScale', label: 'Size of the company (optional)', kind: 'text', placeholder: 'About 40 employees across 2 sites', group: 'Leave', showIf: { id: 'issuer', in: ['Business owner (self-issued, a partner or co-director signs)'] } },
   LETTER_DATE,
 ]
 
@@ -198,7 +223,8 @@ const clean = (s: string | undefined): string => (s ?? '').trim()
 /** Whether a field is currently shown (its showIf condition holds). */
 export function isVisible(f: Field, d: Data): boolean {
   if (!f.showIf) return true
-  return f.showIf.in.includes(clean(d[f.showIf.id]))
+  const val = clean(d[f.showIf.id])
+  return f.showIf.in.includes(val) || (!!f.showIf.orEmpty && val === '')
 }
 
 function v(d: Data, id: string, placeholder: string): Seg {
@@ -246,7 +272,10 @@ const lines = (ls: Seg[][]): Block => ({ kind: 'lines', lines: ls })
 // ─── Builders ────────────────────────────────────────────────────────────────
 
 function buildCover(d: Data): Block[] {
+  const isLong = clean(d.visaTerm) === LONG
+  const longType = clean(d.longType)
   const visaType = clean(d.visaType) || 'Tourist'
+  const longFunding = clean(d.longFunding)
   const employment = clean(d.employment)
   const funding = clean(d.funding) || 'Myself'
   const finDocs = checks(d, 'finDocs')
@@ -270,12 +299,22 @@ function buildCover(d: Data): Block[] {
     }
   })()
 
-  const payer =
-    funding === 'Myself'
+  const payer = isLong
+    ? ({
+        'Blocked account': 'My stay is funded through a blocked account.',
+        Scholarship: 'My stay is funded by a scholarship.',
+        'Salary from the destination employer': 'My stay is funded by my salary from the employer in the destination country.',
+        'Family sponsor': 'My stay is funded by a family sponsor.',
+        'My savings and income from home': 'My stay is funded from my own savings and income.',
+      }[longFunding] ?? 'My stay is funded as set out in section 2.')
+    : funding === 'Myself'
       ? 'The trip is paid by me.'
       : funding === 'My employer'
         ? 'The trip is paid by my employer.'
-        : 'The trip is paid by my sponsor; the sponsor letter is attached.'
+        : funding === 'My own company'
+          ? 'The trip is paid by my company.'
+          : 'The trip is paid by my sponsor; the sponsor letter is attached.'
+  const visaPhrase = isLong ? `national long-stay ${longType ? lowerFirst(longType) + ' ' : ''}visa` : `${lowerFirst(visaType)} visa`
 
   const idLine: Seg[] = [t('Passport no. '), v(d, 'passportNo', 'passport number')]
   if (clean(d.cnic)) idLine.push(t(' | National ID '), t(clean(d.cnic)))
@@ -287,21 +326,39 @@ function buildCover(d: Data): Block[] {
     gap,
     lines([[t('The Visa Officer')], [t('Embassy / Consulate of '), v(d, 'destination', 'Destination country'), t(', '), v(d, 'embassyCity', 'City')]]),
     gap,
-    p(t(`REQUEST FOR ${visaType.toUpperCase()} VISA — TRAVEL DATES: `), dateSeg(d, 'arrival', 'ARRIVAL'), t(' TO '), dateSeg(d, 'departure', 'DEPARTURE')),
+    isLong
+      ? p(t(`REQUEST FOR NATIONAL (D) ${longType ? longType.toUpperCase() + ' ' : ''}VISA — START DATE: `), dateSeg(d, 'startDate', 'START DATE'))
+      : p(t(`REQUEST FOR ${visaType.toUpperCase()} VISA — TRAVEL DATES: `), dateSeg(d, 'arrival', 'ARRIVAL'), t(' TO '), dateSeg(d, 'departure', 'DEPARTURE')),
     gap,
     p(t('Dear Visa Officer,')),
     gap,
-    p(t('I am '), v(d, 'fullName', 'Your full name'), t(', a citizen of '), v(d, 'nationality', 'nationality'), t(' who '), ...whoSegs, t('. I am applying for a '), t(`${lowerFirst(visaType)} visa to `), v(d, 'destination', 'Destination country'), t('. ' + payer)),
+    p(t('I am '), v(d, 'fullName', 'Your full name'), t(', a citizen of '), v(d, 'nationality', 'nationality'), t(' who '), ...whoSegs, t('. I am applying for a '), t(`${visaPhrase} to `), v(d, 'destination', 'Destination country'), t('. ' + payer)),
     gap,
-    h('1. Purpose and itinerary'),
-    bullets([[t('Purpose: '), v(d, 'purpose', 'purpose of travel')], ...multiline(d, 'itinerary', 'Where and when').map((l) => [t('Stay: '), ...l]), [t('Accommodation: '), v(d, 'accommodation', 'accommodation')]]),
+    ...(isLong
+      ? [
+          h('1. Purpose and timeline'),
+          bullets([
+            [t('Purpose: '), t(longType || 'long-stay residence'), t(' at '), v(d, 'institution', 'university or employer')],
+            [t('Programme / role: '), v(d, 'programme', 'programme, job title or project')],
+            [t('Period: '), dateSeg(d, 'startDate', 'start date'), t(' to '), dateSeg(d, 'endDate', 'end date')],
+            [t('Where I will live: '), v(d, 'longAccommodation', 'accommodation')],
+          ]),
+        ]
+      : [
+          h('1. Purpose and itinerary'),
+          bullets([[t('Purpose: '), v(d, 'purpose', 'purpose of travel')], ...multiline(d, 'itinerary', 'Where and when').map((l) => [t('Stay: '), ...l]), [t('Accommodation: '), v(d, 'accommodation', 'accommodation')]]),
+        ]),
     gap,
     h('2. Finances'),
   ]
 
   const fin: Seg[][] = []
   if (clean(d.income)) fin.push([t('Monthly income: '), t(clean(d.income))])
-  fin.push([t('Paid by: '), t(funding === 'Myself' ? 'Myself' : funding === 'My employer' ? 'My employer' : 'Sponsor (letter attached)')])
+  if (isLong) {
+    fin.push([t('Funding: '), v(d, 'longFunding', 'how you will fund your stay'), ...(clean(d.longFundingDetail) ? [t(' — '), t(clean(d.longFundingDetail))] : [])])
+  } else {
+    fin.push([t('Paid by: '), t(funding === 'Myself' ? 'Myself' : funding === 'My employer' ? 'My employer' : funding === 'My own company' ? 'My own company' : 'Sponsor (letter attached)')])
+  }
   if (finDocs.length) finDocs.forEach((x) => fin.push([t('Attached: '), t(x)]))
   else fin.push([ph('Tick the financial documents you attach')])
   blocks.push(bullets(fin))
@@ -314,6 +371,10 @@ function buildCover(d: Data): Block[] {
   } else if (employment === 'Self-employed / freelancer') {
     ties.push([t('Business: '), v(d, 'business', 'business'), t(', since '), v(d, 'bizSince', 'year')])
     ties.push([t('Registration / NTN: '), v(d, 'ntn', 'NTN')])
+    if (clean(d.bizModel)) ties.push([t('Business model: '), t(clean(d.bizModel))])
+    if (clean(d.bizScale)) ties.push([t('Scale: '), t(clean(d.bizScale))])
+    if (clean(d.bizDelegate)) ties.push([t('Operations while I am away: '), t(clean(d.bizDelegate))])
+    if (clean(d.bizObligations)) ties.push([t('Work waiting on my return: '), t(clean(d.bizObligations))])
   } else if (employment === 'Student') {
     ties.push([t('Studies: '), v(d, 'school', 'institution and programme')])
   } else if (employment === 'Homemaker') {
@@ -328,10 +389,11 @@ function buildCover(d: Data): Block[] {
   if (clean(d.otherTies)) ties.push([t(clean(d.otherTies))])
   if (clean(d.priorTravel)) ties.push([t('Travel history: '), t(clean(d.priorTravel))])
 
-  blocks.push(gap, h('3. Ties to home country'), bullets(ties))
+  blocks.push(gap, h(isLong ? '3. Background and ties to home country' : '3. Ties to home country'), bullets(ties))
 
-  if (enclosures.length) {
-    blocks.push(gap, h('4. Other documents attached'), bullets(enclosures.map((e) => [t(e)])))
+  const allDocs = isLong ? [...checks(d, 'longDocs'), ...enclosures] : enclosures
+  if (allDocs.length) {
+    blocks.push(gap, h(isLong ? '4. Documents attached' : '4. Other documents attached'), bullets(allDocs.map((e) => [t(e)])))
   }
 
   blocks.push(
@@ -346,7 +408,47 @@ function buildCover(d: Data): Block[] {
   return blocks
 }
 
+function buildOwnerNoc(d: Data): Block[] {
+  const addressee: Seg[] = clean(d.embassy) ? [v(d, 'embassy', 'Addressed to')] : [t('To whom it may concern')]
+  const contact: Seg[][] = clean(d.signerContact) ? [[t(clean(d.signerContact))]] : []
+  const paysAll = clean(d.ownerCosts) !== 'The traveller pays personally'
+  const scale: Seg[] = clean(d.ownerScale) ? [t(' The company operates with '), t(clean(d.ownerScale)), t('.')] : []
+  return [
+    p(t('[Print on company letterhead]')),
+    gap,
+    lines([[v(d, 'company', 'Company name')], ...multiline(d, 'companyAddress', 'Company address'), ...contact]),
+    gap,
+    p(dateSeg(d, 'today', 'Date')),
+    gap,
+    p(...addressee),
+    gap,
+    p(t('SUBJECT: NO OBJECTION CERTIFICATE AND TRAVEL AUTHORISATION — '), v(d, 'empName', 'NAME')),
+    gap,
+    p(t('This letter confirms that '), v(d, 'empName', 'Name'), t(' (ID / passport no. '), v(d, 'empIdentity', 'number'), t(') is '), v(d, 'empTitle', 'role in the company'), t(' of '), v(d, 'company', 'Company name'), t(', and has been so since '), dateSeg(d, 'joined', 'start date'), t('.'), ...scale),
+    gap,
+    h('Travel details'),
+    bullets([
+      [t('Destination: '), v(d, 'destination', 'destination country')],
+      [t('Purpose: '), v(d, 'purpose', 'purpose (for example, a trade fair or buyer meetings)')],
+      [t('Travel period: '), dateSeg(d, 'leaveFrom', 'start date'), t(' to '), dateSeg(d, 'leaveTo', 'end date')],
+      [t('Expected back at work on: '), dateSeg(d, 'resume', 'return date')],
+      [t('Costs: '), clean(d.ownerCosts) ? t(paysAll ? 'All costs of the trip are paid by the company.' : 'The traveller pays personally.') : ph('who pays for the trip')],
+      [t('Operations during the absence: '), v(d, 'ownerDelegate', 'who runs operations')],
+    ]),
+    gap,
+    p(t('The company has no objection to this travel. The business continues to operate during the absence, and '), v(d, 'empName', 'the traveller'), t(' will resume full duties on the return date above.')),
+    gap,
+    p(t('For verification, please contact the undersigned.')),
+    gap,
+    p(t('Yours faithfully,')),
+    gap,
+    gap,
+    lines([[v(d, 'signerName', 'Signer name')], [v(d, 'signerTitle', 'Job title (partner, co-director or senior manager)')], [v(d, 'company', 'Company name')], [t('(Signature and company stamp)')]]),
+  ]
+}
+
 function buildNoc(d: Data): Block[] {
+  if (clean(d.issuer).startsWith('Business owner')) return buildOwnerNoc(d)
   const status = clean(d.empStatus)
   const addressee: Seg[] = clean(d.embassy) ? [v(d, 'embassy', 'Addressed to')] : [t('To whom it may concern')]
   const idBits: Seg[] = clean(d.empId) ? [t(', employee ID '), t(clean(d.empId))] : []
@@ -533,12 +635,15 @@ export function countPlaceholders(blocks: Block[]): number {
  * Plain warnings about what a letter can and cannot do, by destination.
  * Wording is deliberately cautious: the user must check the official embassy page.
  */
-export function getNotices(type: LetterType, d: Data): Notice[] {
+function baseNotices(type: LetterType, d: Data): Notice[] {
   const region = clean(d.region)
   const out: Notice[] = []
 
   if (type === 'noc') {
-    out.push({ level: 'info', text: 'Your employer must print this on company letterhead, sign it and stamp it. Change nothing after it is signed.' })
+    out.push({ level: 'info', text: 'Print this on company letterhead, sign it and stamp it with a real ink stamp. Change nothing after it is signed.' })
+    if (clean(d.issuer).startsWith('Business owner')) {
+      out.push({ level: 'info', text: 'A self-issued letter carries more weight when a partner, co-director or senior manager signs it, not you. Only name a signer who really holds that role, and keep every statement true and matching your registration documents.' })
+    }
     return out
   }
 
@@ -605,4 +710,76 @@ export function findRedFlags(type: LetterType, d: Data): RedFlag[] {
     }
   }
   return flags
+}
+
+
+// ─── Consistency check ───────────────────────────────────────────────────────
+
+const isoOk = (x: string) => /^\d{4}-\d{2}-\d{2}$/.test(x)
+
+function dayDiff(a: string, b: string): number {
+  return Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000)
+}
+
+/** Facts that contradict each other. Shown as warnings next to the preview. */
+export function getConsistency(type: LetterType, d: Data): Notice[] {
+  const out: Notice[] = []
+  const warn = (text: string) => out.push({ level: 'warn', text })
+  const today = new Date().toISOString().slice(0, 10)
+  const region = clean(d.region)
+
+  const range = (fromId: string, toId: string, label: string) => {
+    const a = clean(d[fromId])
+    const b = clean(d[toId])
+    if (isoOk(a) && isoOk(b) && dayDiff(a, b) < 0) warn(`${label}: the end date is before the start date.`)
+    return isoOk(a) && isoOk(b) ? dayDiff(a, b) + 1 : 0
+  }
+
+  if (type === 'cover') {
+    const isLong = clean(d.visaTerm) === LONG
+    if (isLong) {
+      range('startDate', 'endDate', 'Long-stay plan')
+      if (clean(d.longFunding) === 'Blocked account' && !clean(d.longFundingDetail)) warn('You chose a blocked account. Add the amount so it can be matched to your bank letter.')
+    } else {
+      const days = range('arrival', 'departure', 'Trip')
+      const arrival = clean(d.arrival)
+      if (isoOk(arrival) && arrival < today) warn('The arrival date is in the past.')
+      if (days > 90) warn(`This trip is ${days} days. Short-stay visas allow at most 90 days in any 180. Choose long stay if you will stay longer.`)
+      if (region === 'Schengen (Europe)' && days > 0 && days <= 90 && !clean(d.accommodation)) warn('Add your accommodation. Schengen officers check it against your bookings.')
+    }
+    const docs = checks(d, 'finDocs')
+    const enc = checks(d, 'enclosures')
+    const funding = clean(d.funding)
+    if (!isLong && funding === 'A sponsor (letter enclosed)' && !docs.includes('Sponsor letter and sponsor documents')) warn('You say a sponsor pays, but the sponsor documents are not ticked under Money.')
+    if (!isLong && funding === 'My employer' && clean(d.employment) !== 'Employed') warn('You say your employer pays, but your work status is not Employed.')
+    if (!isLong && funding === 'My own company' && clean(d.employment) !== 'Self-employed / freelancer') warn('You say your company pays, but your work status is not Self-employed.')
+    if (clean(d.employment) === 'Employed') {
+      if (clean(d.leave).startsWith('Yes') && !enc.includes('Employer NOC / leave letter')) warn('You say leave is approved, but the NOC / leave letter is not ticked under attached documents.')
+      if (clean(d.leave) === 'Not yet') warn('Get the NOC or leave approval before you apply. Many embassies ask for it.')
+    }
+    if (clean(d.employment) === 'Self-employed / freelancer' && !docs.some((x) => /registration|NTN/i.test(x))) warn('You are self-employed. Tick your business registration or NTN documents under Money.')
+    if (docs.some((x) => /salary slips/i.test(x)) && clean(d.employment) !== 'Employed') warn('Salary slips are ticked, but your work status is not Employed.')
+  }
+
+  if (type === 'noc') {
+    const a = clean(d.leaveFrom)
+    const b = clean(d.leaveTo)
+    const r = clean(d.resume)
+    range('leaveFrom', 'leaveTo', 'Leave')
+    if (isoOk(b) && isoOk(r) && dayDiff(b, r) < 0) warn('The return-to-work date is before the leave ends.')
+    if (isoOk(a) && a < today) warn('The leave start date is in the past.')
+    if (isoOk(clean(d.joined)) && clean(d.joined) > today) warn('The joining date is in the future.')
+  }
+
+  if (type === 'invitation' || type === 'sponsor') {
+    range('arrival', 'departure', type === 'invitation' ? 'Visit' : 'Trip')
+    const arrival = clean(d.arrival)
+    if (isoOk(arrival) && arrival < today) warn('The arrival date is in the past.')
+  }
+
+  return out
+}
+
+export function getNotices(type: LetterType, d: Data): Notice[] {
+  return [...getConsistency(type, d), ...baseNotices(type, d)]
 }

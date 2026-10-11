@@ -16,6 +16,7 @@ import {
   type Seg,
 } from '@/lib/letters/templates'
 import { downloadLetterPdf } from '@/lib/letters/pdf'
+import { downloadLetterDocx } from '@/lib/letters/docx'
 
 const STORE_KEY = 'vp-letter-draft-v2'
 
@@ -171,6 +172,16 @@ export default function LetterBuilder() {
     }
   }
 
+  async function onDocx() {
+    if (!ack) return
+    setBusy(true)
+    try {
+      await downloadLetterDocx(blocks, `${meta.label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.docx`)
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function onCopy() {
     if (!ack) return
     try {
@@ -191,6 +202,14 @@ export default function LetterBuilder() {
         className="min-h-[44px] rounded-lg bg-emerald-700 px-5 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {busy ? 'Preparing…' : 'Download PDF'}
+      </button>
+      <button
+        type="button"
+        onClick={onDocx}
+        disabled={busy || !ack}
+        className="min-h-[44px] rounded-lg border border-emerald-700 bg-white px-4 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Download Word
       </button>
       <button
         type="button"
