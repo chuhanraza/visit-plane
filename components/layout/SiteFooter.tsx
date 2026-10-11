@@ -22,6 +22,7 @@ const PRODUCT_LINKS = [
   { label: 'Visa Data & Research', href: '/visa-data'     },
   { label: 'Blog',              href: '/blog'             },
   { label: 'Premium Visa Report', href: '/premium-report' },
+  { label: 'Support Letter Tool', href: '/support-letter' },
 ]
 
 const TRUST_LINKS = [

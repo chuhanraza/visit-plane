@@ -154,6 +154,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/visa-checker`,            lastModified: LASTMOD },
     { url: `${base}/destinations`,            lastModified: LASTMOD },
     { url: `${base}/itinerary-generator`,     lastModified: LASTMOD },
+    { url: `${base}/support-letter`, lastModified: LASTMOD },
     { url: `${base}/currency-converter`,      lastModified: LASTMOD },
     { url: `${base}/travel-insurance`,        lastModified: LASTMOD },
     { url: `${base}/interview-prep`,          lastModified: LASTMOD },
