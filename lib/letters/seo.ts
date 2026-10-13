@@ -11,6 +11,7 @@
  */
 import {
   buildLetter,
+  formatDate,
   getNotices,
   countPlaceholders,
   type Block,
@@ -21,7 +22,7 @@ import { LETTER_DESTINATIONS, toolDestinationName, type LetterDestination } from
 
 export const SITE = 'https://www.visitplane.com'
 /** Bump when the guides are reviewed. Used for sitemap lastModified and visible "reviewed" labels. */
-export const CONTENT_REVIEWED = '2026-10-14'
+export const CONTENT_REVIEWED = '2026-10-13'
 export const CONTENT_YEAR = 2026
 
 export interface Faq { q: string; a: string }
@@ -307,22 +308,28 @@ export function allLetterPaths(): string[] {
 
 // ─── Sample letters ──────────────────────────────────────────────────────────
 
+/**
+ * Sample dates are anchored to the review date, not to "now", so a statically cached
+ * page never shows dates that drift into the past between reviews.
+ */
 function isoPlus(days: number): string {
-  const d = new Date()
+  const d = new Date(`${CONTENT_REVIEWED}T00:00:00Z`)
   d.setUTCDate(d.getUTCDate() + days)
   return d.toISOString().slice(0, 10)
 }
 
 /** Fictional sample data. Names and numbers are invented and obviously fake. */
 export function sampleData(type: LetterType, dest?: LetterDestination): Data {
-  const country = dest ? toolDestinationName(dest) : 'Germany'
+  const country = dest ? (dest.sampleCountry ?? toolDestinationName(dest)) : 'Germany'
   const region = dest?.region ?? 'Schengen (Europe)'
   const [c1, c2] = dest?.cities ?? ['Berlin', 'Munich']
   const arrival = isoPlus(45)
   const mid = isoPlus(50)
   const departure = isoPlus(55)
-  const embassy = `The Embassy of ${dest ? dest.name.replace(/^the /, 'the ') : 'Germany'}, Islamabad`.replace('Embassy of the the', 'Embassy of the')
+  const the = /^(United Kingdom|United States|United Arab Emirates|Netherlands)$/.test(country) ? 'the ' : ''
+  const embassy = `The Embassy of ${the}${country}, Islamabad`
   const letterDate = isoPlus(0)
+  const fd = (iso: string) => formatDate(iso)
 
   switch (type) {
     case 'cover':
@@ -334,7 +341,7 @@ export function sampleData(type: LetterType, dest?: LetterDestination): Data {
         visaTerm: 'Short stay (up to 90 days)', visaType: 'Tourist',
         purpose: `Tourism in ${c1} and ${c2}`,
         arrival, departure,
-        itinerary: `${c1}, ${arrival} to ${mid}\n${c2}, ${mid} to ${departure}`,
+        itinerary: `${c1}, ${fd(arrival)} to ${fd(mid)}\n${c2}, ${fd(mid)} to ${fd(departure)}`,
         accommodation: `Hotels in ${c1} and ${c2} (bookings attached)`,
         employment: 'Employed', employer: 'Example Ltd, Lahore', jobTitle: 'Software engineer',
         jobSince: 'March 2021', leave: 'Yes, NOC / leave letter attached',
@@ -589,7 +596,7 @@ export function destIntro(type: LetterType, d: LetterDestination): string[] {
   const g = GUIDE_BY_TYPE[type]
   const first = {
     cover: `This page is for applicants preparing a ${g.noun} for ${d.name}. The visa in question is the ${d.visaName}. Below is what the letter has to say, a worked sample set in ${d.cities[0]} and ${d.cities[1]}, and what to attach.`,
-    invitation: `This page is for hosts in ${d.name} writing an ${g.noun} for a guest who needs the ${d.visaName}. Below is what the letter has to say, a worked sample, and what the host attaches.`,
+    invitation: `This page is for hosts in ${d.name} writing a ${g.noun} for a guest who needs the ${d.visaName}. Below is what the letter has to say, a worked sample, and what the host attaches.`,
     sponsor: `This page is for sponsors paying for a trip to ${d.name}. The applicant is applying for the ${d.visaName}. Below is what the sponsor letter has to say, a worked sample, and what the sponsor attaches.`,
     noc: g.intro[0],
   }[type]

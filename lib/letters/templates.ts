@@ -246,6 +246,15 @@ function v(d: Data, id: string, placeholder: string): Seg {
   return val ? { text: val, filled: true } : { text: `[${placeholder}]`, filled: false }
 }
 
+/** "United Kingdom" → "the United Kingdom". Names that take no article are returned unchanged. */
+function withThe(name: string): string {
+  return /^(united kingdom|united states( of america)?|united arab emirates|uae|netherlands|philippines|czech republic|maldives|bahamas|gambia)$/i.test(name.trim()) ? `the ${name.trim()}` : name
+}
+function vDest(d: Data, placeholder: string): Seg {
+  const val = clean(d.destination)
+  return val ? { text: withThe(val), filled: true } : { text: `[${placeholder}]`, filled: false }
+}
+
 const t = (text: string): Seg => ({ text, filled: true })
 const ph = (placeholder: string): Seg => ({ text: `[${placeholder}]`, filled: false })
 
@@ -299,7 +308,7 @@ function buildCover(d: Data): Block[] {
   const whoSegs: Seg[] = (() => {
     switch (employment) {
       case 'Employed':
-        return [t('works as '), v(d, 'jobTitle', 'job title'), t(' at '), v(d, 'employer', 'employer')]
+        return [t('works at '), v(d, 'employer', 'employer'), t(' (job title: '), v(d, 'jobTitle', 'job title'), t(')')]
       case 'Self-employed / freelancer':
         return [t('is self-employed ('), v(d, 'business', 'business'), t(')')]
       case 'Student':
@@ -339,7 +348,7 @@ function buildCover(d: Data): Block[] {
     gap,
     p(dateSeg(d, 'today', 'Date')),
     gap,
-    lines([[t('The Visa Officer')], [t('Embassy / Consulate of '), v(d, 'destination', 'Destination country'), t(', '), v(d, 'embassyCity', 'City')]]),
+    lines([[t('The Visa Officer')], [t('Embassy / Consulate of '), vDest(d, 'Destination country'), t(', '), v(d, 'embassyCity', 'City')]]),
     gap,
     isLong
       ? p(t(`REQUEST FOR NATIONAL (D) ${longType ? longType.toUpperCase() + ' ' : ''}VISA — START DATE: `), dateSeg(d, 'startDate', 'START DATE'))
@@ -347,7 +356,7 @@ function buildCover(d: Data): Block[] {
     gap,
     p(t('Dear Visa Officer,')),
     gap,
-    p(t('I am '), v(d, 'fullName', 'Your full name'), t(', a '), v(d, 'nationality', 'nationality'), t(' national'), ...(employment ? [t(' who '), ...whoSegs] : []), t('. I am applying for a '), t(`${visaPhrase} to `), v(d, 'destination', 'Destination country'), t('. ' + payer)),
+    p(t('I am '), v(d, 'fullName', 'Your full name'), t(', a '), v(d, 'nationality', 'nationality'), t(' national'), ...(employment ? [t(' who '), ...whoSegs] : []), t('. I am applying for a '), t(`${visaPhrase} to `), vDest(d, 'Destination country'), t('. ' + payer)),
     gap,
     ...(isLong
       ? [
@@ -534,7 +543,7 @@ function buildInvitation(d: Data): Block[] {
     gap,
     p(t('Dear Visa Officer,')),
     gap,
-    p(t('I am '), v(d, 'hostName', 'Your full name'), t(', '), v(d, 'hostOccupation', 'occupation'), t(', a '), t(lowerFirst(clean(d.hostStatus) || 'resident')), t(' (ID / permit no. '), v(d, 'hostId', 'number'), t('). I am inviting '), v(d, 'guestName', 'Guest full name'), t(', a citizen of '), v(d, 'guestNationality', 'nationality'), t(', born '), dateSeg(d, 'guestDob', 'date of birth'), t('.')),
+    p(t('I am '), v(d, 'hostName', 'Your full name'), t(', a '), t(lowerFirst(clean(d.hostStatus) || 'resident')), t(' (ID / permit no. '), v(d, 'hostId', 'number'), t('). My occupation: '), v(d, 'hostOccupation', 'occupation'), t('. I am inviting '), v(d, 'guestName', 'Guest full name'), t(', a '), v(d, 'guestNationality', 'nationality'), t(' national, born '), dateSeg(d, 'guestDob', 'date of birth'), t('.')),
     gap,
     h('Details of the visit'),
     bullets([
@@ -573,7 +582,7 @@ function buildSponsor(d: Data): Block[] {
     gap,
     p(t('Dear Visa Officer,')),
     gap,
-    p(t('I am '), v(d, 'sponsorName', 'Sponsor full name'), t(' (ID no. '), v(d, 'sponsorId', 'number'), t('), '), v(d, 'sponsorOccupation', 'occupation'), t('. I am the '), v(d, 'relationship', 'relationship'), t(' of '), v(d, 'applicantName', 'Applicant full name'), t(' and I will sponsor the trip below.')),
+    p(t('I am '), v(d, 'sponsorName', 'Sponsor full name'), t(' (ID no. '), v(d, 'sponsorId', 'number'), t('), '), v(d, 'sponsorOccupation', 'occupation'), t('. I am the '), (clean(d.relationship) ? t(lowerFirst(clean(d.relationship))) : ph('relationship')), t(' of '), v(d, 'applicantName', 'Applicant full name'), t(' and I will sponsor the trip below.')),
     gap,
     h('The trip'),
     bullets([

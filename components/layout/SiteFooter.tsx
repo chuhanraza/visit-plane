@@ -23,6 +23,10 @@ const PRODUCT_LINKS = [
   { label: 'Blog',              href: '/blog'             },
   { label: 'Premium Visa Report', href: '/premium-report' },
   { label: 'Support Letter Tool', href: '/support-letter' },
+  { label: 'Visa Cover Letter Guide', href: '/support-letter/cover-letter' },
+  { label: 'NOC Letter for Visa', href: '/support-letter/noc-letter' },
+  { label: 'Visa Invitation Letter', href: '/support-letter/invitation-letter' },
+  { label: 'Sponsorship Letter', href: '/support-letter/sponsorship-letter' },
 ]
 
 const TRUST_LINKS = [

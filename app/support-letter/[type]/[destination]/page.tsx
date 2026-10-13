@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const url = `${SITE}${destPath(g.type, d)}`
   const title = clampTitle(destTitle(g.type, d))
   const description = clampDesc(destDescription(g.type, d))
-  const og = `/api/og?template=2&category=${encodeURIComponent('Visa letters')}&title=${encodeURIComponent(destTitle(g.type, d))}`
+  const og = `/api/og?template=2&category=${encodeURIComponent('Visa letters')}&footer=${encodeURIComponent('Free visa letter generator')}&title=${encodeURIComponent(destTitle(g.type, d))}`
   return {
     title,
     description,
@@ -97,14 +97,6 @@ export default async function LetterDestinationPage({ params }: Props) {
     inLanguage: 'en',
     dateModified: CONTENT_REVIEWED,
     isPartOf: { '@type': 'WebSite', name: 'VisitPlane', url: SITE },
-    mainEntity: {
-      '@type': 'WebApplication',
-      name: 'VisitPlane support letter generator',
-      url: `${SITE}/support-letter`,
-      applicationCategory: 'UtilitiesApplication',
-      operatingSystem: 'Any',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    },
   }
 
   return (
@@ -163,7 +155,7 @@ export default async function LetterDestinationPage({ params }: Props) {
 
         <Section id="sample" title={`Sample ${g.noun} for ${d.name}`}>
           <p className="mb-5 text-sm text-gray-600">
-            A worked example from the generator, set in {d.cities[0]} and {d.cities[1]}. The people, numbers and employer are invented.
+            A worked example from the generator, set in {d.cities[0]} and {d.cities[1]}{d.sampleCountry ? ` and addressed to the consulate of ${d.sampleCountry}, the main destination` : ''}. The people, numbers and employer are invented.
           </p>
           <SampleLetter blocks={sample} caption={`Sample ${g.noun} for ${d.name}, built with the free generator. All details are fictional.`} />
           <div className="mt-6 text-center"><CtaButton href={toolHref(g.type, d)}>Make this letter with your details</CtaButton></div>

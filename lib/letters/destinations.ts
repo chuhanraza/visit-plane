@@ -20,6 +20,8 @@ export interface LetterDestination {
   authority: { name: string; url: string }
   /** Example cities used in the sample letter itinerary. */
   cities: [string, string]
+  /** For region pages: the country used in the sample letter, since there is no embassy of a region. */
+  sampleCountry?: string
   /** Letter types that get an indexable landing page. Only destinations with distinct, verifiable content get pages. */
   pages: LetterType[]
   /** Extra destination-specific points for the landing page, by letter type. */
@@ -38,7 +40,8 @@ export const LETTER_DESTINATIONS: LetterDestination[] = [
     pages: ['cover', 'invitation', 'sponsor'],
     slug: 'schengen', name: 'the Schengen Area', region: SCHENGEN, visaName: SCHENGEN_VISA,
     authority: { name: 'European Commission, Migration and Home Affairs', url: 'https://home-affairs.ec.europa.eu' },
-    cities: ['Paris', 'Rome'],
+    cities: ['Rome', 'Florence'],
+    sampleCountry: 'Italy',
   },
   {
     pages: ['invitation', 'sponsor'],
@@ -71,7 +74,7 @@ export const LETTER_DESTINATIONS: LetterDestination[] = [
     cities: ['Paris', 'Lyon'],
     points: {
       invitation: [
-        'An accommodation certificate (attestation d’accueil) is issued through the host’s local authority in France. The process has changed over the years, so check the current steps before the host starts.',
+        'An accommodation certificate (attestation d’accueil) is requested by the host at their local town hall (mairie) in France, for a fee. Visa applicants are normally expected to attach it for stays in a private home. Check the current steps before the host starts.',
         'The France-Visas portal builds the document list for your exact case. Follow that list first, and use the host’s letter as supporting evidence.',
       ],
       sponsor: [
@@ -80,11 +83,11 @@ export const LETTER_DESTINATIONS: LetterDestination[] = [
       ],
     },
     faq: {
-      invitation: { q: 'What is the attestation d’accueil?', a: 'An accommodation certificate for private stays, issued through the host’s local authority in France. The process has changed over time, so confirm the current steps on France-Visas.' },
+      invitation: { q: 'What is the attestation d’accueil?', a: 'An accommodation certificate for stays in a private home. The host requests it at their local town hall (mairie) in France, and visa applicants are normally expected to attach it. Confirm the current steps on France-Visas.' },
       sponsor: { q: 'Does France use a special sponsor form?', a: 'The France-Visas portal generates the document list for your case. If a specific sponsorship form is on that list, use it; if not, a signed sponsor letter with financial documents supports the application.' },
     },
     notes: {
-      invitation: 'For private stays France can ask for an accommodation certificate (attestation d’accueil) from the host. A plain letter may not be enough. Confirm on the France-Visas checklist for your case.',
+      invitation: 'For stays in a private home France can ask for an accommodation certificate (attestation d’accueil) from the host. A plain letter may not be enough. Confirm on the France-Visas checklist for your case.',
       sponsor: 'Apply through the France-Visas portal and follow the document list it generates for your trip. A sponsor letter supports the list; it does not replace anything on it.',
     },
   },
@@ -101,12 +104,12 @@ export const LETTER_DESTINATIONS: LetterDestination[] = [
     cities: ['Madrid', 'Barcelona'],
     points: {
       invitation: [
-        'The Spanish letter of invitation (carta de invitación) is typically validated by the Spanish police in the host’s area before the guest applies. A plain letter does not replace it.',
-        'Ask the Spanish consulate whether your case needs the validated letter, and use a personal letter alongside it to explain the relationship and dates.',
+        'The Spanish letter of invitation (carta de invitación) is an official letter issued by the Spanish national police at the host’s request. A plain personal letter does not replace it.',
+        'Check the consulate checklist for your case. Where the official letter is required, a personal letter alongside it can explain the relationship and dates.',
       ],
     },
     faq: {
-      invitation: { q: 'What is the carta de invitación?', a: 'A letter of invitation for private visits that is typically validated by the Spanish police in the host’s area before the guest applies. A plain letter does not replace it.' },
+      invitation: { q: 'What is the carta de invitación?', a: 'The official letter of invitation for private visits, issued by the Spanish national police at the host’s request. A plain personal letter does not replace it.' },
     },
     notes: {
       invitation: 'Spain can ask for a formal letter of invitation (carta de invitación) for private visits. A plain letter does not replace it. Check the consulate’s requirements first.',

@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const url = `${SITE}${typePath(g.type)}`
   const title = clampTitle(g.title)
   const description = clampDesc(g.description)
-  const og = `/api/og?template=2&category=${encodeURIComponent('Visa letters')}&title=${encodeURIComponent(g.h1)}`
+  const og = `/api/og?template=2&category=${encodeURIComponent('Visa letters')}&footer=${encodeURIComponent('Free visa letter generator')}&title=${encodeURIComponent(g.h1)}`
   return {
     title,
     description,
@@ -73,15 +73,6 @@ export default async function LetterTypePage({ params }: Props) {
     inLanguage: 'en',
     dateModified: CONTENT_REVIEWED,
     isPartOf: { '@type': 'WebSite', name: 'VisitPlane', url: SITE },
-    mainEntity: {
-      '@type': 'WebApplication',
-      name: 'VisitPlane support letter generator',
-      url: `${SITE}/support-letter`,
-      applicationCategory: 'UtilitiesApplication',
-      operatingSystem: 'Any',
-      browserRequirements: 'Requires a modern web browser',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    },
   }
 
   return (
