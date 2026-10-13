@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { createClient } from '@supabase/supabase-js'
+import { allLetterPaths, CONTENT_REVIEWED } from '@/lib/letters/seo'
 import { COUNTRIES, TOP_50_ROUTES, BY_ISO3 } from '@/lib/seo/countries'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -154,7 +155,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/visa-checker`,            lastModified: LASTMOD },
     { url: `${base}/destinations`,            lastModified: LASTMOD },
     { url: `${base}/itinerary-generator`,     lastModified: LASTMOD },
-    { url: `${base}/support-letter`, lastModified: LASTMOD },
+    { url: `${base}/support-letter`, lastModified: new Date(CONTENT_REVIEWED) },
+    ...allLetterPaths().map((path) => ({ url: `${base}${path}`, lastModified: new Date(CONTENT_REVIEWED) })),
     { url: `${base}/currency-converter`,      lastModified: LASTMOD },
     { url: `${base}/travel-insurance`,        lastModified: LASTMOD },
     { url: `${base}/interview-prep`,          lastModified: LASTMOD },

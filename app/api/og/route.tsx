@@ -43,6 +43,8 @@ export async function GET(request: Request) {
   const passport    = searchParams.get('passport')    ?? ''
   const destination = searchParams.get('destination') ?? ''
   const category    = searchParams.get('category')    ?? DEFAULT_CATEGORY[templateKey]
+  // Optional public-facing footer text. Pages that omit it keep the original footer.
+  const footer      = (searchParams.get('footer') ?? '').slice(0, 60)
 
   return new ImageResponse(
     (
@@ -148,7 +150,7 @@ export async function GET(request: Request) {
             color:    theme.pill,
             fontWeight: 600,
           }}>
-            Template {templateKey} · Programmatic SEO
+            {footer || `Template ${templateKey} · Programmatic SEO`}
           </span>
         </div>
       </div>

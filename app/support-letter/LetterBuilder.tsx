@@ -15,6 +15,7 @@ import {
   type LetterType,
   type Seg,
 } from '@/lib/letters/templates'
+import { findDestinationByName, toolDestinationName } from '@/lib/letters/destinations'
 import { downloadLetterPdf } from '@/lib/letters/pdf'
 import { downloadLetterDocx } from '@/lib/letters/docx'
 
@@ -135,6 +136,28 @@ export default function LetterBuilder() {
       if (sessionStorage.getItem(ACK_KEY) === '1') setAck(true)
     } catch {
       /* storage unavailable — start empty */
+    }
+    // Arrivals from the letter guides: /support-letter?type=cover&destination=Germany
+    try {
+      const q = new URLSearchParams(window.location.search)
+      const qt = q.get('type') as LetterType | null
+      if (qt && LETTERS.some((l) => l.type === qt)) {
+        setType(qt)
+        const qd = (q.get('destination') ?? '').slice(0, 60)
+        const dest = findDestinationByName(qd)
+        if (dest) {
+          setData((prev) => {
+            const cur = prev[qt] ?? {}
+            const next: Data = { ...cur }
+            // Never overwrite something the visitor already typed.
+            if (!next.destination && qt !== 'invitation') next.destination = toolDestinationName(dest)
+            if (!next.region && (qt === 'cover' || qt === 'invitation' || qt === 'sponsor')) next.region = dest.region
+            return { ...prev, [qt]: next }
+          })
+        }
+      }
+    } catch {
+      /* ignore malformed query */
     }
     setLoaded(true)
   }, [])
