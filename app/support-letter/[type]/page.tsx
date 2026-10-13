@@ -28,7 +28,9 @@ import {
 } from '../_components/GuideParts'
 
 export const revalidate = 86400
-export const dynamicParams = false
+// OpenNext on Cloudflare runs with a no-op incremental cache (see open-next.config.ts), so
+// dynamicParams=false would 404 every route. Render on demand and validate params in the page.
+export const dynamicParams = true
 
 export function generateStaticParams() {
   return TYPE_GUIDES.map((g) => ({ type: g.slug }))
