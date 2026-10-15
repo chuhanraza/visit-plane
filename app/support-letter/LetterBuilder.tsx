@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import {
   LETTERS,
@@ -42,7 +43,8 @@ const LETTER_MAGNET = {
 }
 
 const STORE_KEY = 'vp-letter-draft-v2'
-const ACK_KEY = 'vp-letter-ack-v1'
+// v2: the acknowledgement wording changed, so earlier ticks must not carry over.
+const ACK_KEY = 'vp-letter-ack-v2'
 const ORIGIN_KEY = 'vp-letter-origin-v1'
 const CAPTURE_KEY = 'vp-letter-capture-v1'
 
@@ -431,10 +433,20 @@ export default function LetterBuilder() {
               ))}
             </div>
           )}
-          <label className="mb-3 flex cursor-pointer items-start gap-2 text-xs leading-relaxed text-gray-700">
-            <input type="checkbox" className="mt-0.5 h-4 w-4 accent-emerald-700" checked={ack} onChange={(e) => setAck(e.target.checked)} />
-            <span>I understand this letter must exactly match my attached documents and does not replace mandatory government forms.</span>
-          </label>
+          <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-xs leading-relaxed text-amber-950">
+            <p className="font-semibold">Before you download: you are responsible for this letter</p>
+            <ul className="mt-1.5 list-disc space-y-1 pl-4">
+              <li>This tool only arranges the facts you type. VisitPlane does not check, verify or add facts.</li>
+              <li>Every statement must be true and match your documents. A false or mismatched statement can get a visa refused or lead to a ban, and that is your responsibility.</li>
+              <li>Check your embassy or visa centre&rsquo;s own checklist. Many do not ask for this letter at all, and it never replaces their mandatory forms.</li>
+              <li>This is not legal or immigration advice, and no letter guarantees a visa. VisitPlane is not an agent, lawyer or consultant, and is not affiliated with any embassy or government. See our{' '}
+                <Link href="/terms" className="underline">Terms</Link>.</li>
+            </ul>
+            <label className="mt-3 flex cursor-pointer items-start gap-2 font-medium text-gray-900">
+              <input type="checkbox" className="mt-0.5 h-4 w-4 accent-emerald-700" checked={ack} onChange={(e) => setAck(e.target.checked)} />
+              <span>I understand this letter must exactly match my attached documents and does not replace mandatory government forms. I have read the notes above and I am responsible for what I submit.</span>
+            </label>
+          </div>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm font-semibold text-gray-800" aria-live="polite">
               {missing === 0 ? 'Letter complete — read it once more before you sign.' : `${missing} field${missing === 1 ? '' : 's'} still to fill (highlighted in amber)`}
