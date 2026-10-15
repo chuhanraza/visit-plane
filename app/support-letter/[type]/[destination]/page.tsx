@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { clampDesc, clampTitle } from '@/lib/seo/clamp'
 import { breadcrumbList, faqPage } from '@/lib/seo/schema'
 import { DEST_BY_SLUG } from '@/lib/letters/destinations'
+import { findLiveCorridor, liveCorridors } from '@/lib/letters/corridors'
 import {
   CONTENT_REVIEWED,
   DEST_TYPES,
@@ -35,6 +36,7 @@ import {
   SampleLetter,
   Section,
 } from '../../_components/GuideParts'
+import CorridorPage, { corridorPath } from '../../_components/CorridorPage'
 
 export const revalidate = 86400
 // OpenNext on Cloudflare runs with a no-op incremental cache (see open-next.config.ts), so
@@ -42,12 +44,19 @@ export const revalidate = 86400
 export const dynamicParams = true
 
 export function generateStaticParams() {
-  return DEST_TYPES.flatMap((t) =>
+  const dest = DEST_TYPES.flatMap((t) =>
     destinationsWithPage(t).map((d) => ({
       type: Object.values(GUIDE_BY_SLUG).find((g) => g.type === t)!.slug,
       destination: d.slug,
     })),
   )
+  // Corridor pages that are live at build time. Later ones render on demand once their date passes.
+  const corridors = liveCorridors().map((c) => ({ type: typeSlug(c.type), destination: c.slug }))
+  return [...dest, ...corridors]
+}
+
+function typeSlug(type: string): string {
+  return Object.values(GUIDE_BY_SLUG).find((g) => g.type === type)!.slug
 }
 
 type Props = { params: Promise<{ type: string; destination: string }> }
@@ -59,8 +68,27 @@ function resolve(type: string, destination: string) {
   return { g, d }
 }
 
+function corridorFor(type: string, destination: string) {
+  const g = GUIDE_BY_SLUG[type]
+  return g ? findLiveCorridor(g.type, destination) : null
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { type, destination } = await params
+  const c = corridorFor(type, destination)
+  if (c) {
+    const url = `${SITE}${corridorPath(c)}`
+    const title = clampTitle(c.title)
+    const description = clampDesc(c.description)
+    const og = `/api/og?template=2&category=${encodeURIComponent('Visa letters')}&footer=${encodeURIComponent('Free visa letter generator')}&title=${encodeURIComponent(c.title)}`
+    return {
+      title,
+      description,
+      alternates: { canonical: url },
+      openGraph: { title, description, url, type: 'article', images: [{ url: og, width: 1200, height: 630 }] },
+      twitter: { card: 'summary_large_image', title, description, images: [og] },
+    }
+  }
   const r = resolve(type, destination)
   if (!r) return {}
   const { g, d } = r
@@ -79,6 +107,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LetterDestinationPage({ params }: Props) {
   const { type, destination } = await params
+  const corridor = corridorFor(type, destination)
+  if (corridor) return <CorridorPage corridor={corridor} />
   const r = resolve(type, destination)
   if (!r) notFound()
   const { g, d } = r

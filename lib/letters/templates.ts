@@ -7,6 +7,8 @@
  * what the user typed — no adjectives or promises are added.
  */
 
+import { localizeFields, type OriginId } from './origins'
+
 export type LetterType = 'cover' | 'noc' | 'invitation' | 'sponsor'
 
 export type FieldKind = 'text' | 'textarea' | 'date' | 'select' | 'checks'
@@ -65,6 +67,10 @@ export interface Notice {
 export const REGIONS = ['Schengen (Europe)', 'United Kingdom', 'Canada', 'United States', 'Australia', 'Other'] as const
 
 const EMPLOYMENT = ['Employed', 'Self-employed / freelancer', 'Student', 'Homemaker', 'Retired']
+
+const ISSUER_EMPLOYER = 'Employer (HR or manager signs)'
+const ISSUER_OWNER = 'Business owner (self-issued, a partner or co-director signs)'
+const ISSUER_GOV = 'Government department (an authorised officer signs)'
 
 const SHORT = 'Short stay (up to 90 days)'
 const LONG = 'Long stay (national / D visa)'
@@ -140,12 +146,12 @@ const COVER_FIELDS: Field[] = [
 ]
 
 const NOC_FIELDS: Field[] = [
-  { id: 'issuer', label: 'Who is issuing this letter?', kind: 'select', options: ['Employer (HR or manager signs)', 'Business owner (self-issued, a partner or co-director signs)'], hint: 'Owners have no boss to write a NOC, so the company issues one for them.', group: 'Company' },
-  { id: 'company', label: 'Company name', kind: 'text', placeholder: 'Example Ltd', group: 'Company', half: true },
-  { id: 'companyAddress', label: 'Company address', kind: 'textarea', placeholder: 'Plot 5, Industrial Area, Lahore, Pakistan', group: 'Company' },
+  { id: 'issuer', label: 'Who is issuing this letter?', kind: 'select', options: [ISSUER_EMPLOYER, ISSUER_OWNER, ISSUER_GOV], hint: 'Owners have no boss to write a NOC, so the company issues one for them. Government employees ask their own department.', group: 'Company' },
+  { id: 'company', label: 'Company or department name', kind: 'text', placeholder: 'Example Ltd', group: 'Company', half: true },
+  { id: 'companyAddress', label: 'Company or department address', kind: 'textarea', placeholder: 'Plot 5, Industrial Area, Lahore, Pakistan', group: 'Company' },
   { id: 'signerName', label: 'Signed by (name)', kind: 'text', placeholder: 'Sara Ahmed', group: 'Company', half: true },
   { id: 'signerTitle', label: 'Signer’s job title', kind: 'text', placeholder: 'HR Manager', group: 'Company', half: true },
-  { id: 'signerContact', label: 'Company phone or email', kind: 'text', placeholder: 'hr@example.com, +92 42 0000000', group: 'Company' },
+  { id: 'signerContact', label: 'Company or department phone or email', kind: 'text', placeholder: 'hr@example.com, +92 42 0000000', group: 'Company' },
 
   { id: 'empName', label: 'Employee full name', kind: 'text', placeholder: 'Ayesha Khan', group: 'Employee', half: true },
   { id: 'empId', label: 'Employee ID (optional)', kind: 'text', placeholder: 'EMP-1042', group: 'Employee', half: true },
@@ -161,10 +167,10 @@ const NOC_FIELDS: Field[] = [
   { id: 'leaveFrom', label: 'Leave from', kind: 'date', group: 'Leave', half: true },
   { id: 'leaveTo', label: 'Leave to', kind: 'date', group: 'Leave', half: true },
   { id: 'resume', label: 'Expected back at work on', kind: 'date', group: 'Leave', half: true },
-  { id: 'leaveType', label: 'Leave type', kind: 'select', options: ['Annual leave', 'Unpaid leave', 'Leave approved by management'], group: 'Leave', half: true, showIf: { id: 'issuer', in: ['Employer (HR or manager signs)'], orEmpty: true } },
-  { id: 'ownerCosts', label: 'Who pays for the trip', kind: 'select', options: ['The company pays all costs', 'The traveller pays personally'], group: 'Leave', half: true, showIf: { id: 'issuer', in: ['Business owner (self-issued, a partner or co-director signs)'] } },
-  { id: 'ownerDelegate', label: 'Who runs operations while the owner is away', kind: 'text', placeholder: 'Head of Production (daily operations); Marketing Director (clients)', group: 'Leave', showIf: { id: 'issuer', in: ['Business owner (self-issued, a partner or co-director signs)'] } },
-  { id: 'ownerScale', label: 'Size of the company (optional)', kind: 'text', placeholder: 'About 40 employees across 2 sites', group: 'Leave', showIf: { id: 'issuer', in: ['Business owner (self-issued, a partner or co-director signs)'] } },
+  { id: 'leaveType', label: 'Leave type', kind: 'select', options: ['Annual leave', 'Unpaid leave', 'Leave approved by management'], group: 'Leave', half: true, showIf: { id: 'issuer', in: [ISSUER_EMPLOYER, ISSUER_GOV], orEmpty: true } },
+  { id: 'ownerCosts', label: 'Who pays for the trip', kind: 'select', options: ['The company pays all costs', 'The traveller pays personally'], group: 'Leave', half: true, showIf: { id: 'issuer', in: [ISSUER_OWNER] } },
+  { id: 'ownerDelegate', label: 'Who runs operations while the owner is away', kind: 'text', placeholder: 'Head of Production (daily operations); Marketing Director (clients)', group: 'Leave', showIf: { id: 'issuer', in: [ISSUER_OWNER] } },
+  { id: 'ownerScale', label: 'Size of the company (optional)', kind: 'text', placeholder: 'About 40 employees across 2 sites', group: 'Leave', showIf: { id: 'issuer', in: [ISSUER_OWNER] } },
   LETTER_DATE,
 ]
 
@@ -226,6 +232,12 @@ export const LETTERS: LetterMeta[] = [
   { type: 'invitation', label: 'Invitation letter', blurb: 'A host in the destination country invites a guest to visit.', fields: INVITATION_FIELDS },
   { type: 'sponsor', label: 'Sponsor support letter', blurb: 'Someone pays for the applicant’s trip and confirms it in writing.', fields: SPONSOR_FIELDS },
 ]
+
+/** The field list for a letter type, localized to where the applicant lives. */
+export function getFields(type: LetterType, origin: OriginId = 'pakistan'): Field[] {
+  const meta = LETTERS.find((l) => l.type === type)
+  return meta ? localizeFields(type, meta.fields, origin) : []
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -401,7 +413,14 @@ function buildCover(d: Data): Block[] {
     ties.push([t(clean(d.leave) === 'Not yet' ? 'Leave: not yet approved' : 'Leave: approved by employer, NOC attached')])
   } else if (employment === 'Self-employed / freelancer') {
     ties.push([t('Business: '), v(d, 'business', 'business'), t(', since '), v(d, 'bizSince', 'year')])
-    ties.push([t('Registration / NTN: '), v(d, 'ntn', 'NTN')])
+    const reg = clean(d.origin)
+    ties.push(
+      reg === 'india'
+        ? [t('Registration (GST / Udyam / company): '), v(d, 'ntn', 'registration number')]
+        : reg === 'other'
+          ? [t('Business registration: '), v(d, 'ntn', 'registration number')]
+          : [t('Registration / NTN: '), v(d, 'ntn', 'NTN')],
+    )
     if (clean(d.bizModel)) ties.push([t('Business model: '), t(clean(d.bizModel))])
     if (clean(d.bizScale)) ties.push([t('Scale: '), t(clean(d.bizScale))])
     if (clean(d.bizDelegate)) ties.push([t('Operations while I am away: '), t(clean(d.bizDelegate))])
@@ -481,15 +500,17 @@ function buildOwnerNoc(d: Data): Block[] {
 function buildNoc(d: Data): Block[] {
   if (clean(d.issuer).startsWith('Business owner')) return buildOwnerNoc(d)
   const status = clean(d.empStatus)
+  const isGov = clean(d.issuer) === ISSUER_GOV
+  const org = isGov ? 'department' : 'company'
   const addressee: Seg[] = clean(d.embassy) ? [v(d, 'embassy', 'Addressed to')] : [t('To whom it may concern')]
   const idBits: Seg[] = clean(d.empId) ? [t(', employee ID '), t(clean(d.empId))] : []
   const salary: Seg[][] = clean(d.salary) ? [[t('Current monthly salary: '), t(clean(d.salary))]] : []
   const contact: Seg[][] = clean(d.signerContact) ? [[t(clean(d.signerContact))]] : []
 
   return [
-    p(t('[Print on company letterhead]')),
+    p(t(isGov ? '[Print on official departmental letterhead]' : '[Print on company letterhead]')),
     gap,
-    lines([[v(d, 'company', 'Company name')], ...multiline(d, 'companyAddress', 'Company address'), ...contact]),
+    lines([[v(d, 'company', isGov ? 'Department name' : 'Company name')], ...multiline(d, 'companyAddress', isGov ? 'Department address' : 'Company address'), ...contact]),
     gap,
     p(dateSeg(d, 'today', 'Date')),
     gap,
@@ -497,7 +518,7 @@ function buildNoc(d: Data): Block[] {
     gap,
     p(t('SUBJECT: NO OBJECTION CERTIFICATE — '), v(d, 'empName', 'EMPLOYEE NAME')),
     gap,
-    p(t('This is to confirm that '), v(d, 'empName', 'Employee name'), t(' (ID / passport no. '), v(d, 'empIdentity', 'number'), ...idBits, t(') is employed by '), v(d, 'company', 'Company name'), t(' as '), v(d, 'empTitle', 'job title'), t(status ? ` on a ${status.toLowerCase()} basis` : ''), t(', since '), dateSeg(d, 'joined', 'joining date'), t('.')),
+    p(t('This is to confirm that '), v(d, 'empName', 'Employee name'), t(' (ID / passport no. '), v(d, 'empIdentity', 'number'), ...idBits, t(') is employed by '), v(d, 'company', isGov ? 'Department name' : 'Company name'), t(' as '), v(d, 'empTitle', 'job title'), t(status ? ` on a ${status.toLowerCase()} basis` : ''), t(', since '), dateSeg(d, 'joined', 'joining date'), t('.')),
     gap,
     h('Leave details'),
     bullets([
@@ -508,14 +529,14 @@ function buildNoc(d: Data): Block[] {
       ...salary,
     ]),
     gap,
-    p(t('The company has no objection to this travel. The employee’s position remains open and the employment continues during and after the leave.')),
+    p(t(`The ${org} has no objection to this travel. The employee’s position remains open and the employment continues during and after the leave.`)),
     gap,
     p(t('For verification, please contact the undersigned.')),
     gap,
     p(t('Yours faithfully,')),
     gap,
     gap,
-    lines([[v(d, 'signerName', 'Signer name')], [v(d, 'signerTitle', 'Job title')], [v(d, 'company', 'Company name')], [t('(Signature and company stamp)')]]),
+    lines([[v(d, 'signerName', 'Signer name')], [v(d, 'signerTitle', isGov ? 'Designation' : 'Job title')], [v(d, 'company', isGov ? 'Department name' : 'Company name')], [t(isGov ? '(Signature and official stamp)' : '(Signature and company stamp)')]]),
   ]
 }
 
@@ -673,6 +694,9 @@ function baseNotices(type: LetterType, d: Data): Notice[] {
 
   if (type === 'noc') {
     out.push({ level: 'info', text: 'Print this on company letterhead, sign it and stamp it with a real ink stamp. Change nothing after it is signed.' })
+    if (clean(d.issuer) === ISSUER_GOV) {
+      out.push({ level: 'info', text: 'Government employees: the letter normally comes from your own department and names the exact leave dates. Some consulates also ask for it to be attested, for example by the Ministry of Foreign Affairs, so check the checklist. Official travel is usually covered by a different document.' })
+    }
     if (clean(d.issuer).startsWith('Business owner')) {
       out.push({ level: 'info', text: 'A self-issued letter carries more weight when a partner, co-director or senior manager signs it, not you. Only name a signer who really holds that role, and keep every statement true and matching your registration documents.' })
     }
@@ -692,7 +716,7 @@ function baseNotices(type: LetterType, d: Data): Notice[] {
       out.push({ level: 'warn', text: 'Some Schengen countries ask for an official invitation or sponsorship form, for example Germany (Verpflichtungserklärung), France (attestation d’accueil) and Spain (carta de invitación). A plain letter does not replace it. Check the consulate’s checklist.' })
     }
     if (type === 'cover') {
-      out.push({ level: 'info', text: 'Keep dates identical to your flight, hotel and insurance. Sign the printed letter in ink.' })
+      out.push({ level: 'info', text: 'Check your consulate’s checklist first: some Schengen countries list a cover letter and many do not. A letter helps most when it explains what the documents cannot, such as self-employed income, a sponsor paying, or a first trip. Keep dates identical to your flight, hotel and insurance, and sign it in ink.' })
     }
   }
 
@@ -804,7 +828,7 @@ export function getConsistency(type: LetterType, d: Data): Notice[] {
       if (clean(d.leave).startsWith('Yes') && !enc.includes('Employer NOC / leave letter')) warn('You say leave is approved, but the NOC / leave letter is not ticked under attached documents.')
       if (clean(d.leave) === 'Not yet') warn('Get the NOC or leave approval before you apply. Many embassies ask for it.')
     }
-    if (clean(d.employment) === 'Self-employed / freelancer' && !docs.some((x) => /registration|NTN/i.test(x))) warn('You are self-employed. Tick your business registration or NTN documents under Money.')
+    if (clean(d.employment) === 'Self-employed / freelancer' && !docs.some((x) => /registration|NTN|GST|Udyam/i.test(x))) warn('You are self-employed. Tick your business registration documents under Money.')
     if (docs.some((x) => /salary slips/i.test(x)) && clean(d.employment) !== 'Employed') warn('Salary slips are ticked, but your work status is not Employed.')
   }
 

@@ -524,6 +524,22 @@ export default async function BlogPostPage({
               />
             </div>
 
+            {/* ── LETTER TOOL CARD (visa-application posts only) ─────────── */}
+            {isHighIntent && (
+              <aside className="my-10 rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-5" aria-label="Free visa letter generator">
+                <p className="text-sm font-bold text-emerald-950">Writing a cover letter, NOC or sponsor letter for this application?</p>
+                <p className="mt-1 text-sm leading-relaxed text-emerald-900">
+                  Our free generator builds the letter from your facts and downloads as PDF or Word. Nothing is uploaded.
+                </p>
+                <Link
+                  href={`/support-letter?type=cover${/^(Pakistan|India)$/.test(post.passportCountry) ? `&origin=${post.passportCountry.toLowerCase()}` : ''}`}
+                  className="mt-3 inline-flex min-h-[44px] items-center rounded-lg bg-emerald-700 px-5 text-sm font-semibold text-white hover:bg-emerald-800"
+                >
+                  Open the letter generator
+                </Link>
+              </aside>
+            )}
+
             {parts.length > 2 && (
               <figure className="my-12">
                 <div className="aspect-[16/9] w-full overflow-hidden rounded-2xl shadow-xl">

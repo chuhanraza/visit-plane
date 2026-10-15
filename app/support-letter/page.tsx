@@ -5,10 +5,13 @@ import Link from 'next/link'
 import { faqPage } from '@/lib/seo/schema'
 import { TYPE_GUIDES, CONTENT_REVIEWED, SITE, destPath, destinationsWithPage, typePath } from '@/lib/letters/seo'
 import { FaqList, JsonLd } from './_components/GuideParts'
+import { corridorPath } from './_components/CorridorPage'
+import { liveCorridors } from '@/lib/letters/corridors'
 
 const FAQS = [
   { q: 'Is the visa support letter generator really free?', a: 'Yes. There is no sign-up and no payment. You fill in a form, check the live preview, and download a PDF or Word file.' },
   { q: 'Is my information stored?', a: 'The letter is built in your browser. Your answers stay on your device for the session and are not sent to our servers.' },
+  { q: 'Does it work for applicants outside Pakistan?', a: 'Yes. Choose where you are applying from (Pakistan, India or another country) at the top of the form. It changes the example IDs, tax documents and currency, and the letter text follows what you enter.' },
   { q: 'Which letters can I make?', a: 'A visa cover letter, an employer NOC letter (including a version for business owners), an invitation letter from a host, and a sponsor support letter.' },
   { q: 'Will a support letter get my visa approved?', a: 'No letter can guarantee a visa. A letter explains your documents. The decision depends on the documents, your ties to home and the officer.' },
   { q: 'Does every country need a cover letter?', a: 'No. Some consulates list one, others do not. The UK and the US, for example, do not require it. Check the official page for your destination before you apply.' },
@@ -90,6 +93,17 @@ export default function SupportLetterPage() {
                       <li key={d.slug}><Link href={destPath(g.type, d)} className="text-gray-600 hover:text-emerald-800 hover:underline">{d.name}</Link></li>
                     ))}
                     <li><Link href={typePath(g.type)} className="font-medium text-emerald-800 hover:underline">All destinations</Link></li>
+                  </ul>
+                )}
+                {liveCorridors().some((c) => c.type === g.type) && (
+                  <ul className="mt-3 space-y-1 border-t border-gray-200 pt-3 text-sm">
+                    {liveCorridors().filter((c) => c.type === g.type).map((c) => (
+                      <li key={c.slug}>
+                        <Link href={corridorPath(c)} className="text-gray-600 hover:text-emerald-800 hover:underline">
+                          {c.h1.replace(/\s*\(applying from [^)]+\)/i, '')}
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 )}
               </div>

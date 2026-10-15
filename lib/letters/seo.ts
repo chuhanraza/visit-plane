@@ -19,10 +19,12 @@ import {
   type LetterType,
 } from './templates'
 import { LETTER_DESTINATIONS, toolDestinationName, type LetterDestination } from './destinations'
+import { PERSONAS, type OriginId } from './origins'
+import { liveCorridors } from './corridors'
 
 export const SITE = 'https://www.visitplane.com'
 /** Bump when the guides are reviewed. Used for sitemap lastModified and visible "reviewed" labels. */
-export const CONTENT_REVIEWED = '2026-10-13'
+export const CONTENT_REVIEWED = '2026-10-15'
 export const CONTENT_YEAR = 2026
 
 export interface Faq { q: string; a: string }
@@ -63,7 +65,7 @@ export const TYPE_GUIDES: TypeGuide[] = [
     need: [
       'The consulate checklist lists a cover letter, a letter of explanation or a statement of purpose.',
       'Your case has something an officer will otherwise question: a gap in your history, a self-employed income, a sponsor paying for the trip, or a first international trip.',
-      'You are applying for a Schengen short-stay visa or a Canada visitor visa, where a short written explanation is common.',
+      'You are applying for a Canada visitor visa, where a short letter of explanation is common, or for a Schengen visa whose checklist lists a personal covering letter. Several Schengen checklists do not, so check yours first.',
     ],
     notNeed: [
       'The official page says a cover letter is not required and your documents already tell the whole story. The UK and the US are typical examples. A letter that only repeats your documents adds nothing.',
@@ -303,6 +305,8 @@ export function allLetterPaths(): string[] {
     out.push(typePath(g.type))
     for (const d of destinationsWithPage(g.type)) out.push(destPath(g.type, d))
   }
+  // Corridor pages go live on their own dates, so the sitemap only lists the ones that are up.
+  for (const c of liveCorridors()) out.push(`${typePath(c.type)}/${c.slug}`)
   return out
 }
 
@@ -319,7 +323,12 @@ function isoPlus(days: number): string {
 }
 
 /** Fictional sample data. Names and numbers are invented and obviously fake. */
-export function sampleData(type: LetterType, dest?: LetterDestination): Data {
+export function sampleData(type: LetterType, dest?: LetterDestination, origin: Exclude<OriginId, 'other'> = 'pakistan', overrides: Data = {}): Data {
+  return { ...baseSampleData(type, dest, origin), ...overrides }
+}
+
+function baseSampleData(type: LetterType, dest: LetterDestination | undefined, origin: Exclude<OriginId, 'other'>): Data {
+  const P = PERSONAS[origin]
   const country = dest ? (dest.sampleCountry ?? toolDestinationName(dest)) : 'Germany'
   const region = dest?.region ?? 'Schengen (Europe)'
   const [c1, c2] = dest?.cities ?? ['Berlin', 'Munich']
@@ -327,38 +336,39 @@ export function sampleData(type: LetterType, dest?: LetterDestination): Data {
   const mid = isoPlus(50)
   const departure = isoPlus(55)
   const the = /^(United Kingdom|United States|United Arab Emirates|Netherlands)$/.test(country) ? 'the ' : ''
-  const embassy = `The Embassy of ${the}${country}, Islamabad`
+  // The UK has no embassy letter: visitor applications go to UK Visas and Immigration.
+  const embassy = dest?.slug === 'united-kingdom' ? 'The Entry Clearance Officer, UK Visas and Immigration' : `The Embassy of ${the}${country}, ${P.embassyCity}`
   const letterDate = isoPlus(0)
   const fd = (iso: string) => formatDate(iso)
 
   switch (type) {
     case 'cover':
       return {
-        fullName: 'Ayesha Khan', passportNo: 'AB1234567', passportExpiry: isoPlus(1500),
-        nationality: 'Pakistani', address: 'House 1, Street 2, Lahore, Pakistan',
-        email: 'ayesha.khan@example.com', phone: '+92 300 0000000',
-        region, destination: country, embassyCity: 'Islamabad',
+        fullName: P.fullName, passportNo: 'AB1234567', passportExpiry: isoPlus(1500),
+        nationality: P.nationality, address: P.address,
+        email: `${P.fullName.toLowerCase().replace(' ', '.')}@example.com`, phone: P.phone,
+        region, destination: country, embassyCity: P.embassyCity,
         visaTerm: 'Short stay (up to 90 days)', visaType: 'Tourist',
         purpose: `Tourism in ${c1} and ${c2}`,
         arrival, departure,
         itinerary: `${c1}, ${fd(arrival)} to ${fd(mid)}\n${c2}, ${fd(mid)} to ${fd(departure)}`,
         accommodation: `Hotels in ${c1} and ${c2} (bookings attached)`,
-        employment: 'Employed', employer: 'Example Ltd, Lahore', jobTitle: 'Software engineer',
+        employment: 'Employed', employer: P.employer, jobTitle: P.jobTitle,
         jobSince: 'March 2021', leave: 'Yes, NOC / leave letter attached',
-        funding: 'Myself', income: 'PKR 300,000',
-        finDocs: 'Bank statements, last 6 months|Salary slips, last 3 months|Tax returns (FBR)',
-        property: 'Family home in Lahore', dependents: 'Parents and two siblings in Lahore',
-        priorTravel: 'UAE 2023, Turkey 2024. No visa refusals.',
+        funding: 'Myself', income: P.income,
+        finDocs: P.finDocs,
+        property: `Family home in ${P.city}`, dependents: P.family,
+        priorTravel: P.priorTravel,
         enclosures: 'Passport copy|Flight reservation|Hotel booking|Travel insurance|Employer NOC / leave letter',
         letterDate,
       }
     case 'noc':
       return {
-        issuer: 'Employer (HR or manager signs)', company: 'Example Ltd',
-        companyAddress: 'Plot 5, Industrial Area, Lahore, Pakistan',
-        signerName: 'Sara Ahmed', signerTitle: 'HR Manager', signerContact: 'hr@example.com, +92 42 0000000',
-        empName: 'Ayesha Khan', empId: 'EMP-1042', empIdentity: 'AB1234567', empTitle: 'Software engineer',
-        joined: '2021-03-01', empStatus: 'Permanent', salary: 'PKR 300,000',
+        issuer: 'Employer (HR or manager signs)', company: P.employer.split(',')[0],
+        companyAddress: P.companyAddress,
+        signerName: P.signerName, signerTitle: 'HR Manager', signerContact: P.signerContact,
+        empName: P.fullName, empId: 'EMP-1042', empIdentity: 'AB1234567', empTitle: P.jobTitle,
+        joined: '2021-03-01', empStatus: 'Permanent', salary: P.salary,
         embassy, destination: country, purpose: 'Tourism',
         leaveFrom: arrival, leaveTo: departure, resume: isoPlus(57), leaveType: 'Annual leave',
         letterDate,
@@ -367,7 +377,7 @@ export function sampleData(type: LetterType, dest?: LetterDestination): Data {
       return {
         hostName: 'Daniel Schmidt', hostStatus: 'Citizen', hostId: 'L1234567', hostOccupation: 'Teacher',
         hostAddress: `Example Street 1, ${c1}, ${country}`, hostEmail: 'host@example.com', hostPhone: '+00 000 0000000',
-        guestName: 'Ayesha Khan', guestNationality: 'Pakistani', guestPassport: 'AB1234567', guestDob: '1994-05-12',
+        guestName: P.fullName, guestNationality: P.nationality, guestPassport: 'AB1234567', guestDob: '1994-05-12',
         relationship: 'Sister', region, embassy, purpose: 'Family visit',
         arrival, departure, stay: 'At my home at the address above', space: '3 bedrooms, 2 occupants',
         costs: 'I cover accommodation only',
@@ -376,25 +386,25 @@ export function sampleData(type: LetterType, dest?: LetterDestination): Data {
       }
     case 'sponsor':
       return {
-        sponsorName: 'Imran Khan', sponsorOccupation: 'Director, Example Traders', sponsorId: '35202-0000000-0',
-        relationship: 'Father', sponsorAddress: 'House 1, Street 2, Lahore, Pakistan',
-        sponsorEmail: 'sponsor@example.com', sponsorPhone: '+92 300 0000000',
-        applicantName: 'Ayesha Khan', applicantPassport: 'AB1234567', region, embassy, destination: country,
+        sponsorName: P.sponsor.name, sponsorOccupation: P.sponsor.occupation, sponsorId: P.sponsor.idNumber,
+        relationship: 'Father', sponsorAddress: P.address,
+        sponsorEmail: 'sponsor@example.com', sponsorPhone: P.phone,
+        applicantName: P.fullName, applicantPassport: 'AB1234567', region, embassy, destination: country,
         purpose: 'Tourism', arrival, departure,
         covers: 'Flights|Accommodation|Daily living expenses|Travel insurance',
-        income: 'PKR 500,000 per month; savings PKR 3,000,000',
-        enclosures: 'ID / passport copy|Bank statements, last 6 months|Salary slips or business income proof|Tax returns (FBR)',
+        income: P.sponsor.income,
+        enclosures: P.sponsor.enclosures,
         letterDate,
       }
   }
 }
 
-export function sampleLetter(type: LetterType, dest?: LetterDestination): Block[] {
-  return buildLetter(type, sampleData(type, dest), isoPlus(0))
+export function sampleLetter(type: LetterType, dest?: LetterDestination, origin: Exclude<OriginId, 'other'> = 'pakistan', overrides: Data = {}): Block[] {
+  return buildLetter(type, { ...sampleData(type, dest, origin, overrides), origin }, isoPlus(0))
 }
 
-export function samplePlaceholderCount(type: LetterType, dest?: LetterDestination): number {
-  return countPlaceholders(sampleLetter(type, dest))
+export function samplePlaceholderCount(type: LetterType, dest?: LetterDestination, origin: Exclude<OriginId, 'other'> = 'pakistan', overrides: Data = {}): number {
+  return countPlaceholders(sampleLetter(type, dest, origin, overrides))
 }
 
 // ─── Destination page content ────────────────────────────────────────────────
@@ -512,7 +522,7 @@ export function needAnswer(type: LetterType, d: LetterDestination): string {
       case 'United Kingdom': return `UK Visas and Immigration does not require a cover letter for a ${d.visaName}. If you add one, keep it to one page and do not repeat what your documents already show. ${portal}`
       case 'United States': return `A cover letter is usually not needed for a ${d.visaName}. The visa is decided at the interview from your DS-160 and your answers. ${portal}`
       case 'Canada': return `Canada does not set a mandatory format, but applicants often add a short letter of explanation covering purpose, funds and ties to home. ${portal}`
-      case 'Schengen (Europe)': return `Many Schengen consulates list a cover letter among the supporting documents for a ${d.visaName}. Check the checklist of the consulate that handles your application. ${portal}`
+      case 'Schengen (Europe)': return `Some Schengen consulates list a personal cover letter for a ${d.visaName}, and many do not. Check the checklist of the consulate that handles your application. Where it is not listed, a short letter still helps with what the documents cannot show, such as self-employed income, a sponsor paying or a first trip. ${portal}`
       case 'Australia': return `A letter is not a required form for a ${d.visaName}, but a short statement can explain your purpose, funds and ties to home. ${portal}`
       default: return `Requirements for the ${d.visaName} vary by nationality and consulate. If the checklist for ${dn} lists a cover letter or statement of purpose, this is the format to use. ${portal}`
     }
