@@ -22,6 +22,8 @@ import opennextHandler, { DOQueueHandler, DOShardedTagCache, BucketCachePurge } 
 
 export { DOQueueHandler, DOShardedTagCache, BucketCachePurge }
 
+import { forcedEdgeTtl, withEdgeTtl } from './lib/edge/forcedTtl'
+
 async function hitRoute(env: Env, path: string) {
   // CRON_SECRET is a `wrangler secret put` value — not a declared binding, so
   // it isn't in the generated Env type, but it is present on env at runtime.
@@ -141,7 +143,15 @@ export default {
       if (cached) return cached
     }
 
-    const response: Response = await opennextHandler.fetch(request, env, ctx)
+    let response: Response = await opennextHandler.fetch(request, env, ctx)
+
+    // Sitemaps and robots.txt carry `max-age=0, must-revalidate`, so they would be
+    // rebuilt (the sitemap: 13s, ~75 DB reads) on every crawler fetch. Give them a
+    // shared-cache TTL — see lib/edge/forcedTtl.ts.
+    const forcedTtl = isGet ? forcedEdgeTtl(keyUrl.pathname) : null
+    if (forcedTtl && response.status === 200 && !response.headers.has('set-cookie')) {
+      response = withEdgeTtl(response, forcedTtl)
+    }
 
     if (isGet && isEdgeCacheable(response)) {
       ctx.waitUntil(cache.put(cacheKey, response.clone()))

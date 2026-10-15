@@ -1,5 +1,9 @@
 import { MetadataRoute } from 'next'
-import { BLOCKED_BOT_USER_AGENTS } from '@/lib/security/botBlocklist'
+import {
+  AI_SEARCH_ALLOWED_PREFIXES,
+  AI_SEARCH_BOT_USER_AGENTS,
+  BLOCKED_BOT_USER_AGENTS,
+} from '@/lib/security/botBlocklist'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -24,6 +28,13 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: 'Bingbot',
         allow: ['/', '/api/photo', '/api/og'],
         disallow: ['/api/', '/passport-scanner'],
+      },
+      // AI search crawlers: welcome on the letter tool and the blog, nowhere else.
+      // (Most-specific rule wins, so these Allow lines override the Disallow below.)
+      {
+        userAgent: [...AI_SEARCH_BOT_USER_AGENTS],
+        allow: [...AI_SEARCH_ALLOWED_PREFIXES],
+        disallow: '/',
       },
       // Advisory block for aggressive/non-essential crawlers (SEO scrapers,
       // AI training/browsing bots) — polite bots honor this; rude ones don't,

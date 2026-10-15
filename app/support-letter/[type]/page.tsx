@@ -26,6 +26,8 @@ import {
   SampleLetter,
   Section,
 } from '../_components/GuideParts'
+import { corridorPath } from '../_components/CorridorPage'
+import { liveCorridors } from '@/lib/letters/corridors'
 
 export const revalidate = 86400
 // OpenNext on Cloudflare runs with a no-op incremental cache (see open-next.config.ts), so
@@ -64,6 +66,7 @@ export default async function LetterTypePage({ params }: Props) {
   const withDest = DEST_TYPES.includes(g.type)
   const sample = sampleLetter(g.type)
   const others = TYPE_GUIDES.filter((x) => x.type !== g.type)
+  const corridors = liveCorridors().filter((c) => c.type === g.type)
 
   const page = {
     '@context': 'https://schema.org',
@@ -147,6 +150,19 @@ export default async function LetterTypePage({ params }: Props) {
               {destinationsWithPage(g.type).map((d) => (
                 <li key={d.slug}>
                   <Link href={destPath(g.type, d)} className="text-emerald-800 underline-offset-2 hover:underline">{g.label} for {d.name}</Link>
+                </li>
+              ))}
+            </ul>
+          </Section>
+        )}
+
+        {corridors.length > 0 && (
+          <Section title={`${g.label} by situation and country`}>
+            <p className="mb-4 text-sm text-gray-600">Built from the published checklists for applicants in Pakistan and India.</p>
+            <ul className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+              {corridors.map((c) => (
+                <li key={c.slug}>
+                  <Link href={corridorPath(c)} className="text-emerald-800 underline-offset-2 hover:underline">{c.h1.replace(/\s*\(applying from [^)]+\)/i, '')}</Link>
                 </li>
               ))}
             </ul>

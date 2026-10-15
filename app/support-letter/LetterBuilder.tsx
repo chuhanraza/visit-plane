@@ -5,6 +5,7 @@ import {
   LETTERS,
   buildLetter,
   findRedFlags,
+  getFields,
   getNotices,
   isVisible,
   blocksToText,
@@ -18,9 +19,32 @@ import {
 import { findDestinationByName, toolDestinationName } from '@/lib/letters/destinations'
 import { downloadLetterPdf } from '@/lib/letters/pdf'
 import { downloadLetterDocx } from '@/lib/letters/docx'
+import { ORIGINS, isOriginId, type OriginId } from '@/lib/letters/origins'
+import BlogEmailCapture from '@/components/blog/BlogEmailCapture'
+
+/** Presets that corridor pages link to: ?type=noc&variant=business-owner. */
+const VARIANTS: Partial<Record<LetterType, Record<string, Data>>> = {
+  noc: {
+    employee: { issuer: 'Employer (HR or manager signs)' },
+    'business-owner': { issuer: 'Business owner (self-issued, a partner or co-director signs)' },
+    government: { issuer: 'Government department (an authorised officer signs)' },
+  },
+  cover: {
+    employee: { employment: 'Employed' },
+    'self-employed': { employment: 'Self-employed / freelancer' },
+  },
+}
+
+const LETTER_MAGNET = {
+  url: '/lead-magnets/ultimate-visa-application-checklist.pdf',
+  id: 'ultimate-visa-application-checklist',
+  downloadLabel: 'Download the checklist (PDF)',
+}
 
 const STORE_KEY = 'vp-letter-draft-v2'
 const ACK_KEY = 'vp-letter-ack-v1'
+const ORIGIN_KEY = 'vp-letter-origin-v1'
+const CAPTURE_KEY = 'vp-letter-capture-v1'
 
 const inputCls =
   'mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20'
@@ -124,6 +148,9 @@ export default function LetterBuilder() {
   const [pane, setPane] = useState<'form' | 'preview'>('form')
   const [busy, setBusy] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [origin, setOrigin] = useState<OriginId>('pakistan')
+  // After the first download/copy we offer the checklist once. 'hidden' = not yet, 'shown', 'skipped'.
+  const [capture, setCapture] = useState<'hidden' | 'shown' | 'skipped'>('hidden')
 
   useEffect(() => {
     setToday(new Date().toISOString().slice(0, 10))
@@ -134,6 +161,9 @@ export default function LetterBuilder() {
         setData((prev) => ({ ...prev, ...parsed }))
       }
       if (sessionStorage.getItem(ACK_KEY) === '1') setAck(true)
+      const storedOrigin = sessionStorage.getItem(ORIGIN_KEY)
+      if (isOriginId(storedOrigin)) setOrigin(storedOrigin)
+      if (sessionStorage.getItem(CAPTURE_KEY) === 'skipped') setCapture('skipped')
     } catch {
       /* storage unavailable — start empty */
     }
@@ -141,8 +171,15 @@ export default function LetterBuilder() {
     try {
       const q = new URLSearchParams(window.location.search)
       const qt = q.get('type') as LetterType | null
+      const qo = q.get('origin')
+      if (isOriginId(qo)) setOrigin(qo)
       if (qt && LETTERS.some((l) => l.type === qt)) {
         setType(qt)
+        const preset = VARIANTS[qt]?.[q.get('variant') ?? '']
+        if (preset) {
+          // Never overwrite something the visitor already typed.
+          setData((prev) => ({ ...prev, [qt]: { ...preset, ...(prev[qt] ?? {}) } }))
+        }
         const qd = (q.get('destination') ?? '').slice(0, 60)
         const dest = findDestinationByName(qd)
         if (dest) {
@@ -174,6 +211,15 @@ export default function LetterBuilder() {
   useEffect(() => {
     if (!loaded) return
     try {
+      sessionStorage.setItem(ORIGIN_KEY, origin)
+    } catch {
+      /* ignore */
+    }
+  }, [origin, loaded])
+
+  useEffect(() => {
+    if (!loaded) return
+    try {
       if (ack) sessionStorage.setItem(ACK_KEY, '1')
       else sessionStorage.removeItem(ACK_KEY)
     } catch {
@@ -183,16 +229,30 @@ export default function LetterBuilder() {
 
   const meta = LETTERS.find((l) => l.type === type)!
   const current = data[type]
-  const blocks = useMemo(() => buildLetter(type, current, today), [type, current, today])
-  const notices = useMemo(() => getNotices(type, current), [type, current])
-  const flags = useMemo(() => findRedFlags(type, current), [type, current])
+  // The letter builders read the applicant's country from the data, like any other answer.
+  const withOrigin = useMemo<Data>(() => ({ ...current, origin }), [current, origin])
+  const fields = useMemo(() => getFields(type, origin), [type, origin])
+  const blocks = useMemo(() => buildLetter(type, withOrigin, today), [type, withOrigin, today])
+  const notices = useMemo(() => getNotices(type, withOrigin), [type, withOrigin])
+  const flags = useMemo(() => findRedFlags(type, withOrigin), [type, withOrigin])
   const missing = useMemo(() => countPlaceholders(blocks), [blocks])
 
   const groups = useMemo(() => {
     const map = new Map<string, Field[]>()
-    meta.fields.filter((f) => isVisible(f, current)).forEach((f) => map.set(f.group, [...(map.get(f.group) ?? []), f]))
+    fields.filter((f) => isVisible(f, current)).forEach((f) => map.set(f.group, [...(map.get(f.group) ?? []), f]))
     return [...map.entries()]
-  }, [meta, current])
+  }, [fields, current])
+
+  // Offer the checklist once, after the person has what they came for.
+  const offerCapture = () => setCapture((c) => (c === 'hidden' ? 'shown' : c))
+  const skipCapture = () => {
+    setCapture('skipped')
+    try {
+      sessionStorage.setItem(CAPTURE_KEY, 'skipped')
+    } catch {
+      /* ignore */
+    }
+  }
 
   const set = (id: string, val: string) =>
     setData((prev) => ({ ...prev, [type]: { ...prev[type], [id]: val } }))
@@ -202,6 +262,7 @@ export default function LetterBuilder() {
     setBusy(true)
     try {
       await downloadLetterPdf(blocks, `${meta.label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.pdf`)
+      offerCapture()
     } finally {
       setBusy(false)
     }
@@ -212,6 +273,7 @@ export default function LetterBuilder() {
     setBusy(true)
     try {
       await downloadLetterDocx(blocks, `${meta.label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.docx`)
+      offerCapture()
     } finally {
       setBusy(false)
     }
@@ -223,6 +285,7 @@ export default function LetterBuilder() {
       await navigator.clipboard.writeText(blocksToText(blocks))
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
+      offerCapture()
     } catch {
       /* clipboard blocked — ignore */
     }
@@ -269,6 +332,26 @@ export default function LetterBuilder() {
 
   return (
     <div>
+      {/* Where the applicant lives: changes labels, examples and the document tick-boxes */}
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <span id="origin-label" className="text-sm font-semibold text-gray-800">Applying from</span>
+        <div role="radiogroup" aria-labelledby="origin-label" className="inline-flex rounded-lg bg-gray-100 p-1">
+          {ORIGINS.map((o) => (
+            <button
+              key={o.id}
+              type="button"
+              role="radio"
+              aria-checked={origin === o.id}
+              onClick={() => setOrigin(o.id)}
+              className={`min-h-[40px] rounded-md px-4 text-sm font-semibold transition ${origin === o.id ? 'bg-white text-emerald-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <span className="text-xs text-gray-500">Sets the example IDs, tax documents and currency in the form.</span>
+      </div>
+
       {/* Letter type */}
       <div role="tablist" aria-label="Letter type" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {LETTERS.map((l) => {
@@ -361,6 +444,20 @@ export default function LetterBuilder() {
           <div className="max-h-[calc(100vh-9rem)] overflow-y-auto rounded-xl bg-gray-100 p-3 sm:p-5">
             <Paper blocks={blocks} />
           </div>
+          {capture === 'shown' && (
+            <div className="mt-4">
+              <BlogEmailCapture
+                variant="inline"
+                capturedFrom="support-letter-download"
+                leadMagnet={LETTER_MAGNET}
+                title="Get the visa document checklist"
+                subtitle="A free PDF of the documents most consulates ask for, with a week-by-week timeline. Only your email is sent. The letter you just made stays in this browser."
+              />
+              <button type="button" onClick={skipCapture} className="mt-2 text-xs font-medium text-gray-500 underline-offset-2 hover:underline">
+                No thanks
+              </button>
+            </div>
+          )}
           <p className="mt-3 text-xs leading-relaxed text-gray-500">
             Nothing is uploaded. Your draft is kept in this browser tab only and is erased when you close it.
           </p>

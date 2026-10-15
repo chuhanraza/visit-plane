@@ -107,7 +107,7 @@ export function Disclaimer() {
   return (
     <p className="mt-10 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
       This page explains how to write supporting letters. It is general information, not legal or immigration advice, and no letter guarantees a visa.
-      Requirements change and differ by consulate and nationality, so check the official page before you apply. Names and numbers in samples are invented.
+      Requirements change and differ by consulate and nationality, so check the official page before you apply. Names and numbers in samples are invented. VisitPlane is not affiliated with any embassy, consulate, government or visa application centre.
     </p>
   )
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { BLOCKED_BOT_UA_PATTERN } from '@/lib/security/botBlocklist';
+import { AI_SEARCH_BOT_UA_PATTERN, BLOCKED_BOT_UA_PATTERN, aiSearchBotMayFetch } from '@/lib/security/botBlocklist';
 
 // Next.js 16 renamed the "middleware" convention to "proxy" and quietly
 // flipped the *default* runtime for files using this legacy convention to
@@ -41,6 +41,12 @@ export default async function middleware(request: NextRequest) {
   try {
     const userAgent = request.headers.get('user-agent') ?? '';
     if (userAgent && BLOCKED_BOT_UA_PATTERN.test(userAgent)) {
+      return new NextResponse('Forbidden', { status: 403 });
+    }
+    // AI search crawlers (ChatGPT search, Perplexity, Claude search) bring readers
+    // back through citations, so they may read the letter tool and the blog — the
+    // cheap, cacheable content — and nothing else. See lib/security/botBlocklist.ts.
+    if (userAgent && AI_SEARCH_BOT_UA_PATTERN.test(userAgent) && !aiSearchBotMayFetch(request.nextUrl.pathname)) {
       return new NextResponse('Forbidden', { status: 403 });
     }
   } catch {
