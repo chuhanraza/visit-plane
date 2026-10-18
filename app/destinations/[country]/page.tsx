@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import { clampTitle, clampDesc } from '@/lib/seo/clamp'
 import { ALL_COUNTRIES } from '../data'
 import DestinationCountryClient from './DestinationCountryClient'
@@ -35,17 +36,23 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { country: slug } = await params
   const c = findCountry(slug)
-  const name = c?.name ?? decodeURIComponent(slug)
+  // Unknown slugs 404 in the page body. Keep them out of the index here too, so the
+  // title and canonical never advertise a made-up "destination".
+  if (!c) return { title: 'Destination not found | VisitPlane', robots: { index: false, follow: false } }
+  const name = c.name
 
   const title       = clampTitle(`${name} Visa Requirements by Passport (2026)`)
   const description = clampDesc(`${name} visa requirements for every nationality. Check whether your passport is visa-free, needs an eVisa, visa on arrival, or a full visa for ${name}. Updated 2026.`)
-  const canonical   = `https://www.visitplane.com/destinations/${encodeURIComponent(slug)}`
+  // Always the canonical spelling of the country name, so /destinations/canada and
+  // /destinations/USA consolidate into /destinations/Canada and /destinations/United%20States.
+  const canonical   = `https://www.visitplane.com/destinations/${encodeURIComponent(c.name)}`
 
   return {
     title,
     description,
     alternates: { canonical },
     openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
       title,
       description,
       url: canonical,
@@ -83,20 +90,23 @@ export default async function DestinationCountryPage({ params }: Props) {
   const { country: slug } = await params
   const c = findCountry(slug)
 
-  // If country not found in static data, use fallback values
-  const name   = c?.name   ?? decodeURIComponent(slug)
-  const flag   = c?.flag   ?? '🌍'
-  const region = c?.region ?? 'World'
-  const visa   = c?.visa   ?? 'Visa Required'
-  const stay   = c?.max_stay ?? '—'
-  const fee    = c?.fee_usd  ?? '—'
+  // Not a country we cover: a real 404 (was a 200 page with invented content, which
+  // made every /destinations/<anything> URL indexable).
+  if (!c) notFound()
+
+  const name   = c.name
+  const flag   = c.flag
+  const region = c.region
+  const visa   = c.visa
+  const stay   = c.max_stay
+  const fee    = c.fee_usd
 
   // ISO-3 for click attribution (route_dest); COUNTRIES is keyed by name.
   const destIso = COUNTRIES.find((sc) => sc.name.toLowerCase() === name.toLowerCase())?.iso3
 
   return (
     <>
-      <CountryJsonLd slug={slug} name={name} />
+      <CountryJsonLd slug={name} name={name} />
       <DestinationCountryClient
         countryName={name}
         countryFlag={flag}

@@ -8,9 +8,10 @@ const CANONICAL = 'https://www.visitplane.com/editorial-standards'
 export const metadata: Metadata = {
   title: 'Editorial Standards & How We Verify Visa Information',
   description:
-    'How VisitPlane researches, verifies, and updates visa information — the official sources we use, how AI is used (never as the source of truth), and how to report incorrect data.',
+    'How VisitPlane researches, verifies and updates visa information: the official sources we use, how AI is used, and how to report incorrect data.',
   alternates: { canonical: CANONICAL },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'Editorial Standards & How We Verify — VisitPlane',
     description:
       'The sources, review process, and honest limitations behind every visa guide on VisitPlane.',

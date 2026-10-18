@@ -33,7 +33,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/interview-prep/${r.country.slug}/${r.visa.code.toLowerCase()}` },
-    openGraph: { title, description, type: 'website', siteName: 'VisitPlane' },
+    openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }], title, description, type: 'website', siteName: 'VisitPlane' },
     twitter: { card: 'summary_large_image', title, description },
   }
 }

@@ -148,7 +148,8 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical },
-    openGraph: { title, description, url: canonical, type: 'article' },
+    openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }], title, description, url: canonical, type: 'article' },
     twitter: { card: 'summary_large_image', title, description },
   }
 }

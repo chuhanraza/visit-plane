@@ -150,11 +150,19 @@ export async function GET(request: Request) {
             color:    theme.pill,
             fontWeight: 600,
           }}>
-            {footer || `Template ${templateKey} · Programmatic SEO`}
+            {footer || 'Free visa guides · visitplane.com'}
           </span>
         </div>
       </div>
     ),
-    { width: 1200, height: 630 },
+    {
+      width: 1200,
+      height: 630,
+      // The card depends only on its query string, so it can be cached hard. Without
+      // this, every WhatsApp/Facebook/X scrape re-rendered the image on the Worker.
+      headers: {
+        'Cache-Control': 'public, max-age=86400, s-maxage=31536000, stale-while-revalidate=604800',
+      },
+    },
   )
 }

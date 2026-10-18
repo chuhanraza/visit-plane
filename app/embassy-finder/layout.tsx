@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Embassy Finder 2026 | VisitPlane',
   description:
-    'Find any embassy instantly. Addresses, phone numbers, opening hours and directions worldwide.',
+    'Find any embassy or consulate fast: addresses, phone numbers, opening hours and directions worldwide. Free embassy finder, no signup.',
   alternates: {
     canonical: 'https://www.visitplane.com/embassy-finder',
   },

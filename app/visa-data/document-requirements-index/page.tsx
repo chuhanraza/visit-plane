@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     'How many documents each visa route actually requires, transcribed from official consulate, VAC and government requirement sheets. Sortable, fully cited, with a link to every route’s official source.',
   alternates: { canonical: URL },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'Visa Document Requirements Index — Curated from Official Sources',
     description:
       'Document counts per visa route, transcribed from official requirement sheets and fully cited.',

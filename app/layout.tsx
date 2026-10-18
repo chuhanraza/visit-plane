@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "VisitPlane: Free visa requirements, passport strength checker, document checklists and embassy finder for 197 countries. Instant visa information. No signup required.",
+    "VisitPlane: free visa requirements, passport strength checker, document checklists and embassy finder for 197 countries. No signup required.",
 
   keywords: [
     "VisitPlane",
@@ -109,7 +109,7 @@ export const metadata: Metadata = {
       "Free visa requirements, passport strength checker, document checklists and embassy finder for 197 countries. Instant visa information. No signup required.",
     images: [
       {
-        url: "/api/og-default",
+        url: "/og-default.png",
         width: 1200,
         height: 630,
         alt: "VisitPlane - Visa Requirements for 197 Countries",
@@ -124,7 +124,7 @@ export const metadata: Metadata = {
     title: "VisitPlane - Visa Requirements for 197 Countries",
     description:
       "Free visa requirements for 197 countries. Passport strength checker, embassy finder and more.",
-    images: ["/api/og-default"],
+    images: ["/og-default.png"],
   },
 };
 
@@ -163,27 +163,6 @@ const websiteSchema = {
   url: "https://www.visitplane.com",
   description:
     "Free visa requirements for 197 countries — VisitPlane gives travelers instant, accurate visa information with no signup required.",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate:
-        "https://www.visitplane.com/visa/{passport}/{destination}",
-    },
-    "query-input": "required name=destination",
-  },
-};
-
-const webAppSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  name: "VisitPlane",
-  url: "https://www.visitplane.com",
-  description:
-    "Visa requirements platform — get instant visa requirements for 197 countries and know exactly what documents you need. Free, fast, always updated. No signup required.",
-  applicationCategory: "TravelApplication",
-  operatingSystem: "All",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
 
 // Locale is fixed to English at the server layer. The old getLocale()/
@@ -243,10 +222,6 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
         />
         <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />
       </head>

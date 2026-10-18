@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     canonical: 'https://www.visitplane.com/blog',
   },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'Visa Guides & Travel Tips — VisitPlane',
     description:
       'Expert visa guides for every passport and destination. Schengen, Dubai, UK, Canada, Australia, Germany, Japan, USA, and more.',

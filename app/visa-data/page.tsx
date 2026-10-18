@@ -8,9 +8,10 @@ const URL = 'https://www.visitplane.com/visa-data'
 export const metadata: Metadata = {
   title: 'Visa Data & Research — Original Visa Datasets | VisitPlane',
   description:
-    'VisitPlane’s original, citable visa research: the Visa Cost Index, Passport Power / visa-free access ranking, and a document-requirements index built from official sources. Free to use and cite.',
+    'Original, citable visa research: the Visa Cost Index, Passport Power ranking and a document-requirements index built from official sources. Free to cite.',
   alternates: { canonical: URL },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'Visa Data & Research — Original Visa Datasets',
     description:
       'Original, citable visa datasets: cost index, passport power, and document requirements — built from official sources.',

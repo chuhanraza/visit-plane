@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     'How many destinations each passport can enter with no advance visa (visa-free + visa-on-arrival), from the IATA-derived Passport Index. Sortable ranking with a focus on emerging-market passports.',
   alternates: { canonical: URL },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'Passport Power 2026 — Visa-Free Access by Passport',
     description:
       'Visa-free + visa-on-arrival access by passport, from the IATA-derived Passport Index. Sortable ranking.',

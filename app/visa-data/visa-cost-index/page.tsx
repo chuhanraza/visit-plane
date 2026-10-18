@@ -16,9 +16,10 @@ const URL = 'https://www.visitplane.com/visa-data/visa-cost-index'
 export const metadata: Metadata = {
   title: 'Visa Cost Index 2026 — Tourist Visa Fees by Destination | VisitPlane',
   description:
-    'A sortable index of typical tourist-visa fees across 180+ destinations, with regional medians and free-entry counts. Compiled from VisitPlane’s dataset — verify each fee at the official source.',
+    'Sortable index of typical tourist-visa fees across 180+ destinations, with regional medians and free-entry counts. Verify each fee at the official source.',
   alternates: { canonical: URL },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'Visa Cost Index 2026 — Tourist Visa Fees by Destination',
     description:
       'Sortable index of typical tourist-visa fees across destinations, with regional medians. Verify each fee at the official source.',
