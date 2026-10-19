@@ -121,6 +121,12 @@ async function isMaintenanceActive(env: Env, ctx: ExecutionContext): Promise<boo
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+    // Hard pause switch: SITE_PAUSED="true" in wrangler.jsonc vars answers every request with the
+    // 503 page and touches no network or database, so it cannot fail open. Set it back to "false"
+    // and redeploy to reopen.
+    if ((env as unknown as { SITE_PAUSED?: string }).SITE_PAUSED === 'true') {
+      return new Response(MAINTENANCE_HTML, { status: 503, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'retry-after': '3600' } })
+    }
     if (await isMaintenanceActive(env, ctx)) {
       return new Response(MAINTENANCE_HTML, { status: 503, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'retry-after': '300' } })
     }
