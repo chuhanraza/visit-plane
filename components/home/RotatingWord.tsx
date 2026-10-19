@@ -62,9 +62,14 @@ export default function RotatingWord() {
       }}
     >
       {/* Invisible sizer — inherits the headline font metrics for an exact width. */}
-      <span ref={sizerRef} aria-hidden className="invisible absolute left-0 top-0 whitespace-nowrap">
-        {WORDS[index]}
-      </span>
+      {/* The word is drawn by CSS (attr()) so it never appears as a second copy of the word
+          in the headline's text, which crawlers read as "The easiest easiest way". */}
+      <span
+        ref={sizerRef}
+        aria-hidden
+        data-word={WORDS[index]}
+        className="invisible absolute left-0 top-0 whitespace-nowrap after:content-[attr(data-word)]"
+      />
       {/* mode="wait": exactly ONE word in the DOM at a time, so SSR/crawlers read
           a clean headline and exiting words never pile up. The swap is a quick
           fade+slide; the slot stays word-sized so spacing is always natural. */}

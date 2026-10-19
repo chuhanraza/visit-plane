@@ -65,7 +65,6 @@ export default function DestinationCard({ rank, item, photo, avgDailyCostUsd, pr
               loading="lazy"
               decoding="async"
             />
-            <span className="text-xs font-medium">Photo coming soon</span>
           </div>
         )}
         <span
