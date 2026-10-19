@@ -1,7 +1,7 @@
 ---
 title: "Ghana to UK Visa: Requirements, Fees & How Ghanaians Apply (2026)"
 date: "2026-10-19"
-excerpt: "How Ghanaians apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Ghana, biometrics in Accra, timelines and the mistakes that cause refusals."
+excerpt: "How Ghanaians apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Ghana and biometrics in Accra."
 category: "Visa Guides"
 readTime: "11 min read"
 coverEmoji: "🇬🇧"
