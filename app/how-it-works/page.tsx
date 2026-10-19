@@ -5,9 +5,10 @@ import Image from 'next/image'
 export const metadata: Metadata = {
   title: 'How VisitPlane Works — Check Any Visa in 10 Seconds | VisitPlane',
   description:
-    'See how VisitPlane works: pick your passport, choose a destination, and get instant visa requirements, fees, processing times and a document checklist — free, no signup.',
+    'Pick your passport, choose a destination and get visa requirements, fees, processing times and a document checklist in seconds. Free, no signup.',
   alternates: { canonical: 'https://www.visitplane.com/how-it-works' },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'How VisitPlane Works — Check Any Visa in 10 Seconds',
     description:
       'Pick your passport, choose a destination, and get instant visa requirements, fees and a document checklist — free, no signup.',

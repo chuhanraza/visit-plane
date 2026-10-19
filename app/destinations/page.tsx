@@ -4,26 +4,22 @@ import { ALL_COUNTRIES } from './data'
 
 // ─── SEO metadata ──────────────────────────────────────────────────────────
 
-interface Props {
-  searchParams: Promise<{ passport?: string }>
-}
+// This page must stay static. It used to read `searchParams` (for an optional
+// ?passport= value), which made Next render it on every request with
+// `cache-control: private, no-store`: a ~390 KB page rebuilt on the Worker for every visit
+// and every crawler hit. The passport is a client-side preference (localStorage / geo),
+// and ?passport= variants always canonicalised to the clean URL anyway.
+const DEFAULT_PASSPORT = 'United States'
 
-export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const { passport } = await searchParams
-  // The bare /destinations URL is passport-neutral — don't bake a default
-  // nationality into the indexed title. ?passport= variants canonicalise to the
-  // clean URL, so only the neutral title ever represents this page in SERPs.
-  const title = passport
-    ? `All Visa Requirements for ${passport} Passport Holders (2026)`
-    : `Visa Requirements by Country — All ${ALL_COUNTRIES.length} Destinations (2026)`
-  const description = passport
-    ? `Browse visa requirements for all ${ALL_COUNTRIES.length} countries with a ${passport} passport. See visa types, max stay, and fees — updated 2026.`
-    : `Browse visa requirements for all ${ALL_COUNTRIES.length} countries by passport. See visa types, max stay, and fees — updated 2026.`
+export async function generateMetadata(): Promise<Metadata> {
+  const title = `Visa Requirements by Country — All ${ALL_COUNTRIES.length} Destinations (2026)`
+  const description = `Browse visa requirements for all ${ALL_COUNTRIES.length} countries by passport: visa types, maximum stay and fees, updated for 2026. Free, no signup.`
 
   return {
     title,
     description,
     openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
       title,
       description,
       type: 'website',
@@ -70,12 +66,10 @@ function DestinationsJsonLd({ passport }: { passport: string }) {
 
 // ─── Page ──────────────────────────────────────────────────────────────────
 
-export default async function DestinationsPage({ searchParams }: Props) {
-  const { passport = 'United States' } = await searchParams
-
+export default function DestinationsPage() {
   return (
     <>
-      <DestinationsJsonLd passport={passport} />
+      <DestinationsJsonLd passport={DEFAULT_PASSPORT} />
       <DestinationsClient />
     </>
   )

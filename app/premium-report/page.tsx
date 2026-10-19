@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: 'A one-time Rs 2,000 report for your exact passport and destination: full requirement breakdown plus a downloadable PDF document checklist.',
   alternates: { canonical: 'https://www.visitplane.com/premium-report' },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'Premium Visa Report — Rs 2,000 | VisitPlane',
     description: 'One report for your exact passport and destination, with a downloadable PDF document checklist.',
     url: 'https://www.visitplane.com/premium-report',

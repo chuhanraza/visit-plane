@@ -4,7 +4,7 @@ import VisaFreeMapClient from './VisaFreeMapClient'
 export const metadata: Metadata = {
   title: 'Visa-Free World Map 2026 | Passport Power Explorer | VisitPlane',
   description:
-    'Interactive world map showing where your passport can take you. See visa-free, visa-on-arrival, and visa-required countries for 197 passports. Based on Henley Passport Index 2026.',
+    'Interactive world map of where your passport can go: visa-free, visa-on-arrival and visa-required countries for 197 passports. Based on Henley Index 2026.',
   keywords: [
     'visa free map 2026',
     'passport power map',
@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.visitplane.com'),
   alternates: { canonical: '/visa-free-map' },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'Visa-Free World Map 2026 | VisitPlane',
     description:
       'See every country you can visit visa-free on a beautiful interactive world map. Select your passport and explore instantly.',

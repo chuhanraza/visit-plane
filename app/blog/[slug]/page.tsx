@@ -30,6 +30,7 @@ import { noindexedPostSet } from '@/lib/data/noindexedPosts'
 import { redirectedSlugSet } from '@/lib/data/blogRedirectSlugs'
 import Byline from '@/components/eeat/Byline'
 import { getAuthor, authorPersonSchema } from '@/lib/data/authors'
+import { clampDesc } from '@/lib/seo/clamp'
 
 // High-intent pages where the mid-article capture offers the visa-checklist
 // lead magnet (download on submit) instead of the generic newsletter signup.
@@ -73,7 +74,7 @@ export async function generateMetadata({
     // even " | VisitPlane" (13 chars) truncated most of them. Google appends
     // the site name to SERP titles on its own.
     title: post.title,
-    description: post.excerpt.slice(0, 155),
+    description: clampDesc(post.excerpt),
     alternates: { canonical },
     // Sprint 5 content prune: dead doorway clones are de-indexed (reversible —
     // removing the slug from noindexedPosts.ts restores indexing). follow:true so

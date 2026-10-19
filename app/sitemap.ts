@@ -311,8 +311,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]
 
     const seen = new Set<string>()
+    const urlSet = new Set(allPages.map((p) => p.url))
     const deduped = allPages.filter(p => {
       if (seen.has(p.url)) return false
+      // Guide pages exist in the database under both "...-for-pakistani" and a plural
+      // "...-for-pakistanis". Only the singular is canonical, so keep the plural out of
+      // the sitemap whenever the singular is there too.
+      if (/-visa-guide-for-[a-z-]+s$/.test(p.url) && urlSet.has(p.url.slice(0, -1))) return false
       seen.add(p.url)
       return true
     })

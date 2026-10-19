@@ -254,6 +254,7 @@ export async function generateMetadata({
     description,
     alternates: { canonical },
     openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
       title,
       description,
       url: canonical,

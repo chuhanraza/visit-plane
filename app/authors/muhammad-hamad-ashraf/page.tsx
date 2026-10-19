@@ -1,14 +1,16 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getAuthor, authorPersonSchema } from '@/lib/data/authors'
+import { clampDesc } from '@/lib/seo/clamp'
 
 const author = getAuthor('muhammad-hamad-ashraf')
 
 export const metadata: Metadata = {
   title: `${author.name} — ${author.role}`,
-  description: author.bio,
+  description: clampDesc(author.bio),
   alternates: { canonical: author.url },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: `${author.name} — ${author.role}, VisitPlane`,
     description: author.bio,
     type: 'profile',

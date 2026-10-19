@@ -6,6 +6,7 @@ export const metadata: Metadata = {
     'Understand the travel medical insurance many visas require (e.g. Schengen €30,000 cover), what to look for, and how to compare policies before you apply.',
   alternates: { canonical: 'https://www.visitplane.com/travel-insurance' },
   openGraph: {
+      images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'VisitPlane - free visa requirements' }],
     title: 'Travel Insurance for Visa Applications — Coverage Guide',
     description:
       'What travel medical insurance visas require and how to compare cover before you apply.',
