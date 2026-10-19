@@ -10,10 +10,23 @@ function clamp(s: string, max: number): string {
 /** SERP-safe title (≤60). */
 export const clampTitle = (s: string): string => clamp(s, 60)
 
-/** SERP-safe meta description (≤155), ends on a full stop when trimmed. */
+/**
+ * SERP-safe meta description (≤155).
+ * Keeps whole sentences: takes as many leading sentences as fit. Only when the
+ * first sentence alone is too long does it fall back to a word-boundary cut
+ * with an ellipsis, so a snippet never ends mid-thought with a fake full stop.
+ */
 export function clampDesc(s: string): string {
   const t = s.replace(/\s+/g, ' ').trim()
   if (t.length <= 155) return t
+  const sentences = t.match(/[^.!?]+[.!?]+(?=\s|$)/g) ?? []
+  let out = ''
+  for (const raw of sentences) {
+    const next = (out ? out + ' ' : '') + raw.trim()
+    if (next.length > 155) break
+    out = next
+  }
+  if (out.length >= 60) return out
   const c = clamp(t, 154)
-  return /[.!?]$/.test(c) ? c : c + '.'
+  return /[.!?]$/.test(c) ? c : c + '…'
 }
