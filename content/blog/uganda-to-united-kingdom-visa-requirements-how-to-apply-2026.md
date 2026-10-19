@@ -1,7 +1,7 @@
 ---
 title: "Uganda to UK Visa: Requirements, Fees & How Ugandans Apply (2026)"
 date: "2026-10-19"
-excerpt: "How Ugandans apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Uganda, biometrics in Kampala, timelines and the mistakes that cause refusals."
+excerpt: "How Ugandans apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Uganda and biometrics in Kampala."
 category: "Visa Guides"
 readTime: "11 min read"
 coverEmoji: "🇬🇧"

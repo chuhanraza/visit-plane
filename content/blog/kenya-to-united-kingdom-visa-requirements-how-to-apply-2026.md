@@ -1,7 +1,7 @@
 ---
 title: "Kenya to UK Visa: Requirements, Fees & How Kenyans Apply (2026)"
 date: "2026-10-19"
-excerpt: "How Kenyans apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Kenya, biometrics in Nairobi, timelines and the mistakes that cause refusals."
+excerpt: "How Kenyans apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Kenya and biometrics in Nairobi."
 category: "Visa Guides"
 readTime: "11 min read"
 coverEmoji: "🇬🇧"

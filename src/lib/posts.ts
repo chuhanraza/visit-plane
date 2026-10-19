@@ -24228,7 +24228,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Kenya to UK Visa: Requirements, Fees & How Kenyans Apply (2026)',
     date: '2026-10-19',
     excerpt:
-      'How Kenyans apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Kenya, biometrics in Nairobi, timelines and the mistakes that cause refusals.',
+      'How Kenyans apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Kenya and biometrics in Nairobi.',
     category: 'Visa Guides',
     readTime: '11 min read',
     coverEmoji: '🇬🇧',
@@ -24248,7 +24248,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Uganda to UK Visa: Requirements, Fees & How Ugandans Apply (2026)',
     date: '2026-10-19',
     excerpt:
-      'How Ugandans apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Uganda, biometrics in Kampala, timelines and the mistakes that cause refusals.',
+      'How Ugandans apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Uganda and biometrics in Kampala.',
     category: 'Visa Guides',
     readTime: '11 min read',
     coverEmoji: '🇬🇧',
@@ -24268,7 +24268,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Ghana to UK Visa: Requirements, Fees & How Ghanaians Apply (2026)',
     date: '2026-10-19',
     excerpt:
-      'How Ghanaians apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Ghana, biometrics in Accra, timelines and the mistakes that cause refusals.',
+      'How Ghanaians apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Ghana and biometrics in Accra.',
     category: 'Visa Guides',
     readTime: '11 min read',
     coverEmoji: '🇬🇧',
@@ -24288,7 +24288,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Zambia to UK Visa: Requirements, Fees & How Zambians Apply (2026)',
     date: '2026-10-19',
     excerpt:
-      'How Zambians apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Zambia, biometrics in Lusaka, timelines and the mistakes that cause refusals.',
+      'How Zambians apply for a UK Standard Visitor visa in 2026: the £135 fee, documents, proof of funds, ties to Zambia and biometrics in Lusaka.',
     category: 'Visa Guides',
     readTime: '11 min read',
     coverEmoji: '🇬🇧',
